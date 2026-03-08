@@ -370,7 +370,90 @@ VP's Microsoft 365 Tenant
 
 <hr class="section-divider">
 
-<h1>PART 8 — Next Steps</h1>
+<h1>PART 8 — Per-Client Environment Design</h1>
+
+<h2>The Core Insight: "Chief for Everyone"</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">This isn't a shared platform where clients log in to your system. Each client gets their own isolated container — their own private brain — running inside their own Azure tenant. Their data never leaves their walls. You never touch their data. You just deploy and configure the agent.</p>
+
+<div class="finding-box">
+  <h3>What Chief does for Blake = What the agent does for the VP</h3>
+  <table style="margin: 0;">
+    <tr><th>Chief (Blake's setup)</th><th>Enterprise Agent (VP's setup)</th></tr>
+    <tr><td>Manages inbox, drafts replies</td><td>Manages inbox, drafts replies</td></tr>
+    <tr><td>Tracks projects and todos</td><td>Tracks board action items and deadlines</td></tr>
+    <tr><td>Builds reports on demand</td><td>Builds market share dashboards</td></tr>
+    <tr><td>Remembers context across sessions</td><td>Remembers preferences and past decisions</td></tr>
+    <tr><td>Accessible via Telegram, web, CLI</td><td>Accessible via Teams, mobile, desktop, email</td></tr>
+    <tr><td>Runs on Mac Mini in Blake's house</td><td>Runs in container in client's Azure tenant</td></tr>
+  </table>
+</div>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The product is not new technology. It's Chief, deployed and configured for enterprise.</strong></p>
+
+<h2>What Each Client Gets</h2>
+
+<div class="diagram">Client Container (Azure Container Apps — inside their tenant)
+├── Agent runtime         ← your code (same image for all clients)
+├── SOUL file             ← client-specific: persona, tone, workflow rules
+├── Memory store          ← PostgreSQL, private and isolated to them
+├── Active Claws          ← configured for their role (VP vs. rep vs. CMO)
+└── Data connections:
+    ├── Microsoft Graph API    ← their M365 tenant (email, calendar, Teams)
+    ├── CRM connector          ← optional
+    ├── Claims data connector  ← optional
+    └── Custom databases       ← optional</div>
+
+<h2>What Blake Controls</h2>
+
+<div class="diagram">Your Azure Infrastructure (management layer)
+├── Container registry         ← your agent code/images (you push updates here)
+├── Provisioning API           ← spin up new client environments in minutes
+├── Configuration store        ← per-client Claw settings and data connections
+├── Monitoring dashboard       ← usage, errors, token spend per client
+└── Template library           ← reusable role-based configs (VP, rep, CMO, etc.)</div>
+
+<div class="alert alert-green">
+  <strong>✅ Data privacy unlocked:</strong> Blake's infrastructure manages container images and provisioning config only. Client credentials live in the client's Azure Key Vault. Blake has zero access to client data. This eliminates healthcare's biggest objection: <em>"we can't let vendor data leave our walls."</em>
+</div>
+
+<h2>Onboarding a New Client (Target: &lt; 1 day)</h2>
+
+<ol>
+  <li>Client signs agreement, provides Azure tenant info</li>
+  <li>You provision their container using an ARM template / Bicep script — runs inside their tenant, not yours</li>
+  <li>Client's M365 admin grants Graph API permissions (one-time OAuth approval)</li>
+  <li>You configure their Claws: which capabilities are active, which data sources connected</li>
+  <li>Load initial context: their role, org structure, key contacts, communication preferences</li>
+  <li>Test run — agent triages a sample inbox batch, VP reviews the output</li>
+  <li>Go live — client gets the web app URL + Teams bot invite</li>
+</ol>
+
+<h2>Scaling the Business</h2>
+
+<table>
+  <tr><th>Client #</th><th>What gets easier</th></tr>
+  <tr>
+    <td>Client 1 (Dave/ASH)</td>
+    <td>Build everything from scratch. Prove the model.</td>
+  </tr>
+  <tr>
+    <td>Clients 2–5</td>
+    <td>Reuse the container image and provisioning script. Configure per role. Each deployment strengthens the template library.</td>
+  </tr>
+  <tr>
+    <td>Clients 6+</td>
+    <td>Provisioning is nearly automated. Most of the work is configuration and onboarding conversation — not code.</td>
+  </tr>
+</table>
+
+<div class="alert alert-blue">
+  <strong>ℹ️ This is the moat:</strong> Every client you deploy makes your template library richer, your provisioning faster, and your domain knowledge deeper. A new entrant has to build all of this from zero. You're compounding.
+</div>
+
+<hr class="section-divider">
+
+<h1>PART 9 — Next Steps</h1>
 
 <table>
   <tr><th>Phase</th><th>What to build</th><th>Timeline</th></tr>
