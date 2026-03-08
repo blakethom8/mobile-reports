@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise AI Assistant — Architecture Brief</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 820px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .code { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  .diagram { background: #f8f9ff; border: 1px solid #c0cce0; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 12px; line-height: 1.9; margin: 20px 0; white-space: pre; overflow-x: auto; }
+  .claw-card { border: 1px solid #d0d8e8; border-radius: 6px; padding: 14px 16px; margin: 12px 0; background: #fafbff; }
+  .claw-card h4 { margin: 0 0 6px 0; color: #1a1a2e; font-size: 14px; font-family: Arial, sans-serif; }
+  .claw-card p { margin: 0; font-family: Arial, sans-serif; font-size: 13px; color: #444; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏢 Enterprise AI Assistant — Architecture Brief</h1>
+  <p>Prepared by Chief &nbsp;|&nbsp; March 8, 2026</p>
+  <p>Source: Cowork session "great-ecstatic-wozniak" (March 5, 2026) &nbsp;|&nbsp; Project: ventures/enterprise-assistant/</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>ℹ️ What this is:</strong> A personal AI assistant built for VP/executive-level users in Microsoft 365 environments. Manages email, calendar, data reporting, and team communication through a single agent accessible from anywhere — desktop, mobile, Teams, or email. First target: Dave Devries at ASH (VP of ASCs). This document captures the full architecture from the March 5 deep-dive session.
+</div>
+
+<hr class="section-divider">
+
+<h1>PART 1 — The Core Problem</h1>
+
+<h2>Why Not Just Use Microsoft Copilot?</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Microsoft Copilot exists. So do dozens of enterprise AI tools. The question is: why would a VP pay for something custom? Here's the honest answer:</p>
+
+<table>
+  <tr><th></th><th>Microsoft Copilot / Generic AI</th><th>Your Bespoke Agent</th></tr>
+  <tr>
+    <td><strong>Data access</strong></td>
+    <td>Microsoft 365 only (email, docs, calendar)</td>
+    <td>M365 + CRM + claims data + custom databases + web intelligence</td>
+  </tr>
+  <tr>
+    <td><strong>Knows your business</strong></td>
+    <td>Generic understanding</td>
+    <td>Trained on your org's specific data, KPIs, and workflows</td>
+  </tr>
+  <tr>
+    <td><strong>Can build things</strong></td>
+    <td>No — generates text only</td>
+    <td>Yes — generates dashboards, reports, summaries, data pulls</td>
+  </tr>
+  <tr>
+    <td><strong>Memory</strong></td>
+    <td>Session-based, no persistence</td>
+    <td>Persistent — remembers context, past decisions, preferences</td>
+  </tr>
+  <tr>
+    <td><strong>Deployment</strong></td>
+    <td>Microsoft's servers — data leaves your tenant</td>
+    <td>Your Azure tenant — data never leaves</td>
+  </tr>
+  <tr>
+    <td><strong>Customization</strong></td>
+    <td>None</td>
+    <td>Built specifically for this person's workflow and data</td>
+  </tr>
+</table>
+
+<div class="finding-box">
+  <h3>The Real Pitch</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px; margin: 0;">
+    Microsoft Copilot answers questions about your emails. <strong>Your agent manages your day.</strong> It triages your inbox, flags what needs a decision, drafts replies in your voice, pulls the market share numbers your liason asked about, builds the dashboard before you even open your laptop, and remembers that you prefer bar charts. That's a fundamentally different product.
+  </p>
+</div>
+
+<hr class="section-divider">
+
+<h1>PART 2 — System Architecture</h1>
+
+<h2>The Central Insight: Agent Lives in Azure, Not on the Device</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">The agent runs centrally in Azure. The VP's devices — laptop, phone, Teams, email — are just windows into the same brain. Like Gmail: same inbox whether you're on your phone, laptop, or someone else's computer.</p>
+
+<div class="diagram">VP's Devices                          Your Azure Infrastructure
+─────────────────                          ──────────────────────────────────
+                                          ┌──────────────────────────────────┐
+Desktop/Web App  ──── WebSocket ─────────►│  API Gateway                     │
+                                          │  (routes all channels to agent)  │
+Mobile App       ──── WebSocket ─────────►│                                  │
+                                          │  ┌────────────────────────────┐  │
+Teams Bot        ──── HTTPS ─────────────►│  │  Agent Container           │  │
+(mentions)                                │  │                            │  │
+                                          │  │  • One brain, one memory   │  │
+Email to bot     ──── Graph API ─────────►│  │  • Persistent context      │  │
+(agent@co.com)                            │  │  • Tool execution          │  │
+                                          │  └────────────────────────────┘  │
+                                          │                                  │
+                                          │  Azure Services:                 │
+                                          │  • Azure OpenAI (model)          │
+                                          │  • Key Vault (credentials)       │
+                                          │  • PostgreSQL (memory + history) │
+                                          │  • Blob Storage (reports/files)  │
+                                          │  • Bot Service (Teams)           │
+                                          └──────────────────────────────────┘</div>
+
+<h2>Why This Architecture?</h2>
+
+<div class="alert alert-red">
+  <strong>🚨 What NOT to build:</strong> An OpenClaw-style local agent on the VP's laptop. If something goes wrong — a hallucinated command, a context compaction incident, a prompt injection through a malicious email — there's nothing protecting his files, his credentials, or his system. Healthcare executives cannot have unsandboxed agents on their machines.
+</div>
+
+<div class="alert alert-green">
+  <strong>✅ What TO build:</strong> Agent runs in a sandboxed Azure container. VP's machine is never touched. All data access goes through Microsoft Graph API (cloud-to-cloud, no local dependency). VP's data stays in their own Azure tenant.
+</div>
+
+<hr class="section-divider">
+
+<h1>PART 3 — The Channels (How the VP Talks to the Agent)</h1>
+
+<table>
+  <tr><th>Channel</th><th>How it works</th><th>Best for</th><th>Streaming?</th></tr>
+  <tr>
+    <td><strong>Desktop Web App</strong></td>
+    <td>Browser → WebSocket → Azure API</td>
+    <td>Deep work, reviewing dashboards, long sessions</td>
+    <td><span class="tag tag-green">Yes — real-time</span></td>
+  </tr>
+  <tr>
+    <td><strong>Mobile App</strong></td>
+    <td>App → WebSocket → Azure API</td>
+    <td>Quick queries, approvals, on the go</td>
+    <td><span class="tag tag-green">Yes + push alerts</span></td>
+  </tr>
+  <tr>
+    <td><strong>Teams Bot</strong></td>
+    <td>@mention → Bot Framework → HTTPS → your API</td>
+    <td>Team-facing, shared agent access, reps asking questions</td>
+    <td><span class="tag tag-yellow">No — full response only</span></td>
+  </tr>
+  <tr>
+    <td><strong>Email</strong></td>
+    <td>Email to agent → Graph API webhook → your API</td>
+    <td>Zero-install access, works on any device, async tasks</td>
+    <td><span class="tag tag-yellow">No — async reply</span></td>
+  </tr>
+</table>
+
+<div class="finding-box">
+  <h3>Teams Bot UX Consideration</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px; margin: 0;">
+    Teams uses HTTPS request/response — no streaming. So the VP sends a message, there's a pause, then the full response appears. For long tasks (build me a dashboard), the pattern is: agent sends "On it — I'll notify you when it's ready" immediately, then delivers the result via push/Teams update when done. For short questions, the pause is fine. Tailor response verbosity by channel.
+  </p>
+</div>
+
+<hr class="section-divider">
+
+<h1>PART 4 — Inbox Management (The Core VP Use Case)</h1>
+
+<h2>The Problem with Executive Inboxes</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">A VP of ASCs gets 200+ emails a day. Vendor pitches, internal reports, physician liaisons, compliance notices, calendar invites. The job isn't reading all of them — the job is knowing which 10 actually need a response and what that response should be. That's where the agent earns its keep.</p>
+
+<h2>How Graph API Powers This</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Microsoft Graph API gives the agent cloud-to-cloud access to the VP's entire Microsoft 365 environment — email, calendar, contacts, OneDrive, Teams messages — all without touching the VP's machine.</p>
+
+<div class="diagram">Your Azure Container (Agent)
+        │
+        │  graph.microsoft.com
+        ▼
+┌─────────────────────────────────────────┐
+│         Microsoft Graph API             │
+│                                         │
+│  /me/messages          ← read email     │
+│  /me/sendMail          ← send email     │
+│  /me/calendar/events   ← calendar       │
+│  /me/contacts          ← contacts       │
+│  /teams/{id}/messages  ← Teams messages │
+│  /me/drive/root        ← OneDrive files │
+└─────────────────────────────────────────┘
+        │
+        ▼
+VP's Microsoft 365 Tenant
+(data never leaves tenant)</div>
+
+<h2>The Daily Inbox Workflow</h2>
+
+<ol style="font-family: Arial, sans-serif; font-size: 14px;">
+  <li><strong>Morning triage (automated, before VP opens email)</strong><br>
+    Agent reads all unread emails via Graph API → categorizes by urgency + type → builds a morning brief: "You have 47 unread. 3 need decisions today: budget approval from Sarah, escalation from Acme Corp, contract renewal from vendor X."</li>
+
+  <li><strong>Draft-and-review (on request or automated for routine)</strong><br>
+    VP says "reply to Sarah approving the budget" → agent drafts reply in VP's voice → shows draft → VP approves or edits → agent sends via Graph API. For truly routine emails (meeting confirmations, FYI acknowledgments), agent can draft + queue for batch approval.</li>
+
+  <li><strong>Context injection</strong><br>
+    When VP asks "what did Acme Corp say?" → agent searches email history + CRM data + meeting notes → gives a full briefing, not just the last email. Memory makes this work.</li>
+
+  <li><strong>Proactive alerts</strong><br>
+    Agent monitors for: VIP senders, keywords ("urgent", "contract", VP's name), unresponded threads older than 48h. Sends push alert to phone or Teams message: "You haven't responded to the physician liaison from St. Vincent's — sent 3 days ago."</li>
+
+  <li><strong>Calendar coordination</strong><br>
+    "Find time for a 30-minute call with the ASC team this week" → agent checks VP's calendar + attendees' calendars → suggests 3 options → books on confirmation.</li>
+</ol>
+
+<h2>Three-Tier Email Access Model</h2>
+
+<table>
+  <tr><th>Email Type</th><th>Agent Access Level</th><th>Rule</th></tr>
+  <tr>
+    <td>VP's corporate inbox</td>
+    <td>Read + draft + send-on-approval</td>
+    <td>Never sends without VP confirmation for non-routine mail</td>
+  </tr>
+  <tr>
+    <td>Shared team inbox</td>
+    <td>Read-only + alerts</td>
+    <td>Monitors, surfaces items, doesn't reply</td>
+  </tr>
+  <tr>
+    <td>Agent's own identity (agent@company.com)</td>
+    <td>Full send</td>
+    <td>For automated reports, scheduling coordination, notifications</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<h1>PART 5 — The "Claws" (What the Agent Can Do)</h1>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Claws are the agent's capability modules — discrete tools it can invoke to take action. The agent decides which claws to use based on the request.</p>
+
+<div class="claw-card">
+  <h4>📧 Email Claw</h4>
+  <p>Read, search, draft, send, categorize emails via Graph API. "Summarize my emails" → morning brief. "Reply to Sarah" → draft for approval.</p>
+</div>
+
+<div class="claw-card">
+  <h4>📅 Calendar Claw</h4>
+  <p>Read/create/modify events via Graph API. "When's my next board meeting?" → event details. "Find time for X" → suggests + books slot.</p>
+</div>
+
+<div class="claw-card">
+  <h4>📊 Data Claw</h4>
+  <p>Query CRM, claims data, market share databases. "Primary care market share in Southeast region" → pulls from data sources, returns structured results.</p>
+</div>
+
+<div class="claw-card">
+  <h4>📈 Dashboard Claw</h4>
+  <p>Generates interactive HTML/React dashboards from data. Creates a blueprint (persisted) + rendered HTML (ephemeral, 7-day TTL). Rebuilds on demand from blueprint.</p>
+</div>
+
+<div class="claw-card">
+  <h4>📄 Report Claw</h4>
+  <p>Generates formatted reports (PDF, DOCX, PPTX). Pulls data → applies template → delivers file to VP's inbox or OneDrive.</p>
+</div>
+
+<div class="claw-card">
+  <h4>🔔 Notification Claw</h4>
+  <p>Sends push alerts (phone), Teams messages, or emails. "Dashboard ready → [link]". "Urgent email from board member unread for 6 hours."</p>
+</div>
+
+<div class="claw-card">
+  <h4>🧠 Memory Claw</h4>
+  <p>Saves/retrieves/searches persistent context. "Remember Sarah approved the Q2 budget." Loads relevant past context into every new conversation.</p>
+</div>
+
+<h2>Example: End-to-End Orchestration</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><em>Rep in Teams: "I need primary care market share for the Southeast"</em></p>
+
+<div class="diagram">Teams Bot Framework → HTTPS POST → Your API Gateway
+                                          │
+                                          ▼
+                               Agent identifies user, loads memory
+                                          │
+                         ┌────────────────┼────────────────────┐
+                         ▼                ▼                     ▼
+                    Data Claw      Dashboard Claw          Memory Claw
+                 query CRM for    generate HTML from      save: "built SE
+                 market share     data + blueprint        primary care dash
+                 data             save to Blob Storage    on 2026-03-08"
+                         │                │
+                         └───────┬────────┘
+                                 ▼
+                       Notification Claw
+                  "Your dashboard is ready → [link]"
+                  sent to Teams + push to phone
+                                 │
+                                 ▼
+                    Rep opens desktop web app later:
+                    Dashboard is in "Recent" panel, ready</div>
+
+<hr class="section-divider">
+
+<h1>PART 6 — Memory & Session Continuity Across Devices</h1>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">The VP uses desktop at work, phone on the go, Teams in meetings, email from anywhere. The agent needs to feel like the same conversation everywhere.</p>
+
+<h2>Recommended: Per-Channel Sessions + Shared State + Handoff Summaries</h2>
+
+<table>
+  <tr><th>Mechanism</th><th>What it does</th></tr>
+  <tr>
+    <td><strong>Per-channel sessions</strong></td>
+    <td>Desktop, mobile, Teams, email each have their own thread — no race conditions if VP is on two devices simultaneously</td>
+  </tr>
+  <tr>
+    <td><strong>Shared PostgreSQL memory</strong></td>
+    <td>All channels write to the same memory database — facts, decisions, preferences, outstanding actions</td>
+  </tr>
+  <tr>
+    <td><strong>Handoff summaries</strong></td>
+    <td>When VP switches channels, new session injects a compressed summary: "You were reviewing Southeast dashboard on desktop 12 min ago. Sarah's budget approval is still pending."</td>
+  </tr>
+</table>
+
+<div class="finding-box">
+  <h3>Key Difference from OpenClaw</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px; margin: 0;">
+    OpenClaw uses Markdown files on disk as shared memory — simple and effective for one person on one machine. Your enterprise platform uses PostgreSQL with importance-ranked rows, pgvector semantic search, and active handoff summaries that bridge channel switches. Same concept, cloud-native and multi-user.
+  </p>
+</div>
+
+<hr class="section-divider">
+
+<h1>PART 7 — The Dashboard Blueprint Pattern</h1>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Key insight from the March 5 session: don't store rendered HTML — store the blueprint and the data separately.</p>
+
+<table>
+  <tr><th>What to persist</th><th>What to keep ephemeral</th></tr>
+  <tr>
+    <td>
+      <strong>Data snapshot</strong> — the raw numbers, timestamped in PostgreSQL<br><br>
+      <strong>Dashboard blueprint</strong> — a structured MD/JSON file: which charts, which metrics, which filters, which data query<br><br>
+      <strong>User preferences</strong> — "prefers bar charts, always show YoY comparison"
+    </td>
+    <td>
+      <strong>Rendered HTML/React dashboard</strong> — cached in Azure Blob Storage with 7-day TTL, then deleted. Regenerated on demand from blueprint + data.
+    </td>
+  </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Why this matters:</strong> When the VP says "show me the same thing but for Q3 last year" — agent reads the blueprint, swaps the date range, re-queries data, re-renders. When they say "add a trend line" — agent modifies the blueprint, regenerates. Blueprint is the source of truth. HTML is cheap.</p>
+
+<hr class="section-divider">
+
+<h1>PART 8 — Next Steps</h1>
+
+<table>
+  <tr><th>Phase</th><th>What to build</th><th>Timeline</th></tr>
+  <tr>
+    <td><strong>Phase 1 — Dave's email agent</strong></td>
+    <td>Graph API connection, inbox triage, draft-and-review workflow. Single user, Azure Container Apps.</td>
+    <td>2–3 weeks</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 2 — Teams bot</strong></td>
+    <td>Bot Framework integration. Rep-facing queries in Teams. Push notifications when dashboards are ready.</td>
+    <td>2 weeks</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 3 — Data Claw</strong></td>
+    <td>CRM + claims data queries. Market share dashboards. Blueprint + ephemeral pattern.</td>
+    <td>3–4 weeks</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 4 — Multi-user</strong></td>
+    <td>Azure AD auth, per-user containers, shared team agent via Teams, role-based access.</td>
+    <td>4–6 weeks</td>
+  </tr>
+</table>
+
+<div class="alert">
+  <strong>⚠️ First thing to set up:</strong> Microsoft Azure account with the right tenant structure. From the March 5 notes — you started this (Microsoft 365 Business Basic → Entra ID → Azure), hit a snag with Gmail tied to Microsoft account. Pick this back up and get the Azure environment live before building anything.
+</div>
+
+<hr class="section-divider">
+
+<p class="citation">Enterprise AI Assistant Architecture Brief · Chief · March 8, 2026 · Source: Cowork session great-ecstatic-wozniak (2026-03-05) · Project: ventures/enterprise-assistant/</p>
+
+</body>
+</html>
