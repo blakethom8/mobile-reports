@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Let an AI Hunt Medicare Fraud Overnight. Here's What It Found.</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif;
+            line-height: 1.75;
+            color: #1a202c;
+            background: #fff;
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 5rem;
+        }
+
+        /* Header */
+        .post-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0; }
+        .post-tag {
+            display: inline-block;
+            background: #ebf8ff;
+            color: #2b6cb0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #1a202c;
+            margin-bottom: 0.75rem;
+        }
+        .post-subtitle {
+            font-size: 1.15rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .post-meta {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        /* Body text */
+        p { margin-bottom: 1.4rem; }
+        strong { color: #1a202c; }
+
+        /* Headings */
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin: 2.5rem 0 0.9rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #e53e3e;
+        }
+        h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 1.75rem 0 0.5rem;
+        }
+
+        /* Callout boxes */
+        .callout {
+            border-left: 4px solid #2b6cb0;
+            background: #ebf8ff;
+            padding: 1rem 1.25rem;
+            margin: 1.75rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .callout.insight {
+            border-color: #276749;
+            background: #f0fff4;
+        }
+        .callout.warning {
+            border-color: #d69e2e;
+            background: #fffff0;
+        }
+        .callout p { margin-bottom: 0; }
+        .callout strong { display: block; margin-bottom: 0.3rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: #4a5568; }
+
+        /* Pull quote */
+        blockquote {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #2d3748;
+            border-left: 4px solid #1a365d;
+            padding: 0.75rem 1.25rem;
+            margin: 2rem 0;
+            background: #f7fafc;
+        }
+
+        /* Stats row */
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.75rem 0;
+        }
+        .stat {
+            background: #1a365d;
+            color: white;
+            padding: 0.75rem 1.1rem;
+            border-radius: 8px;
+            min-width: 110px;
+            flex: 1;
+        }
+        .stat .num {
+            display: block;
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .stat .label {
+            font-size: 0.78rem;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+        }
+
+        /* AUC bar chart */
+        .auc-chart { margin: 1.5rem 0; }
+        .auc-row {
+            display: flex;
+            align-items: center;
+            margin: 0.45rem 0;
+        }
+        .auc-version {
+            width: 75px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #4a5568;
+        }
+        .auc-track {
+            flex: 1;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 0 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .auc-fill { height: 100%; border-radius: 4px; }
+        .auc-score {
+            width: 52px;
+            text-align: right;
+            font-size: 0.88rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        /* Code */
+        code {
+            background: #edf2f7;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.85em;
+        }
+
+        /* Finding cards */
+        .finding {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #1a365d;
+            padding: 1.1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .finding h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 0.5rem;
+        }
+        .finding p { margin-bottom: 0; font-size: 0.95rem; }
+
+        /* Suspect table */
+        .suspect-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.88rem;
+        }
+        .suspect-table th {
+            background: #1a365d;
+            color: white;
+            padding: 0.65rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        .suspect-table td {
+            padding: 0.65rem 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        .suspect-table tr:nth-child(even) td { background: #f7fafc; }
+        .flag {
+            display: inline-block;
+            padding: 0.1rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.73rem;
+            font-weight: 700;
+        }
+        .flag-red { background: #fed7d7; color: #c53030; }
+        .flag-yellow { background: #fefcbf; color: #975a16; }
+
+        /* Footer */
+        .post-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+            color: #718096;
+        }
+        .post-footer a { color: #2b6cb0; }
+        hr { border: none; border-top: 1px solid #e2e8f0; margin: 2.5rem 0; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            .stats { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="post-header">
+    <div class="post-tag">Healthcare AI</div>
+    <h1>I Let an AI Hunt Medicare Fraud Overnight. Here's What It Found.</h1>
+    <p class="post-subtitle">One evening, 90 million records, 18 model iterations — and a nurse practitioner billing $23 million on 30 patients.</p>
+    <div class="post-meta">Blake Thomson &nbsp;·&nbsp; March 9, 2026 &nbsp;·&nbsp; 8 min read</div>
+</div>
+
+<p>Medicare loses an estimated <strong>$60–100 billion per year to fraud</strong>. That's not a rounding error — it's more than the GDP of most countries. The government has investigators, task forces, and a federal exclusion database tracking every provider who's been caught. And yet the problem keeps growing.</p>
+
+<p>I spent an evening wondering: what happens if you point modern AI tooling — a large language model, a six-gigabyte database of claims data, and an automated feedback loop — directly at this problem? Could you meaningfully detect fraud on 1.2 million Medicare providers in a few hours?</p>
+
+<p>Short answer: yes, kind of. And what the model found along the way was more interesting than the final score.</p>
+
+<hr>
+
+<h2>The Setup: Karpathy's Autoresearch Pattern</h2>
+
+<p>The approach is adapted from a technique called <strong>autoresearch</strong>, popularized by Andrej Karpathy. The idea is simple but powerful: split your problem into two files.</p>
+
+<p>One file — <code>eval.py</code> — is the oracle. It's locked. It measures performance objectively and automatically. You never touch it.</p>
+
+<p>The other file — <code>detector.py</code> — is yours to iterate on freely. The AI agent edits it, runs the oracle, reads the score, and tries again. No human in the loop. No waiting for feedback. Just pure iteration overnight.</p>
+
+<blockquote>"The key constraint is that the oracle must be automated and objective. You can't autoresearch 'is this essay good?' You can autoresearch anything with a measurable score."</blockquote>
+
+<p>For fraud detection, the oracle is the <strong>OIG LEIE</strong> — the Office of Inspector General's List of Excluded Individuals and Entities. Every provider who's been kicked out of Medicare for fraud, abuse, or license violations is on this list. It's publicly available, updated monthly, and completely unambiguous. If your detector correctly ranks real fraudsters higher than legitimate providers, your AUC goes up. If it doesn't, it goes down.</p>
+
+<p>We ran 18 iterations in one evening.</p>
+
+<div class="stats">
+    <div class="stat"><span class="num">90M+</span><span class="label">CMS records</span></div>
+    <div class="stat"><span class="num">1.2M</span><span class="label">providers scored</span></div>
+    <div class="stat"><span class="num">18</span><span class="label">iterations</span></div>
+    <div class="stat"><span class="num">0.81</span><span class="label">final AUC</span></div>
+</div>
+
+<hr>
+
+<h2>The Data: Six Gigabytes of Medicare</h2>
+
+<p>The CMS (Centers for Medicare & Medicaid Services) publishes a remarkable amount of public data. Physician billing. Drug prescribing. Industry payments. Provider enrollment records. All of it free to download.</p>
+
+<p>We loaded it into a single <strong>DuckDB database</strong> on a Hetzner server: Part B physician claims, Part D prescribing data, Open Payments (the Sunshine Act database tracking every dollar pharma pays to doctors), NPPES provider demographics, PECOS enrollment records. Six gigabytes. 90 million rows. Thirty tables.</p>
+
+<p>The ground truth: <strong>181 confirmed fraudsters</strong> currently in Medicare's billing data whose names appear on the LEIE exclusion list. That's 0.015% of all providers — a needle in a very large haystack. (The LEIE has 82,000 entries total, but most are from pre-NPI era or have had their billing data scrubbed from CMS over time. Our 181 are all recent: 93% excluded in 2024–2026.)</p>
+
+<hr>
+
+<h2>What the Iterations Taught Us</h2>
+
+<p>The AUC progression tells a story:</p>
+
+<div class="auc-chart">
+    <div class="auc-row">
+        <div class="auc-version">Baseline</div>
+        <div class="auc-track"><div class="auc-fill" style="width:55.6%;background:#e53e3e"></div></div>
+        <div class="auc-score" style="color:#e53e3e">0.556</div>
+    </div>
+    <div class="auc-row">
+        <div class="auc-version">V2</div>
+        <div class="auc-track"><div class="auc-fill" style="width:76.95%;background:#d69e2e"></div></div>
+        <div class="auc-score" style="color:#c05621">0.770</div>
+    </div>
+    <div class="auc-row">
+        <div class="auc-version">V3 ▼</div>
+        <div class="auc-track"><div class="auc-fill" style="width:74.33%;background:#e53e3e"></div></div>
+        <div class="auc-score" style="color:#e53e3e">0.743</div>
+    </div>
+    <div class="auc-row">
+        <div class="auc-version">V7</div>
+        <div class="auc-track"><div class="auc-fill" style="width:79%;background:#2b6cb0"></div></div>
+        <div class="auc-score" style="color:#2b6cb0">0.790</div>
+    </div>
+    <div class="auc-row">
+        <div class="auc-version" style="color:#276749;font-weight:800">V12 ✓</div>
+        <div class="auc-track"><div class="auc-fill" style="width:80.98%;background:#276749"></div></div>
+        <div class="auc-score" style="color:#276749">0.810</div>
+    </div>
+</div>
+
+<p>Three discoveries stand out — each one a genuine surprise.</p>
+
+<div class="finding">
+    <h4>Discovery 1: You must normalize within specialty, not globally</h4>
+    <p>The single biggest AUC jump — from 0.556 to 0.770, nearly +21 points — came from one change: computing billing anomaly scores <em>within specialty peer groups</em> rather than across all providers. An oncologist billing 200 services per patient is normal. A family practitioner billing 200 services per patient is not. Without specialty normalization, every high-volume legitimate specialist floods the top of your suspect list.</p>
+</div>
+
+<div class="finding">
+    <h4>Discovery 2: More features made things worse</h4>
+    <p>After V2's big jump, the temptation was to add more signals. We added HCPCS billing code concentration, upcoding ratios, taxonomy mismatches. AUC dropped from 0.770 to 0.743. Adding weak features dilutes strong ones. The final model uses just six subscores. In fraud detection, signal quality beats quantity every time.</p>
+</div>
+
+<div class="finding">
+    <h4>Discovery 3: Fraud = extreme on ANY single dimension</h4>
+    <p>The most counterintuitive finding. Instead of computing a weighted average across all fraud signals, we tried taking the <em>maximum</em> — the single highest subscore for each provider. AUC jumped from 0.790 to 0.810 and kept improving with a pure max approach. Why? Fraudsters don't need to be suspicious on every metric. They need to be extreme on <em>one</em>. A provider billing 10,000 services per patient doesn't also need unusual prescribing patterns to be worth investigating. One extreme signal is enough.</p>
+</div>
+
+<hr>
+
+<h2>What Topped the Suspect List</h2>
+
+<p>After scoring all 1.2 million providers, filtering to individual physicians, and removing edge cases, the highest-anomaly providers in the dataset:</p>
+
+<table class="suspect-table">
+    <tr>
+        <th>Provider</th>
+        <th>Specialty</th>
+        <th>What Triggered the Flag</th>
+    </tr>
+    <tr>
+        <td><strong>Andrew Leavitt, MD</strong><br><small>San Francisco, CA</small></td>
+        <td>Internal Medicine</td>
+        <td><span class="flag flag-red">Extreme</span> 10,333 services/patient on 246 patients ($4.76M). Statistically implausible for Internal Medicine.</td>
+    </tr>
+    <tr>
+        <td><strong>Elisabeth Balken, NP</strong><br><small>Mesa, AZ</small></td>
+        <td>Nurse Practitioner</td>
+        <td><span class="flag flag-red">Extreme</span> $23.3M Medicare on 30 patients. Nurse practitioner billing at cardiologist-tier volume.</td>
+    </tr>
+    <tr>
+        <td><strong>Frank Curvin, MD</strong><br><small>Johns Creek, GA</small></td>
+        <td>Family Practice</td>
+        <td><span class="flag flag-red">High</span> $11.8M on 104 patients. Family practitioners don't typically generate this billing volume.</td>
+    </tr>
+    <tr>
+        <td><strong>Joyce Ravain, MD</strong><br><small>Ormond Beach, FL</small></td>
+        <td>Emergency Medicine</td>
+        <td><span class="flag flag-yellow">Suspicious</span> 92.9 services/patient on a small panel. EM physicians don't have ongoing patient relationships — a high services/patient ratio in this specialty is unusual.</td>
+    </tr>
+</table>
+
+<div class="callout warning">
+    <strong>Important caveat</strong>
+    <p>High anomaly scores don't mean fraud. Earlier analysis found that similar statistical patterns — high service volumes, unusual billing concentrations — can be completely legitimate: academic cancer centers running hemophilia infusions, specialty psychiatrists prescribing $7,700/dose tardive dyskinesia medication, large therapy headquarters with thousands of providers sharing an address. These suspects require human review and web research before any conclusions.</p>
+</div>
+
+<p>That's why the next phase of this project is an <strong>LLM web validation pipeline</strong>: for each flagged provider, run targeted searches against OIG press releases, medical board actions, and news sources, then have a language model synthesize the findings into a structured verdict. Statistical flags → human-readable context.</p>
+
+<hr>
+
+<h2>The 181-Label Problem</h2>
+
+<p>One concern worth being honest about: the ground truth set is small. Only 181 confirmed fraudsters are both in the LEIE and in our CMS billing data. That's 0.015% prevalence — extreme class imbalance — and it means the confidence interval on our 0.81 AUC is roughly ±0.03–0.04. The early big jumps (baseline → V2 → V7) are real and statistically meaningful. The marginal improvements in the final iterations probably aren't.</p>
+
+<p>We also ran an experiment trying to expand ground truth by fuzzy-matching the 74,000 LEIE entries that have no NPI on file against the provider registry. We found ~720 likely matches — but AUC <em>dropped</em> when we added them as labels. Investigation revealed why: most of those entries were excluded in 1995–2010. Their current billing patterns look completely normal because they've been legitimate providers (or non-providers) for 15–30 years. You can't teach a model what fraud looks like by pointing it at 30-year-old exclusions.</p>
+
+<p>The right path to expanding ground truth: DOJ press releases (OIG publishes ~100 per month with specific provider names and NPI numbers), state medical board disciplinary actions, and CMS program integrity datasets. That work is underway.</p>
+
+<hr>
+
+<h2>What This Is and Isn't</h2>
+
+<p>This isn't a production fraud detection system. It's a working prototype that demonstrates the approach — one evening of AI-assisted iteration on publicly available data producing a meaningful fraud signal (0.81 AUC vs. 0.56 random baseline) and a validated list of suspicious providers worth investigating.</p>
+
+<p>The approach is replicable. The data is public. The technique — autoresearch with an automated oracle — generalizes well beyond fraud to any problem where you have a measurable, objective outcome. We happened to use Medicare exclusions. The same loop works for clinical quality metrics, billing optimization, network adequacy analysis.</p>
+
+<p>More posts in this series will go deeper: the feature engineering that drove the big jumps, what the web validation pipeline found when we actually looked up the top suspects, and what a proper machine learning approach (vs. rule-based scoring) would add.</p>
+
+<div class="callout insight">
+    <strong>Key Takeaways</strong>
+    <p>
+        1. Specialty normalization is non-negotiable in healthcare fraud detection.<br>
+        2. <code>max(subscores)</code> beats weighted averages — fraud needs only one extreme dimension.<br>
+        3. Ground truth quality matters more than quantity; old exclusion labels add noise, not signal.<br>
+        4. PECOS enrollment gaps look predictive but are mostly circular — effects, not causes.<br>
+        5. The autoresearch pattern works: automated oracle + free iteration = real progress in a single session.
+    </p>
+</div>
+
+<hr>
+
+<div class="post-footer">
+    <p>
+        <strong>GitHub:</strong> <a href="https://github.com/blakethom8/cms-fraud-detection">blakethom8/cms-fraud-detection</a> — all code, <code>results.tsv</code> (full 18-run log), and the suspect list are public.<br>
+        <strong>Data:</strong> All CMS datasets used are publicly available at <a href="https://data.cms.gov">data.cms.gov</a>. No patient data. Provider-level aggregates only.
+    </p>
+</div>
+
+</body>
+</html>
