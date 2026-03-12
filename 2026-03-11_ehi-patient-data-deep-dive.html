@@ -363,6 +363,67 @@
   <p><strong>Provider-side value:</strong> A physician liaison using this tool can identify which patients haven't been seen for chronic condition management — and reach out proactively. This is a retention and quality metrics play for the practice.</p>
 </div>
 
+<!-- AGENT 7 -->
+<div class="agent-card" style="border-color:#c0392b; background:#fff8f8;">
+  <h3>🌐 Agent 7 — Autonomous Web Data Collector <span class="tag tag-red">Hardest + Most Differentiated</span></h3>
+  <div class="meta">
+    <span class="tag tag-red">Core Enabler — Everything Else Depends on This</span>
+    <span class="tag tag-blue">HIPAA: Patient-Authorized</span>
+    <span class="tag tag-purple">EHIgnite: Multi-EHR Interoperability Bonus</span>
+  </div>
+  <p><strong>The problem:</strong> A patient's health records are scattered across 3–8 different portals — their PCP, cardiologist, hospital system, urgent care, pharmacy, insurer. Before any agent can help, someone has to go get the data. Asking patients to manually download-and-upload each one is a non-starter for real adoption. The platform needs to go get it autonomously.</p>
+  <p><strong>Why it's challenging:</strong> This sits at the intersection of HIPAA, live authentication, and web automation. But the 21st Century Cures Act actually created the legal infrastructure for exactly this. The challenge is engineering, not regulatory.</p>
+
+  <h3 style="margin-top:16px;">Three-Tier Architecture</h3>
+
+  <table>
+    <tr>
+      <th>Tier</th>
+      <th>Mechanism</th>
+      <th>Market Coverage</th>
+      <th>Maturity</th>
+    </tr>
+    <tr>
+      <td><strong>1 — SMART on FHIR API</strong></td>
+      <td>Patient OAuth authorization → access token → API calls</td>
+      <td>~60% of U.S. hospitals (Epic 35%, Cerner 25%+)</td>
+      <td><span class="tag tag-green">Works today</span></td>
+    </tr>
+    <tr>
+      <td><strong>2 — Browser Agent</strong></td>
+      <td>Patient-authorized Playwright automation → portal login → EHI export ZIP download</td>
+      <td>~40% (smaller hospitals, specialty clinics, urgent cares)</td>
+      <td><span class="tag tag-yellow">Engineering challenge</span></td>
+    </tr>
+    <tr>
+      <td><strong>3 — Government APIs</strong></td>
+      <td>Blue Button 2.0 (Medicare), VA FHIR API, state Medicaid</td>
+      <td>65M+ Medicare, 9M+ VA patients</td>
+      <td><span class="tag tag-green">Works today</span></td>
+    </tr>
+  </table>
+
+  <h3 style="margin-top:16px;">Tier 1 — SMART on FHIR (Clean & Scalable)</h3>
+  <p>Patient clicks "Connect [Hospital Name]" → OAuth redirect → authorizes → agent gets a refresh token stored encrypted in their own Key Vault. Agent then calls standard FHIR R4 endpoints to pull all resource types. Syncs on schedule. No PHI leaves the patient's environment after retrieval. This is exactly how Apple Health works. Directly satisfies the EHIgnite multi-EHR interoperability bonus.</p>
+
+  <h3 style="margin-top:16px;">Tier 2 — Patient-Authorized Browser Agent (The Hard One)</h3>
+  <p>The ONC mandate requires <em>every</em> certified EHR to have an EHI export button in the patient portal. So the data is always accessible — just not via API. The agent:</p>
+  <ol>
+    <li>Patient provides credentials once → stored encrypted in their own Azure Key Vault (never on our servers)</li>
+    <li>Agent launches headless browser (Playwright) <em>inside the patient's environment</em></li>
+    <li>Logs into each portal, downloads EHI export ZIP, ingests into patient workspace</li>
+    <li>For MFA — agent pauses, asks patient to enter code (human-in-the-loop, one-time)</li>
+  </ol>
+  <p><strong>Novel research angle for the competition:</strong> Instead of brittle CSS selectors that break when portals redesign, use a vision model (multimodal LLM) to identify the "Download My Records" button on any portal UI. "Zero-shot portal automation via multimodal LLM navigation" — no one else is proposing this.</p>
+
+  <h3 style="margin-top:16px;">Tier 3 — Government APIs (Easy, Often Overlooked)</h3>
+  <p>Blue Button 2.0 (CMS) covers every Medicare claim — every hospital visit, every procedure, every Part D prescription for anyone 65+. For complex chronic patients (our highest-value use case), this is the most complete claims dataset that exists. Full FHIR structured data. Patient authorizes via standard OAuth in under a minute.</p>
+
+  <div class="alert alert-green" style="margin-top:16px;">
+    <strong>The HIPAA framing that makes this work:</strong> The agent is a tool running in the patient's own Azure tenant, operating on the patient's own data, on the patient's own behalf. That's not a healthcare vendor handling PHI — that's a patient using a tool to manage their own records. No BAA needed. No data transit risk. No vendor security assessment. The 21st Century Cures Act gave patients the right to share their data with any app they authorize. We're just making that authorization seamless.
+  </div>
+</div>
+
 <hr class="section-divider">
 
 <h2>6. Technical Build Path</h2>
