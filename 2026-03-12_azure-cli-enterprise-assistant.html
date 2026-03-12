@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure CLI — Powering the Enterprise Assistant</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 820px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; margin-bottom: 12px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  .finding-box { border: 2px solid #c0392b; border-radius: 6px; padding: 16px 20px; margin: 20px 0; background: #fffaf9; }
+  .finding-box h3 { margin-top: 0; color: #c0392b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; margin: 2px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; border: 1px solid #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; border: 1px solid #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; border: 1px solid #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #c07800; border: 1px solid #e6a817; }
+  hr.section-divider { border: none; border-top: 2px solid #eee; margin: 40px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-family: Arial, sans-serif; font-size: 13px; }
+  th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: left; }
+  td { padding: 9px 14px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  code { background: #f0f0f0; border: 1px solid #ddd; border-radius: 3px; padding: 1px 6px; font-size: 12px; font-family: 'Courier New', monospace; }
+  pre { background: #1a1a2e; color: #e8e8e8; padding: 16px 20px; border-radius: 6px; overflow-x: auto; font-size: 12px; font-family: 'Courier New', monospace; line-height: 1.6; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; margin-top: 6px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .layer-badge { display: inline-block; background: #1a1a2e; color: #fff; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 3px 10px; border-radius: 4px; margin-right: 8px; }
+  .layer-badge.graph { background: #0078d4; }
+  .layer-badge.az { background: #c0392b; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Azure CLI — Powering the Enterprise Assistant</h1>
+  <p>Research Brief · Prepared by Chief · March 12, 2026</p>
+  <p>Topics: Azure CLI · Microsoft Graph CLI · Container Apps · M365 Automation · Enterprise Assistant Architecture</p>
+</div>
+
+<p>There are actually <strong>two separate CLI tools</strong> that matter here, and they cover completely different layers of our stack. Understanding both is what unlocks the full picture.</p>
+
+<div class="two-col">
+  <div class="finding-box">
+    <h3><span class="layer-badge az">az</span> Azure CLI</h3>
+    <p><strong>Layer: Infrastructure</strong></p>
+    <p>Manages the Azure platform itself — Container Apps, Key Vault, App Registrations, ACR, networking, AI services. This is how we <em>deploy, update, monitor, and scale</em> the enterprise assistant.</p>
+    <p><code>brew install azure-cli</code></p>
+  </div>
+  <div class="finding-box">
+    <h3><span class="layer-badge graph">mgc</span> Microsoft Graph CLI</h3>
+    <p><strong>Layer: M365 Data</strong></p>
+    <p>Manages Microsoft 365 services — mail, calendar, OneDrive, Teams, users, contacts. This is the assistant's <em>actual capabilities layer</em> — how it reads email, checks calendars, and manages files.</p>
+    <p><code>dotnet tool install --global Microsoft.Graph.Cli</code></p>
+  </div>
+</div>
+
+<div class="alert alert-blue">
+  <strong>The big picture:</strong> <code>az</code> controls <em>what the assistant runs on</em>. <code>mgc</code> controls <em>what the assistant can do</em>. Wire them together and you have a self-managing, fully agentic enterprise bot.
+</div>
+
+<hr class="section-divider">
+
+<h2>Layer 1: Azure CLI (<code>az</code>) — Infrastructure Control</h2>
+
+<h3>Container Apps — Managing the Bot Itself</h3>
+
+<p>Our enterprise assistant runs as an Azure Container App (one per user). The <code>az containerapp</code> command group is how we manage it programmatically.</p>
+
+<table>
+  <tr>
+    <th>What You Want to Do</th>
+    <th>Command</th>
+  </tr>
+  <tr>
+    <td>Deploy a new user's assistant from scratch</td>
+    <td><code>az containerapp up --name assistant-dave --resource-group rg-enterprise --image myacr.azurecr.io/assistant:latest</code></td>
+  </tr>
+  <tr>
+    <td>Push a new version (zero-downtime)</td>
+    <td><code>az containerapp update --name assistant-dave --image myacr.azurecr.io/assistant:v2.1</code></td>
+  </tr>
+  <tr>
+    <td>Set/update environment variables</td>
+    <td><code>az containerapp update --name assistant-dave --set-env-vars "ANTHROPIC_KEY=secretref:anthropic-key"</code></td>
+  </tr>
+  <tr>
+    <td>Tail live logs</td>
+    <td><code>az containerapp logs show --name assistant-dave --follow</code></td>
+  </tr>
+  <tr>
+    <td>Check revision/deployment status</td>
+    <td><code>az containerapp revision list --name assistant-dave --output table</code></td>
+  </tr>
+  <tr>
+    <td>Scale replicas up/down</td>
+    <td><code>az containerapp update --name assistant-dave --min-replicas 1 --max-replicas 3</code></td>
+  </tr>
+  <tr>
+    <td>Restart (force new revision)</td>
+    <td><code>az containerapp revision restart --name assistant-dave --revision &lt;rev-name&gt;</code></td>
+  </tr>
+  <tr>
+    <td>List all user assistants</td>
+    <td><code>az containerapp list --resource-group rg-enterprise --output table</code></td>
+  </tr>
+</table>
+
+<h3>Secrets Management — Key Vault Integration</h3>
+
+<p>The right pattern for our multi-tenant deployment: store all secrets in Azure Key Vault (one per client org, or one shared vault), reference them from Container Apps. The assistant never sees raw credentials — it gets secret refs only.</p>
+
+<pre>
+# Store a secret in Key Vault
+az keyvault secret set \
+  --vault-name kv-enterprise-prod \
+  --name "dave-graph-token" \
+  --value "eyJ0eXAiOiJKV1Q..."
+
+# Reference it in the Container App (no raw value in config)
+az containerapp secret set \
+  --name assistant-dave \
+  --secrets "graph-token=keyvaultref:https://kv-enterprise-prod.vault.azure.net/secrets/dave-graph-token"
+
+# Surface it as an env var inside the container
+az containerapp update \
+  --name assistant-dave \
+  --set-env-vars "GRAPH_TOKEN=secretref:graph-token"
+</pre>
+
+<div class="alert alert-green">
+  <strong>Healthcare compliance angle:</strong> Key Vault with RBAC means the user's Graph token (access to their M365 data) is stored in <em>their own Azure tenant</em>, controlled by <em>their own admins</em>, and the assistant only receives it at runtime. This is your answer to "how do you handle our PHI?" — you don't touch it; it never leaves their environment.
+</div>
+
+<h3>App Registration — Permissions Management</h3>
+
+<p>Each user's assistant needs an App Registration in their Azure tenant (or ours, delegated) to call Graph API. The CLI manages the whole lifecycle:</p>
+
+<pre>
+# Create the app registration for a new client deployment
+az ad app create \
+  --display-name "Enterprise Assistant - Dave Devries" \
+  --sign-in-audience AzureADMyOrg
+
+# Grant Graph API permissions (mail, calendar, files)
+az ad app permission add \
+  --id &lt;app-id&gt; \
+  --api 00000003-0000-0000-c000-000000000000 \
+  --api-permissions \
+    e1fe6dd8-ba31-4d61-89e7-88639da4683d=Scope \  # Mail.Read
+    Calendars.ReadWrite=Scope \
+    Files.ReadWrite=Scope
+
+# Create a client secret (rotate periodically)
+az ad app credential reset --id &lt;app-id&gt; --years 1
+</pre>
+
+<h3>Azure Container Registry — Image Management</h3>
+
+<pre>
+# Build and push new assistant image
+az acr build \
+  --registry myenterpriseacr \
+  --image assistant:v2.1 \
+  --file Dockerfile .
+
+# List available images/tags
+az acr repository show-tags \
+  --name myenterpriseacr \
+  --repository assistant
+
+# All users auto-pull new image on next restart
+# (or use revision-mode=multiple for gradual rollout)
+</pre>
+
+<hr class="section-divider">
+
+<h2>Layer 2: Microsoft Graph CLI (<code>mgc</code>) — The Assistant's Capabilities</h2>
+
+<p>This is what makes the assistant actually useful. Graph CLI wraps every Microsoft Graph API endpoint in a scriptable CLI — mail, calendar, OneDrive, Teams, users, tasks, contacts. The assistant calls these as tools.</p>
+
+<h3>Mail</h3>
+<pre>
+# List recent inbox messages
+mgc users messages list --user-id dave@ash.com \
+  --filter "isRead eq false" \
+  --select "subject,from,receivedDateTime,bodyPreview" \
+  --top 20
+
+# Read a specific message
+mgc users messages get --user-id dave@ash.com --message-id &lt;id&gt;
+
+# Send a reply
+mgc users messages reply --user-id dave@ash.com --message-id &lt;id&gt; \
+  --body '{"comment": "Thanks for sending this over..."}'
+
+# Move to folder / mark read
+mgc users messages update --user-id dave@ash.com --message-id &lt;id&gt; \
+  --body '{"isRead": true}'
+</pre>
+
+<h3>Calendar</h3>
+<pre>
+# Check upcoming events
+mgc users calendar-view list --user-id dave@ash.com \
+  --start-date-time "2026-03-13T00:00:00Z" \
+  --end-date-time "2026-03-14T23:59:59Z"
+
+# Create a meeting
+mgc users events create --user-id dave@ash.com \
+  --body '{
+    "subject": "Provider Network Review",
+    "start": {"dateTime": "2026-03-15T10:00:00", "timeZone": "America/Los_Angeles"},
+    "end": {"dateTime": "2026-03-15T11:00:00", "timeZone": "America/Los_Angeles"},
+    "attendees": [{"emailAddress": {"address": "colleague@ash.com"}}]
+  }'
+
+# Find free/busy slots
+mgc users get-mail-tips --user-ids '["dave@ash.com", "colleague@ash.com"]' \
+  --mail-tips-options "automaticReplies"
+</pre>
+
+<h3>OneDrive & Files</h3>
+<pre>
+# List files in a folder
+mgc users drive root children list --user-id dave@ash.com
+
+# Get a specific file's content
+mgc users drive items content get \
+  --user-id dave@ash.com --drive-item-id &lt;id&gt;
+
+# Upload / update a file
+mgc users drive items content put \
+  --user-id dave@ash.com --drive-item-id &lt;id&gt; \
+  --body @report.pdf
+</pre>
+
+<h3>Teams</h3>
+<pre>
+# Send a Teams message (bot-style)
+mgc users chats messages create \
+  --user-id dave@ash.com --chat-id &lt;chat-id&gt; \
+  --body '{"body": {"content": "Here is your morning briefing..."}}'
+
+# List Teams the user is in
+mgc users joined-teams list --user-id dave@ash.com
+</pre>
+
+<hr class="section-divider">
+
+<h2>The Agentic Pattern: Wiring It Together</h2>
+
+<div class="finding-box">
+  <h3>The Architecture</h3>
+  <p>The enterprise assistant is a FastAPI container. Each skill is a Python function that shells out to <code>az</code> or <code>mgc</code> CLI commands (or calls the SDK equivalents directly). The LLM (Claude) decides which tools to call. The CLI is the execution layer.</p>
+</div>
+
+<pre>
+# How a "skill" looks inside the assistant container
+# skills/email_skill.py
+
+import subprocess, json
+
+def get_unread_emails(user_id: str, top: int = 10) -> list:
+    """Fetch unread emails for a user via Graph CLI."""
+    result = subprocess.run([
+        "mgc", "users", "messages", "list",
+        "--user-id", user_id,
+        "--filter", "isRead eq false",
+        "--select", "subject,from,receivedDateTime,bodyPreview",
+        "--top", str(top),
+        "--output", "json"
+    ], capture_output=True, text=True)
+    return json.loads(result.stdout)["value"]
+
+def deploy_new_revision(app_name: str, image_tag: str, resource_group: str):
+    """Update the assistant's Container App to a new image (self-update)."""
+    subprocess.run([
+        "az", "containerapp", "update",
+        "--name", app_name,
+        "--resource-group", resource_group,
+        "--image", f"myacr.azurecr.io/assistant:{image_tag}"
+    ])
+</pre>
+
+<h3>Self-Management: The Killer Feature</h3>
+
+<p>Here's the angle that makes this genuinely powerful for the demo: the assistant can <strong>manage itself</strong> via <code>az</code> CLI.</p>
+
+<ul>
+  <li>User says "something feels slow" → assistant calls <code>az containerapp logs show</code> to inspect its own logs, diagnoses the issue, and reports back</li>
+  <li>We push a new assistant version → assistant detects it, tells the user "update available," and on confirmation calls <code>az containerapp update</code> on itself</li>
+  <li>Token expires → assistant catches the auth error, uses Key Vault CLI to refresh and rotate its own credentials</li>
+  <li>Usage is spiking → assistant scales itself up with <code>az containerapp update --max-replicas</code></li>
+</ul>
+
+<div class="alert alert-green">
+  <strong>Demo story for Dave / ASH:</strong> "Your AI assistant lives in your Azure environment. It reads your email, manages your calendar, and can check on its own health. If something goes wrong, it tells you. If a new version is available, it updates itself with your permission. You never have to touch the Azure portal."
+</div>
+
+<hr class="section-divider">
+
+<h2>What's Also There: <code>mogcli</code></h2>
+
+<p>Found a newer open-source tool worth knowing about: <strong>mogcli</strong> (github.com/jaredpalmer/mogcli) — described as "agent-friendly CLI for M365." Built by Jared Palmer (creator of Formik, Turborepo). Covers Mail, Calendar, Contacts, Groups, Tasks, OneDrive — same as <code>mgc</code> but lighter, designed specifically for agent use cases (piping JSON output into LLMs).</p>
+
+<p>Worth watching. If the Microsoft Graph CLI (<code>mgc</code>) feels heavy for our container deployments, <code>mogcli</code> might be a cleaner fit.</p>
+
+<hr class="section-divider">
+
+<h2>Immediate Next Steps</h2>
+
+<table>
+  <tr>
+    <th>Action</th>
+    <th>Why</th>
+    <th>Effort</th>
+  </tr>
+  <tr>
+    <td>Install <code>az</code> CLI + authenticate to our Azure subscription</td>
+    <td>Prerequisite for everything else. <code>az login</code> → pick subscription</td>
+    <td><span class="tag tag-green">5 min</span></td>
+  </tr>
+  <tr>
+    <td>Run <code>az containerapp list -g rg-enterprise --output table</code></td>
+    <td>See our live Container Apps in one shot; confirm they're healthy</td>
+    <td><span class="tag tag-green">5 min</span></td>
+  </tr>
+  <tr>
+    <td>Install <code>mgc</code> and connect to Dave's M365 (delegated auth)</td>
+    <td>Test a real mail fetch against his inbox — proves the stack works end to end</td>
+    <td><span class="tag tag-yellow">1-2 hrs</span></td>
+  </tr>
+  <tr>
+    <td>Build a thin Python skill wrapper around <code>mgc</code> mail + calendar commands</td>
+    <td>This becomes the Email Claw and Calendar Claw in the assistant</td>
+    <td><span class="tag tag-yellow">Half day</span></td>
+  </tr>
+  <tr>
+    <td>Add a <code>az containerapp logs show --follow</code> tool to the assistant</td>
+    <td>Self-monitoring capability — assistant can report on its own health</td>
+    <td><span class="tag tag-green">2 hrs</span></td>
+  </tr>
+  <tr>
+    <td>Key Vault setup for Dave's Graph token</td>
+    <td>Production-ready secrets handling; healthcare compliance story</td>
+    <td><span class="tag tag-yellow">Half day</span></td>
+  </tr>
+</table>
+
+<div class="finding-box">
+  <h3>The Sequence</h3>
+  <p><strong>1.</strong> Get <code>az</code> managing our existing Container Apps → admin confidence<br>
+  <strong>2.</strong> Get <code>mgc</code> reading Dave's email + calendar → assistant's first real capability<br>
+  <strong>3.</strong> Wrap both in Python skills → plug into the FastAPI assistant<br>
+  <strong>4.</strong> Add self-monitoring (logs, health, restart) → demo wow moment<br>
+  <strong>5.</strong> Key Vault for secrets → healthcare-compliant production deployment</p>
+</div>
+
+<hr class="section-divider">
+
+<p class="citation">Sources: learn.microsoft.com/en-us/cli/azure (Azure CLI official docs, March 2026) · github.com/microsoftgraph/msgraph-cli (Microsoft Graph CLI) · github.com/jaredpalmer/mogcli (agent-friendly M365 CLI) · learn.microsoft.com/en-us/azure/container-apps (Container Apps documentation) · devblogs.microsoft.com/microsoft365dev (Graph CLI v1.0 GA announcement)</p>
+<p class="citation">Report prepared by Chief · March 12, 2026 · Internal use only</p>
+
+</body>
+</html>
