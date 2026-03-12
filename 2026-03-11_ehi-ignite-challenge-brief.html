@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHIgnite Challenge — Data Brief & Strategic Overview</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 820px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; margin-top: 0; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .code { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li { margin-bottom: 6px; }
+  ol li { margin-bottom: 8px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  pre { background: #1a1a2e; color: #e0e6f0; padding: 16px 20px; border-radius: 6px; overflow-x: auto; font-size: 12px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>EHIgnite Challenge — Data Brief & Strategic Overview</h1>
+  <p><strong>Prepared:</strong> March 11, 2026</p>
+  <p><strong>Subject:</strong> HHS $490K EHIgnite Challenge — What the EHI Data Format Is, How It Works, and Opportunity Analysis</p>
+  <p><strong>Audience:</strong> Clinical stakeholders, health IT developers, potential competition entrants</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>What This Is:</strong> HHS launched the EHIgnite Challenge in February 2026 — a $490,000 competition to build tools that make <em>single-patient EHI exports</em> actually useful. This brief explains the underlying data format, the regulatory context, what "single-patient" means vs. bulk, and the opportunity space for an AI-powered solution.
+</div>
+
+<h2>1. Background — What Is EHI and Why Does It Matter Now?</h2>
+
+<p>EHI (Electronic Health Information) is the formal term for all electronic protected health information (ePHI) contained in a patient's <strong>Designated Record Set (DRS)</strong> — essentially everything an EHR system holds about that person. This includes clinical data, administrative records, billing history, insurance information, and anything else that would be included under the HIPAA DRS definition.</p>
+
+<p>The critical regulatory moment: under the <strong>21st Century Cures Act Final Rule (ONC §170.315(b)(10))</strong>, all certified EHR developers have been required since <strong>December 31, 2023</strong> to provide EHI export capabilities. This is now a non-optional compliance requirement for Epic, Cerner, Oracle Health, Meditech, athenahealth, and every other certified EHR vendor.</p>
+
+<blockquote>
+  "Since December 2023, health IT developers have been required to export EHI, but 'computable' doesn't always mean 'usable.' Raw exports are often overwhelming and difficult to integrate." — HHS/ASTP, EHIgnite Challenge site
+</blockquote>
+
+<p>The mandate created a paradox: patients and clinicians now have a legal <em>right</em> to this data, and EHRs are legally required to provide it — but the exports are technically compliant while being practically unusable. That gap is what this competition targets.</p>
+
+<hr class="section-divider">
+
+<h2>2. The Data Format — What a Single-Patient EHI Export Actually Looks Like</h2>
+
+<h3>Primary Format: FHIR R4 NDJSON</h3>
+
+<p>The dominant format for EHI exports is <strong>HL7 FHIR R4</strong> (Fast Healthcare Interoperability Resources, version 4), delivered as <strong>NDJSON</strong> (Newline-Delimited JSON) files inside a ZIP archive. Each line in an NDJSON file is one complete, self-contained FHIR resource JSON object.</p>
+
+<pre>{"resourceType":"Patient","id":"abc123","name":[{"family":"Smith","given":["Jane"]}],"birthDate":"1985-03-14","gender":"female","address":[{"line":["123 Main St"],"city":"Los Angeles","state":"CA","postalCode":"90024"}]}
+{"resourceType":"Condition","id":"def456","subject":{"reference":"Patient/abc123"},"code":{"coding":[{"system":"http://snomed.info/sct","code":"44054006","display":"Type 2 diabetes mellitus"}]},"onsetDateTime":"2019-07-12","clinicalStatus":{"coding":[{"code":"active"}]}}
+{"resourceType":"MedicationRequest","id":"ghi789","subject":{"reference":"Patient/abc123"},"medicationCodeableConcept":{"coding":[{"system":"http://www.nlm.nih.gov/research/umls/rxnorm","code":"860975","display":"metformin 500 MG Oral Tablet"}]},"status":"active","intent":"order"}</pre>
+
+<p>A typical patient ZIP export contains multiple NDJSON files, one per resource type:</p>
+
+<table>
+  <tr>
+    <th>File</th>
+    <th>FHIR Resource Type</th>
+    <th>What It Contains</th>
+  </tr>
+  <tr><td><span class="code">Patient.ndjson</span></td><td>Patient</td><td>Demographics, contact info, identifiers</td></tr>
+  <tr><td><span class="code">Condition.ndjson</span></td><td>Condition</td><td>Diagnoses, problem list (coded via SNOMED/ICD-10)</td></tr>
+  <tr><td><span class="code">MedicationRequest.ndjson</span></td><td>MedicationRequest</td><td>Prescriptions, ordered medications (coded via RxNorm)</td></tr>
+  <tr><td><span class="code">Observation.ndjson</span></td><td>Observation</td><td>Labs, vitals, social history, smoking status (coded via LOINC)</td></tr>
+  <tr><td><span class="code">Encounter.ndjson</span></td><td>Encounter</td><td>All visits — inpatient, outpatient, ED, telehealth</td></tr>
+  <tr><td><span class="code">Procedure.ndjson</span></td><td>Procedure</td><td>Surgeries, interventions (coded via CPT/SNOMED)</td></tr>
+  <tr><td><span class="code">AllergyIntolerance.ndjson</span></td><td>AllergyIntolerance</td><td>Drug, food, environmental allergies</td></tr>
+  <tr><td><span class="code">Immunization.ndjson</span></td><td>Immunization</td><td>Vaccine history (coded via CVX)</td></tr>
+  <tr><td><span class="code">DiagnosticReport.ndjson</span></td><td>DiagnosticReport</td><td>Pathology, radiology, and other reports</td></tr>
+  <tr><td><span class="code">DocumentReference.ndjson</span></td><td>DocumentReference</td><td>Clinical notes (often base64-encoded C-CDA XML inside FHIR)</td></tr>
+  <tr><td><span class="code">CarePlan.ndjson</span></td><td>CarePlan</td><td>Goals, care activities, planned interventions</td></tr>
+  <tr><td><span class="code">Coverage.ndjson</span></td><td>Coverage</td><td>Insurance coverage, payer info, member IDs</td></tr>
+  <tr><td><span class="code">Device.ndjson</span></td><td>Device</td><td>Implantable devices, medical equipment</td></tr>
+</table>
+
+<div class="alert alert-yellow">
+  <strong>Important:</strong> The format is vendor-flexible. ONC requires EHRs to document their export format, but does not mandate a specific structure. Epic exports look different from Cerner exports. Some vendors mix FHIR NDJSON with C-CDA XML, proprietary CSV files, or PDF attachments in the same ZIP. This inconsistency is a core problem the EHIgnite Challenge is trying to solve.
+</div>
+
+<h3>Alternative / Supplemental Formats</h3>
+<ul>
+  <li><strong>C-CDA (Consolidated Clinical Document Architecture):</strong> Older XML-based format still used by many vendors for clinical summaries (especially for notes)</li>
+  <li><strong>CSV:</strong> Some vendors export structured data as flat CSV files alongside FHIR</li>
+  <li><strong>PDF / Binary attachments:</strong> Scanned documents, radiology images, pathology reports often come as binary blobs inside DocumentReference resources</li>
+  <li><strong>HL7 v2:</strong> Legacy format still present in older EHR environments</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>3. Single-Patient vs. Bulk (Population) Export — A Critical Distinction</h2>
+
+<p>The ONC certification requirement (§170.315(b)(10)) has <strong>two distinct sub-requirements</strong>, and the EHIgnite Challenge focuses specifically on the first:</p>
+
+<table>
+  <tr>
+    <th>Mode</th>
+    <th>ONC Provision</th>
+    <th>Who Triggers It</th>
+    <th>Use Case</th>
+    <th>Challenge Relevance</th>
+  </tr>
+  <tr>
+    <td><strong>Single-Patient Export</strong></td>
+    <td>§170.315(b)(10)(i)</td>
+    <td>Patient request, care team request for one patient</td>
+    <td>Patient obtains their records; second opinion; care transitions; insurance claims</td>
+    <td><span class="tag tag-green">PRIMARY TARGET</span></td>
+  </tr>
+  <tr>
+    <td><strong>Patient Population Export</strong></td>
+    <td>§170.315(b)(10)(ii)</td>
+    <td>Health system admin or IT team</td>
+    <td>EHR migration, data warehousing, population health analytics, research</td>
+    <td><span class="tag tag-blue">OUT OF SCOPE</span> for this challenge</td>
+  </tr>
+</table>
+
+<h3>What Makes Them Different in Practice</h3>
+
+<div class="finding-box">
+  <h3>Single-Patient Export: The Patient-Centric View</h3>
+  <ul>
+    <li>Triggered per-patient, typically on demand (patient portal request, provider request)</li>
+    <li>Contains ALL EHI for that individual — not just the USCDI subset</li>
+    <li>Delivered as a ZIP download — patients get a file, not an API stream</li>
+    <li>Designed for human consumption and care coordination, not analytics</li>
+    <li>Volume: a complex patient may have 10,000+ FHIR resources spanning 10+ years</li>
+    <li>HIPAA requires response within 30 days; many portals deliver in minutes</li>
+  </ul>
+</div>
+
+<div class="finding-box">
+  <h3>Patient Population (Bulk) Export: The Operational View</h3>
+  <ul>
+    <li>Triggered by the health system, not the patient — for operational/administrative needs</li>
+    <li>Covers all patients in a practice or system simultaneously</li>
+    <li>Delivered via FHIR Bulk Data Access API (asynchronous, server-to-server)</li>
+    <li>Used for: EHR migrations, analytics platforms, research datasets, population health</li>
+    <li>Not generally available to patients — this is an IT/admin function</li>
+    <li>Same FHIR R4 NDJSON format, but at massive scale (millions of resources per export)</li>
+  </ul>
+</div>
+
+<div class="alert alert-blue">
+  <strong>Can EHI Be Used as a General Patient Data Exchange Platform?</strong> In short — yes, this is exactly what the regulatory framework envisions, but the infrastructure is immature. The SMART Health IT team (MIT/Harvard) has built a reference <em>EHI Export API</em> specification (via HL7's Argonaut Project) that enables apps to programmatically request and receive a patient's EHI export. This would allow patients to authorize an app or clinician to receive their export — essentially a secure, patient-mediated data exchange. The Apple Health app and CommonHealth app already do this for the USCDI subset via SMART on FHIR. Extending this to the full EHI export is the frontier.
+</div>
+
+<hr class="section-divider">
+
+<h2>4. EHI as an Exchange Platform — The Broader Vision</h2>
+
+<p>The regulatory architecture supports three distinct exchange modes, each with different maturity:</p>
+
+<table>
+  <tr>
+    <th>Exchange Mode</th>
+    <th>Mechanism</th>
+    <th>Current Maturity</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td><strong>Patient Download</strong></td>
+    <td>ZIP via patient portal</td>
+    <td><span class="tag tag-green">Live / Required</span></td>
+    <td>All certified EHRs must support this now. File-based, not streaming.</td>
+  </tr>
+  <tr>
+    <td><strong>App-Mediated API</strong></td>
+    <td>SMART on FHIR + EHI Export API</td>
+    <td><span class="tag tag-yellow">Emerging</span></td>
+    <td>Draft IG published by Argonaut/HL7. Apple Health uses this for USCDI. Full EHI via API is not yet widespread.</td>
+  </tr>
+  <tr>
+    <td><strong>Provider-to-Provider Exchange</strong></td>
+    <td>Patient-authorized data push</td>
+    <td><span class="tag tag-yellow">Emerging</span></td>
+    <td>Patient can authorize their data to go to a new provider. Technically possible via FHIR APIs; workflow still manual at most health systems.</td>
+  </tr>
+  <tr>
+    <td><strong>Payer Workflows</strong></td>
+    <td>Structured data packaging for insurers</td>
+    <td><span class="tag tag-red">Nascent</span></td>
+    <td>Prior auth, appeals, utilization review — huge administrative burden, largely still fax/PDF. One of the EHIgnite use cases.</td>
+  </tr>
+  <tr>
+    <td><strong>Research Donation</strong></td>
+    <td>Patient-consented EHI contribution</td>
+    <td><span class="tag tag-red">Nascent</span></td>
+    <td>HL7 Argonaut reference app ("Second Opinion App") demonstrates a patient donating their EHI for research. No production examples at scale.</td>
+  </tr>
+</table>
+
+<h3>Key Technical Resources Available</h3>
+<ul>
+  <li><strong>Synthetic Patient Data (Synthea):</strong> MIT's Synthea generates realistic FHIR R4 patient records. SMART on FHIR's GitHub hosts pre-generated bulk datasets of 10, 100, and 1,000 patients in NDJSON format — free, open-source, no PHI concerns.
+    <br><span class="citation">→ github.com/smart-on-fhir/sample-bulk-fhir-datasets</span></li>
+  <li><strong>EHI Export API Reference Implementation:</strong> SMART Health IT (Boston Children's Hospital/Harvard) built a complete open-source EHI server + patient app using Synthea data. The server handles export requests; the patient app ("Second Opinion App") demonstrates requesting, downloading, and sharing a complete EHI export.
+    <br><span class="citation">→ github.com/smart-on-fhir/ehi-server | github.com/smart-on-fhir/ehi-app</span></li>
+  <li><strong>HL7 Argonaut EHI Export API Draft IG:</strong> The standards-track specification for programmatic EHI access.
+    <br><span class="citation">→ build.fhir.org/ig/argonautproject/ehi-api/ehi-export.html</span></li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>5. What Tools Can Be Built on Top of EHI Exports</h2>
+
+<p>The EHIgnite Challenge specifically calls for tools that convert raw FHIR NDJSON into usable experiences. Here is the landscape of what's technically feasible today:</p>
+
+<table>
+  <tr>
+    <th>Tool Type</th>
+    <th>Input</th>
+    <th>Output</th>
+    <th>Technical Approach</th>
+    <th>AI Role</th>
+  </tr>
+  <tr>
+    <td><strong>Patient Q&amp;A</strong></td>
+    <td>Single-patient FHIR ZIP</td>
+    <td>Conversational answers in plain language</td>
+    <td>Parse FHIR → index resources → RAG over LLM</td>
+    <td><span class="tag tag-green">Core</span></td>
+  </tr>
+  <tr>
+    <td><strong>Clinical Summary</strong></td>
+    <td>Single-patient FHIR ZIP</td>
+    <td>Structured summary document (problem list, meds, allergies)</td>
+    <td>FHIR parser → template rendering + LLM synthesis</td>
+    <td><span class="tag tag-green">Core</span></td>
+  </tr>
+  <tr>
+    <td><strong>Domain Filtering</strong></td>
+    <td>Single-patient FHIR ZIP</td>
+    <td>Specialty-specific view (e.g., cardiology only)</td>
+    <td>Resource type filtering + SNOMED/ICD taxonomy mapping</td>
+    <td><span class="tag tag-blue">Assistive</span></td>
+  </tr>
+  <tr>
+    <td><strong>Multi-EHR Stitching</strong></td>
+    <td>Multiple FHIR ZIPs from different health systems</td>
+    <td>Unified longitudinal record</td>
+    <td>Entity resolution (patient matching) + deduplication</td>
+    <td><span class="tag tag-green">Core</span></td>
+  </tr>
+  <tr>
+    <td><strong>Payer Package Builder</strong></td>
+    <td>Single-patient FHIR ZIP</td>
+    <td>Structured prior auth / appeals package</td>
+    <td>Rule engine (payer-specific requirements) + FHIR extraction</td>
+    <td><span class="tag tag-blue">Assistive</span></td>
+  </tr>
+  <tr>
+    <td><strong>Timeline Visualization</strong></td>
+    <td>Single-patient FHIR ZIP</td>
+    <td>Interactive health timeline (web or PDF)</td>
+    <td>Encounter + Condition + Observation date extraction → UI</td>
+    <td><span class="tag tag-blue">Assistive</span></td>
+  </tr>
+  <tr>
+    <td><strong>Medication Reconciliation</strong></td>
+    <td>Single-patient FHIR ZIP (or multi-source)</td>
+    <td>Reconciled medication list with interaction flags</td>
+    <td>MedicationRequest parsing + drug interaction API</td>
+    <td><span class="tag tag-green">Core</span></td>
+  </tr>
+  <tr>
+    <td><strong>Second Opinion Prep</strong></td>
+    <td>Single-patient FHIR ZIP</td>
+    <td>Curated brief for specialist review</td>
+    <td>LLM with specialist context + FHIR resource selection</td>
+    <td><span class="tag tag-green">Core</span></td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<h2>6. The Core Technical Challenge — Why This Is Hard</h2>
+
+<div class="finding-box">
+  <h3>Problem 1: Format Inconsistency Across EHRs</h3>
+  <p>Epic's FHIR export ≠ Cerner's export ≠ Meditech's export. Each vendor interprets the standard differently. Custom extensions, proprietary codes, and non-standard resource structures are common. A robust solution must handle this variance gracefully — either by normalizing to a common model or by building vendor-specific adapters.</p>
+</div>
+
+<div class="finding-box">
+  <h3>Problem 2: Scale and Complexity</h3>
+  <p>A patient with 10 years of chronic disease management at a major academic medical center may have 30,000+ FHIR resources in their export. Observations alone (labs, vitals, social history) can run into the thousands. Naive approaches (e.g., dumping everything into an LLM context window) fail immediately. Smart indexing, resource prioritization, and retrieval-augmented generation (RAG) are necessary.</p>
+</div>
+
+<div class="finding-box">
+  <h3>Problem 3: Clinical Coding Literacy</h3>
+  <p>EHI is coded in multiple clinical terminology systems: SNOMED CT (conditions, procedures), LOINC (labs, observations), RxNorm (medications), ICD-10 (diagnoses), CPT (procedures), CVX (vaccines). A useful tool must be able to interpret these codes — either by maintaining code lookups or by leveraging LLMs trained on medical ontologies. "44054006" should be understood as "Type 2 diabetes mellitus."</p>
+</div>
+
+<div class="finding-box">
+  <h3>Problem 4: HIPAA and Privacy by Design</h3>
+  <p>EHI is among the most sensitive personal data that exists. Any tool in this space must demonstrate: data minimization, secure processing (ideally in the patient's own environment or a BAA-covered cloud), no retention without explicit consent, and audit logging. For the competition, proposals will be judged on privacy and security — this is not optional.</p>
+</div>
+
+<hr class="section-divider">
+
+<h2>7. The EHIgnite Challenge — What They're Asking For</h2>
+
+<div class="alert alert-green">
+  <strong>Phase 1 deadline: May 13, 2026</strong> (concept proposal + wireframes)<br>
+  Up to 9 winners × $10,000 each → invited to Phase 2<br>
+  <strong>Phase 2 prizes:</strong> $250K / $100K / $30K + $20K AI Innovation bonus<br>
+  <strong>Registration:</strong> ehignitechallenge.org
+</div>
+
+<p>Phase 1 requires a concept and design addressing <strong>summarization</strong> plus at least one of:</p>
+
+<ol>
+  <li><strong>Interactive patient tools</strong> — Patients ask questions about their own data in plain English and receive accurate, understandable responses</li>
+  <li><strong>Clinical domain filtering</strong> — Customized views organized by relevant clinical specialty or workflow need</li>
+  <li><strong>Multi-setting integration</strong> — Stitching together exports from multiple EHRs into a unified longitudinal record</li>
+  <li><strong>Streamlined payer workflows</strong> — Packaging EHI for insurance coverage, prior authorization, or appeals</li>
+  <li><strong>Participant-defined use case</strong> — Open-ended, propose your own</li>
+</ol>
+
+<p><strong>Judging criteria (100-point scale):</strong></p>
+<ul>
+  <li>Relevance and problem alignment</li>
+  <li>Potential for scaling</li>
+  <li>Ease of use</li>
+  <li>Privacy and security</li>
+  <li>Use of AI</li>
+  <li>Bonus: multi-EHR interoperability</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>8. Strategic Fit & Opportunity Assessment</h2>
+
+<p>From a product and technical perspective, the core ask of this challenge is: <strong>build an LLM-powered agent that ingests a patient's FHIR R4 export and makes it conversationally accessible.</strong></p>
+
+<p>This is architecturally equivalent to the enterprise AI assistant work already underway — an agent that reads structured domain data, indexes it, and answers natural-language questions. The FHIR domain is arguably more tractable than raw claims data because:</p>
+
+<ul>
+  <li>The schema is standardized (FHIR R4 resources are well-documented)</li>
+  <li>Synthetic data is freely available for development (Synthea)</li>
+  <li>Clinical coding ontologies (SNOMED, LOINC, RxNorm) are open and machine-readable</li>
+  <li>The user needs are concrete and validated (patients want to understand their health records)</li>
+</ul>
+
+<div class="alert alert-green">
+  <strong>Key differentiators for a competitive submission:</strong><br>
+  (1) Deploy inside the patient's or provider's Azure environment — data never leaves their control. This directly addresses the privacy/security judging criterion.<br>
+  (2) Demonstrate multi-EHR stitching using entity resolution (NPI matching, demographic matching) — directly targets the interoperability bonus.<br>
+  (3) Build the clinical domain filtering on top of real code ontologies — show that "cardiology filter" means mapping ICD-10 I-codes + CPT cardiac procedures + relevant LOINC labs.<br>
+  (4) Include a clinician-facing view alongside the patient view — the challenge talks about both audiences.
+</div>
+
+<h3>For a Clinician's Perspective — Questions Worth Exploring</h3>
+<p>As someone working directly with patients and EHR data, the most valuable input would be:</p>
+<ul>
+  <li>What information do you actually wish you had faster access to when seeing a patient for the first time?</li>
+  <li>How often do you get a patient's records from another health system — and how usable are they today?</li>
+  <li>What would a "second opinion prep" package need to contain to actually be useful?</li>
+  <li>What's the biggest bottleneck in payer workflows you encounter — prior auth? appeals? something else?</li>
+  <li>If a patient handed you a 1-page AI-generated summary of their full record, what would need to be on it?</li>
+</ul>
+
+<hr class="section-divider">
+
+<p class="citation">Sources: HHS/ASTP EHIgnite Challenge website (ehignitechallenge.org) · ONC §170.315(b)(10) EHI Export Factsheet · HL7 FHIR R4 Specification · SMART Health IT EHI Export API project (Boston Children's Hospital / Harvard Medical School) · SMART on FHIR sample-bulk-fhir-datasets (GitHub) · TechTarget SearchHealthIT · HCI Innovation Group · Drummond Group ONC Certification · Firely Server FHIR Documentation · eClinicalWorks Interoperability · CharmHealth EHR</p>
+<p class="citation">Prepared by Chief (OpenClaw) — March 11, 2026</p>
+
+</body>
+</html>
