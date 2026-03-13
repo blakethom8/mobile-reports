@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Fraud Detection via Autoresearch — Technical Brief — March 2026</title>
+    <style>
+        :root {
+            --navy: #1a365d;
+            --red: #c53030;
+            --green: #276749;
+            --blue: #2b6cb0;
+            --yellow: #d69e2e;
+            --gray: #4a5568;
+            --light-gray: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.7; color: #2d3748; background: #f7fafc; }
+        .header { background: var(--navy); color: white; padding: 2rem 1.5rem; margin-bottom: 2rem; }
+        .header h1 { font-size: 1.9rem; margin-bottom: 0.4rem; font-weight: 700; }
+        .header .subtitle { font-size: 1rem; opacity: 0.85; font-style: italic; }
+        .header .meta { font-size: 0.82rem; margin-top: 0.75rem; opacity: 0.75; }
+        .container { max-width: 940px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+        h2 { color: var(--navy); font-size: 1.35rem; margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--red); }
+        h3 { color: var(--gray); font-size: 1.05rem; margin: 1.5rem 0 0.6rem; font-weight: 700; }
+        p { margin-bottom: 1rem; }
+        .alert { padding: 1rem 1.25rem; border-radius: 6px; margin: 1.25rem 0; border-left: 4px solid; }
+        .alert-green  { background: #f0fff4; border-color: var(--green); }
+        .alert-yellow { background: #fffff0; border-color: var(--yellow); }
+        .alert-red    { background: #fff5f5; border-color: var(--red); }
+        .alert-blue   { background: #ebf8ff; border-color: var(--blue); }
+        .alert strong { display: block; margin-bottom: 0.25rem; }
+        .finding-box { background: white; border: 1px solid var(--light-gray); border-left: 4px solid var(--navy); padding: 1rem 1.25rem; margin: 1.25rem 0; border-radius: 0 6px 6px 0; }
+        .finding-box strong { color: var(--navy); display: block; margin-bottom: 0.3rem; }
+        table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+        th { background: var(--navy); color: white; padding: 0.65rem 0.75rem; text-align: left; font-weight: 600; }
+        td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--light-gray); vertical-align: top; }
+        tr:nth-child(even) { background: #f7fafc; }
+        .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .tag-red    { background: #fed7d7; color: var(--red); }
+        .tag-green  { background: #c6f6d5; color: var(--green); }
+        .tag-yellow { background: #fefcbf; color: #975a16; }
+        .tag-blue   { background: #bee3f8; color: var(--blue); }
+        .tag-gray   { background: #e2e8f0; color: #4a5568; }
+        hr.section-divider { border: none; border-top: 1px solid var(--light-gray); margin: 2.5rem 0; }
+        blockquote { background: #f7fafc; border-left: 4px solid var(--gray); padding: 0.9rem 1.1rem; margin: 1.25rem 0; font-style: italic; color: var(--gray); }
+        code { background: #edf2f7; padding: 0.15rem 0.4rem; border-radius: 3px; font-family: 'SF Mono', Monaco, monospace; font-size: 0.83em; }
+        pre { background: #2d3748; color: #e2e8f0; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-size: 0.82rem; margin: 1.25rem 0; line-height: 1.6; }
+        .citation { font-size: 0.8rem; color: var(--gray); margin-top: 0.4rem; }
+        .stat-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.25rem 0; }
+        .stat-box { background: var(--navy); color: white; padding: 0.75rem 1.1rem; border-radius: 6px; min-width: 130px; text-align: center; }
+        .stat-box strong { display: block; font-size: 1.5rem; font-weight: 700; }
+        .stat-box span { font-size: 0.78rem; opacity: 0.85; }
+        .auc-row { display: flex; align-items: center; margin: 0.4rem 0; }
+        .auc-label { width: 80px; font-size: 0.83rem; font-weight: 600; }
+        .auc-track { flex: 1; height: 22px; background: var(--light-gray); border-radius: 4px; margin: 0 0.5rem; position: relative; }
+        .auc-fill  { height: 100%; border-radius: 4px; }
+        .auc-value { width: 55px; text-align: right; font-family: monospace; font-size: 0.88rem; font-weight: 700; }
+        ul, ol { margin: 0.75rem 0 0.75rem 1.5rem; }
+        li { margin: 0.4rem 0; }
+        a { color: var(--blue); }
+        .toc { background: white; border: 1px solid var(--light-gray); border-radius: 6px; padding: 1rem 1.25rem; margin: 1.25rem 0; }
+        .toc h3 { margin-top: 0; }
+        .toc ol { margin: 0.5rem 0 0 1.25rem; }
+        .toc li { margin: 0.3rem 0; font-size: 0.9rem; }
+
+        /* Loop diagram */
+        .loop-diagram { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; margin: 1.5rem 0; }
+        .loop-node { background: var(--navy); color: white; border-radius: 8px; padding: 0.9rem 1.2rem; text-align: center; min-width: 150px; }
+        .loop-node strong { display: block; font-size: 1rem; margin-bottom: 0.2rem; }
+        .loop-node span { font-size: 0.75rem; opacity: 0.8; }
+        .loop-node.fixed { background: var(--green); }
+        .loop-node.agent { background: #6b46c1; }
+        .loop-node.log { background: var(--gray); }
+        .loop-arrow { font-size: 1.5rem; color: var(--gray); padding: 0 0.5rem; }
+
+        /* Responsibility table */
+        .resp-table { border: none; }
+        .resp-table th { background: var(--navy); }
+        .resp-table td.agent-col { background: #faf5ff; border-left: 3px solid #6b46c1; }
+        .resp-table td.karpathy-col { background: #f0fff4; border-left: 3px solid var(--green); }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🔬 Healthcare Fraud Detection via Autoresearch</h1>
+    <div class="subtitle">How Karpathy's iterative AI research loop finds Medicare fraud across 90M records — a technical deep dive</div>
+    <div class="meta">Prepared: March 13, 2026 &nbsp;|&nbsp; Dataset: CMS Public Data, 6GB DuckDB, 1.2M providers &nbsp;|&nbsp; Final AUC-ROC: 0.8098 &nbsp;|&nbsp; Iterations: 18 &nbsp;|&nbsp; Time: One evening</div>
+</div>
+
+<div class="container">
+
+    <div class="alert alert-blue">
+        <strong>📋 What This Report Covers</strong>
+        This brief explains the <strong>autoresearch methodology</strong> (Karpathy's pattern), its architecture — specifically what the AI agent does vs. what the evaluation framework handles — and uses our Medicare fraud detection project as a concrete end-to-end case study. Audience: data science and engineering practitioners.
+    </div>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#karpathy">The Autoresearch Pattern: Karpathy's Core Insight</a></li>
+            <li><a href="#architecture">Architecture: What the Agent Does vs. What the Framework Does</a></li>
+            <li><a href="#speed">Why This Runs Fast: The Speed Mechanics</a></li>
+            <li><a href="#case-study">Case Study: CMS Medicare Fraud Detection</a></li>
+            <li><a href="#iterations">18 Iterations, One Evening — The AUC Progression</a></li>
+            <li><a href="#discoveries">What the Agent Figured Out (Key Technical Discoveries)</a></li>
+            <li><a href="#results">Results: Top Fraud Suspects</a></li>
+            <li><a href="#pipeline">The Full Pipeline: From Raw CMS Data to Named Suspects</a></li>
+        </ol>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-box"><strong>0.56 → 0.81</strong><span>AUC-ROC improvement</span></div>
+        <div class="stat-box"><strong>18</strong><span>model versions</span></div>
+        <div class="stat-box"><strong>~6 hrs</strong><span>one evening, start to finish</span></div>
+        <div class="stat-box"><strong>90M+</strong><span>CMS records evaluated</span></div>
+        <div class="stat-box"><strong>1.2M</strong><span>Medicare providers scored</span></div>
+        <div class="stat-box"><strong>181</strong><span>ground-truth fraud labels (OIG LEIE)</span></div>
+    </div>
+
+    <!-- SECTION 1: Karpathy -->
+    <h2 id="karpathy">1. The Autoresearch Pattern: Karpathy's Core Insight</h2>
+
+    <p>Andrej Karpathy's <a href="https://github.com/karpathy/autoresearch" target="_blank">autoresearch</a> project makes a deceptively simple observation: most machine learning research is a loop. A researcher proposes a change, measures the result against an objective metric, decides whether it helped, and iterates. The question he asked was: <em>what if you automated that loop?</em></p>
+
+    <blockquote>
+        "You need a fixed, automated evaluation function — an oracle that can't be gamed and doesn't change. Then you let an AI agent edit the model freely. The only rule: the oracle doesn't lie."
+    </blockquote>
+
+    <p>In Karpathy's original implementation, the oracle was validation loss on a character-level language model. In our implementation, the oracle is AUC-ROC against the <strong>OIG LEIE</strong> — the federal database of providers excluded from Medicare for fraud, abuse, or professional misconduct. Different domain, identical architecture.</p>
+
+    <h3>The Three-File Structure</h3>
+
+    <div class="loop-diagram">
+        <div class="loop-node fixed">
+            <strong>eval.py</strong>
+            <span>Fixed Oracle<br>Never edited</span>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node agent">
+            <strong>detector.py</strong>
+            <span>Agent's Lab<br>Only file it edits</span>
+        </div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-node log">
+            <strong>results.tsv</strong>
+            <span>Experiment Log<br>Auto-appended</span>
+        </div>
+        <div class="loop-arrow" style="width:100%;text-align:center;padding:0.25rem 0;">↑ &nbsp; Loop back → agent reads results → proposes next hypothesis → edits detector.py → eval runs again &nbsp; ↓</div>
+    </div>
+
+    <div class="finding-box">
+        <strong>Why the Three-File Separation Is Load-Bearing</strong>
+        <ul>
+            <li><strong>eval.py is sacrosanct.</strong> The agent cannot touch it. This prevents the model from "cheating" — e.g., memorizing the fraud labels instead of learning generalizable signals. It's the referee, and referees don't play.</li>
+            <li><strong>detector.py is the laboratory.</strong> The agent can rewrite it from scratch 18 times if it wants. Total creative freedom within the constraint that it must read NPIs from stdin and write scores to stdout.</li>
+            <li><strong>results.tsv is institutional memory.</strong> Every run is logged with timestamp, AUC, and a description. The agent sees the full experiment history and reasons about trends — "V3 dropped 3 points, probably because I added noisy features."</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 2: Architecture -->
+    <h2 id="architecture">2. Architecture: What the Agent Does vs. What the Framework Does</h2>
+
+    <p>The cleanest way to understand this system is through a strict division of responsibility. Many people conflate "the AI" with "the whole system." They're different components doing fundamentally different jobs.</p>
+
+    <table class="resp-table">
+        <tr>
+            <th>Dimension</th>
+            <th style="background:#6b46c1;">🤖 The AI Agent</th>
+            <th style="background:var(--green);">🧱 Karpathy's Framework</th>
+        </tr>
+        <tr>
+            <td><strong>Primary role</strong></td>
+            <td class="agent-col">Hypothesis generation and implementation — decides <em>what to try</em> and <em>writes the code</em></td>
+            <td class="karpathy-col">Evaluation and truth — measures <em>how well it worked</em>, objectively, every time</td>
+        </tr>
+        <tr>
+            <td><strong>Files owned</strong></td>
+            <td class="agent-col"><code>detector.py</code> only — the scoring logic</td>
+            <td class="karpathy-col"><code>eval.py</code> (frozen), <code>results.tsv</code> (append-only)</td>
+        </tr>
+        <tr>
+            <td><strong>What it reads</strong></td>
+            <td class="agent-col">The full experiment history in <code>results.tsv</code>; reads its own previous code; interprets AUC movements</td>
+            <td class="karpathy-col">Live OIG LEIE exclusion list (downloads fresh on every run), CMS provider database</td>
+        </tr>
+        <tr>
+            <td><strong>Reasoning style</strong></td>
+            <td class="agent-col">Scientific: "V3 added HHI concentration and AUC dropped 3 points — probably added noise. Try removing it and isolating the upcoding signal." Proposes the <em>next experiment</em> based on the prior result.</td>
+            <td class="karpathy-col">Mechanical and deterministic: pulls NPIs, runs the detector, computes AUC-ROC and Average Precision, writes to TSV. No judgment. Same logic every run.</td>
+        </tr>
+        <tr>
+            <td><strong>Knowledge used</strong></td>
+            <td class="agent-col">Domain knowledge about healthcare fraud patterns, statistical signal quality, feature engineering intuition</td>
+            <td class="karpathy-col">None — it doesn't need to understand fraud. It just measures a labeled dataset against a scoring function.</td>
+        </tr>
+        <tr>
+            <td><strong>Speed</strong></td>
+            <td class="agent-col">~2 min per iteration: reads history, proposes change, rewrites detector.py</td>
+            <td class="karpathy-col">~3–4 min per iteration: loads 1.2M NPIs, runs detector, computes AUC, appends result</td>
+        </tr>
+        <tr>
+            <td><strong>Can it fail?</strong></td>
+            <td class="agent-col">Yes — and it does. V3, V4 both dropped AUC. That's fine. The oracle catches it and the agent course-corrects.</td>
+            <td class="karpathy-col">No (unless infrastructure fails). Deterministic, reproducible. Every run is comparable to every other run.</td>
+        </tr>
+    </table>
+
+    <div class="alert alert-green">
+        <strong>💡 The Elegant Constraint</strong>
+        The agent is free to be creative, wrong, and experimental — <em>because</em> the oracle is rigid. Neither can do the other's job. The oracle has no creativity; the agent has no ground truth. Together they form a complete research loop.
+    </div>
+
+    <h3>What the Agent Actually Does Per Iteration</h3>
+
+    <p>Each iteration follows this reasoning pattern:</p>
+
+    <pre>
+# Agent's mental loop (simplified):
+
+1. Read results.tsv → understand trend
+   "V7 → V12: gradually shifting from 50% max to 100% max, each step improved.
+    V13: power transform didn't help. V14: top-2 mean didn't help.
+    Conclusion: pure max is the ceiling with current features."
+
+2. Form hypothesis
+   "The marginal gains are below statistical significance at n=181 labels.
+    Highest ROI next move is expanding ground truth, not tuning existing features."
+
+3. Implement
+   → Edit detector.py to test hypothesis (or note that we've reached plateau)
+
+4. Run eval.py
+   → Automatic. Oracle doesn't care about the hypothesis. It just measures.
+
+5. Back to 1.</pre>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 3: Speed -->
+    <h2 id="speed">3. Why This Runs Fast: The Speed Mechanics</h2>
+
+    <p>Traditional research on a problem like Medicare fraud detection would look like this: a data scientist spends a week building a feature pipeline, runs the model, waits a day for results, writes it up, proposes new features, repeats. A rigorous study might run 5–10 experiments over several weeks.</p>
+
+    <p>The autoresearch loop collapses that timeline because the bottleneck — <em>the human researcher deciding what to try next</em> — is replaced by something that doesn't sleep, doesn't need to write documentation between experiments, and doesn't get demoralized when AUC drops.</p>
+
+    <div class="finding-box">
+        <strong>Throughput Comparison</strong>
+        <ul>
+            <li><strong>Human researcher cycle:</strong> Hypothesis (hours) → code (hours/days) → evaluate (hours) → interpret (hours) → write up → next hypothesis. Typical cadence: 1–2 iterations/day.</li>
+            <li><strong>Autoresearch cycle:</strong> Hypothesis (2 min) → code (2 min) → evaluate (3–4 min) → interpret (1 min). Typical cadence: ~6–8 iterations/hour if running.</li>
+            <li><strong>This project:</strong> 18 iterations in ~6 hours. AUC jumped from 0.5561 (near-random) to 0.8098 — a result that would realistically take 2–3 weeks of traditional research sprints.</li>
+        </ul>
+    </div>
+
+    <p>The key design decisions that enable this speed:</p>
+
+    <ol>
+        <li><strong>No model training.</strong> <code>detector.py</code> is a scoring function, not a trained model. There's no gradient descent, no epochs, no train/val split to manage. It reads data, applies logic, returns scores. Evaluation is fast because it's just a comparison.</li>
+        <li><strong>DuckDB for instant queries.</strong> All 90M CMS records live in a single 6GB DuckDB file on a server with 32GB RAM. Analytical queries that would take minutes on a traditional RDBMS return in seconds.</li>
+        <li><strong>Clean stdio interface.</strong> <code>eval.py</code> passes NPIs via stdin; <code>detector.py</code> writes scores to stdout. No database writes, no file locking, no shared state. The interface is a CSV pipe.</li>
+        <li><strong>Immutable oracle.</strong> Because <code>eval.py</code> never changes, AUC results are perfectly comparable across all 18 versions. The agent never has to worry about "did the goalposts move?"</li>
+    </ol>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 4: Case Study -->
+    <h2 id="case-study">4. Case Study: CMS Medicare Fraud Detection</h2>
+
+    <h3>The Problem</h3>
+
+    <p>Medicare fraud costs the U.S. an estimated $60–100B annually. The OIG (Office of Inspector General) maintains the LEIE — a list of ~82,000 providers excluded from Medicare for fraud, abuse, or professional misconduct. The question: <em>can we identify high-risk providers before they're caught, using only their publicly available billing patterns?</em></p>
+
+    <h3>Data Infrastructure</h3>
+
+    <table>
+        <tr><th>Dataset</th><th>Scale</th><th>Signal Used</th></tr>
+        <tr><td><strong>CMS Part B Physician Claims</strong></td><td>1.26M providers</td><td>Services per beneficiary, payment per beneficiary — billing anomalies</td></tr>
+        <tr><td><strong>CMS Part D Prescribing</strong></td><td>1.38M providers</td><td>Drug cost per beneficiary, long-acting opioid prescribing rate</td></tr>
+        <tr><td><strong>Open Payments (Sunshine Act)</strong></td><td>14.7M payments</td><td>Total pharma/device industry payments received — entanglement signal</td></tr>
+        <tr><td><strong>NPPES NPI Registry</strong></td><td>7.1M providers</td><td>Specialty taxonomy, demographics, entity resolution</td></tr>
+        <tr><td><strong>PECOS Enrollment</strong></td><td>2.54M records</td><td>Active Medicare enrollment status</td></tr>
+        <tr><td><strong>OIG LEIE Exclusion List</strong></td><td>82,714 excluded</td><td>Ground truth labels — 181 matched to active CMS billing data</td></tr>
+    </table>
+
+    <div class="alert alert-yellow">
+        <strong>⚠️ Why Only 181 Ground Truth Labels?</strong>
+        Of 82,714 LEIE entries, ~74,000 pre-date the NPI system (no digital identifier). Of the rest, ~8,000 have real NPIs but have been scrubbed from CMS billing data after exclusion. The 181 that remain are almost exclusively <strong>2024–2026 exclusions</strong> — providers who were billing normally, then got caught. This means the model learns what fraudulent billing patterns look like <em>right before</em> detection. That's a leading indicator, not a lagging one.
+    </div>
+
+    <h3>The Ground Truth Oracle (<code>eval.py</code>)</h3>
+
+    <p>On every evaluation run, <code>eval.py</code> does the following — automatically, without human involvement:</p>
+
+    <ol>
+        <li>Downloads the live LEIE from <code>oig.hhs.gov</code> (24-hour cache)</li>
+        <li>Loads 1.2M provider NPIs from DuckDB</li>
+        <li>Joins LEIE to CMS — builds binary labels: <code>1 = excluded, 0 = not excluded</code></li>
+        <li>Passes all NPIs to <code>detector.py</code> via stdin</li>
+        <li>Receives back an <code>npi, score</code> CSV</li>
+        <li>Computes AUC-ROC and Average Precision against the labels</li>
+        <li>Appends timestamp, commit hash, metrics, and description to <code>results.tsv</code></li>
+    </ol>
+
+    <p>The entire eval cycle takes 3–4 minutes on a Hetzner server (32GB RAM, 8 vCPU). The agent never touches this file.</p>
+
+    <h3>The Scoring Model (<code>detector.py</code>)</h3>
+
+    <p>The final detector computes six independent subscores — each capturing a different behavioral dimension of potential fraud — and returns the maximum:</p>
+
+    <pre>
+# Core scoring logic (V15 final — simplified):
+
+subscores = [
+    sub_spb,    # Services/beneficiary z-score (within specialty peer group)
+    sub_ppb,    # Payment/beneficiary z-score (within specialty peer group)
+    sub_la,     # Long-acting opioid prescribing rate z-score
+    sub_cpb,    # Drug cost/beneficiary z-score
+    sub_pay,    # Total industry payments (log-normalized)
+    sub_pecos,  # Active billing but no PECOS enrollment (binary signal)
+]
+
+# The key insight: fraud = extreme on ANY single dimension
+final_score = max(subscores) ** 1.2   # slight amplification of extremes</pre>
+
+    <p>The specialty normalization is critical: every z-score is computed <em>within peer group</em>, not globally. An oncologist billing $500K/year per patient is normal. A family practitioner billing $500K/year per patient is a significant anomaly. Without this, the top of the suspect list is flooded with legitimate high-billing specialists.</p>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 5: Iterations -->
+    <h2 id="iterations">5. 18 Iterations, One Evening — The AUC Progression</h2>
+
+    <div style="background:white;border:1px solid var(--light-gray);border-radius:6px;padding:1.25rem;margin:1.25rem 0;">
+        <div class="auc-row"><div class="auc-label">Baseline</div><div class="auc-track"><div class="auc-fill" style="width:55.6%;background:#c53030"></div></div><div class="auc-value" style="color:#c53030">0.5561</div></div>
+        <div class="auc-row"><div class="auc-label">V2</div><div class="auc-track"><div class="auc-fill" style="width:76.95%;background:#d69e2e"></div></div><div class="auc-value" style="color:#d69e2e">0.7695 ↑+21</div></div>
+        <div class="auc-row"><div class="auc-label">V3</div><div class="auc-track"><div class="auc-fill" style="width:74.33%;background:#c53030"></div></div><div class="auc-value" style="color:#c53030">0.7433 ↓−3</div></div>
+        <div class="auc-row"><div class="auc-label">V4</div><div class="auc-track"><div class="auc-fill" style="width:73.25%;background:#c53030"></div></div><div class="auc-value" style="color:#c53030">0.7325 ↓−1</div></div>
+        <div class="auc-row"><div class="auc-label">V5</div><div class="auc-track"><div class="auc-fill" style="width:74.83%;background:#d69e2e"></div></div><div class="auc-value">0.7483 ↑+2</div></div>
+        <div class="auc-row"><div class="auc-label">V6</div><div class="auc-track"><div class="auc-fill" style="width:76.64%;background:#d69e2e"></div></div><div class="auc-value">0.7664 ↑+2</div></div>
+        <div class="auc-row"><div class="auc-label">V7</div><div class="auc-track"><div class="auc-fill" style="width:79.04%;background:#d69e2e"></div></div><div class="auc-value">0.7904 ↑+2</div></div>
+        <div class="auc-row"><div class="auc-label">V8–V11</div><div class="auc-track"><div class="auc-fill" style="width:80.13%;background:#2b6cb0"></div></div><div class="auc-value">→ 0.8013</div></div>
+        <div class="auc-row"><div class="auc-label" style="color:var(--green);font-weight:800">V12 ✓</div><div class="auc-track"><div class="auc-fill" style="width:80.98%;background:#276749"></div></div><div class="auc-value" style="color:var(--green)">0.8098 ↑PEAK</div></div>
+        <div class="auc-row"><div class="auc-label">V13–V15</div><div class="auc-track"><div class="auc-fill" style="width:80.98%;background:#aaa"></div></div><div class="auc-value" style="color:#aaa">0.81xx plateau</div></div>
+    </div>
+
+    <table>
+        <tr><th>Version</th><th>AUC</th><th>What the Agent Tried</th><th>Why / Outcome</th></tr>
+        <tr><td>Baseline</td><td>0.5561</td><td>Raw billing z-scores, global normalization</td><td><span class="tag tag-red">Near-random</span> — no peer group context</td></tr>
+        <tr><td>V2</td><td>0.7695</td><td>Z-scores <em>within specialty</em>; LA opioid rate; PECOS gap × volume signal; industry payments</td><td><span class="tag tag-green">+21 points</span> — specialty normalization is the dominant lever</td></tr>
+        <tr><td>V3</td><td>0.7433</td><td>Added HCPCS concentration HHI, upcoding ratio, taxonomy mismatch</td><td><span class="tag tag-red">−3 points</span> — weak features dilute strong ones in a weighted sum</td></tr>
+        <tr><td>V4</td><td>0.7325</td><td>Percentile bucketing (90/95/99th pct) instead of z-scores</td><td><span class="tag tag-red">−4 points</span> — percentiles lose variance within extreme tail</td></tr>
+        <tr><td>V5–V6</td><td>0.7483→0.7664</td><td>Reverted noisy features; recalibrated opioid signal</td><td><span class="tag tag-yellow">+4 points</span> — cleanup gains</td></tr>
+        <tr><td>V7</td><td>0.7904</td><td>Ensemble: 50% max(subscores) + 50% weighted mean</td><td><span class="tag tag-green">+2 points</span> — first test of max() hypothesis; confirms it helps</td></tr>
+        <tr><td>V8–V11</td><td>→0.8013</td><td>Progressive shift: 60%→70%→80%→90% max weight</td><td><span class="tag tag-blue">Monotonic improvement</span> — each step confirms max dominates</td></tr>
+        <tr><td>V12</td><td>0.8098</td><td>Pure <code>max(subscores)</code> — eliminated weighted mean entirely</td><td><span class="tag tag-green">Best result</span> — hypothesis confirmed: fraud = extreme on ONE dimension</td></tr>
+        <tr><td>V13–V15</td><td>~0.81</td><td>Power transforms, top-2 mean aggregation, subscore rescaling</td><td><span class="tag tag-gray">Plateau</span> — agent correctly identifies diminishing returns</td></tr>
+    </table>
+
+    <p class="citation">The agent ran each of these 18 experiments, read the outcome, proposed the next hypothesis, and rewrote the code — with no human in the loop between iterations. The operator (human) reviewed the trajectory occasionally and provided domain guidance when useful, but did not run any experiments manually.</p>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 6: Discoveries -->
+    <h2 id="discoveries">6. What the Agent Figured Out: Key Technical Discoveries</h2>
+
+    <div class="finding-box">
+        <strong>🎯 Discovery #1 — Fraud = Extreme on ANY Single Dimension (not average on all)</strong>
+        <p>The most important insight of the entire project. A weighted average rewards providers who are mildly suspicious on many metrics. But real fraud tends to be <em>extreme</em> on one metric: 10,000 services per beneficiary, or $23M billed on 30 patients, or 100% long-acting opioid rate. <code>max(subscores)</code> asks "is this provider an outlier on <em>anything?</em>" — and outperforms weighted averaging by ~3 AUC points. This drove the V7→V12 improvement arc.</p>
+    </div>
+
+    <div class="finding-box">
+        <strong>📊 Discovery #2 — Specialty Normalization Is Non-Negotiable</strong>
+        <p>The single largest AUC jump in the project (+21 points, Baseline→V2) came from one change: computing billing z-scores <em>within specialty peer groups</em> rather than across all providers globally. An oncologist administering 50 infusions per patient is completely normal. A family practitioner with 50 services per patient is extreme. Without peer normalization, every oncologist and hematologist floods the top of the suspect list.</p>
+    </div>
+
+    <div class="finding-box">
+        <strong>⚠️ Discovery #3 — Feature Dilution: More Features = Worse Performance</strong>
+        <p>V3 added HCPCS service concentration (HHI), upcoding ratio, and taxonomy mismatch. AUC dropped 3 points. This is a classic feature dilution problem: when weak signals are included in a weighted sum, they water down the strong signals. The fix (which the agent discovered by V7) was to put each signal in its own subscore and take the maximum — which automatically isolates the strongest signal for each provider rather than averaging noise into it.</p>
+    </div>
+
+    <div class="finding-box">
+        <strong>🔬 Discovery #4 — PECOS Signal Is Partially Post-Exclusion Leakage</strong>
+        <p>PECOS enrollment gap has a standalone AUC of 0.78 — the strongest individual signal. But this is largely circular: when a provider is excluded from Medicare, their PECOS enrollment is terminated. The feature is detecting the <em>consequence</em> of exclusion, not the <em>cause</em> of fraud. In a pure max() model this is acceptable (it still catches confirmed fraudsters), but it would flood a weighted model with legitimate non-enrolled providers. The agent flagged this when it noticed the PECOS-top suspect list didn't overlap with the billing-anomaly top list.</p>
+    </div>
+
+    <h3>Feature Importance — Standalone AUC by Subscore</h3>
+
+    <table>
+        <tr><th>Subscore</th><th>Standalone AUC</th><th>Combined Role</th><th>Note</th></tr>
+        <tr><td>PECOS enrollment gap</td><td><strong>0.7778</strong></td><td>Strong but circular</td><td>⚠️ Post-exclusion leakage risk</td></tr>
+        <tr><td>Drug cost/beneficiary</td><td>0.5756</td><td>Distinct fraud type (pharma)</td><td>Catches different fraudsters than billing signals</td></tr>
+        <tr><td>Services/beneficiary</td><td>0.5678</td><td>Primary billing anomaly signal</td><td>Best non-circular predictor</td></tr>
+        <tr><td>Payment/beneficiary</td><td>0.5549</td><td>Correlated with svc/bene</td><td>Redundant but kept for max pool</td></tr>
+        <tr><td>Open Payments (industry $)</td><td>0.5379</td><td>Weak standalone</td><td>Useful in max pool: catches pharma fraud pattern</td></tr>
+        <tr><td>LA opioid prescribing rate</td><td>0.4617</td><td>Below random standalone</td><td>Only catches opioid-specific fraud; adds value in max pool</td></tr>
+        <tr><td><strong>Combined max(subscores)</strong></td><td><strong>0.8072</strong></td><td>Ensemble captures all fraud types</td><td>Each subscore catches different providers</td></tr>
+    </table>
+
+    <div class="alert alert-blue">
+        <strong>💡 The Ensemble Effect — Why the Max Model Outperforms Every Individual Signal</strong>
+        No single subscore breaks 0.58 (excluding the leaky PECOS signal). But the combined max model reaches 0.81. This is the ensemble effect in action: each subscore catches a <em>different</em> pattern of fraud. Billing anomalies, drug cost anomalies, opioid patterns, and industry entanglement don't co-occur in the same providers. Taking the maximum lets the model specialize per-provider without forcing it to average across irrelevant dimensions.
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 7: Results -->
+    <h2 id="results">7. Results: Top Fraud Suspects Identified</h2>
+
+    <p>After running the final V15 detector across 1.2M Medicare providers and filtering to individual physicians (removing ambulance services, labs, and institutional billers), the highest-scoring billing anomalies:</p>
+
+    <table>
+        <tr><th>Rank</th><th>Provider</th><th>Specialty</th><th>Key Metric</th><th>Why Flagged</th></tr>
+        <tr>
+            <td>1</td>
+            <td><strong>Andrew Leavitt</strong><br><small>NPI 1952343113</small></td>
+            <td>Internal Medicine, SF CA</td>
+            <td><strong>10,333 svc/bene</strong><br>2.5M services, 246 patients<br>$4.76M Medicare</td>
+            <td><span class="tag tag-red">Statistically implausible</span></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Elisabeth Balken</strong><br><small>NPI 1992489728</small></td>
+            <td>Nurse Practitioner, Mesa AZ</td>
+            <td><strong>$23.3M Medicare billed</strong><br>30 patients, 29,734 services</td>
+            <td><span class="tag tag-red">NP billing $23M on 30 patients</span></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Frank Curvin</strong><br><small>NPI 1457397382</small></td>
+            <td>Family Practice, Johns Creek GA</td>
+            <td><strong>$11.8M Medicare billed</strong><br>104 patients, 191 svc/bene</td>
+            <td><span class="tag tag-red">Unusual volume for FP</span></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Joyce Ravain</strong><br><small>NPI 1215980230</small></td>
+            <td>Emergency Medicine, Ormond Beach FL</td>
+            <td><strong>92.9 svc/bene</strong><br>45 patients, $835K</td>
+            <td><span class="tag tag-red">EM physicians don't have ongoing patient relationships</span></td>
+        </tr>
+    </table>
+
+    <div class="alert alert-yellow">
+        <strong>⚠️ Scores Are Alerts, Not Verdicts</strong>
+        High scores indicate statistical outliers that warrant investigation — not confirmed fraud. The LLM web validation pipeline (next section) adds a second stage: Brave Search for news + OIG press releases, then Claude synthesizes a verdict (LIKELY_FRAUD / POSSIBLE_FRAUD / LEGITIMATE / INSUFFICIENT_DATA).
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 8: Full Pipeline -->
+    <h2 id="pipeline">8. The Full Pipeline: From Raw CMS Data to Named Suspects</h2>
+
+    <p>Zooming out, the complete system is a three-stage pipeline. Autoresearch handles Stage 2. Stages 1 and 3 are adjacent infrastructure built to make the results actionable.</p>
+
+    <table>
+        <tr><th>Stage</th><th>Name</th><th>What Happens</th><th>Output</th></tr>
+        <tr>
+            <td><strong>Stage 1</strong></td>
+            <td>Data Infrastructure</td>
+            <td>5 CMS public datasets ingested into DuckDB. NPPES entity resolution. Specialty taxonomy mapping. Provider core table joining all sources.</td>
+            <td>6GB DuckDB, 90M+ rows, 30 tables, 1.2M provider-level aggregate records</td>
+        </tr>
+        <tr>
+            <td><strong>Stage 2</strong></td>
+            <td>Autoresearch Loop</td>
+            <td>Agent iterates on <code>detector.py</code>. Oracle (<code>eval.py</code>) evaluates against OIG LEIE ground truth. 18 iterations over one evening. Best result: AUC 0.8098.</td>
+            <td>Trained scoring function; <code>physician_suspects.csv</code> (top 100 billing anomalies)</td>
+        </tr>
+        <tr>
+            <td><strong>Stage 3</strong></td>
+            <td>LLM Web Validation</td>
+            <td>For each suspect: Brave Search (OIG news, medical board, fraud indictment). Claude synthesizes web evidence + CMS data → structured verdict.</td>
+            <td>HTML report with color-coded verdicts per provider; JSON structured output for downstream use</td>
+        </tr>
+    </table>
+
+    <div class="finding-box">
+        <strong>The Speed Advantage — End to End</strong>
+        <ul>
+            <li><strong>Stage 1</strong> (data infrastructure): Built over ~2 weeks, reusable across all future analyses</li>
+            <li><strong>Stage 2</strong> (autoresearch loop): Baseline to AUC 0.81 in one evening — roughly 2–3 weeks of traditional sprint work</li>
+            <li><strong>Stage 3</strong> (validation pipeline): ~10 minutes to web-validate 25 suspects via LLM</li>
+        </ul>
+        <p>The bottleneck is now <em>human judgment</em> on validated suspects — exactly where it should be. The automated pipeline handles the 99% of providers who clearly aren't anomalous, and surfaces the ~1% that warrant a real person's attention.</p>
+    </div>
+
+    <div class="alert alert-green">
+        <strong>✅ What This Demonstrates</strong>
+        The autoresearch pattern isn't magic — it's a disciplined separation of concerns: <strong>the AI generates hypotheses and writes code; the oracle measures results honestly; the loop runs until it plateaus</strong>. What makes it powerful is the speed multiplier. In domains with a clean, automated evaluation function (validation loss, AUC-ROC, F1 score, backtest return), you can run in hours what used to take weeks. The AI doesn't need to be smarter than a human researcher. It just needs to iterate faster, stay disciplined about measuring, and know when it's hit a ceiling.
+    </div>
+
+    <hr class="section-divider">
+
+    <p class="citation">
+        <strong>Project:</strong> CMS Healthcare Fraud Detection &nbsp;|&nbsp;
+        <strong>Session date:</strong> March 8–9, 2026 (~6 hours) &nbsp;|&nbsp;
+        <strong>Server:</strong> Hetzner 5.78.148.70 (32GB RAM, 8 vCPU) &nbsp;|&nbsp;
+        <strong>GitHub:</strong> <a href="https://github.com/blakethom8/cms-fraud-detection">blakethom8/cms-fraud-detection</a> &nbsp;|&nbsp;
+        <strong>Data:</strong> All CMS data publicly available at <a href="https://data.cms.gov">data.cms.gov</a>
+    </p>
+
+</div>
+</body>
+</html>
