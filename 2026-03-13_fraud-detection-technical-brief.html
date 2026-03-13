@@ -101,6 +101,7 @@
         <ol>
             <li><a href="#karpathy">The Autoresearch Pattern: Karpathy's Core Insight</a></li>
             <li><a href="#architecture">Architecture: What the Agent Does vs. What the Framework Does</a></li>
+            <li><a href="#claudemd">The Agent's Instruction File: CLAUDE.md</a></li>
             <li><a href="#speed">Why This Runs Fast: The Speed Mechanics</a></li>
             <li><a href="#case-study">Case Study: CMS Medicare Fraud Detection</a></li>
             <li><a href="#iterations">18 Iterations, One Evening — The AUC Progression</a></li>
@@ -264,6 +265,84 @@
         <li><strong>Clean stdio interface.</strong> <code>eval.py</code> passes NPIs via stdin; <code>detector.py</code> writes scores to stdout. No database writes, no file locking, no shared state. The interface is a CSV pipe.</li>
         <li><strong>Immutable oracle.</strong> Because <code>eval.py</code> never changes, AUC results are perfectly comparable across all 18 versions. The agent never has to worry about "did the goalposts move?"</li>
     </ol>
+
+    <hr class="section-divider">
+
+    <!-- SECTION 3b: CLAUDE.md -->
+    <h2 id="claudemd">3b. The Agent's Instruction File: <code>CLAUDE.md</code></h2>
+
+    <p>The agent isn't dropped into the repository with no context. It reads a single markdown file — <code>CLAUDE.md</code> — at the start of every session. This file is the entire contract between the human operator and the AI: what it's trying to accomplish, what the rules are, what data is available, and what it has already learned from prior experiments.</p>
+
+    <p>Think of it as a standing brief. The operator writes it once and updates it as the project evolves. The agent re-reads it every session and inherits the accumulated institutional knowledge without needing to rediscover it.</p>
+
+    <div class="finding-box">
+        <strong>What <code>CLAUDE.md</code> Contains (and Why Each Section Matters)</strong>
+        <ul>
+            <li><strong>The rules:</strong> Explicit constraints — do not touch <code>eval.py</code>, interface spec (stdin/stdout CSV), how to log vs. dry-run. The agent can't misinterpret these because they're written plainly.</li>
+            <li><strong>Current best:</strong> Points to <code>results.tsv</code> — the agent always knows the target to beat.</li>
+            <li><strong>Data available:</strong> Table names, column names, row counts, gotchas (e.g., PECOS has duplicate NPIs). No trial-and-error on schema.</li>
+            <li><strong>What has worked / what hasn't:</strong> Accumulated lessons from prior sessions. This is the compounding advantage — each session's learnings are written back into the brief, so future sessions don't repeat failed experiments.</li>
+            <li><strong>Key gotchas:</strong> Specific engineering landmines the agent encountered (deduplicate PECOS, compute HHI in SQL not pandas, sigmoid scale). Prevents wasted iterations on known failure modes.</li>
+        </ul>
+    </div>
+
+    <p>Here is the actual <code>CLAUDE.md</code> used in this project:</p>
+
+    <pre style="font-size:0.8rem;line-height:1.55;"># CLAUDE.md — Agent Instructions
+
+You are improving `detector.py` to maximize AUC-ROC against the OIG LEIE ground truth.
+
+## The Rules
+
+1. **DO NOT modify `eval.py`** — it is the fixed oracle
+2. `detector.py` reads NPI CSV from stdin, outputs `npi,score` CSV to stdout
+3. Run `python eval.py --dry-run` to test without logging
+4. Run `python eval.py --description "your description"` to log a real result
+5. Check `results.tsv` to see all previous attempts
+
+## Current Best
+
+See `results.tsv` — aim to beat the highest AUC-ROC in that file.
+
+## Data Available
+
+DuckDB at `/home/dataops/cms-data/data/provider_searcher.duckdb`:
+- `raw_physician_by_provider`         — Part B billing (NPI, specialty, services, benes, payment)
+- `raw_part_d_by_provider`            — Part D prescribing (NPI, drug cost, benes, opioid LA rate)
+- `raw_physician_by_provider_and_service` — HCPCS-level billing (9.6M rows)
+- `raw_open_payments_general`         — Industry payments (14.7M rows)
+- `raw_nppes`                         — Provider registry (7.1M, NPI, taxonomy, address)
+- `raw_pecos_enrollment`              — Medicare enrollment (2.54M, NPI — has duplicate NPIs)
+- `core_providers`                    — Cleaned provider table (1.2M, npi, type, state, zip5)
+
+## What Has Worked
+
+- **Services-per-bene z-score within specialty** — the single strongest signal
+- **LA opioid rate z-score within specialty** — catches pill mills
+- **`max(subscores)`** — taking the maximum across all feature subscores beats weighted averaging
+- High-volume specialties (oncology, hematology) need a dampening factor (0.4–0.5×)
+
+## What Hasn't Worked
+
+- HCPCS concentration HHI — adds noise, hurts AUC
+- Taxonomy mismatch — too many false positives
+- Raw percentile buckets — z-scores are better
+- Adding too many features — each new weak feature dilutes the strong ones
+
+## Key Gotchas
+
+- `raw_pecos_enrollment` has up to 75 rows per NPI — always `SELECT DISTINCT NPI`
+- HCPCS table has 9.6M rows — compute HHI in SQL, not pandas apply()
+- Sigmoid scale=2.0 works better than 1.5 for z-score transformation
+- Always fill NaN with 0.5 (neutral) before outputting scores
+- Deduplicate output on NPI before returning</pre>
+
+    <div class="alert alert-blue">
+        <strong>📌 This File Is the Compounding Advantage</strong>
+        Notice the <em>What Has Worked</em> and <em>What Hasn't Worked</em> sections. These don't come pre-written — they're updated by the operator after each session based on what the oracle revealed. By session two, the agent skips the experiments that failed in session one. By session three, it builds on two layers of accumulated insight. This is how a project with 181 ground truth labels and a relatively small feature set still produces a 0.81 AUC in a single evening — the agent isn't starting from zero every time.
+    </div>
+
+    <p>The original autoresearch project and methodology from Andrej Karpathy is open source: <a href="https://github.com/karpathy/autoresearch" target="_blank">github.com/karpathy/autoresearch</a>. Our implementation adapts the pattern for a supervised anomaly detection problem on public healthcare data rather than language model training.</p>
 
     <hr class="section-divider">
 
