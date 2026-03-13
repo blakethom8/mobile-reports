@@ -33,24 +33,51 @@
   .tag-yellow { background: #fff3cd; color: #b7770d; }
   .scenario-box { border: 1px solid #ccc; border-radius: 6px; padding: 16px 20px; margin: 16px 0; background: #fafafa; }
   .scenario-box h4 { margin-top: 0; font-size: 14px; }
+
+  /* ---- GANTT CHART STYLES ---- */
+  .gantt-wrap { font-family: Arial, sans-serif; font-size: 12px; margin: 20px 0 30px; overflow-x: auto; }
+  .gantt-title { font-weight: bold; font-size: 13px; color: #1a1a2e; margin-bottom: 8px; }
+  .gantt-table { border-collapse: collapse; min-width: 620px; width: 100%; }
+  .gantt-table td, .gantt-table th { padding: 0; border: none; }
+  .gantt-label { width: 160px; min-width: 140px; font-size: 11px; padding: 4px 8px 4px 0; color: #333; vertical-align: middle; text-align: right; white-space: nowrap; background: none; }
+  .gantt-grid { padding: 3px 0; vertical-align: middle; }
+  .gantt-row { height: 22px; position: relative; width: 100%; }
+  .gantt-bar { position: absolute; height: 16px; top: 3px; border-radius: 3px; display: flex; align-items: center; padding: 0 6px; font-size: 10px; color: white; font-weight: bold; white-space: nowrap; overflow: hidden; }
+  .bar-navy   { background: #1a1a2e; }
+  .bar-red    { background: #c0392b; }
+  .bar-green  { background: #27ae60; }
+  .bar-blue   { background: #2980b9; }
+  .bar-orange { background: #e67e22; }
+  .bar-gray   { background: #95a5a6; }
+  .bar-purple { background: #8e44ad; }
+  .bar-stripe { background: repeating-linear-gradient(45deg, #27ae60, #27ae60 4px, #1e8449 4px, #1e8449 8px); }
+  .gantt-months { display: flex; border-bottom: 1px solid #ddd; margin-bottom: 2px; }
+  .gantt-month { flex: 1; text-align: center; font-size: 10px; color: #666; padding: 2px 0; border-right: 1px solid #eee; }
+  .gantt-header { width: 160px; min-width: 140px; font-size: 10px; color: #999; padding: 2px 8px 2px 0; text-align: right; }
+  .gantt-milestone { position: absolute; top: 1px; width: 20px; height: 20px; background: #f39c12; transform: rotate(45deg); }
+  .gantt-note { font-size: 10px; color: #888; font-style: italic; margin-top: 4px; }
+  .gantt-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+  .outcome-box { background: #f0f7ff; border: 1px solid #2980b9; border-radius: 4px; padding: 8px 12px; margin-top: 8px; font-size: 12px; font-family: Arial, sans-serif; }
+  .outcome-box strong { color: #1a1a2e; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>38 Oakwood Drive — Permitting Strategy & Regulatory Analysis</h1>
+  <h1>38 Oakwood Drive — Permitting Strategy &amp; Regulatory Analysis</h1>
   <p><strong>Property:</strong> 38 Oakwood Drive, Orinda, CA &nbsp;|&nbsp; 10-acre family lot, Orinda hills</p>
-  <p><strong>Project:</strong> New main house (~4,500 sf) + ADU (1,200 sf) + Garage (400 sf) + Site improvements</p>
-  <p><strong>Prepared:</strong> March 12, 2026</p>
-  <p><strong>Status:</strong> Month 2 of Design &amp; Permitting — Active creek setback / wetland dispute with City Engineer</p>
+  <p><strong>Project:</strong> New main house (~4,500 sf) + ADU (1,200 sf) + Garage (400 sf) + Site improvements incl. retention walls</p>
+  <p><strong>Prepared:</strong> March 12–13, 2026 &nbsp;|&nbsp; <strong>Updated:</strong> March 13, 2026</p>
+  <p><strong>Status:</strong> Month 2 of Design &amp; Permitting — Active creek setback dispute with City Engineer Ryan O'Kane</p>
+  <p><strong>Note:</strong> Ryan O'Kane did NOT designate a wetland in his latest decisions — wetland designation is off the table as an active risk.</p>
 </div>
 
 <!-- ============================================================ -->
-<h2>I. Background: The Regulatory Landscape</h2>
+<h2>I. The Big Picture — Three Frameworks, One Project</h2>
 
-<p>This property sits on a 10-acre hillside lot in the Orinda hills with a drainage area in the back that runs toward a concrete v-ditch at the rear of the property. The City Engineer (Ryan O'Kane) has been pushing to designate the back drainage as a wetland and has additionally required that natural back-area swales be connected to the concrete v-ditch as a condition of any work in that zone.</p>
-
-<p>The permitting picture is complicated because three entirely separate regulatory frameworks govern different aspects of the project — and they interact in non-obvious ways:</p>
+<p>Three entirely separate regulatory frameworks govern different aspects of this project. Understanding their independence — and where they intersect — is the foundation of the permitting strategy.</p>
 
 <table>
   <tr>
@@ -61,114 +88,391 @@
   </tr>
   <tr>
     <td><strong>SB9 (State Law)</strong></td>
-    <td>Whether a new residential unit is <em>allowed</em> on this parcel</td>
+    <td>Whether a new residential unit is <em>allowed</em> on this parcel per zoning</td>
     <td>Orinda Planning Dept</td>
     <td><span class="tag tag-green">Ministerial</span></td>
   </tr>
   <tr>
     <td><strong>Chapter 17.32 Exception</strong></td>
-    <td>Whether structures/grading are permitted in the creek setback</td>
+    <td>Whether structures/grading are permitted within the creek setback</td>
     <td>Orinda Planning / Zoning Admin</td>
     <td><span class="tag tag-red">Discretionary</span></td>
   </tr>
   <tr>
     <td><strong>Building &amp; Grading Permits</strong></td>
-    <td>Whether the building is constructed safely per building code</td>
+    <td>Whether the construction is safe per building code; authorizes breaking ground</td>
     <td>Contra Costa County Building Dept</td>
     <td><span class="tag tag-blue">Last in sequence</span></td>
   </tr>
 </table>
 
-<p>Understanding this separation is the foundation of the entire strategy. SB9 and Chapter 17.32 are not the same process. The building permit is not the same as either. Each has its own sequence, timeline, and decision-maker — and the key strategic move is <strong>keeping them as decoupled as possible</strong>.</p>
+<div class="alert alert-blue">
+  <strong>The building permit is what actually authorizes construction.</strong> SB9 is a zoning sign-off that unlocks the building permit. The 17.32 exception (if required) must also be resolved before the building permit is issued. CC County Building will not issue a building permit until every upstream agency — Orinda Planning, MOFD, CCCSD — has signed off. Nothing gets built without it.
+</div>
 
 <hr class="section-divider">
 
 <!-- ============================================================ -->
-<h2>II. SB9 — What It Is and Why It Matters for This Project</h2>
+<h2>II. Permit Sequencing &amp; Timeline Scenarios</h2>
 
-<h3>What SB9 Does</h3>
-<p>Senate Bill 9 (effective January 2022) requires cities to grant <strong>ministerial approval</strong> for the construction of a new single-family home or second unit on a single-family parcel — without discretionary review. The word "ministerial" is critical: it means the City checks only objective, yes/no standards. No hearings. No neighbor notification. No CEQA. No Design Review.</p>
+<p>The critical question for your project timeline is: <strong>does Chapter 17.32 run in parallel with SB9 or does it block it?</strong> And does it ultimately block the building permit? There are three plausible scenarios depending on how the city interprets your site plan and how Ryan engages. All timelines assume a reasonably cooperative (if not fast) process.</p>
+
+<p><em>Each chart shows one month per column. Bars represent active work/review. "Break ground" is the first day of authorized construction.</em></p>
+
+<!-- ==================== SCENARIO A ==================== -->
+<div class="gantt-wrap">
+  <div class="gantt-title">🟢 Scenario A — Best Case: No 17.32 Required (Ryan Cooperates on Drainage)</div>
+  <p style="font-size:12px;font-family:Arial,sans-serif;color:#555;margin-bottom:8px;">Ryan accepts the drainage plan scoped to new impervious surfaces only. House grading and retaining walls stay outside the setback. No creek setback exception needed. SB9 proceeds ministerially on a clean track.</p>
+
+  <table class="gantt-table">
+    <tr>
+      <td class="gantt-header"></td>
+      <td class="gantt-grid">
+        <div class="gantt-months">
+          <div class="gantt-month">M1</div><div class="gantt-month">M2</div><div class="gantt-month">M3</div>
+          <div class="gantt-month">M4</div><div class="gantt-month">M5</div><div class="gantt-month">M6</div>
+          <div class="gantt-month">M7</div><div class="gantt-month">M8</div><div class="gantt-month">M9</div>
+          <div class="gantt-month">M10</div><div class="gantt-month">M11</div><div class="gantt-month">M12</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="gantt-label">SB9 Application</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-blue" style="left:0%;width:16.5%;">SB9 Review</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">MOFD + CCCSD</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-navy" style="left:8%;width:16.5%;">Agency Approvals</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Soils / Geotech</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-gray" style="left:0%;width:33%;">Geotech Report</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Drainage Plan / C.3</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-gray" style="left:0%;width:25%;">Drainage Report</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Building Permit (CC Co.)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-orange" style="left:33%;width:16.5%;">BP Review</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label" style="font-weight:bold;color:#27ae60;">🏗 Break Ground</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-green" style="left:49.5%;width:50%;">House Construction Underway</div>
+      </div></td>
+    </tr>
+  </table>
+  <div class="outcome-box">
+    <strong>Break ground: ~Month 6–7</strong> &nbsp;|&nbsp; No 17.32 process needed. Retention walls and back-area work completed as site grading under standard permits. Ryan's drainage plan review happens inside SB9 engineering review — but is scoped narrowly to new impervious surfaces.
+  </div>
+  <p class="gantt-note">⚠️ Requires: (1) house pad grading entirely outside setback, (2) retention walls along setback stay outside the restricted zone, (3) drainage routing doesn't require setback entry. Your civil engineer must confirm all three.</p>
+</div>
+
+<!-- ==================== SCENARIO B ==================== -->
+<div class="gantt-wrap">
+  <div class="gantt-title">🟡 Scenario B — Middle Ground: 17.32 Required, Runs in Parallel with SB9</div>
+  <p style="font-size:12px;font-family:Arial,sans-serif;color:#555;margin-bottom:8px;">Retention walls or grading run into the creek setback. 17.32 exception is needed. However, SB9 (for the house itself) is treated as a separate project and proceeds in parallel. Both SB9 and 17.32 must complete before CC County issues the building permit. The critical path is whichever takes longer — almost certainly 17.32.</p>
+
+  <table class="gantt-table">
+    <tr>
+      <td class="gantt-header"></td>
+      <td class="gantt-grid">
+        <div class="gantt-months">
+          <div class="gantt-month">M1</div><div class="gantt-month">M2</div><div class="gantt-month">M3</div>
+          <div class="gantt-month">M4</div><div class="gantt-month">M5</div><div class="gantt-month">M6</div>
+          <div class="gantt-month">M7</div><div class="gantt-month">M8</div><div class="gantt-month">M9</div>
+          <div class="gantt-month">M10</div><div class="gantt-month">M11</div><div class="gantt-month">M12</div>
+          <div class="gantt-month">M13</div><div class="gantt-month">M14</div><div class="gantt-month">M15</div><div class="gantt-month">M16</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="gantt-label">SB9 Application</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-blue" style="left:0%;width:12.5%;">SB9 Review</div>
+        <div class="gantt-bar bar-green" style="left:12.5%;width:8%;opacity:0.5;">✓ Approved</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">MOFD + CCCSD</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-navy" style="left:6%;width:12.5%;">Agency Approvals</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Ch. 17.32 Exception</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-red" style="left:0%;width:68.75%;">17.32 Process (completeness → hearing → decision)</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Biotic Assessment (if req.)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-gray" style="left:12.5%;width:37.5%;">Biotic Survey Window</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">City Engineer Approval</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-purple" style="left:62.5%;width:12.5%;">CE Review</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Building Permit (CC Co.)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-orange" style="left:75%;width:12.5%;">BP Review</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label" style="font-weight:bold;color:#e67e22;">🏗 Break Ground</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-green" style="left:87.5%;width:12.5%;">Construction</div>
+      </div></td>
+    </tr>
+  </table>
+  <div class="outcome-box">
+    <strong>Break ground: ~Month 13–15</strong> &nbsp;|&nbsp; SB9 clears early (~M2) but sits waiting on 17.32. The building permit is gated by BOTH approvals — whichever finishes last. 17.32 is the critical path. Best-case parallel execution saves ~2–3 months vs. running them sequentially.
+  </div>
+  <p class="gantt-note">Key risk: Orinda's SB9 rules require all discretionary permits resolved BEFORE the SB9 application. If the City views 17.32 as part of the same project, SB9 may not be fileable until 17.32 is done — pushing closer to Scenario C.</p>
+</div>
+
+<!-- ==================== SCENARIO C ==================== -->
+<div class="gantt-wrap">
+  <div class="gantt-title">🔴 Scenario C — Worst Case: 17.32 Must Precede SB9 (All Sequential)</div>
+  <p style="font-size:12px;font-family:Arial,sans-serif;color:#555;margin-bottom:8px;">City treats the house and back-area work as a single project. Orinda's SB9 rules require all discretionary permits completed before filing SB9. Everything queues sequentially: 17.32 → SB9 → Building Permit.</p>
+
+  <table class="gantt-table">
+    <tr>
+      <td class="gantt-header"></td>
+      <td class="gantt-grid">
+        <div class="gantt-months">
+          <div class="gantt-month">M1</div><div class="gantt-month">M2</div><div class="gantt-month">M3</div>
+          <div class="gantt-month">M4</div><div class="gantt-month">M5</div><div class="gantt-month">M6</div>
+          <div class="gantt-month">M7</div><div class="gantt-month">M8</div><div class="gantt-month">M9</div>
+          <div class="gantt-month">M10</div><div class="gantt-month">M11</div><div class="gantt-month">M12</div>
+          <div class="gantt-month">M13</div><div class="gantt-month">M14</div><div class="gantt-month">M15</div>
+          <div class="gantt-month">M16</div><div class="gantt-month">M17</div><div class="gantt-month">M18</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Ch. 17.32 Exception</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-red" style="left:0%;width:61%;">17.32 Process</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">City Engineer Approval</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-purple" style="left:55.5%;width:11%;">CE Review</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">SB9 Application</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-blue" style="left:61%;width:11%;">SB9</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">MOFD + CCCSD</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-navy" style="left:66.5%;width:11%;">Agencies</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Building Permit (CC Co.)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-orange" style="left:77.5%;width:11%;">BP Review</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label" style="font-weight:bold;color:#c0392b;">🏗 Break Ground</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-green" style="left:88.5%;width:11.5%;">Construction</div>
+      </div></td>
+    </tr>
+  </table>
+  <div class="outcome-box">
+    <strong>Break ground: ~Month 16–20</strong> &nbsp;|&nbsp; Worst case. Every step waits for the previous one. 17.32 alone adds 11–15 months before SB9 can even be filed. This scenario should be avoided at all costs — the difference vs. Scenario A is 10–14 months and potentially $500K+ in carrying costs and construction cost escalation.
+  </div>
+</div>
+
+<!-- ==================== SCENARIO D ==================== -->
+<div class="gantt-wrap">
+  <div class="gantt-title">🔵 Scenario D — Practical Middle: Phased Grading (House First, Back Area Later)</div>
+  <p style="font-size:12px;font-family:Arial,sans-serif;color:#555;margin-bottom:8px;">If the civil engineer can design a Phase 1 grading plan that is self-contained (house pad + primary site stable without back-area work), CC County may issue a Phase 1 grading/building permit. Back-area retention walls and grading are deferred to a Phase 2 permit after the 17.32 exception resolves. More expensive (two mobilizations) but keeps the house on a fast track.</p>
+
+  <table class="gantt-table">
+    <tr>
+      <td class="gantt-header"></td>
+      <td class="gantt-grid">
+        <div class="gantt-months">
+          <div class="gantt-month">M1</div><div class="gantt-month">M2</div><div class="gantt-month">M3</div>
+          <div class="gantt-month">M4</div><div class="gantt-month">M5</div><div class="gantt-month">M6</div>
+          <div class="gantt-month">M7</div><div class="gantt-month">M8</div><div class="gantt-month">M9</div>
+          <div class="gantt-month">M10</div><div class="gantt-month">M11</div><div class="gantt-month">M12</div>
+          <div class="gantt-month">M13</div><div class="gantt-month">M14</div><div class="gantt-month">M15</div><div class="gantt-month">M16</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="gantt-label">SB9 (house)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-blue" style="left:0%;width:12.5%;">SB9</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">MOFD + CCCSD</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-navy" style="left:6%;width:12.5%;">Agencies</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Ph.1 Building Permit</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-orange" style="left:18.75%;width:12.5%;">BP Phase 1</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label" style="color:#27ae60;">🏗 Break Ground (house)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-green" style="left:31%;width:69%;">House + ADU Construction</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Ch. 17.32 (back area)</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-red" style="left:0%;width:68.75%;">17.32 Process (running in background)</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Ph.2 Grading Permit</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-orange" style="left:68.75%;width:12.5%;">Grading Ph.2</div>
+      </div></td>
+    </tr>
+    <tr>
+      <td class="gantt-label">Back-Area Work Begins</td>
+      <td class="gantt-grid"><div class="gantt-row">
+        <div class="gantt-bar bar-purple" style="left:81.25%;width:18.75%;">Retention walls, drainage</div>
+      </div></td>
+    </tr>
+  </table>
+  <div class="outcome-box">
+    <strong>House break ground: ~Month 5–7 &nbsp;|&nbsp; Back-area work: ~Month 13–15</strong> &nbsp;|&nbsp; This is the best realistic option if some setback encroachment is unavoidable. House construction proceeds while 17.32 resolves in the background. You could be living in the house while the back-area permitting finishes. Extra cost: second mobilization for site work (~$50–100K premium estimate).
+  </div>
+  <p class="gantt-note">Feasibility depends entirely on your civil engineer confirming Phase 1 grading can be structurally complete and safely draining without the back-area work. This is the right question to put to them explicitly.</p>
+</div>
+
+<div class="alert">
+  <strong>Summary comparison:</strong>
+  <table style="margin:8px 0 0;">
+    <tr>
+      <th>Scenario</th><th>Break Ground</th><th>Key Dependency</th><th>Feasibility</th>
+    </tr>
+    <tr><td>A — No 17.32 needed</td><td>Month 6–7</td><td>House pad stays outside setback</td><td><span class="tag tag-yellow">Requires CE confirmation</span></td></tr>
+    <tr><td>B — 17.32 parallel with SB9</td><td>Month 13–15</td><td>City treats house + back area as separate projects</td><td><span class="tag tag-yellow">Legally arguable</span></td></tr>
+    <tr><td>C — All sequential</td><td>Month 16–20</td><td>City treats as one project; forces sequencing</td><td><span class="tag tag-red">Worst case, avoid</span></td></tr>
+    <tr><td>D — Phased grading</td><td>Month 5–7 (house), 13–15 (back area)</td><td>Civil eng. confirms Phase 1 is self-contained</td><td><span class="tag tag-green">Best realistic option if 17.32 unavoidable</span></td></tr>
+  </table>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>III. The Grading Entanglement — Why Separation May Be Difficult</h2>
+
+<p>Earlier analysis suggested the house and back-area improvements could be cleanly separated for permitting purposes. That framing needs to be qualified given the realities of a hillside site.</p>
+
+<p>The grading permit — issued by CC County Building, separate from but usually concurrent with the building permit — covers <strong>all earthwork on the parcel</strong> above threshold yardage. For a new home on a 10-acre hillside lot, the grading plan must be prepared by a licensed civil engineer and address:</p>
+
+<ul>
+  <li>All cut and fill volumes across the site</li>
+  <li>All retaining walls (location, height, materials, structural engineering)</li>
+  <li>How drainage from the entire disturbed area routes and exits the site</li>
+  <li>Post-development runoff vs. pre-development (CC County and C.3 requirements)</li>
+</ul>
+
+<p>The complication for 38 Oakwood: some of the proposed retention walls <strong>run along the creek setback zone</strong>. If any portion of those walls or their footings, excavation, or associated drainage routing falls within the setback, the grading permit for the full site becomes entangled with the 17.32 exception requirement.</p>
+
+<div class="finding-box">
+  <h3>The Critical Engineering Question</h3>
+  <p>Your civil engineer needs to determine — specifically and in writing — whether the grading plan for the house can be filed in two phases:</p>
+  <p><strong>Phase 1:</strong> House pad, primary access, ADU, garage, retaining walls entirely outside the creek setback, stable and drainage-complete without back-area work.</p>
+  <p><strong>Phase 2:</strong> Back-area retention walls, swale management, fire pit area, grading within or near the setback — filed after 17.32 resolves.</p>
+  <p>If Phase 1 is genuinely self-contained, Scenario D is achievable. If the Phase 1 drainage routing must pass through the setback zone, or if Phase 1 retaining walls are structurally interdependent with Phase 2 walls, separation is not feasible and you're in Scenario B or C.</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>IV. SB9 — What It Is and Why It Still Matters</h2>
+
+<p>Senate Bill 9 (effective January 2022) requires cities to grant <strong>ministerial approval</strong> for a new single-family home on a single-family parcel — without hearings, neighbor notification, or CEQA. Without SB9, a new home on this lot goes through Orinda's standard <strong>Design Review</strong> — a fully discretionary process where the City Engineer's objections carry real weight in public hearings.</p>
 
 <div class="alert alert-green">
-  <strong>Why SB9 matters here:</strong> Without SB9, a new home on this lot would require Orinda's standard <strong>Design Review</strong> — a discretionary process with public hearings, neighbor notification, CEQA analysis, and Planning Commission or Zoning Administrator judgment calls. That's the process where an adversarial City Engineer can inject objections through every channel. SB9 eliminates that exposure entirely for the house itself.
+  <strong>SB9's value:</strong> It eliminates the Design Review pathway — no hearings, no CEQA, no neighbor objections on the house itself. Ryan can't object to the house in a public forum if SB9 governs. His leverage is limited to the drainage/engineering review component of the SB9 completeness review, which is narrower and more legally bounded than Design Review.
 </div>
 
-<h3>What SB9 Does NOT Cover</h3>
-<p>SB9 approves only the <em>housing unit</em> and its compliance with objective zoning standards (setbacks from property lines, height, FAR). It does not cover or replace:</p>
-<ul>
-  <li>Creek setback exceptions (Chapter 17.32 / §17.30.5)</li>
-  <li>Grading permits for back-area improvements</li>
-  <li>Retention walls, fire pits, or landscaping in the creek setback</li>
-  <li>Tree removal permits</li>
-  <li>State/federal environmental permits (§1602, §404)</li>
-</ul>
-
-<h3>The Eligibility Checklist</h3>
-<p>To qualify for SB9, all items on Orinda's eligibility checklist must be "Yes" or "N/A." Most are straightforward for this property. However, <strong>Item 12</strong> contains a material risk:</p>
-
-<div class="alert alert-red">
-  <strong>Item 12 — Eligibility Exclusions:</strong> The property must be outside any of the following: Prime farmland, <strong>Wetlands as defined under federal law</strong>, Hazardous waste sites, Protected species habitat, Conservation easements, Lands identified for conservation in any adopted plan, Historic landmarks or districts.
-  <br><br>
-  If Ryan O'Kane successfully obtains a wetland designation on the back drainage area, it could cause Item 12 to fail — potentially <strong>blocking SB9 ministerial approval entirely</strong> and forcing the project into full discretionary Design Review. This is the highest-stakes outcome of the wetland fight.
-</div>
+<h3>SB9 Eligibility — Key Checklist Items for This Property</h3>
+<table>
+  <tr><th>#</th><th>Requirement</th><th>Status</th></tr>
+  <tr><td>1</td><td>Single-family residential zone</td><td><span class="tag tag-green">Likely OK</span></td></tr>
+  <tr><td>4</td><td>No discretionary permits required — OR all resolved first</td><td><span class="tag tag-yellow">The core question</span></td></tr>
+  <tr><td>5</td><td>If in R-Overlay: max 500 sf and 18 ft</td><td><span class="tag tag-yellow">Check if parcel is in R-Overlay</span></td></tr>
+  <tr><td>9</td><td>VHFHSZ compliance — MOFD approval required for completeness</td><td><span class="tag tag-red">Required — Orinda hills = VHFHSZ</span></td></tr>
+  <tr><td>12</td><td>Outside wetlands, protected habitat, conservation lands, etc.</td><td><span class="tag tag-green">Wetland designation off table per Ryan's latest decision</span></td></tr>
+</table>
 
 <h3>Why SB9 Is Separate from the Building Permit</h3>
-<p>These are two entirely different regulatory frameworks:</p>
-<ul>
-  <li><strong>SB9/Zoning:</strong> Governed by Title 17 of the Orinda Municipal Code (land use). Asks: <em>Is this use allowed here? Does it meet zoning standards?</em> Issued by Orinda Planning Dept.</li>
-  <li><strong>Building Permit:</strong> Governed by the California Building Code. Asks: <em>Is this building constructed safely?</em> Issued by Contra Costa County Building Dept (Orinda contracts them). <strong>Requires all other agency approvals first</strong> before CC County will process.</li>
-</ul>
-<p>The sequence is: Orinda Planning (SB9/zoning sign-off) → MOFD → CCCSD → then CC County Building. SB9 approval is a prerequisite for the building permit, not a substitute for it.</p>
+<p>SB9 = zoning approval (is the use <em>allowed</em> here?). Building permit = construction approval (is the building <em>built safely</em>?). These are governed by different codes, different departments, and different standards. SB9 does not authorize construction. It is the prerequisite that allows CC County to issue the building permit. The full sequence is:</p>
+<blockquote>
+  Orinda Planning (SB9 sign-off) + MOFD approval + CCCSD approval → <strong>then</strong> CC County Building Department issues Building Permit → <strong>then</strong> construction may begin.
+</blockquote>
 
 <hr class="section-divider">
 
 <!-- ============================================================ -->
-<h2>III. §17.4.6 — Creek Setback Rules (Verbatim)</h2>
-
-<p>The applicable zoning code provision governing creek setbacks was retrieved directly from Orinda's Municipal Code (Municode, version Sep 8, 2025):</p>
+<h2>V. §17.4.6 — Creek Setback Rules (Verbatim)</h2>
 
 <blockquote>
   <strong>§17.4.6.B — Channel Type Definitions:</strong><br>
-  <strong>Type I:</strong> A major channel that receives water from several tributaries (San Pablo Creek, Moraga Creek, Brookside Creek, Laterwasser Creek).<br>
-  <strong>Type II:</strong> An ephemeral/intermittent or perennial tributary channel that has <em>well-defined channel bed and banks</em>.<br>
-  <strong>Type III:</strong> An ephemeral swale or other small channel distinguished from Type I and II because it does <em>not have well-defined channel bed and banks</em>.<br>
-  <strong>Type IV:</strong> A man-made channel, such as a road-side ditch, that occurs where no channel previously existed.
+  <strong>Type I:</strong> A major channel receiving water from several tributaries (San Pablo Creek, Moraga Creek, Brookside Creek, Laterwasser Creek). <strong>Setback: 45 ft.</strong><br>
+  <strong>Type II:</strong> Ephemeral/intermittent or perennial tributary channel with <em>well-defined channel bed and banks</em>. <strong>Setback: 30 ft.</strong><br>
+  <strong>Type III:</strong> Ephemeral swale or small channel that does <em>not</em> have well-defined bed and banks. <strong>Setback: 15 ft.</strong><br>
+  <strong>Type IV:</strong> Man-made channel (road-side ditch) where no channel previously existed. <strong>Setback: 0 ft.</strong>
 </blockquote>
 
 <blockquote>
   <strong>§17.4.6.C — Restrictions:</strong><br>
-  "No structure may be built, except for second story additions that do not encroach into the required setback beyond the existing first floor structure, and <strong>no grading is permitted in the setback of a water channel</strong>, unless the project meets the following conditions:<br>
-  1. The project proponent obtains approval from the City Engineer; and<br>
-  2. The project proponent is granted an exception under Chapter 17.32.<br>
-  If a project is proposed on the bank of a water channel or in an area of the site that is <strong>undeveloped and in a natural state</strong>, then the City may hire a biologist to perform a <strong>biotic assessment at the applicant's expense</strong> and the decision-maker shall consider the findings of this biotic assessment when reviewing the exception application."
+  "No structure may be built... and <strong>no grading is permitted in the setback</strong> unless: (1) City Engineer approval (§16.64.220.C); and (2) Exception under Chapter 17.32. If a project is proposed on the bank or in an area that is undeveloped and in a natural state, the City may hire a biologist to perform a <strong>biotic assessment at the applicant's expense</strong>."
 </blockquote>
 
 <div class="alert">
-  <strong>Channel type is the fulcrum of the entire fight.</strong> Type II (well-defined bed and banks) carries a <strong>30-foot setback</strong>. Type III (ephemeral swale, no well-defined bed/banks) carries a <strong>15-foot setback</strong>. Type IV (man-made ditch) carries <strong>0 feet</strong>. Ryan O'Kane's push to classify the back drainage as Type II — or worse, as a wetland — is an attempt to double the setback and dramatically constrain what can be built or graded in the back of the property.
+  <strong>The type determination is the fulcrum.</strong> Ryan's push to call the back drainage Type II (30 ft setback) vs. Type III/IV (15 ft or 0 ft) doubles or eliminates the restricted zone. Fight this factual determination with an independent geomorphology expert before any permit is filed.
 </div>
-
-<h3>The Swale Connection Demand</h3>
-<p>Ryan has indicated that natural back-area swales need to be connected to the existing concrete v-ditch at the rear of the property. This is a City Engineer drainage condition — not a zoning standard and not an SB9 requirement. However, executing this connection would likely require grading within the creek setback zone, which triggers both:</p>
-<ul>
-  <li>City Engineer approval under §16.64.220.C (Ryan's approval)</li>
-  <li>Chapter 17.32 Exception Permit (discretionary — see Section IV)</li>
-</ul>
-<p>This creates a circular trap: Ryan demands swale connection → swale connection requires his own approval → he can withhold approval or impose conditions. This is the core conflict that must be resolved strategically, not administratively.</p>
 
 <hr class="section-divider">
 
 <!-- ============================================================ -->
-<h2>IV. Chapter 17.32 — Exception Permit: Full Findings Criteria</h2>
+<h2>VI. Chapter 17.32 — Exception Permit: Full Findings Criteria</h2>
 
-<p>Any structure or grading within the creek setback requires an Exception Permit under Chapter 17.32, in addition to City Engineer approval. This permit is <strong>discretionary</strong> — meaning a human decision-maker weighs the evidence and makes a judgment call. The exact findings required (§17.32.4), retrieved directly from Municode, are:</p>
-
-<h3>§17.32.4 — Standards (All Must Be Satisfied)</h3>
+<p>If any structure or grading falls within the creek setback, an Exception Permit under Chapter 17.32 is required before a building permit can be issued. The decision-maker must find ALL of the following (§17.32.4):</p>
 
 <div class="finding-box">
   <h3>Finding A — Site Uniqueness or No Harm (Either/Or)</h3>
-  <p>The strict application of zoning regulations will either:</p>
-  <p><strong>(1)</strong> Deprive the subject property of rights enjoyed by other properties in the vicinity within the same zone, because of the site's <em>unique characteristics</em> (irregular or constrained size, shape, topography, or limitations from existing development) that limit design options; <strong>OR</strong></p>
-  <p><strong>(2)</strong> Serve <em>no land use planning purpose</em> because there is NO negative impact whatsoever on the semi-rural character of Orinda or on the privacy, views, and general well-being of neighboring properties, as a result of the size, shape, location or topography of the site.</p>
+  <p>The strict application of zoning regulations will either: <strong>(1)</strong> deprive the property of rights enjoyed by others in the same zone due to the site's unique characteristics (size, shape, topography, or existing development limitations); <strong>OR (2)</strong> serve no land use planning purpose because there is NO negative impact whatsoever on the semi-rural character of Orinda or on the privacy, views, and well-being of neighboring properties.</p>
 </div>
 
 <div class="finding-box">
@@ -177,355 +481,131 @@
 </div>
 
 <div class="finding-box">
-  <h3>Finding C — Existing Structures Only</h3>
-  <p>(1) The exception does not substantially increase the degree of an existing nonconformity; AND<br>
-  (2) The exception is necessary to preserve or enhance an architecturally or functionally appropriate feature of the existing structure.</p>
-  <p class="citation">Note: Finding C is applicable only for projects affecting an existing structure — likely not primary here since this is new construction.</p>
+  <h3>Finding C — For Existing Structures Only</h3>
+  <p>(1) The exception does not substantially increase an existing nonconformity; AND (2) the exception is necessary to preserve or enhance an architecturally or functionally appropriate feature of the existing structure.</p>
 </div>
 
 <blockquote>
-  <strong>§17.32.5 — Conditions:</strong> "An exception shall be subject to such conditions as will assure that the adjustment does not constitute a <strong>grant of special privileges</strong> inconsistent with the limitations on other properties in the vicinity and zone."
+  <strong>§17.32.5 — Conditions:</strong> "An exception shall be subject to conditions to assure it does not constitute a <strong>grant of special privileges</strong> inconsistent with other properties in the same zone."
 </blockquote>
 
-<h3>Best Argument Path for Back-Area Improvements</h3>
-<p><strong>Finding A(2) is the strongest angle</strong> for retention walls and drainage work on a 10-acre hillside lot with no visible impact on neighbors:</p>
-<ul>
-  <li>The property is 10 acres — back-area drainage improvements are remote from any neighboring structure</li>
-  <li>Retention walls and swale management are standard hillside maintenance, not unusual development</li>
-  <li>No impact whatsoever on semi-rural character, privacy, views, or well-being of adjacent properties</li>
-  <li>The concrete v-ditch itself is man-made infrastructure — managing drainage into it is drainage maintenance, not habitat disturbance</li>
-</ul>
+<p><strong>Best argument for back-area improvements (Finding A, path 2):</strong> On a 10-acre hillside lot, retention walls and drainage management in the back area have zero negative impact on neighbors, privacy, views, or the semi-rural character of Orinda. The concrete v-ditch is man-made infrastructure — managing drainage into it is maintenance, not new development. Proactively retain your own biologist to document no sensitive habitat.</p>
 
-<div class="alert">
-  <strong>Biotic Assessment Risk:</strong> §17.4.6.C explicitly allows the City to require a biotic assessment when work is proposed in an undeveloped/natural area adjacent to a watercourse. If the back area is characterized as undeveloped and natural (which Ryan will argue), the City can hire a biologist at applicant's expense. Seasonal survey requirements for certain species (nesting birds, amphibians) can add 6+ months to the timeline if the window is missed.
-</div>
-
-<h3>Process and Timing</h3>
-<ul>
-  <li><strong>§17.32.3:</strong> The exception permit must be obtained <em>before</em> the building permit.</li>
-  <li>Projects under 1,500 sf of new floor area → Zoning Administrator (faster)</li>
-  <li>Projects 1,500 sf or more → Planning Commission</li>
-  <li>For back-area site improvements (not a new building), likely Zoning Administrator jurisdiction</li>
-</ul>
-
+<h3>17.32 Timeline Estimate</h3>
 <table>
-  <tr>
-    <th>Scenario</th>
-    <th>Estimated Timeline</th>
-  </tr>
-  <tr>
-    <td>Best case — no biotic assessment, cooperative staff</td>
-    <td>4–6 months</td>
-  </tr>
-  <tr>
-    <td>Realistic — completeness rounds, standard CEQA categorical exemption</td>
-    <td>6–9 months</td>
-  </tr>
-  <tr>
-    <td>Adversarial — biotic assessment required, multiple completeness resets</td>
-    <td>9–15 months</td>
-  </tr>
-  <tr>
-    <td>Denial + appeal to Planning Commission</td>
-    <td>12–24+ months</td>
-  </tr>
+  <tr><th>Scenario</th><th>Timeline</th></tr>
+  <tr><td>Best case — no biotic assessment, cooperative staff</td><td>4–6 months</td></tr>
+  <tr><td>Realistic — completeness rounds, standard CEQA categorical exemption</td><td>6–9 months</td></tr>
+  <tr><td>Adversarial — biotic assessment required, multiple completeness resets</td><td>9–15 months</td></tr>
+  <tr><td>Denial + appeal to Planning Commission</td><td>12–24+ months</td></tr>
 </table>
 
 <hr class="section-divider">
 
 <!-- ============================================================ -->
-<h2>V. The Separation Strategy — SB9 vs. Chapter 17.32</h2>
-
-<h3>The Core Idea</h3>
-<p>The house footprint is <em>outside</em> the creek setback. The back-area improvements (retention walls, fire pit, grading, swale work) are what would fall inside or near the setback. These are different projects serving different purposes and can potentially be permitted on separate tracks.</p>
-
-<div class="alert alert-green">
-  <strong>If successfully separated:</strong><br>
-  SB9 for the house = ministerial approval in <strong>30–60 days</strong> once deemed complete.<br>
-  Chapter 17.32 for back-area = <strong>6–15 months</strong> on a parallel track.<br><br>
-  You break ground on the house while the back-area fight runs in the background. By the time the house is framed, the exception process may be resolved. If it isn't, you can obtain a Certificate of Occupancy and live in the house while back-area improvements continue. The creek isn't going anywhere.
-</div>
-
-<div class="alert alert-red">
-  <strong>If bundled together:</strong><br>
-  The 17.32 discretionary exception process must resolve before SB9 can proceed, because Orinda's own SB9 page states: <em>"If your project requires a discretionary permit, you must obtain approval for all discretionary permits BEFORE applying for an SB 9 Unit application."</em> A 12-month 17.32 fight delays breaking ground on everything by 12 months.
-</div>
-
-<h3>The Drainage Plan Complication</h3>
-<p>The SB9 submittal requirements include a <strong>Drainage/Improvement Plan</strong> and a <strong>Drainage Report</strong>. This was not anticipated in earlier analysis and creates a potential entanglement point. The drainage report must include:</p>
-<ul>
-  <li>Calculations showing post-development runoff does not exceed pre-development runoff</li>
-  <li>How stormwater is conveyed through/onto the subdivision</li>
-  <li>C.3 stormwater treatment compliance</li>
-</ul>
-<p>The question is: does "runoff flowing onto/through the subdivision" require the drainage plan to address the back-area swales, or only the impervious surfaces being created by the house?</p>
-
-<table>
-  <tr>
-    <th>Interpretation</th>
-    <th>Who Benefits</th>
-    <th>Argument</th>
-  </tr>
-  <tr>
-    <td><strong>Narrow:</strong> Drainage plan covers only new impervious surfaces (house, driveway, ADU, garage). Back-area drainage is existing natural state, unchanged.</td>
-    <td><span class="tag tag-green">Applicant</span></td>
-    <td>SB9 is ministerial — scope limited to proposed development. C.3 compliance calculated for new impervious area only. Natural back drainage unchanged, no permit needed for status quo.</td>
-  </tr>
-  <tr>
-    <td><strong>Broad:</strong> Drainage plan must show whole-parcel hydrology including back-area routing. City Engineer review encompasses swale-to-ditch connection.</td>
-    <td><span class="tag tag-red">Ryan / City</span></td>
-    <td>Runoff "flowing through the subdivision" includes all drainage pathways. Can't isolate new impervious area from existing drainage network on a 10-acre hillside.</td>
-  </tr>
-</table>
-
-<div class="finding-box">
-  <h3>Key Legal Argument to Preserve</h3>
-  <p>SB9's ministerial character limits what the City can demand as a condition of completeness. Under Government Code §65913.4, a ministerial application may only be denied or conditioned based on <em>objective standards</em> — not discretionary judgments. If Ryan's interpretation of the drainage plan scope goes beyond objective standards explicitly required by the SB9 application form, it is legally vulnerable. This is the argument Fanny should be prepared to make if Ryan attempts to hold the SB9 application incomplete on drainage grounds.</p>
-</div>
-
-<hr class="section-divider">
-
-<!-- ============================================================ -->
-<h2>VI. Ryan O'Kane's Leverage Points — Mapped and Analyzed</h2>
-
-<p>Ryan O'Kane operates as Orinda's City Engineer. His authority surfaces at multiple points in the permitting process. Understanding precisely where he has power — and where he doesn't — is essential for strategy.</p>
+<h2>VII. Ryan O'Kane's Leverage Points — Mapped and Countered</h2>
 
 <table>
   <tr>
     <th>Lever</th>
-    <th>Authority Source</th>
+    <th>Authority</th>
     <th>Strength</th>
-    <th>Counter-Strategy</th>
+    <th>Counter</th>
   </tr>
   <tr>
     <td><strong>Creek Setback Type Determination</strong></td>
-    <td>§17.4.6 — City Engineer makes channel type determination</td>
+    <td>§17.4.6</td>
     <td><span class="tag tag-red">Strong</span></td>
-    <td>Commission independent hydrology/geomorphology report. Type III (swale) vs. Type II (defined bed &amp; banks) is a factual question — challenge with expert evidence.</td>
+    <td>Independent hydrology/geomorphology expert. Type III vs. II is factual — challenge with evidence.</td>
   </tr>
   <tr>
-    <td><strong>Wetland Designation Push</strong></td>
-    <td>SB9 eligibility Item 12 (federal wetland = exclusion)</td>
-    <td><span class="tag tag-red">Nuclear — if successful</span></td>
-    <td>Wetlands under federal law (Clean Water Act §404) are defined by the Army Corps of Engineers, not the City Engineer. Dispute through formal jurisdictional determination (JD) request to USACE.</td>
+    <td><strong>City Engineer Approval for Setback Work</strong></td>
+    <td>§16.64.220.C</td>
+    <td><span class="tag tag-red">Strong</span></td>
+    <td>Scope work outside setback where possible. Document drainage work as maintenance. Appeal denial through Planning Commission.</td>
   </tr>
   <tr>
-    <td><strong>City Engineer Approval for Creek Setback Work</strong></td>
-    <td>§16.64.220.C — required alongside Ch. 17.32 exception</td>
-    <td><span class="tag tag-red">Strong</span></td>
-    <td>Scope back-area work to stay outside setback. If work is needed, document it is drainage maintenance/management, not new development. Appeal denial through Planning Commission.</td>
+    <td><strong>Swale-to-Ditch Connection Demand</strong></td>
+    <td>City Engineer condition (not zoning)</td>
+    <td><span class="tag tag-yellow">Moderate</span></td>
+    <td>Get demand in writing with specific code authority cited. Challenge whether it applies to private drainage on a private 10-acre lot.</td>
   </tr>
   <tr>
     <td><strong>Engineering Review in SB9</strong></td>
-    <td>SB9 submittal — $5,000 deposit for City Engineer review of drainage plans</td>
+    <td>SB9 submittal ($5K deposit)</td>
     <td><span class="tag tag-yellow">Moderate</span></td>
-    <td>Limit SB9 drainage plan scope to new impervious surfaces. Resist scope expansion to whole-parcel drainage. Invoke SB9 ministerial limits on conditions.</td>
+    <td>Limit drainage plan scope to new impervious surfaces. Invoke SB9 ministerial limits — objective standards only.</td>
   </tr>
   <tr>
-    <td><strong>Swale-to-Ditch Connection Requirement</strong></td>
-    <td>City Engineer drainage condition — not a zoning standard</td>
+    <td><strong>SB9 Completeness Delays</strong></td>
+    <td>30-day completeness review process</td>
     <td><span class="tag tag-yellow">Moderate</span></td>
-    <td>This is a public works condition, not a zoning requirement. If imposed, ask for it in writing with the specific code authority. Challenge whether it applies to private drainage on a private 10-acre lot.</td>
+    <td>Submit tight, complete application. Invoke Permit Streamlining Act (must act within 60 days of completeness). Document all requests.</td>
   </tr>
   <tr>
     <td><strong>Biotic Assessment Requirement</strong></td>
-    <td>§17.4.6.C — City may hire biologist at applicant's expense</td>
+    <td>§17.4.6.C — City can require at applicant's expense</td>
     <td><span class="tag tag-yellow">Moderate</span></td>
-    <td>Unavoidable if triggered, but controllable: retain your own biologist first, pre-emptively document the back-area drainage as a v-ditch drainage system (Type IV) with no sensitive habitat characteristics.</td>
+    <td>Hire your own biologist first. Control the framing. Document back drainage as ephemeral swale / v-ditch drainage, not sensitive habitat.</td>
   </tr>
   <tr>
-    <td><strong>SB9 Application Completeness</strong></td>
-    <td>Orinda's 30-day completeness review process</td>
-    <td><span class="tag tag-yellow">Moderate</span></td>
-    <td>Each round of "incomplete" resets the clock. Submit a tight, well-documented application. Invoke Permit Streamlining Act (60 days to act once complete). Document all communications.</td>
+    <td><strong>Wetland Designation</strong></td>
+    <td>SB9 Item 12</td>
+    <td><span class="tag tag-green">Off the table</span></td>
+    <td>Ryan did not designate a wetland in latest decision. Risk removed.</td>
   </tr>
 </table>
-
-<hr class="section-divider">
-
-<!-- ============================================================ -->
-<h2>VII. Scenarios — How This Could Play Out</h2>
-
-<div class="scenario-box">
-  <h4>🟢 Scenario 1 — Best Case: Clean Separation, Type III/IV Ruling</h4>
-  <p>Ryan accepts (or is overruled in) the creek type determination as Type III swale (15 ft setback) or the back v-ditch as Type IV (0 ft). House footprint is outside the 15-ft setback. Back-area improvements stay outside the setback or are scoped to avoid it. SB9 drainage plan is narrowly scoped to new impervious surfaces. Ryan's Engineering Review has nothing material to object to.</p>
-  <p><strong>Timeline:</strong> SB9 approved in ~60 days. Building permit in ~6 months. House under construction within 6–8 months of application.</p>
-  <p><strong>Probability:</strong> Possible but requires proactive effort — lock in Type III/IV determination with independent expert support before any application is filed.</p>
-</div>
-
-<div class="scenario-box">
-  <h4>🟡 Scenario 2 — Middle Ground: SB9 Proceeds, 17.32 Fights in Background</h4>
-  <p>Ryan contests the channel type (pushes Type II), but wetland designation fails or is successfully challenged. House footprint is outside the setback regardless of Type II vs. III ruling. SB9 proceeds for the house. Chapter 17.32 exception for back-area improvements (retention walls, grading) proceeds as a parallel discretionary process. Drainage plan scoped narrowly for SB9 purposes.</p>
-  <p><strong>Timeline:</strong> SB9 in 60–120 days. House permit in 6–8 months. Back-area work resolved in 9–15 months (during construction or after move-in).</p>
-  <p><strong>Probability:</strong> Most likely outcome if the separation strategy is successfully defended. The key fight is holding the SB9 scope narrow in the face of Ryan's drainage expansion attempt.</p>
-</div>
-
-<div class="scenario-box">
-  <h4>🟠 Scenario 3 — Delayed: Drainage Entanglement Forces Bundling</h4>
-  <p>Ryan successfully argues the SB9 drainage report must cover whole-parcel hydrology, including back-area swales. City holds SB9 application incomplete pending resolution of swale-to-ditch connection. The 17.32 exception process must begin before SB9 can proceed. Everything is sequential — house is on hold while exception process runs.</p>
-  <p><strong>Timeline:</strong> Everything delayed 9–15 months. Significant cost impact given construction cost escalation and carrying costs on land.</p>
-  <p><strong>Response:</strong> Invoke SB9 ministerial limits aggressively. Fanny sends formal letter asserting the City cannot impose discretionary conditions on a ministerial SB9 review. Consider filing a writ of mandate if City refuses to act.</p>
-</div>
-
-<div class="scenario-box">
-  <h4>🔴 Scenario 4 — Worst Case: Wetland Designation Succeeds</h4>
-  <p>Ryan obtains a wetland designation on the back drainage area — whether through CDFW, USACE, or City's own characterization. Item 12 of the SB9 eligibility checklist fails. SB9 is denied. Project is forced into full discretionary Design Review — public hearings, CEQA analysis, neighbor notification. The full weight of Ryan's opposition is now channeled into a discretionary process where it has maximum effect.</p>
-  <p><strong>Timeline:</strong> Unknown — 18-36+ months to navigate Design Review and potential appeals.</p>
-  <p><strong>Response:</strong> Challenge the wetland designation through formal USACE Jurisdictional Determination. The Army Corps — not the City Engineer — has final authority on federal wetland designations. This is a separate process and can be pursued aggressively in parallel.</p>
-</div>
 
 <hr class="section-divider">
 
 <!-- ============================================================ -->
 <h2>VIII. Complete Permit List — Full Project</h2>
 
-<h3>A. Planning &amp; Zoning (City of Orinda — First in Sequence)</h3>
+<h3>A. Planning &amp; Zoning (Orinda Planning Dept)</h3>
 <table>
-  <tr>
-    <th>#</th>
-    <th>Permit</th>
-    <th>Type</th>
-    <th>Notes</th>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td><strong>Creek Setback Determination</strong></td>
-    <td><span class="tag tag-yellow">Administrative</span></td>
-    <td>Lock this in first. Defines the restricted zone for everything downstream.</td>
-  </tr>
-  <tr>
-    <td>2</td>
-    <td><strong>SB9 Unit Application</strong></td>
-    <td><span class="tag tag-green">Ministerial</span></td>
-    <td>Main house. Requires soils report, drainage plan, C.3 report, arborist report, MOFD approval.</td>
-  </tr>
-  <tr>
-    <td>3</td>
-    <td><strong>ADU Permit</strong></td>
-    <td><span class="tag tag-green">Ministerial</span></td>
-    <td>State ADU law — separate from SB9 but parallel track.</td>
-  </tr>
-  <tr>
-    <td>4</td>
-    <td><strong>Chapter 17.32 Exception Permit</strong></td>
-    <td><span class="tag tag-red">Discretionary</span></td>
-    <td>Required <em>before building permit</em> if any structure or grading in creek setback. Run parallel to SB9, not sequential. Zoning Admin or Planning Commission depending on scope.</td>
-  </tr>
-  <tr>
-    <td>5</td>
-    <td><strong>Tree Removal Permit</strong></td>
-    <td><span class="tag tag-red">Discretionary</span></td>
-    <td>Riparian trees within 30 ft of bank (≥4.5" diameter), oaks 12"+ diameter, any tree on vacant land ≥6" diameter. Must precede SB9 if any protected trees affected.</td>
-  </tr>
+  <tr><th>#</th><th>Permit</th><th>Type</th><th>Notes</th></tr>
+  <tr><td>1</td><td><strong>Creek Setback Determination</strong></td><td><span class="tag tag-yellow">Administrative</span></td><td>First step. Defines the restricted zone for everything downstream. Fight for Type III/IV.</td></tr>
+  <tr><td>2</td><td><strong>SB9 Unit Application</strong></td><td><span class="tag tag-green">Ministerial</span></td><td>Main house. Requires soils report, drainage plan, C.3, arborist report, MOFD approval.</td></tr>
+  <tr><td>3</td><td><strong>ADU Permit</strong></td><td><span class="tag tag-green">Ministerial</span></td><td>State ADU law. Parallel to SB9.</td></tr>
+  <tr><td>4</td><td><strong>Chapter 17.32 Exception Permit</strong></td><td><span class="tag tag-red">Discretionary</span></td><td>If any structure or grading in creek setback. Must come before building permit. Run as early as possible.</td></tr>
+  <tr><td>5</td><td><strong>Tree Removal Permit</strong></td><td><span class="tag tag-red">Discretionary</span></td><td>Riparian trees ≥4.5" diameter within 30 ft of bank; oaks ≥12" on developed property. Must precede SB9 if triggered.</td></tr>
 </table>
 
-<h3>B. City Engineer (Public Works)</h3>
+<h3>B. City Engineer (Ryan O'Kane)</h3>
 <table>
-  <tr>
-    <th>#</th>
-    <th>Permit / Approval</th>
-    <th>Notes</th>
-  </tr>
-  <tr>
-    <td>6</td>
-    <td><strong>City Engineer Approval (§16.64.220.C)</strong></td>
-    <td>Required for any grading/structures in creek setback. Ryan's direct authority. Companion to Ch. 17.32 — both required simultaneously for setback work.</td>
-  </tr>
+  <tr><th>#</th><th>Approval</th><th>Notes</th></tr>
+  <tr><td>6</td><td><strong>City Engineer Approval (§16.64.220.C)</strong></td><td>Required for any grading/structures in creek setback. Companion to 17.32 — both must be satisfied.</td></tr>
 </table>
 
 <h3>C. Fire District (MOFD)</h3>
 <table>
-  <tr>
-    <th>#</th>
-    <th>Permit / Approval</th>
-    <th>Notes</th>
-  </tr>
-  <tr>
-    <td>7</td>
-    <td><strong>MOFD Plan Review &amp; Approval</strong></td>
-    <td>Required — Orinda hills = Very High Fire Hazard Severity Zone. Fire access, sprinklers, defensible space. Must be approved before SB9 is deemed complete.</td>
-  </tr>
+  <tr><th>#</th><th>Approval</th><th>Notes</th></tr>
+  <tr><td>7</td><td><strong>MOFD Plan Review &amp; Approval</strong></td><td>Orinda hills = VHFHSZ. Required before SB9 deemed complete. Fire access, sprinklers, defensible space.</td></tr>
 </table>
 
 <h3>D. Sanitary / Water</h3>
 <table>
-  <tr>
-    <th>#</th>
-    <th>Permit / Approval</th>
-    <th>Notes</th>
-  </tr>
-  <tr>
-    <td>8</td>
-    <td><strong>CCCSD Permit or Septic Approval</strong></td>
-    <td>Central Contra Costa Sanitary District (if connecting to sewer) or CC Environmental Health (if septic system).</td>
-  </tr>
-  <tr>
-    <td>9</td>
-    <td><strong>Well Permit</strong> (if applicable)</td>
-    <td>CC Environmental Health, if municipal water not available.</td>
-  </tr>
+  <tr><th>#</th><th>Permit</th><th>Notes</th></tr>
+  <tr><td>8</td><td><strong>CCCSD or Septic Approval</strong></td><td>CCCSD if sewer connection; CC Environmental Health if septic.</td></tr>
+  <tr><td>9</td><td><strong>Well Permit</strong> (if applicable)</td><td>CC Environmental Health if on well water.</td></tr>
 </table>
 
-<h3>E. CC County Building Department (Last in Sequence)</h3>
+<h3>E. CC County Building Dept (last in sequence)</h3>
 <table>
-  <tr>
-    <th>#</th>
-    <th>Permit</th>
-    <th>Notes</th>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td><strong>Building Permit — Main House</strong></td>
-    <td>Requires geotech report, full construction drawings. CC County requires all other agency approvals before processing.</td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td><strong>Building Permit — ADU</strong></td>
-    <td>Separate permit even if part of same project.</td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td><strong>Building Permit — Garage</strong></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>13</td>
-    <td><strong>Grading Permit</strong></td>
-    <td>All site grading — drainage plans submitted here. This is where Ryan's swale connection demand would be litigated at the building permit stage if not resolved earlier.</td>
-  </tr>
-  <tr>
-    <td>14</td>
-    <td><strong>Building Permit — Retaining Walls</strong></td>
-    <td>Height thresholds trigger engineering review. Walls in creek setback require Ch. 17.32 exception first.</td>
-  </tr>
+  <tr><th>#</th><th>Permit</th><th>Notes</th></tr>
+  <tr><td>10</td><td><strong>Building Permit — Main House</strong></td><td>Requires all upstream approvals. Geotech report required for hillside.</td></tr>
+  <tr><td>11</td><td><strong>Building Permit — ADU</strong></td><td>Separate permit.</td></tr>
+  <tr><td>12</td><td><strong>Building Permit — Garage</strong></td><td></td></tr>
+  <tr><td>13</td><td><strong>Grading Permit</strong></td><td>Covers all earthwork. If any grading in setback, requires 17.32 exception first. Phased approach possible (see Scenario D).</td></tr>
+  <tr><td>14</td><td><strong>Building Permit — Retaining Walls</strong></td><td>Walls within creek setback require 17.32 exception first.</td></tr>
 </table>
 
 <h3>F. State / Federal Environmental</h3>
 <table>
-  <tr>
-    <th>#</th>
-    <th>Permit</th>
-    <th>Agency</th>
-    <th>Trigger</th>
-  </tr>
-  <tr>
-    <td>15</td>
-    <td><strong>§1602 Streambed Alteration Agreement</strong></td>
-    <td>CA Dept of Fish &amp; Wildlife (CDFW)</td>
-    <td>Any work within or adjacent to stream channel. Notifications to CDFW trigger this.</td>
-  </tr>
-  <tr>
-    <td>16</td>
-    <td><strong>§404 Permit (Nationwide or Individual)</strong></td>
-    <td>US Army Corps of Engineers</td>
-    <td>If project involves fill in Waters of the United States. Also the vehicle for a formal Jurisdictional Determination on wetlands — which could counter Ryan's wetland designation push.</td>
-  </tr>
-  <tr>
-    <td>17</td>
-    <td><strong>§401 Water Quality Certification</strong></td>
-    <td>Regional Water Quality Control Board</td>
-    <td>Typically required alongside §404 permit. Ensures water quality standards are met.</td>
-  </tr>
+  <tr><th>#</th><th>Permit</th><th>Agency</th><th>Trigger</th></tr>
+  <tr><td>15</td><td><strong>§1602 Streambed Alteration Agreement</strong></td><td>CDFW</td><td>Any work within or adjacent to stream channel.</td></tr>
+  <tr><td>16</td><td><strong>§404 Permit</strong></td><td>Army Corps of Engineers</td><td>Fill in Waters of the US. Also vehicle for formal Jurisdictional Determination if wetland dispute resurfaces.</td></tr>
+  <tr><td>17</td><td><strong>§401 Water Quality Certification</strong></td><td>Regional Water Quality Control Board</td><td>Accompanies §404.</td></tr>
 </table>
 
 <hr class="section-divider">
@@ -533,104 +613,31 @@
 <!-- ============================================================ -->
 <h2>IX. SB9 Application — Complete Submittal Requirements</h2>
 
-<p>For reference, the complete list of materials required for the SB9 Unit Application (per Orinda's official SB9 application form):</p>
-
 <table>
-  <tr>
-    <th>#</th>
-    <th>Document</th>
-    <th>Notes for This Project</th>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>SB9 Application Form</td>
-    <td>Property info, project description, owner certification</td>
-  </tr>
-  <tr>
-    <td>2</td>
-    <td>SB9 Eligibility Checklist</td>
-    <td>All items must be Yes/N/A — Item 12 (wetlands) is critical</td>
-  </tr>
-  <tr>
-    <td>3</td>
-    <td>Plan Set (11"x17" PDF)</td>
-    <td>Per SB9 Plan Set Checklist — architectural/site plans</td>
-  </tr>
-  <tr>
-    <td>4</td>
-    <td>Title Report (≤6 months old)</td>
-    <td>Standard</td>
-  </tr>
-  <tr>
-    <td>5</td>
-    <td>Soils/Geotechnical Report</td>
-    <td>⚠️ Must address <em>creek bank stability</em> for projects near creek. Geotech schedule is already a known blocker.</td>
-  </tr>
-  <tr>
-    <td>6</td>
-    <td>Drainage/Improvement Plan</td>
-    <td>Footprint, grading, drainage, utilities, driveway access per MOFD. <strong>Scope battle with Ryan likely here.</strong></td>
-  </tr>
-  <tr>
-    <td>7</td>
-    <td>Drainage Report</td>
-    <td>Post-dev runoff ≤ pre-dev runoff; conveyance calculations; downstream facilities</td>
-  </tr>
-  <tr>
-    <td>8</td>
-    <td>C.3 Stormwater Treatment Report</td>
-    <td>Compliance with provision C.3 stormwater treatment standards</td>
-  </tr>
-  <tr>
-    <td>9</td>
-    <td>Arborist Report</td>
-    <td>Almost certainly required — natural 10-acre site with riparian trees</td>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td>Landscape Water Efficiency Checklist</td>
-    <td>Required for new construction with landscape area &gt;500 sf</td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td>Site Address / Identification Sign</td>
-    <td>Vacant lot — assign address through MOFD first</td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td>MOFD Approval</td>
-    <td><strong>Required for VHFHSZ properties</strong> — Orinda hills qualifies. Must be obtained before SB9 deemed complete.</td>
-  </tr>
+  <tr><th>#</th><th>Document</th><th>Notes for This Project</th></tr>
+  <tr><td>1</td><td>SB9 Application Form</td><td>Property info, project description, owner certification</td></tr>
+  <tr><td>2</td><td>SB9 Eligibility Checklist</td><td>All items Yes/N/A. Item 4 (no discretionary permits) is key.</td></tr>
+  <tr><td>3</td><td>Plan Set (11"x17" PDF)</td><td>Per SB9 Plan Set Checklist</td></tr>
+  <tr><td>4</td><td>Title Report (≤6 months)</td><td>Standard</td></tr>
+  <tr><td>5</td><td>Soils/Geotechnical Report</td><td>⚠️ Must address creek bank stability for projects near creek. Known blocker — geotech scheduling is active issue.</td></tr>
+  <tr><td>6</td><td>Drainage/Improvement Plan</td><td><strong>Scope battle likely.</strong> Limit to new impervious surfaces if possible.</td></tr>
+  <tr><td>7</td><td>Drainage Report</td><td>Post-dev ≤ pre-dev runoff; conveyance calculations; downstream facilities</td></tr>
+  <tr><td>8</td><td>C.3 Stormwater Treatment Report</td><td>C.3 stormwater compliance calculations</td></tr>
+  <tr><td>9</td><td>Arborist Report</td><td>Almost certainly required — natural hillside site with riparian trees</td></tr>
+  <tr><td>10</td><td>Landscape Water Efficiency Checklist</td><td>New construction >500 sf landscape area</td></tr>
+  <tr><td>11</td><td>Site Address / ID Sign</td><td>Vacant lot — get address assigned through MOFD first</td></tr>
+  <tr><td>12</td><td>MOFD Approval</td><td><strong>Required</strong> — Orinda hills is VHFHSZ. Must be in hand before SB9 is complete.</td></tr>
 </table>
 
-<h3>Estimated Application Fees</h3>
+<h3>Application Fees (estimated)</h3>
 <table>
-  <tr>
-    <th>Item</th>
-    <th>Amount</th>
-  </tr>
-  <tr>
-    <td>SB9 Unit Application (1 unit) + 13% surcharge</td>
-    <td>~$6,260</td>
-  </tr>
-  <tr>
-    <td>Soils Report Peer Review (deposit)</td>
-    <td>$3,600</td>
-  </tr>
-  <tr>
-    <td>Engineering Review (deposit)</td>
-    <td>$5,000</td>
-  </tr>
-  <tr>
-    <td>Landscape Checklist Review</td>
-    <td>$79</td>
-  </tr>
-  <tr>
-    <td><strong>Approximate Total</strong></td>
-    <td><strong>~$15,000</strong></td>
-  </tr>
+  <tr><th>Item</th><th>Amount</th></tr>
+  <tr><td>SB9 Unit Application (1 unit) + 13% surcharge</td><td>~$6,260</td></tr>
+  <tr><td>Soils Report Peer Review (deposit)</td><td>$3,600</td></tr>
+  <tr><td>Engineering Review (deposit)</td><td>$5,000</td></tr>
+  <tr><td>Landscape Checklist Review</td><td>$79</td></tr>
+  <tr><td><strong>Approximate Total</strong></td><td><strong>~$15,000</strong></td></tr>
 </table>
-<p class="citation">Note: Deposits for soils peer review and engineering review are charged at hourly staff rates. Complex reviews may exceed the deposit and require replenishment. Any remainder is refunded.</p>
 
 <hr class="section-divider">
 
@@ -638,33 +645,25 @@
 <h2>X. Strategic Recommendations</h2>
 
 <ol>
-  <li>
-    <strong>Lock in the Creek Setback Determination before filing anything.</strong> Get an independent hydrology/geomorphology expert to assess the channel type. Document clearly that the back drainage area is a Type III swale (no well-defined bed and banks) or that the v-ditch is Type IV (man-made). This is the factual foundation every other decision rests on.
-  </li>
-  <li>
-    <strong>Consider a proactive biotic assessment — on your terms.</strong> If you hire your own certified biologist now, before the City requires one, you control the framing of what the back area contains. A biologist who documents that the back drainage is an ephemeral swale with no sensitive species is a far better outcome than one the City hires under adversarial circumstances.
-  </li>
-  <li>
-    <strong>Fight the wetland designation through USACE, not through Ryan.</strong> A formal Jurisdictional Determination request to the Army Corps of Engineers is the right venue. The City Engineer cannot define federal wetlands unilaterally — that is Army Corps authority. A USACE JD finding of "no wetlands" is a powerful counter to Item 12 concerns.
-  </li>
-  <li>
-    <strong>Submit SB9 with a narrowly scoped drainage plan.</strong> Drainage plan covers new impervious surfaces only. Back-area drainage is shown as existing, unchanged, natural state. Have Fanny draft a cover letter asserting that SB9's ministerial standard precludes the City from requiring whole-parcel drainage analysis as a condition of completeness.
-  </li>
-  <li>
-    <strong>File Chapter 17.32 for back-area improvements in parallel, not sequentially.</strong> Start the exception process as soon as possible — it's long regardless. Running it during SB9 review and building permit processing minimizes net timeline impact. Retention walls and back-area grading can potentially be built after occupancy if the exception is still pending.
-  </li>
-  <li>
-    <strong>Get Ryan's swale connection demand in writing with the specific code authority cited.</strong> If he can't cite a specific objective standard that requires it, the demand is not legally enforceable in the ministerial SB9 process.
-  </li>
-  <li>
-    <strong>Document everything.</strong> Every email, every verbal communication, every demand. This project has the hallmarks of a situation where a writ of mandate (mandamus) proceeding against the City may eventually be necessary. An airtight paper trail is critical.
-  </li>
+  <li><strong>Get a definitive answer from your civil engineer on phased grading feasibility.</strong> This is the single most important next step. Ask explicitly: can Phase 1 (house pad, ADU, garage, primary access) be designed as stable and drainage-complete without back-area work? Their answer determines which scenario you're in.</li>
+
+  <li><strong>Lock in the creek setback type before filing anything.</strong> Commission an independent hydrology/geomorphology report. Type II (30 ft) vs. Type III (15 ft) or Type IV (0 ft) is a factual question resolvable with evidence. Do this before the setback determination is formally issued.</li>
+
+  <li><strong>Retain your own biologist proactively.</strong> Document the back drainage area as an ephemeral swale or man-made drainage system before the City can require their own biotic assessment under adversarial circumstances. Control the characterization.</li>
+
+  <li><strong>File Chapter 17.32 as early as possible — start the clock.</strong> Even if phased grading is achievable, the 17.32 process takes 6–15 months regardless. Start it now so it runs concurrently with design and the house permitting track.</li>
+
+  <li><strong>Submit SB9 with a narrowly scoped drainage plan.</strong> Have Fanny draft a cover letter asserting SB9's ministerial standard limits the City to objective standards only — whole-parcel drainage analysis is not an objective standard explicitly listed in the SB9 application form.</li>
+
+  <li><strong>Get Ryan's swale connection demand in writing with specific code authority.</strong> If he can't cite a specific objective standard, it's not enforceable in a ministerial SB9 review.</li>
+
+  <li><strong>Document everything.</strong> Every request, every verbal condition, every completeness comment. A writ of mandate proceeding (requiring the City to act on a ministerial application) is a real tool if SB9 is wrongly held incomplete for discretionary reasons.</li>
 </ol>
 
 <hr class="section-divider">
 
 <p class="citation">
-  <strong>Sources:</strong> Orinda Municipal Code Chapter 17.32 (Exceptions), §17.4.6 (Setback Requirements for Water Channels), Chapter 17.30 (Variance and Exception procedures) — retrieved from Municode Library, version Sep 8, 2025. Orinda SB9 Unit Application form (PDF, cityoforinda.gov). Orinda Building Permit Process (cityoforinda.gov/432). Orinda Planning Applications (cityoforinda.gov/290). Analysis prepared from direct conversations and primary source review, March 12, 2026.
+  <strong>Sources:</strong> Orinda Municipal Code Chapter 17.32 (Exceptions), §17.4.6 (Setback Requirements for Water Channels) — retrieved from Municode Library, version Sep 8, 2025. Orinda SB9 Unit Application form (cityoforinda.gov). Orinda Building Permit Process (cityoforinda.gov/432). Orinda Planning Applications (cityoforinda.gov/290). Analysis based on primary source review and project-specific discussions, March 12–13, 2026. Note: wetland designation risk removed per Ryan O'Kane's March 2026 determination.
 </p>
 
 </body>
