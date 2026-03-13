@@ -307,62 +307,6 @@ Memory example: “The user prefers architecture discussions framed as clean sys
 
 <hr class="section-divider">
 
-<h1>SECTION E — What We’d Steal for an Enterprise Agent</h1>
-
-<h2>10. Best ideas worth adopting</h2>
-<ol style="font-family: Arial, sans-serif; font-size: 14px;">
-  <li><strong>Separate raw logs from structured state.</strong> Don’t force one system to do both jobs.</li>
-  <li><strong>Use SQLite for local runtime orchestration.</strong> Great for job queues, retries, automations, approvals, and semantic indexes.</li>
-  <li><strong>Keep a human-readable control layer.</strong> OpenClaw’s workspace model is valuable because it lets operators understand and steer the system directly.</li>
-  <li><strong>Capture execution context.</strong> Codex and Claude both show that shell/environment capture matters for debugging and reproducibility.</li>
-  <li><strong>Make project trust explicit.</strong> Codex’s trust model is a strong pattern for enterprise agents operating on repos or client data.</li>
- </ol>
-
-<h2>11. Recommended architecture split</h2>
-<table>
-  <tr>
-    <th>Layer</th>
-    <th>Role</th>
-    <th>Suggested Technology</th>
-  </tr>
-  <tr>
-    <td>Raw runtime events</td>
-    <td>Append-only replay/audit trail</td>
-    <td>JSONL</td>
-  </tr>
-  <tr>
-    <td>Local runtime/orchestration</td>
-    <td>Jobs, runs, retries, queues, automation state</td>
-    <td>SQLite</td>
-  </tr>
-  <tr>
-    <td>Shared product/business state</td>
-    <td>Users, orgs, projects, app-visible records</td>
-    <td>Postgres</td>
-  </tr>
-  <tr>
-    <td>Human-readable operating context</td>
-    <td>Instructions, memory, docs, reports</td>
-    <td>Files / Markdown</td>
-  </tr>
-</table>
-
-<div class="finding-box">
-  <h3>Recommended one-line principle</h3>
-  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Use JSONL for replay, SQLite for execution, Postgres for product truth, and files for human steering.</strong></p>
-</div>
-
-<h2>12. Final take</h2>
-<p>OpenClaw is interesting not because it has logs, but because it has a coherent <em>stack</em> for observability:</p>
-<ul>
-  <li>runtime logs</li>
-  <li>structured local state</li>
-  <li>semantic memory</li>
-  <li>human-readable workspace files</li>
-</ul>
-<p>That makes it more understandable, auditable, and extensible than many agent systems that hide most of their truth inside one opaque database or one giant conversation log.</p>
-<p>Codex and Claude Code reinforce many of the same lessons, but OpenClaw’s workspace-centric design makes those ideas easier to reason about and adapt for broader assistant or enterprise-agent use cases.</p>
-
 <hr class="section-divider">
 
 <p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center;">
