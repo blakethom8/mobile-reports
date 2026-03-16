@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Georgia, serif; max-width: 860px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li { margin-bottom: 6px; }
+  ol li { margin-bottom: 6px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red { background: #fde8e8; color: #c0392b; }
+  .tag-green { background: #e8f8e8; color: #27ae60; }
+  .tag-blue { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  .scenario-box { border: 1px solid #ccc; border-radius: 6px; padding: 16px 20px; margin: 16px 0; background: #fafafa; }
+  .scenario-box h4 { margin-top: 0; font-size: 14px; }
+  .decision-tree { border: 2px solid #2980b9; border-radius: 6px; padding: 18px 22px; margin: 20px 0; background: #f0f7ff; }
+  .decision-tree h3 { margin-top: 0; color: #2980b9; }
+  .move-box { border-radius: 6px; padding: 16px 20px; margin: 16px 0; }
+  .move-go { background: #e8f8e8; border: 2px solid #27ae60; }
+  .move-hold { background: #fff3cd; border: 2px solid #e6a817; }
+  .move-risk { background: #fde8e8; border: 2px solid #c0392b; }
+  .move-box h4 { margin-top: 0; }
+  .outcome-box { background: #f0f7ff; border: 1px solid #2980b9; border-radius: 4px; padding: 8px 12px; margin-top: 8px; font-size: 12px; font-family: Arial, sans-serif; }
+  .outcome-box strong { color: #1a1a2e; }
+  .unknown-item { background: #f8f0ff; border-left: 3px solid #8e44ad; padding: 10px 14px; margin: 10px 0; border-radius: 0 4px 4px 0; font-family: Arial, sans-serif; font-size: 13px; }
+  .unknown-item strong { color: #8e44ad; }
+  .reaction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .reaction-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; font-family: Arial, sans-serif; font-size: 13px; }
+  .reaction-card h5 { margin: 0 0 6px 0; font-size: 13px; }
+  @media (max-width: 600px) { .reaction-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>38 Oakwood — Strategy & Meeting Prep</h1>
+  <p><strong>Purpose:</strong> Align on philosophy, approach, and decision framework ahead of Fanny's Thursday meeting with Ryan O'Kane</p>
+  <p><strong>Prepared:</strong> March 15, 2026</p>
+  <p><strong>Audience:</strong> Blake, Drew, Devon — internal strategy only</p>
+  <p><strong>Key date:</strong> Fanny meets Ryan on Thursday, March 20</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>I. Our North Star — Keep SB9 and 17.32 Separate</h2>
+
+<p>After the team meeting last week with Fanny and the consultants, we aligned on a strategy: <strong>pursue the house through SB9 as a standalone process, and defer back-area work (landscaping, retention walls, drainage convergence) to a separate 17.32 process later.</strong></p>
+
+<p>This is Scenario D from the permitting analysis — phased grading. The house goes first; the back area follows.</p>
+
+<div class="finding-box">
+  <h3>🎯 The Objective</h3>
+  <p><strong>Optimal outcome:</strong> SB9 approval for the house with a temporary drainage solution. Back-area work (including anything in the creek setback) handled under a separate 17.32 exception permit on its own timeline.</p>
+  <p><strong>What this gets us:</strong> Break ground on the house in ~Month 5–7. Back-area permitting runs in the background without blocking construction.</p>
+  <p><strong>What we must protect against:</strong> Ryan or the city treating the house and back area as one project — forcing 17.32 to resolve before SB9 can proceed. That's Scenario C: 16–20 months before breaking ground.</p>
+</div>
+
+<div class="alert-red alert">
+  <strong>The single biggest risk in this process is SB9 and 17.32 getting merged.</strong> Every decision we make — what we say to Ryan, what we include in applications, how we frame the drainage plan — should be evaluated against this risk. If it increases the chance of merger, don't do it yet.
+</div>
+
+<h3>Why We Believe This Path Is Viable</h3>
+<ul>
+  <li><strong>SB9 is ministerial.</strong> It governs whether a residential unit is <em>allowed</em> on this parcel. It doesn't govern back-area landscaping or drainage infrastructure beyond what the house itself creates.</li>
+  <li><strong>The team is designing a temporary drainage solution</strong> scoped to the new impervious surfaces (house, ADU, garage, driveway). If this plan is self-contained and doesn't require work inside the setback, there's no trigger for 17.32 within the SB9 application.</li>
+  <li><strong>17.32 is a separate code chapter</strong> with its own application, findings, and process. It is legally distinct from SB9. They <em>can</em> run independently — the question is whether Ryan and the city will allow it.</li>
+</ul>
+
+<h3>Why It Could Fail</h3>
+<ul>
+  <li>Ryan insists the drainage plan must address the <em>entire site</em>, not just new impervious surfaces — forcing back-area work into the SB9 scope.</li>
+  <li>Ryan argues the house grading is structurally dependent on back-area retention walls — making Phase 1 not self-contained.</li>
+  <li>Orinda Planning interprets their SB9 rules as requiring all discretionary permits (including 17.32) resolved before SB9 can be filed on the same parcel.</li>
+  <li>The temporary drainage solution isn't credible enough to pass engineering review.</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>II. The Two-Point Letter — What to Raise Now vs. Later</h2>
+
+<p>Drew's draft letter to Ryan raises two distinct issues. They carry very different risk profiles for our separation strategy. We recommend splitting them.</p>
+
+<!-- POINT 1 -->
+<div class="move-box move-go">
+  <h4>✅ Point 1 — Challenge the Type II Classification in the Flat Area</h4>
+  <p><strong>Recommendation: Raise this NOW, before Thursday's meeting.</strong></p>
+
+  <p><strong>What it is:</strong> Ryan classified the area between the Buckeye tree and the concrete valley gutters as Type II ("well-defined channel bed and banks"). The area is visibly flat. We see no defined banks. His own map draws Type II lines across what appears to be open, level ground.</p>
+
+  <p><strong>Why raise it now:</strong></p>
+  <ul>
+    <li>This is a <strong>factual clarification</strong>, not a challenge to his authority. We're asking: "Where exactly are the banks? Can you show us on site?"</li>
+    <li>The classification <strong>directly determines setback distances</strong> — Type II = 30 ft, Type III = 15 ft, Type IV = 0 ft. If the flat area gets reclassified, our building envelope expands significantly.</li>
+    <li>This serves the SB9 separation strategy: a smaller setback means less chance of house grading encroaching on restricted zones, making it <strong>easier to keep SB9 clean</strong> of 17.32 triggers.</li>
+    <li>It gets Ryan on the record. If he can't justify the Type II call with specific observations, we have grounds to challenge it formally later.</li>
+    <li>Asking for a site walk is <strong>cooperative, not adversarial</strong>. It positions us as wanting to understand, not fight.</li>
+  </ul>
+
+  <p><strong>Ryan's likely responses:</strong></p>
+  <div class="reaction-grid">
+    <div class="reaction-card">
+      <h5>🟢 Best case</h5>
+      Ryan agrees to a site visit. Walking the property together, it becomes evident the flat area doesn't have defined banks. He adjusts the classification or narrows where Type II applies. Setback shrinks.
+    </div>
+    <div class="reaction-card">
+      <h5>🟡 Neutral</h5>
+      Ryan responds in writing citing his observations but can't point to clear banks in the flat zone. His response becomes part of the record — useful for any future appeal of the determination.
+    </div>
+    <div class="reaction-card">
+      <h5>🟠 Defensive</h5>
+      Ryan doubles down, claims evidence of historical channel. We still learn what he's basing it on, which helps us decide whether to commission an independent geomorphology expert.
+    </div>
+    <div class="reaction-card">
+      <h5>🔴 Worst case</h5>
+      Ryan takes offense at being questioned and becomes more adversarial on other aspects. <strong>Mitigated by:</strong> framing as a genuine request for understanding, not a legal challenge. "We'd like to walk the site together" is hard to take offense at.
+    </div>
+  </div>
+
+  <p><strong>The ask:</strong> We don't see well-defined banks in the flat area between the Buckeye and the concrete gutters. We'd like to better understand the basis for the Type II classification there. Could we arrange a site visit to walk it together?</p>
+
+  <p><strong>What we want from this:</strong></p>
+  <ol>
+    <li>Clarity on where Ryan believes the Type II setback actually begins</li>
+    <li>On-site documentation (photos, observations) that either supports or contradicts the Type II call</li>
+    <li>Ryan's reasoning in writing, on the record</li>
+    <li>A foundation for commissioning our own expert assessment if needed</li>
+  </ol>
+</div>
+
+<!-- POINT 2 -->
+<div class="move-box move-hold">
+  <h4>⏸️ Point 2 — The Drainage Convergence / "Reestablish" Language</h4>
+  <p><strong>Recommendation: HOLD this for later. Do not include in Thursday's discussion.</strong></p>
+
+  <p><strong>What it is:</strong> Ryan wrote that we must "reestablish the Type II water channel" from where the two Type IIs converge to the concrete ditch. Drew correctly identified that this language implies no channel currently exists there — which undercuts the Type II classification. It's a logical contradiction in Ryan's own letter.</p>
+
+  <p><strong>Why it's valuable:</strong> This is strong ammunition. If Ryan is saying a channel needs to be <em>reestablished</em>, he's admitting it doesn't currently exist with "well-defined bed and banks." That's the definition of Type II. His own words undermine his classification.</p>
+
+  <p><strong>Why NOT to raise it now:</strong></p>
+  <ul>
+    <li><strong>It invites holistic thinking.</strong> The convergence zone is exactly where the house drainage meets the back-area drainage system. Raising it now forces Ryan to think about the <em>full drainage picture</em> — which is what connects SB9 to 17.32.</li>
+    <li><strong>It signals we're thinking about the back area.</strong> If we're trying to scope SB9 narrowly to the house, we don't want to be the ones who bring the back-area drainage into the conversation right now.</li>
+    <li><strong>"Reestablish" is a 17.32 issue.</strong> Whatever work Ryan wants done at the convergence zone is almost certainly setback work. That's Phase 2. Let it live in Phase 2.</li>
+    <li><strong>Ryan may react defensively.</strong> Pointing out a logical contradiction in his letter is more adversarial than asking for a site walk. If he feels cornered, he may dig in harder on keeping the project unified.</li>
+  </ul>
+
+  <p><strong>When to use it:</strong> Save this for the 17.32 process. When we're in the exception permit phase and need to challenge the Type II determination at the convergence, Drew's "reestablish" catch becomes a key piece of evidence. It's more powerful as leverage in a formal proceeding than as a gotcha in a preliminary letter.</p>
+
+  <div class="alert">
+    <strong>Strategic note:</strong> Drew is right that Ryan has intentionally avoided putting his reasoning in writing. Point 1 (site visit request) gets him on the record in a low-stakes way. Point 2 backs him into a corner — which gets a reaction, but potentially not the one we want right now.
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>III. Thursday's Meeting — Scenario Planning</h2>
+
+<p>Fanny meets Ryan on Thursday, March 20. This is likely the most consequential near-term interaction. Here's how different scenarios could play out depending on what Ryan focuses on.</p>
+
+<div class="scenario-box">
+  <h4>🟢 Scenario 1 — Ryan Accepts the Phased Approach</h4>
+  <p>Fanny presents the house plan with the temporary drainage solution. Ryan reviews and accepts it as sufficient for SB9 engineering review. Back-area work is acknowledged as a future phase.</p>
+  <p><strong>What this means:</strong> We're on the Scenario D fast track. SB9 proceeds. We file 17.32 separately whenever we're ready for back-area work.</p>
+  <p><strong>Likelihood:</strong> <span class="tag tag-yellow">Possible but not guaranteed</span> — depends on how credible the temp drainage plan is and whether Ryan is feeling cooperative.</p>
+</div>
+
+<div class="scenario-box">
+  <h4>🟡 Scenario 2 — Ryan Pushes Back on Drainage but Doesn't Block</h4>
+  <p>Ryan raises concerns about the temporary drainage plan — says it's insufficient, asks for more detail, or demands that it address downstream conveyance. But he doesn't explicitly say 17.32 must come first.</p>
+  <p><strong>What this means:</strong> Negotiation territory. Fanny and the civil engineer iterate on the drainage plan. We may need to strengthen the temp solution. The key is keeping the conversation scoped to <em>what the house creates</em>, not what the full site needs.</p>
+  <p><strong>Our play:</strong> "We're committed to addressing the full site drainage — that's Phase 2. For Phase 1, here's how we handle the new impervious surfaces without entering the setback."</p>
+</div>
+
+<div class="scenario-box">
+  <h4>🟠 Scenario 3 — Ryan Demands Full Drainage Before SB9</h4>
+  <p>Ryan says the site drainage must be resolved holistically before SB9 can proceed. He won't sign off on engineering review without a complete drainage plan that includes the back area and convergence zone.</p>
+  <p><strong>What this means:</strong> He's trying to merge the processes. This is the move we need to resist.</p>
+  <p><strong>Our play:</strong> Fanny pushes back citing SB9's ministerial standard — the city can only require objective standards explicitly listed in the application form. Whole-site drainage beyond new impervious surfaces isn't an SB9 requirement. If Ryan persists, we may need legal counsel (Dave/Kristina) to write a formal letter asserting SB9 limits.</p>
+  <p><strong>Escalation path:</strong> If the city holds SB9 incomplete for discretionary reasons, the Permit Streamlining Act gives us tools to force action.</p>
+</div>
+
+<div class="scenario-box">
+  <h4>🔴 Scenario 4 — Ryan Links Everything and Demands 17.32 First</h4>
+  <p>Ryan explicitly states that because the property has creek setback issues, all discretionary permits (17.32) must be resolved before SB9 can be accepted. The project is one project in his view.</p>
+  <p><strong>What this means:</strong> Scenario C. Worst case. 16–20 months.</p>
+  <p><strong>Our play:</strong> This is where legal intervention becomes necessary. SB9 is state law. The city's ability to add prerequisites beyond what the statute requires is legally questionable. Dave and Kristina need to be ready with a response if this happens.</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>IV. Preparatory Moves — What We Can Do Before Thursday</h2>
+
+<table>
+  <tr>
+    <th>Move</th>
+    <th>Purpose</th>
+    <th>Timing</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td><strong>Send Point 1 letter to Ryan</strong></td>
+    <td>Get clarity on Type II classification in flat area; request site visit; establish record</td>
+    <td>Before Thursday</td>
+    <td><span class="tag tag-yellow">Decision needed</span></td>
+  </tr>
+  <tr>
+    <td><strong>Strengthen temp drainage plan</strong></td>
+    <td>Give Fanny a credible drainage solution to present that's scoped to new impervious surfaces only</td>
+    <td>Before Thursday</td>
+    <td><span class="tag tag-blue">Team working on it</span></td>
+  </tr>
+  <tr>
+    <td><strong>Commission quick biology report</strong></td>
+    <td>Document the flat area Ryan is calling Type II — if a biologist confirms no riparian habitat or defined channel, it supports reclassification. Also preempts Ryan requiring one at our expense under adversarial conditions.</td>
+    <td>ASAP — results before or shortly after Thursday</td>
+    <td><span class="tag tag-yellow">Consider</span></td>
+  </tr>
+  <tr>
+    <td><strong>Soils / geotech report</strong></td>
+    <td>Required for SB9 submittal. May also reveal slide risk information relevant to site grading plan.</td>
+    <td>In progress — waiting on scheduling</td>
+    <td><span class="tag tag-yellow">Pending</span></td>
+  </tr>
+  <tr>
+    <td><strong>Slide assessment</strong></td>
+    <td>Potential slide area on the hillside that may require addressing — affects grading plan and could change the scope of what needs to happen.</td>
+    <td>Tied to geotech</td>
+    <td><span class="tag tag-yellow">Waiting on info</span></td>
+  </tr>
+  <tr>
+    <td><strong>Confirm with Dave/Kristina: Is this still preliminary?</strong></td>
+    <td>Drew believes the current determination is "preliminary" and resets when we formally apply. If true, we have more room to maneuver. If not, what Ryan has already written is the determination we have to work with.</td>
+    <td>Before Thursday</td>
+    <td><span class="tag tag-red">Need to confirm</span></td>
+  </tr>
+  <tr>
+    <td><strong>Gather Google Earth historical photos</strong></td>
+    <td>Drew mentioned a "trove of dated Google Earth photos" showing the flat area has not had a defined channel. Useful for site visit and for any expert assessment.</td>
+    <td>Before site visit</td>
+    <td><span class="tag tag-yellow">Drew has these</span></td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>V. Open Unknowns</h2>
+
+<p>These are questions we don't have answers to yet. Each one affects our strategy and timeline. We should actively work to resolve them.</p>
+
+<div class="unknown-item">
+  <strong>1. Where exactly does the Type II setback start?</strong><br>
+  Ryan drew lines on a map but we don't know what they correspond to on the ground. Until we walk it with him (or an independent expert), we're guessing at our building envelope. This is what Point 1 of the letter tries to resolve.
+</div>
+
+<div class="unknown-item">
+  <strong>2. Is Ryan's determination preliminary or final?</strong><br>
+  Drew believes this is a preliminary opinion that resets when we formally apply. If so, we have a second bite at the apple. If not, challenging it now is our only window. Dave and Kristina should confirm.
+</div>
+
+<div class="unknown-item">
+  <strong>3. How long does the 17.32 process actually take?</strong><br>
+  Our estimates range from 4–6 months (best case, cooperative) to 9–15 months (adversarial). We don't know where on that spectrum we'd land. This affects how much delay Scenario D actually implies for back-area work.
+</div>
+
+<div class="unknown-item">
+  <strong>4. Will Ryan try to mandate back-area work as part of SB9?</strong><br>
+  His leverage is the drainage plan review within the SB9 engineering check. If he insists on a whole-site drainage plan, he can effectively block SB9 until 17.32 is resolved. We don't know yet how aggressively he'll push this.
+</div>
+
+<div class="unknown-item">
+  <strong>5. Can Phase 1 grading be truly self-contained?</strong><br>
+  The civil engineer needs to confirm the house pad, ADU, and primary access can drain independently without back-area retention walls or routing through the setback. If not, phased grading doesn't work.
+</div>
+
+<div class="unknown-item">
+  <strong>6. Slide risk on the hillside</strong><br>
+  There may be a slide area that requires remediation. This could change the grading scope, add cost, and potentially interact with setback issues depending on location. Waiting on geotech.
+</div>
+
+<div class="unknown-item">
+  <strong>7. What does the soils report reveal?</strong><br>
+  Required for SB9. May affect foundation design, grading approach, and whether phased construction is structurally feasible. Still waiting on scheduling.
+</div>
+
+<div class="unknown-item">
+  <strong>8. Will Ryan view a Phase 1 / Phase 2 approach as dishonest?</strong><br>
+  If we present SB9 as "just the house" and Ryan suspects we're deferring back-area work to avoid 17.32, he may push back harder. The framing matters: this is phased development (common for large lots), not an attempt to circumvent creek protections.
+</div>
+
+<div class="unknown-item">
+  <strong>9. Biology of the flat area</strong><br>
+  If we commission our own biology report showing no riparian habitat or defined stream morphology in the flat zone, it strengthens the Type III/IV argument. But we haven't done it yet.
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>VI. Recommended Philosophy & Approach</h2>
+
+<div class="finding-box">
+  <h3>The Posture: Cooperative, Informed, Phased</h3>
+  <p>We are not trying to fight Ryan. We are trying to <strong>understand</strong> his determination so we can <strong>design around it</strong>. We accept that some form of 17.32 is likely for back-area work. Our goal is to make sure that process doesn't block the house.</p>
+</div>
+
+<h3>Guiding Principles</h3>
+<ol>
+  <li><strong>Never be the ones who connect the house to the back area.</strong> Let Ryan draw that line if he wants to. We don't volunteer it. Every communication, every plan, every meeting should treat the house and the back area as separate phases of development.</li>
+
+  <li><strong>Seek clarification, not confrontation.</strong> Point 1 (Type II classification) is a legitimate question. Frame it as "help us understand" — not "you're wrong." A site walk together is the ideal format.</li>
+
+  <li><strong>Build our evidence base quietly.</strong> Biology report, historical Google Earth photos, geotech, soils — these give us facts to work with. We want to be the most informed people in the room, not the most aggressive.</li>
+
+  <li><strong>Save our strongest cards for when they matter.</strong> The "reestablish" contradiction, the legal limits of SB9, the Permit Streamlining Act — these are escalation tools. Use them if Ryan tries to merge the processes, not before.</li>
+
+  <li><strong>Resolve unknowns before committing.</strong> Several of the items above (preliminary vs. final determination, Phase 1 self-containment, slide risk) materially change the strategy. Get answers before the SB9 application is filed.</li>
+</ol>
+
+<h3>For Thursday's Meeting Specifically</h3>
+<ul>
+  <li><strong>Fanny's primary message:</strong> We're moving forward with the house. Here's our drainage approach for the new construction. We'd like to understand the setback determination better — can we arrange a site visit?</li>
+  <li><strong>What Fanny should NOT bring up:</strong> Back-area drainage, the convergence zone, the "reestablish" language, or anything that invites Ryan to think about the full site.</li>
+  <li><strong>If Ryan brings up the back area:</strong> "We understand there's work to be done there and we plan to address it. For now, we're focused on getting the house plans finalized."</li>
+  <li><strong>If Ryan tries to link them:</strong> Fanny should note the concern, not argue it in the moment, and report back so we can decide whether to escalate with Dave/Kristina.</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>VII. Summary — Decision Points</h2>
+
+<table>
+  <tr>
+    <th>Decision</th>
+    <th>Recommendation</th>
+    <th>Timing</th>
+  </tr>
+  <tr>
+    <td>Send Point 1 (Type II classification question) to Ryan?</td>
+    <td><span class="tag tag-green">Yes — before Thursday</span></td>
+    <td>This week</td>
+  </tr>
+  <tr>
+    <td>Send Point 2 (convergence / "reestablish") to Ryan?</td>
+    <td><span class="tag tag-red">No — save for 17.32 phase</span></td>
+    <td>Later</td>
+  </tr>
+  <tr>
+    <td>Commission biology report on flat area?</td>
+    <td><span class="tag tag-green">Yes — proactive, controls narrative</span></td>
+    <td>ASAP</td>
+  </tr>
+  <tr>
+    <td>Confirm preliminary vs. final determination?</td>
+    <td><span class="tag tag-green">Yes — ask Dave/Kristina</span></td>
+    <td>Before Thursday</td>
+  </tr>
+  <tr>
+    <td>Compile Google Earth historical photos?</td>
+    <td><span class="tag tag-green">Yes — Drew has these</span></td>
+    <td>Before site visit</td>
+  </tr>
+  <tr>
+    <td>How to frame phased approach to Ryan?</td>
+    <td><span class="tag tag-yellow">Let Fanny lead — house first, back area acknowledged but separate</span></td>
+    <td>Thursday</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<p class="citation">
+  <strong>Sources:</strong> Drew McDonald emails (March 6, 14–15, 2026). Ryan O'Kane preliminary creek setback determination letter (via Fanny Lee). Orinda Municipal Code §17.4.6, Chapter 17.32. Permitting strategy analysis (March 12–13, 2026). Team meeting notes (week of March 10). Internal discussion only — not for distribution to City of Orinda.
+</p>
+
+</body>
+</html>
