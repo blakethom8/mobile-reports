@@ -1,27 +1,280 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blake's Reports</title>
 <style>
-  body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; background: #f8f8f8; }
-  h1 { color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
-  .report-link { display: block; background: white; border-left: 4px solid #1a1a2e; padding: 16px 20px; margin: 12px 0; border-radius: 4px; text-decoration: none; color: #222; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .report-link:hover { border-left-color: #c0392b; }
-  .report-link h3 { margin: 0 0 4px 0; color: #1a1a2e; font-size: 15px; }
-  .report-link p { margin: 0; color: #666; font-size: 12px; }
-  .tag { display: inline-block; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-right: 4px; background: #e8f0fe; color: #2980b9; }
+  :root {
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --ink: #1f2937;
+    --muted: #667085;
+    --line: #dbe3ee;
+    --navy: #16263d;
+    --blue: #2563eb;
+    --green: #0f9d58;
+    --purple: #7c3aed;
+    --orange: #f59e0b;
+    --red: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #16263d 0%, #23406a 100%);
+    color: white;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 12px 28px rgba(22, 38, 61, 0.18);
+  }
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+  .hero p {
+    margin: 0;
+    color: #d7e4ff;
+    max-width: 900px;
+  }
+  .meta {
+    margin-top: 12px;
+    font-size: 0.92rem;
+    color: #c6d8fb;
+  }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(16, 24, 40, 0.05);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+  }
+  th {
+    background: #eef4fb;
+    font-size: 0.83rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #475467;
+    position: sticky;
+    top: 0;
+  }
+  tr:hover td { background: #fbfdff; }
+  a {
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 700;
+  }
+  a:hover { color: var(--blue); text-decoration: underline; }
+  .desc { color: var(--muted); line-height: 1.45; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .ai { background: #eef4ff; color: #2458cc; border-color: #cfe0ff; }
+  .healthcare { background: #ecfdf3; color: #067647; border-color: #c7f0d8; }
+  .strategy { background: #faf5ff; color: #7a2ab8; border-color: #ead8ff; }
+  .infra { background: #fff7ed; color: #b45309; border-color: #fed7aa; }
+  .research { background: #fef2f2; color: #b42318; border-color: #fecaca; }
+  .product { background: #eef2ff; color: #4338ca; border-color: #c7d2fe; }
+  .market { background: #effcf6; color: #027a48; border-color: #abefc6; }
+  .small { color: var(--muted); font-size: 0.88rem; }
+  .footer {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  @media (max-width: 900px) {
+    .wrap { padding: 20px 10px 40px; }
+    th:nth-child(3), td:nth-child(3) { display: none; }
+  }
 </style>
 </head>
 <body>
-<h1>📊 Reports</h1>
+<div class="wrap">
+  <div class="hero">
+    <h1>📊 Blake's Reports</h1>
+    <p>Business, technical, AI, healthcare, and research reports optimized for quick mobile viewing. This index intentionally focuses on shareable work and technical explainers.</p>
+    <div class="meta">Dense view: date · report · description · tags</div>
+  </div>
 
-<a class="report-link" href="fraud-detection-autoresearch.html">
-  <h3>🔬 Healthcare Fraud Detection — Autoresearch Design</h3>
-  <p><span class="tag">NEW</span> March 8, 2026 · CMS + LEIE + Karpathy's autoresearch loop</p>
-</a>
+  <div class="panel">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 120px;">Date</th>
+          <th style="width: 320px;">Report</th>
+          <th>Description</th>
+          <th style="width: 230px;">Tags</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-03-18</td>
+          <td><a href="2026-03-18_airline-wifi-messaging-vs-web-report.html">Airline Wi‑Fi: Why Telegram Works When Safari Doesn't</a></td>
+          <td class="desc">Visual explainer on airline Wi‑Fi policy enforcement, captive portals, DNS, routing, messaging-only access tiers, and why in-app links may behave differently from Safari.</td>
+          <td><div class="tags"><span class="tag infra">Networking</span><span class="tag research">Explainers</span><span class="tag ai">Systems</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-18</td>
+          <td><a href="2026-03-18_cisco-secure-client-vpn-gateway-report.html">Cisco Secure Client, VPNs, and Secure Gateways</a></td>
+          <td class="desc">Beginner-friendly report on Cisco Secure Client, background services/daemons, secure gateways/headends, auth and policy flow, and how to think about enterprise VPN architecture.</td>
+          <td><div class="tags"><span class="tag infra">Networking</span><span class="tag research">Explainers</span><span class="tag ai">Architecture</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-18</td>
+          <td><a href="2026-03-18_kalshi-live-examples.html">Kalshi Live Examples</a></td>
+          <td class="desc">Examples and reference material around prediction-market usage and live market framing.</td>
+          <td><div class="tags"><span class="tag market">Markets</span><span class="tag strategy">Examples</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-18</td>
+          <td><a href="2026-03-18_prediction-market-betting-strategy.html">Prediction Market Betting Strategy</a></td>
+          <td class="desc">Strategy-oriented report on how to think about prediction market positions, setup quality, edge, and disciplined decision-making.</td>
+          <td><div class="tags"><span class="tag market">Markets</span><span class="tag strategy">Strategy</span><span class="tag research">Research</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-18</td>
+          <td><a href="2026-03-18_prediction-market-opportunity-map.html">Prediction Market Opportunity Map</a></td>
+          <td class="desc">Opportunity landscape for prediction markets, including categories, angles of attack, and where informational or workflow advantages may exist.</td>
+          <td><div class="tags"><span class="tag market">Markets</span><span class="tag strategy">Opportunity Map</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-18</td>
+          <td><a href="2026-03-18_prediction-market-trading-research.html">Prediction Market Trading Research</a></td>
+          <td class="desc">Research brief on market behavior, trading patterns, and practical approaches to evaluating prediction market opportunities.</td>
+          <td><div class="tags"><span class="tag market">Markets</span><span class="tag research">Research</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-14</td>
+          <td><a href="2026-03-14_enterprise-agent-landscape-strategy.html">Enterprise Agent Landscape Strategy</a></td>
+          <td class="desc">Landscape view of enterprise agent products, positioning, likely customer value, and strategic implications for venture direction.</td>
+          <td><div class="tags"><span class="tag ai">AI Agents</span><span class="tag strategy">Strategy</span><span class="tag product">Landscape</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-13</td>
+          <td><a href="2026-03-13_fraud-detection-technical-brief.html">Fraud Detection Technical Brief</a></td>
+          <td class="desc">Technical brief on the CMS fraud detection project, model logic, signal design, findings, and implications for future validation.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag ai">ML</span><span class="tag research">Fraud</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-13</td>
+          <td><a href="2026-03-13_openclaw-observability-and-agent-logging.html">OpenClaw Observability and Agent Logging</a></td>
+          <td class="desc">Report on improving observability for spawned agents, completion signaling, logging, and operational confidence in long-running agent workflows.</td>
+          <td><div class="tags"><span class="tag ai">AI Agents</span><span class="tag infra">Observability</span><span class="tag strategy">Operations</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-12</td>
+          <td><a href="2026-03-12_azure-cli-enterprise-assistant.html">Azure CLI Enterprise Assistant</a></td>
+          <td class="desc">Concept and implementation framing for an enterprise assistant using Azure CLI and related infrastructure patterns.</td>
+          <td><div class="tags"><span class="tag ai">AI Agents</span><span class="tag infra">Azure</span><span class="tag product">Enterprise</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-12</td>
+          <td><a href="2026-03-12_claude-code-cli-deep-dive.html">Claude Code CLI Deep Dive</a></td>
+          <td class="desc">Deep dive on Claude Code CLI usage, patterns, limitations, and operational implications for agent-driven coding workflows.</td>
+          <td><div class="tags"><span class="tag ai">AI Agents</span><span class="tag infra">Developer Tools</span><span class="tag research">Deep Dive</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-12</td>
+          <td><a href="2026-03-12_session-based-architecture-plan.html">Session-Based Architecture Plan</a></td>
+          <td class="desc">Architecture plan for session-oriented agent systems, control surfaces, and durable coordination patterns.</td>
+          <td><div class="tags"><span class="tag ai">Architecture</span><span class="tag product">Systems Design</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-11</td>
+          <td><a href="2026-03-11_ehi-ignite-challenge-brief.html">EHI Ignite Challenge Brief</a></td>
+          <td class="desc">Briefing on the HHS EHI Ignite Challenge, framing the opportunity, scope, and strategic positioning for a submission.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag strategy">Challenge</span><span class="tag product">Opportunity</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-11</td>
+          <td><a href="2026-03-11_ehi-patient-data-deep-dive.html">EHI Patient Data Deep Dive</a></td>
+          <td class="desc">Deep dive into patient data, access, exchange, and structural opportunity areas relevant to healthcare product strategy.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag research">Data</span><span class="tag strategy">Deep Dive</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-09</td>
+          <td><a href="2026-03-09_blog-healthcare-fraud-detection.html">Blog: Healthcare Fraud Detection</a></td>
+          <td class="desc">Public-facing blog-style writeup translating the fraud detection work into a more narrative and accessible format.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag ai">ML</span><span class="tag product">Writing</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-09</td>
+          <td><a href="2026-03-09_fraud-detection-comprehensive.html">Fraud Detection Comprehensive Report</a></td>
+          <td class="desc">Comprehensive report covering the CMS fraud detection effort, experimentation, signal weighting, findings, and next steps.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag ai">ML</span><span class="tag research">Comprehensive</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-08</td>
+          <td><a href="2026-03-08_enterprise-assistant-architecture.html">Enterprise Assistant Architecture</a></td>
+          <td class="desc">Architecture framing for an enterprise assistant product: surfaces, orchestration, capabilities, and enterprise deployment thinking.</td>
+          <td><div class="tags"><span class="tag ai">AI Agents</span><span class="tag product">Enterprise</span><span class="tag strategy">Architecture</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-08</td>
+          <td><a href="2026-03-08_environment-restructure-plan.html">Environment Restructure Plan</a></td>
+          <td class="desc">Plan for reorganizing the development environment and workspace structure to support cleaner agent workflows and maintainability.</td>
+          <td><div class="tags"><span class="tag infra">Developer Ops</span><span class="tag strategy">Plan</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-08</td>
+          <td><a href="2026-03-08_fraud-detection-full-session.html">Fraud Detection Full Session</a></td>
+          <td class="desc">Full-session technical narrative of the fraud detection project, including findings, method evolution, and applied reasoning.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag ai">ML</span><span class="tag research">Session Log</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-08</td>
+          <td><a href="2026-03-08_openclaw-multi-agent-explainer.html">OpenClaw Multi-Agent Explainer</a></td>
+          <td class="desc">Explainer on multi-agent orchestration, role separation, and how coordinated agent systems can be structured in practice.</td>
+          <td><div class="tags"><span class="tag ai">AI Agents</span><span class="tag product">Explainer</span><span class="tag strategy">Architecture</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-08</td>
+          <td><a href="fraud-detection-autoresearch.html">Healthcare Fraud Detection — Autoresearch Design</a></td>
+          <td class="desc">Initial report on applying an autoresearch-style loop to healthcare fraud detection using CMS data and exclusion signals.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag ai">ML</span><span class="tag research">Autoresearch</span></div></td>
+        </tr>
+        <tr>
+          <td>2026-03-09</td>
+          <td><a href="fraud-validation-report-2026-03-09.html">Fraud Validation Report</a></td>
+          <td class="desc">Validation-oriented report reviewing suspect providers and supporting evidence around the fraud detection workflow.</td>
+          <td><div class="tags"><span class="tag healthcare">Healthcare</span><span class="tag research">Validation</span><span class="tag ai">ML</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-<p style="color:#aaa; font-size:12px; margin-top:40px;">Private reports — not for distribution.</p>
+  <div class="footer">
+    Personal/private reports are intentionally not indexed here. This page is meant to be a clean public-facing catalog of business and technical work.
+  </div>
+</div>
 </body>
 </html>
