@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction Market Opportunity Map — Fees, Categories & Edge Cases</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 820px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 6px; font-family: Arial, sans-serif; font-size: 14px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red { background: #fde8e8; color: #c0392b; }
+  .tag-green { background: #e8f8e8; color: #27ae60; }
+  .tag-blue { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  .opp-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; background: #fafafa; }
+  .opp-card h3 { margin-top: 0; font-size: 16px; color: #1a1a2e; }
+  .opp-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🗺️ Prediction Market Opportunity Map — Part 2</h1>
+  <p>Prepared by Chief | March 18, 2026</p>
+  <p>Fee Structures at Volume · All Market Categories · Discrete Edge Cases · Where the Alpha Is</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>ℹ️ Context:</strong> This is the companion to Part 1 (strategy overview). This report goes wider — mapping all the market categories, fee economics at volume, and specific edge cases people are exploiting. The goal: explore broadly before narrowing.
+</div>
+
+<!-- ============================================================ -->
+<h1>FEE STRUCTURES — What Trading Actually Costs at Volume</h1>
+<!-- ============================================================ -->
+
+<h2>Kalshi Fee Formula</h2>
+
+<p>Kalshi uses a <strong>probability-weighted formula</strong>:</p>
+
+<blockquote>Fee per contract = 0.07 × price × (1 − price)</blockquote>
+
+<p>This means fees are <strong>highest at 50/50 odds</strong> and drop toward zero at the extremes. For S&P 500 and Nasdaq markets, the multiplier is halved to 0.035.</p>
+
+<table>
+  <tr>
+    <th>Contract Price</th>
+    <th>Fee per Contract</th>
+    <th>Cost on 100 Contracts</th>
+    <th>Effective Rate</th>
+  </tr>
+  <tr>
+    <td>$0.10 (90/10 odds)</td>
+    <td>$0.0063</td>
+    <td>$0.63</td>
+    <td>0.63%</td>
+  </tr>
+  <tr>
+    <td>$0.25 (75/25)</td>
+    <td>$0.013</td>
+    <td>$1.31</td>
+    <td>0.52%</td>
+  </tr>
+  <tr>
+    <td>$0.50 (50/50)</td>
+    <td>$0.0175</td>
+    <td>$1.75</td>
+    <td>0.35%</td>
+  </tr>
+  <tr>
+    <td>$0.75 (75/25)</td>
+    <td>$0.013</td>
+    <td>$1.31</td>
+    <td>0.17%</td>
+  </tr>
+  <tr>
+    <td>$0.90 (90/10)</td>
+    <td>$0.0063</td>
+    <td>$0.63</td>
+    <td>0.07%</td>
+  </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Key insight:</strong> At high-probability contracts (near $0.90+), fees are almost negligible. This favors strategies where you're buying contracts you're highly confident about — like weather markets where your model says 90%+ but the market says 75%.</p>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Maker fees:</strong> Generally lower or zero on most Kalshi markets. Using <strong>limit orders instead of market orders</strong> saves significantly — one experienced guide says this is the single most impactful thing new traders miss.</p>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>At volume example:</strong> 1,000 trades/month at $0.50 avg price, 10 contracts each = ~$175/month in fees. That's the cost of doing business — your edge needs to exceed this.</p>
+
+<h2>Polymarket Fee Structure</h2>
+
+<table>
+  <tr>
+    <th>Market Type</th>
+    <th>Taker Fee</th>
+    <th>Maker Fee</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>Polymarket Global (most markets)</td>
+    <td>0%</td>
+    <td>0%</td>
+    <td>2% of net profits at withdrawal</td>
+  </tr>
+  <tr>
+    <td>Polymarket US (CFTC-regulated)</td>
+    <td>0.10%</td>
+    <td>0%</td>
+    <td>Flat taker fee on all trades</td>
+  </tr>
+  <tr>
+    <td>15-minute crypto markets</td>
+    <td>Up to 3%</td>
+    <td>USDC rebates</td>
+    <td>Higher fees to deter HFT bots</td>
+  </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>At volume:</strong> Polymarket Global's 2%-of-profits model is actually very expensive if you're profitable. On $10K in net profits, that's $200. Polymarket US at 0.10% is much cheaper — a $1,000 position costs $1.00 in fees. Plus ~$0.02–$0.05 in Polygon gas per transaction.</p>
+
+<h2>Other Platforms</h2>
+
+<table>
+  <tr>
+    <th>Platform</th>
+    <th>Fee Model</th>
+    <th>Cost</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>Robinhood</td>
+    <td>Flat per-contract</td>
+    <td>$0.02/contract</td>
+    <td>Simple, predictable. New to prediction markets.</td>
+  </tr>
+  <tr>
+    <td>FanDuel Predicts</td>
+    <td>Payout-based</td>
+    <td>2% of potential payout</td>
+    <td>Via CME-regulated exchange</td>
+  </tr>
+  <tr>
+    <td>DraftKings</td>
+    <td>Flat per-contract</td>
+    <td>$0.01 + exchange fee</td>
+    <td>Entering market</td>
+  </tr>
+  <tr>
+    <td>PredictIt</td>
+    <td>Profit + withdrawal</td>
+    <td>10% of profits + 5% withdrawal</td>
+    <td><span class="tag tag-red">Most expensive</span> — avoid</td>
+  </tr>
+</table>
+
+<div class="finding-box">
+  <h3>💰 Fee Takeaway for High-Volume Bot Trading</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">For automated, high-frequency strategies: <strong>Kalshi with limit orders</strong> is the sweet spot. Maker fees are minimal, the API is clean, and you control exactly what price you trade at. At 50/50 contracts, you're paying ~1.75¢ per contract — your edge needs to consistently exceed that. At extreme prices (90/10), fees drop below 1¢. <strong>Always use limit orders</strong> — the fee difference and fill protection are massive at scale.</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>THE FULL MARKET CATEGORY MAP</h1>
+<!-- ============================================================ -->
+
+<p>Here's the landscape of what you can actually trade, with honest assessments of where the edge is.</p>
+
+<h2>Kalshi Volume Breakdown (Recent Week)</h2>
+<table>
+  <tr>
+    <th>Category</th>
+    <th>Weekly Volume</th>
+    <th>Share</th>
+    <th>Liquidity</th>
+  </tr>
+  <tr>
+    <td>Sports</td>
+    <td>$127.1M</td>
+    <td>84%</td>
+    <td><span class="tag tag-green">Deep</span></td>
+  </tr>
+  <tr>
+    <td>Crypto</td>
+    <td>$15.9M</td>
+    <td>10.5%</td>
+    <td><span class="tag tag-green">Good</span></td>
+  </tr>
+  <tr>
+    <td>Politics</td>
+    <td>$3.7M</td>
+    <td>2.4%</td>
+    <td><span class="tag tag-yellow">Moderate</span></td>
+  </tr>
+  <tr>
+    <td>Economics</td>
+    <td>$1.7M</td>
+    <td>1.1%</td>
+    <td><span class="tag tag-yellow">Moderate</span></td>
+  </tr>
+  <tr>
+    <td>Weather</td>
+    <td>~$500K</td>
+    <td>&lt;1%</td>
+    <td><span class="tag tag-red">Thin</span></td>
+  </tr>
+  <tr>
+    <td>Other (mentions, culture, science)</td>
+    <td>~$1M</td>
+    <td>&lt;1%</td>
+    <td><span class="tag tag-red">Thin</span></td>
+  </tr>
+</table>
+
+<div class="alert">
+  <strong>⚠️ The Liquidity Paradox:</strong> The markets with the most volume (sports) are the hardest to beat — they're hyper-efficient because professional bettors and sportsbooks arbitrage them constantly. The thin markets (weather, economics, mentions) are where edges exist but you can't deploy huge capital. This is the central tension.
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>OPPORTUNITY-BY-OPPORTUNITY BREAKDOWN</h1>
+<!-- ============================================================ -->
+
+<div class="opp-card">
+  <h3>🌡️ Weather Markets (Kalshi)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Data Edge</span>
+    <span class="tag tag-yellow">Thin Liquidity</span>
+    <span class="tag tag-green">Daily Resolution</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> Daily high temperature predictions for NYC (Central Park/KNYC), Chicago (Midway/KMDW), Miami (MIA/KMIA), Austin (Bergstrom/KAUS), Denver (DEN/KDEN), Houston (Hobby/KHOU), Philadelphia (PHL/KPHL). Six 2-degree brackets per day.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Resolution:</strong> NWS Daily Climatological Report from specific weather stations. Markets launch at 10 AM the previous day.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> Most traders check weather.com or Apple Weather. The real data sources are multiple weather models (GFS, HRRR, NAM, ECMWF), NWS MOS bias-corrected forecasts, and real-time station observations. Huge exploitable knowledge gap in how NWS stations report data — hourly vs 5-minute stations have different rounding/conversion quirks that create discrepancies between what you see on the time series and what the official high actually is.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Risks:</strong> Low liquidity limits position size (~$20-50 profit ceiling per city per day). Weather is inherently noisy — models diverge, microclimates matter.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-green">Excellent starter</span> — Perfect for learning the platform, building data pipelines, and testing automated execution. Won't get rich but will build the infrastructure for everything else.</p>
+</div>
+
+<div class="opp-card">
+  <h3>📊 Economic Indicators (Kalshi)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Data Edge</span>
+    <span class="tag tag-yellow">Monthly Resolution</span>
+    <span class="tag tag-green">Moderate Liquidity</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> CPI (MoM, YoY), Core CPI, PCE inflation, unemployment rate, nonfarm payrolls, GDP growth, Fed rate decisions, probability of recession. Federal Reserve validated Kalshi as "just as good if not better" than traditional forecasting in a February 2026 paper.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> These resolve against official BLS/BEA data. Leading indicators (regional Fed surveys, PMI, weekly jobless claims, commodity prices, wage data) all come out before the official number. If you build a model that weights these inputs, you can form probability estimates days or weeks ahead. As new data drops, you update and trade the drift.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Sweet spot:</strong> CPI and jobs reports have the most liquidity. Fed rate decisions are heavily traded but also heavily efficient. The edge is in the less-watched releases (Core CPI, GDP components, PCE).</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-green">Strong</span> — Government data pipelines are your literal day job. BLS API is free. The modeling is straightforward time series + leading indicators.</p>
+</div>
+
+<div class="opp-card">
+  <h3>🏈 Sports Markets (Kalshi)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Deep Liquidity</span>
+    <span class="tag tag-red">Hyper-Efficient</span>
+    <span class="tag tag-blue">High Volume</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> NFL, NBA, MLB, NHL, college basketball, soccer (25+ leagues), tennis. Game outcomes, spreads, totals.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge (if any):</strong> One builder (EventEdge, posted yesterday on Reddit) has a real-time model across 9+ sports with 2,324 trades at 56.7% win rate and 6.5¢ average edge. Uses Kelly criterion sizing. But the experienced Kalshi guide literally says: <em>"Avoid trading sports game markets. They have the highest volume and deepest liquidity, making them extremely efficient and very hard to beat."</em></p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Reality check:</strong> Sportsbooks have been pricing these for decades. Kalshi sports markets are arbitraged against traditional books. You're competing with DraftKings, FanDuel, and professional bettors who have proprietary injury data, real-time tracking, and decades of models. Casual bettors subsidize this market.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-red">Low priority</span> — Unless you have a specific domain advantage (e.g., you follow a niche sport obsessively), this is the hardest category to beat. High volume but razor-thin edges eaten by professionals.</p>
+</div>
+
+<div class="opp-card">
+  <h3>₿ Crypto Short-Term Markets (Polymarket + Kalshi)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Massive Volume</span>
+    <span class="tag tag-red">Bot-Dominated</span>
+    <span class="tag tag-yellow">Speed Required</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> 5-minute and 15-minute BTC/ETH/SOL price prediction contracts. "Will Bitcoin be higher or lower in 15 minutes?" ~$70M/day in volume. Now over half of all crypto prediction trading.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> Latency arbitrage between Polymarket prices and Binance/Coinbase real-time feeds. When Polymarket's price lags behind exchange prices by even milliseconds, bots buy the mispricing. One wallet turned $300 into $400K in a month doing this.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Reality check:</strong> This is HFT territory. Sub-100ms execution, dedicated RPC nodes, co-located servers. Polymarket now charges up to 3% taker fees on these specifically to deter bots. The barrier to entry is high and the space is already saturated with sophisticated quant bots.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-red">Not our game</span> — Requires speed infrastructure we don't have and a pure quant edge in crypto price prediction.</p>
+</div>
+
+<div class="opp-card">
+  <h3>🗣️ Mention Markets (Kalshi)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-yellow">Niche</span>
+    <span class="tag tag-green">Fun Edge Cases</span>
+    <span class="tag tag-red">Very Thin Liquidity</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> "Will Trump say 'Biden' in his next speech?" "How many times will X be mentioned?" These are event-driven markets tied to specific public appearances or broadcasts.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> One experienced trader says mention markets are his favorite niche. The edge is in parsing speech patterns, reading prepared remarks leaked ahead of time, and understanding the context of specific events. Very human-judgment dependent.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Unique risk:</strong> Resting limit orders get adversely filled — you get filled only when the word IS said (bad for your NO position). Must monitor during live events.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-yellow">Interesting side play</span> — LLM analysis of speech transcripts and patterns could provide systematic edge. Low capital deployment but fun and learnable.</p>
+</div>
+
+<div class="opp-card">
+  <h3>🏛️ Political & Policy Markets (Both Platforms)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Information Edge</span>
+    <span class="tag tag-yellow">Event-Driven</span>
+    <span class="tag tag-green">Moderate Liquidity</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> Elections, legislation passage, government shutdown duration, SCOTUS decisions, cabinet confirmations, international events. Polymarket's bread and butter.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> AI-powered news repricing. When news breaks, markets take 30 seconds to 5 minutes to adjust. LLM ensemble models can process news, cross-reference sources, and calculate updated probabilities faster than the crowd. This is Strategy 2 from Part 1.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-green">Strong</span> — This is pure LLM + news pipeline work. No domain-specific data needed, just faster information processing.</p>
+</div>
+
+<div class="opp-card">
+  <h3>✈️ TSA Passenger Volume (Kalshi)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Data Edge</span>
+    <span class="tag tag-red">Very Low Liquidity</span>
+    <span class="tag tag-blue">Weekly Resolution</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> Weekly average TSA passenger counts. Binary contracts at various thresholds (e.g., above 2.3M, above 2.35M, above 2.4M).</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> TSA publishes daily checkpoint data publicly. Seasonal patterns are strong (holidays, summer travel). Time series modeling with basic statistics (rolling averages, holiday adjustments) can beat the market. Jacob Ferraiolo built and documented an entire bot for this.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Reality check:</strong> ~$20/week profit ceiling due to liquidity. But it's a perfect learning market — low stakes, well-documented, clean data source.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-green">Good for learning</span> — Already has a tutorial series. Minimal capital at risk. Great for testing the full pipeline end-to-end.</p>
+</div>
+
+<div class="opp-card">
+  <h3>🔗 Cross-Platform Arbitrage (Kalshi ↔ Polymarket)</h3>
+  <div class="opp-badges">
+    <span class="tag tag-green">Structural Edge</span>
+    <span class="tag tag-yellow">Capital Intensive</span>
+    <span class="tag tag-yellow">Execution Risk</span>
+  </div>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>What:</strong> Same event priced differently on Kalshi and Polymarket. Buy YES on one, NO on the other. Lock in risk-free profit if total cost < $1.00.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The Edge:</strong> One Reddit user built and open-sourced a bot for this. Works best on Fed rate decisions, political events, and economic indicators that are listed on both platforms. The edge exists because the platforms have different user bases with different biases.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Catches:</strong> Requires accounts and capital on both platforms. Settlement timing differs. Polymarket requires crypto (USDC), Kalshi uses USD. Execution risk: you might get filled on one side but not the other. Opportunities are shrinking as more bots compete.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Our fit:</strong> <span class="tag tag-yellow">Phase 3 play</span> — Requires accounts on both platforms and enough capital to make the thin margins worthwhile. But it's genuinely lower-risk than directional bets.</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>DISCRETE EDGE CASES PEOPLE ARE EXPLOITING</h1>
+<!-- ============================================================ -->
+
+<h2>1. Contract Rules Arbitrage</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">From the experienced Kalshi guide: <em>"Sometimes the edge is hidden in how the market resolves. People underestimate how often misunderstandings of edge-case resolution lead to massive mispricing."</em> Reading the actual contract rules — especially for weird edge cases (overtime rules, tiebreakers, data source specifics) — reveals mispricing that most traders miss because they didn't read the fine print.</p>
+
+<h2>2. NWS Station Rounding Quirks (Weather)</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Weather markets resolve using NWS station data. The 5-minute stations round temperatures to whole Fahrenheit, convert to Celsius, and then the NWS converts back — introducing rounding errors of up to ±1°F. If you understand which station is reporting and how the rounding works, you can infer the true temperature better than the displayed NWS values suggest. This is a genuine information asymmetry.</p>
+
+<h2>3. Live Event Mention Timing</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">During live speeches, mention markets move in real-time. If you're watching/listening and can process faster than the crowd, you can trade mid-speech. But: resting limit orders get adversely filled (only filled when bad for you). The smart play is to trade BEFORE the event based on analysis of prepared remarks, past speech patterns, and event context.</p>
+
+<h2>4. Conditional Market Mismatch</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Related markets sometimes have logical inconsistencies. Example: "Will CPI be above 3%?" at 85% AND "Will the Fed raise rates?" at 50%. If CPI above 3% nearly guarantees a rate hike historically, one of these is mispriced. Scanning for conditional relationships between related markets is a systematic strategy bots can automate.</p>
+
+<h2>5. Late-Market Value Capture</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">As events approach resolution, markets sometimes become very efficient on the "likely" side but misprice the "unlikely" side. Buying cheap long-shot contracts in weather or mentions markets — when you have data suggesting the long shot is more likely than the 5% the market implies — can yield outsized returns. The EventEdge sports bot specifically looks for these "cheap YES contracts in underdog scenarios."</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>THE OPPORTUNITY RANKING</h1>
+<!-- ============================================================ -->
+
+<p>Putting it all together — ranked by our realistic competitive edge:</p>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Category</th>
+    <th>Our Edge</th>
+    <th>Liquidity</th>
+    <th>Profit Potential</th>
+    <th>Complexity</th>
+    <th>Verdict</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>Economic Indicators</strong></td>
+    <td><span class="tag tag-green">Strong</span></td>
+    <td><span class="tag tag-yellow">Moderate</span></td>
+    <td><span class="tag tag-green">Medium-High</span></td>
+    <td>Medium</td>
+    <td>⭐ Best risk-adjusted opportunity</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>Political/News Repricing</strong></td>
+    <td><span class="tag tag-green">Strong</span></td>
+    <td><span class="tag tag-green">Good</span></td>
+    <td><span class="tag tag-green">Medium-High</span></td>
+    <td>Medium</td>
+    <td>⭐ Best for LLM-powered approach</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>Weather</strong></td>
+    <td><span class="tag tag-green">Strong</span></td>
+    <td><span class="tag tag-red">Thin</span></td>
+    <td><span class="tag tag-yellow">Low-Medium</span></td>
+    <td>Low</td>
+    <td>🎓 Best learning ground</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>Cross-Platform Arb</strong></td>
+    <td><span class="tag tag-yellow">Medium</span></td>
+    <td><span class="tag tag-yellow">Varies</span></td>
+    <td><span class="tag tag-yellow">Medium</span></td>
+    <td>High</td>
+    <td>📈 Phase 2-3 expansion</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>TSA / Niche Data</strong></td>
+    <td><span class="tag tag-green">Strong</span></td>
+    <td><span class="tag tag-red">Very Thin</span></td>
+    <td><span class="tag tag-red">Low</span></td>
+    <td>Low</td>
+    <td>🎓 Tutorial exists, good starter</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>Mention Markets</strong></td>
+    <td><span class="tag tag-yellow">Medium</span></td>
+    <td><span class="tag tag-red">Thin</span></td>
+    <td><span class="tag tag-yellow">Low-Medium</span></td>
+    <td>Low</td>
+    <td>🎲 Fun side play</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><strong>Sports</strong></td>
+    <td><span class="tag tag-red">Low</span></td>
+    <td><span class="tag tag-green">Deep</span></td>
+    <td><span class="tag tag-yellow">Medium if edge exists</span></td>
+    <td>Very High</td>
+    <td>⚠️ Hardest to beat</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><strong>Crypto Short-Term</strong></td>
+    <td><span class="tag tag-red">Low</span></td>
+    <td><span class="tag tag-green">Deep</span></td>
+    <td><span class="tag tag-yellow">High if fast enough</span></td>
+    <td>Very High</td>
+    <td>🚫 HFT territory, not for us</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>A MULTI-CATEGORY APPROACH</h1>
+<!-- ============================================================ -->
+
+<div class="finding-box">
+  <h3>🎯 The Portfolio Strategy</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">Rather than going all-in on one category, the smartest play is a <strong>multi-category portfolio</strong> that combines:</p>
+  <ol style="font-family: Arial, sans-serif; font-size: 14px;">
+    <li><strong>Weather + TSA</strong> for daily/weekly practice reps and pipeline building (small positions)</li>
+    <li><strong>Economic indicators</strong> for the highest risk-adjusted returns from your data skills (medium positions)</li>
+    <li><strong>Political/news repricing</strong> for the LLM-powered event-driven plays (medium positions)</li>
+    <li><strong>Cross-platform arb scanning</strong> running passively in the background (opportunity-based)</li>
+  </ol>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">This diversifies across resolution timelines (daily, weekly, monthly, event-driven), data sources, and risk profiles. The bot infrastructure is largely shared — data ingestion, probability modeling, Kalshi API execution, logging/tracking.</p>
+</div>
+
+<h2>Shared Infrastructure We Need</h2>
+<ol style="font-family: Arial, sans-serif; font-size: 14px;">
+  <li><strong>Kalshi API client</strong> — Python SDK, auth, market data, order placement, position tracking</li>
+  <li><strong>Data pipeline framework</strong> — Modular ingestion for NOAA, BLS, TSA, news feeds</li>
+  <li><strong>Probability model engine</strong> — Takes inputs, outputs probability distribution, compares to market price, calculates edge</li>
+  <li><strong>Execution engine</strong> — Kelly criterion sizing, limit order placement, position monitoring</li>
+  <li><strong>Logging & P&L tracking</strong> — Every trade with reasoning, model probability, market price, outcome</li>
+  <li><strong>Dashboard</strong> — Real-time P&L, position overview, model accuracy tracking</li>
+</ol>
+
+<hr class="section-divider">
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center;">
+  Report prepared by Chief | Prediction Market Opportunity Map | March 18, 2026<br>
+  Sources: DeFi Rate, Kalshi Help Center, Reddit r/Kalshi, Reddit r/SaaS (EventEdge), Kalshi Blog, CoinDesk, crypto.news, Polymarket Docs, GWU CFTC Research<br><br>
+  <em>This report is for research and planning purposes. Not financial advice. Prediction market trading involves real risk of loss.</em>
+</p>
+
+</body>
+</html>
