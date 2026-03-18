@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bet Transparency & Observability Architecture</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 860px; margin: 40px auto; color: #222; line-height: 1.72; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #e8f0fe; border-left: 4px solid #2980b9; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 13px; white-space: pre-wrap; }
+  ul li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🔍 Bet Transparency & Observability Architecture</h1>
+  <p>Prepared by Chief | March 18, 2026</p>
+  <p>How the system will explain, review, and improve every bet decision</p>
+</div>
+
+<div class="alert"><strong>Goal:</strong> no black-box bets. Every bet should be auditable before, during, and after execution so a human or coding agent can understand exactly why it happened and whether we should do it again.</div>
+
+<h1>Why This Matters</h1>
+<p>A profitable-looking system can still be fragile if it cannot explain itself. We want the opposite: a system that records enough evidence that future-you — or a coding agent — can diagnose whether a bad result came from forecast error, market microstructure, bad sizing, bad timing, or simple bad luck.</p>
+
+<h2>The five questions every bet should answer</h2>
+<ul>
+  <li>What did we think the real-world probability was?</li>
+  <li>What was the market offering at that moment?</li>
+  <li>Why did we believe there was edge?</li>
+  <li>What execution assumptions did we make?</li>
+  <li>What happened afterward, and what did we learn?</li>
+</ul>
+
+<h1>The Observability Stack</h1>
+<table>
+  <tr><th>Layer</th><th>What it tracks</th><th>Why it matters</th></tr>
+  <tr><td>Pipeline health</td><td>ingestion freshness, row counts, failures, stale sources</td><td>prevents silent data rot</td></tr>
+  <tr><td>Decision journal</td><td>fair value, market price, confidence, action, abstention reason</td><td>captures the “why” of each decision</td></tr>
+  <tr><td>Execution log</td><td>submitted order, fill price, fees, slippage, partial fills</td><td>separates alpha from execution quality</td></tr>
+  <tr><td>Outcome review</td><td>P&amp;L, realized edge, model error, lessons learned</td><td>supports continuous improvement</td></tr>
+</table>
+
+<h1>The Bet Explanation Funnel</h1>
+<div class="code">Forecast belief → Fair probability → Market comparison → Executable edge → Order → Outcome → Review</div>
+<p>If we only log the order, we lose almost all the context. The system should preserve the whole chain.</p>
+
+<h2>What a single decision record should include</h2>
+<table>
+  <tr><th>Field</th><th>Example</th></tr>
+  <tr><td>market_ticker</td><td>NYC_HIGH_70_PLUS</td></tr>
+  <tr><td>decided_at</td><td>2026-03-18 14:00 UTC</td></tr>
+  <tr><td>fair_prob</td><td>0.52</td></tr>
+  <tr><td>market_mid</td><td>0.41</td></tr>
+  <tr><td>tradable_yes_ask</td><td>0.43</td></tr>
+  <tr><td>edge_vs_ask</td><td>+0.09</td></tr>
+  <tr><td>confidence</td><td>0.71</td></tr>
+  <tr><td>action</td><td>BUY_YES</td></tr>
+  <tr><td>rationale</td><td>Forecast moved up, sibling strip lagging, edge survives spread</td></tr>
+</table>
+
+<h1>Dashboard Views We Should Eventually Build</h1>
+<h2>1. Pipeline Health</h2>
+<ul>
+  <li>last successful ingest by source</li>
+  <li>row deltas by job</li>
+  <li>stale source alerts</li>
+  <li>failed parse counts</li>
+</ul>
+
+<h2>2. Live Candidate Bet Feed</h2>
+<ul>
+  <li>top current edges</li>
+  <li>skipped bets and abstention reasons</li>
+  <li>confidence distribution</li>
+  <li>execution constraints blocking otherwise good bets</li>
+</ul>
+
+<h2>3. Bet Detail Page</h2>
+<ul>
+  <li>market price over time</li>
+  <li>forecast revisions over time</li>
+  <li>sibling-bucket distribution snapshot</li>
+  <li>decision rationale panel</li>
+  <li>fill and fee details</li>
+</ul>
+
+<h2>4. Review / Learning Page</h2>
+<ul>
+  <li>expected vs realized edge</li>
+  <li>performance by city, horizon, and signal version</li>
+  <li>top failure modes</li>
+  <li>recommendations for threshold updates</li>
+</ul>
+
+<h1>Structured Review for Self-Healing</h1>
+<p>The point is not just transparency. It is a review loop.</p>
+
+<div class="box">
+  <strong>Post-trade review categories</strong>
+  <ul>
+    <li><strong>Model wrong</strong> — fair probability estimate was bad</li>
+    <li><strong>Execution bad</strong> — edge existed, but we paid it away</li>
+    <li><strong>Market stayed irrational</strong> — timing target failed</li>
+    <li><strong>Source mismatch</strong> — forecast/settlement alignment problem</li>
+    <li><strong>Risk rule issue</strong> — size or threshold logic was off</li>
+  </ul>
+</div>
+
+<h1>What This Enables</h1>
+<ul>
+  <li>A human can inspect why a bet happened</li>
+  <li>A coding agent can review bad bets and propose improvements</li>
+  <li>We can distinguish signal problems from execution problems</li>
+  <li>The system can become self-improving without becoming self-delusional</li>
+</ul>
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center; margin-top: 40px;">Prepared by Chief | March 18, 2026</p>
+</body>
+</html>
