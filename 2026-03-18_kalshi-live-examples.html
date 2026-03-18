@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalshi Live Examples — Real Markets, Real Bets, Real Money</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 820px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red { background: #fde8e8; color: #c0392b; }
+  .tag-green { background: #e8f8e8; color: #27ae60; }
+  .tag-blue { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  .math { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .bet-walkthrough { background: #f0f7ff; border: 2px solid #2980b9; border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .bet-walkthrough h3 { margin-top: 0; color: #2980b9; }
+  .result-yes { color: #27ae60; font-weight: bold; }
+  .result-no { color: #c0392b; font-weight: bold; }
+  .live-tag { background: #c0392b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Kalshi Live Examples — Real Markets Right Now</h1>
+  <p>Prepared by Chief | March 18, 2026 at 10:45 AM PST</p>
+  <p>Live API data pulled from Kalshi · Actual prices, volumes, and resolved outcomes</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>ℹ️ What you're looking at:</strong> This is real data from the Kalshi API, pulled right now. Real prices real traders are offering, real volumes of contracts traded, and real outcomes from markets that already resolved. This is exactly what you'd see in the Kalshi app.
+</div>
+
+<!-- ============================================================ -->
+<h1>HOW A KALSHI BET WORKS — The Basics</h1>
+<!-- ============================================================ -->
+
+<p>Every Kalshi market is a <strong>yes/no question</strong>. You buy a contract for some amount between $0.01 and $0.99. If you're right, the contract pays out $1.00. If you're wrong, it pays $0.00.</p>
+
+<div class="math">
+<strong>The simple version:</strong><br><br>
+• You buy a YES contract for $0.30<br>
+• If the answer is YES → you get $1.00 back → profit of $0.70 (233% return)<br>
+• If the answer is NO → you get $0.00 → loss of $0.30<br><br>
+• The price IS the implied probability: $0.30 = market thinks 30% chance<br>
+• If YOU think it's actually 60% → you have an edge → buy it
+</div>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Bid vs Ask:</strong> Like any market, there's a bid (highest someone will pay) and an ask (lowest someone will sell for). The "spread" between them is where market makers profit. As a trader, you can either:</p>
+<ul>
+  <li><strong>Market order (taker):</strong> Buy at the ask price immediately. Pay taker fees.</li>
+  <li><strong>Limit order (maker):</strong> Place a bid at your price and wait for someone to sell to you. Lower/no fees.</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>🌡️ LIVE EXAMPLE #1: NYC Weather Tomorrow (March 19)</h1>
+<!-- ============================================================ -->
+
+<div class="alert alert-green">
+  <strong><span class="live-tag">LIVE</span> Trading right now on Kalshi</strong> — These markets opened at 10 AM ET today and close at 11:59 PM ET tomorrow night. They resolve when the NWS publishes the Central Park climatological report, usually by 7-8 AM ET March 20.
+</div>
+
+<h2>The Question: What will the high temperature in NYC be tomorrow?</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Kalshi breaks this into six brackets. Each bracket is a separate yes/no market. Only ONE bracket can resolve YES — the others all resolve NO.</p>
+
+<table>
+  <tr>
+    <th>Bracket</th>
+    <th>YES Bid</th>
+    <th>YES Ask</th>
+    <th>Implied Prob</th>
+    <th>Volume</th>
+    <th>Interpretation</th>
+  </tr>
+  <tr>
+    <td><strong>42°F or below</strong></td>
+    <td>$0.20</td>
+    <td>$0.23</td>
+    <td>~21%</td>
+    <td>1,594</td>
+    <td>Unlikely but possible cold snap</td>
+  </tr>
+  <tr>
+    <td><strong>43° to 44°</strong></td>
+    <td>$0.29</td>
+    <td>$0.31</td>
+    <td>~30%</td>
+    <td>1,282</td>
+    <td>🎯 Market favorite (tied)</td>
+  </tr>
+  <tr>
+    <td><strong>45° to 46°</strong></td>
+    <td>$0.28</td>
+    <td>$0.30</td>
+    <td>~29%</td>
+    <td>843</td>
+    <td>🎯 Market favorite (tied)</td>
+  </tr>
+  <tr>
+    <td><strong>47° to 48°</strong></td>
+    <td>$0.12</td>
+    <td>$0.15</td>
+    <td>~13%</td>
+    <td>186</td>
+    <td>Warmer than expected</td>
+  </tr>
+  <tr>
+    <td><strong>49° to 50°</strong></td>
+    <td>$0.04</td>
+    <td>$0.05</td>
+    <td>~4%</td>
+    <td>116</td>
+    <td>Long shot</td>
+  </tr>
+  <tr>
+    <td><strong>51°F or above</strong></td>
+    <td>$0.03</td>
+    <td>$0.04</td>
+    <td>~3%</td>
+    <td>717</td>
+    <td>Very unlikely</td>
+  </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Notice the prices roughly sum to $1.00 (~$0.97-1.03 in this case). That's because exactly one bracket will win. The small deviation from $1.00 is the market's built-in edge (vig).</p>
+
+<h2>What Does the NWS Actually Forecast?</h2>
+
+<div class="finding-box">
+  <h3>🌤️ NWS Forecast for Thursday March 19 (NYC Central Park)</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>High: 45°F</strong> — Mostly sunny, southeast wind 3 to 10 mph.</p>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">Current temp at Central Park right now (10:51 AM ET): <strong>33.1°F</strong> and clear.</p>
+</div>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">The NWS says 45°F. That falls in the <strong>45°-46° bracket</strong>, which the market is pricing at $0.28-0.30 (29% implied probability). But wait — the NWS forecast of exactly 45° is the point estimate. If we look at multiple weather models, the actual high could be anywhere from 42-48°F. So the market is distributing probability across those brackets.</p>
+
+<div class="bet-walkthrough">
+  <h3>🎯 Walkthrough: Placing a Real Bet</h3>
+
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Scenario:</strong> You check GFS, HRRR, and NAM weather models. All three converge on 44-45°F for tomorrow's high. You believe the <strong>43°-44° bracket</strong> has a ~40% probability, but the market only prices it at $0.29-0.31 (30%). You see an edge of ~10 points.</p>
+
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>The trade:</strong></p>
+  <ol>
+    <li>Buy <strong>10 contracts</strong> of <strong>KXHIGHNY-26MAR19 "43° to 44°"</strong> at the ask price of <strong>$0.31 each</strong></li>
+    <li>Total cost: 10 × $0.31 = <strong>$3.10</strong></li>
+    <li>Fee: 10 × 0.07 × 0.31 × (1-0.31) = <strong>$0.15</strong></li>
+    <li>Total outlay: <strong>$3.25</strong></li>
+  </ol>
+
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>If the actual high is 43° or 44°F:</strong></p>
+  <ul>
+    <li>Your 10 contracts each pay $1.00 = <strong>$10.00</strong></li>
+    <li>Profit: $10.00 - $3.25 = <strong class="result-yes">+$6.75 (208% return)</strong></li>
+  </ul>
+
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>If the actual high is anything else (42° or below, 45°+):</strong></p>
+  <ul>
+    <li>Your contracts pay $0.00</li>
+    <li>Loss: <strong class="result-no">-$3.25 (100% loss)</strong></li>
+  </ul>
+
+  <p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Expected value (if your 40% estimate is right):</strong><br>
+  (0.40 × $6.75) - (0.60 × $3.25) = $2.70 - $1.95 = <strong class="result-yes">+$0.75 per cycle</strong></p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>🌡️ LIVE EXAMPLE #2: Multi-City Weather Comparison</h1>
+<!-- ============================================================ -->
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Here's what weather markets look like across five cities, all for March 19. Same mechanics, different temperature ranges:</p>
+
+<h3>Chicago (Midway) — March 19</h3>
+<table>
+  <tr><th>Bracket</th><th>YES Bid/Ask</th><th>Implied Prob</th><th>Volume</th></tr>
+  <tr><td>47° or below</td><td>$0.21 / $0.22</td><td>~21%</td><td>1,021</td></tr>
+  <tr><td>48° to 49°</td><td>$0.15 / $0.16</td><td>~16%</td><td>690</td></tr>
+  <tr><td>50° to 51°</td><td>$0.19 / $0.21</td><td>~20%</td><td>577</td></tr>
+  <tr><td>52° to 53°</td><td>$0.18 / $0.21</td><td>~19%</td><td>598</td></tr>
+  <tr><td>54° to 55°</td><td>$0.11 / $0.14</td><td>~12%</td><td>424</td></tr>
+  <tr><td>56° or above</td><td>$0.12 / $0.13</td><td>~12%</td><td>1,123</td></tr>
+</table>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Notice: Chicago's distribution is flatter — more uncertainty. No single bracket above 22%. The 56°+ bracket has the highest volume (1,123) despite only 12% probability — people like betting on warm outliers.</p>
+
+<h3>Miami (MIA) — March 19</h3>
+<table>
+  <tr><th>Bracket</th><th>YES Bid/Ask</th><th>Implied Prob</th><th>Volume</th></tr>
+  <tr><td>72° or below</td><td>$0.02 / $0.03</td><td>~2%</td><td>1,398</td></tr>
+  <tr><td>73° to 74°</td><td>$0.11 / $0.13</td><td>~12%</td><td>1,512</td></tr>
+  <tr><td>75° to 76°</td><td>$0.23 / $0.24</td><td>~24%</td><td>1,425</td></tr>
+  <tr><td style="background: #e8f8e8;"><strong>77° to 78°</strong></td><td style="background: #e8f8e8;"><strong>$0.41 / $0.47</strong></td><td style="background: #e8f8e8;"><strong>~44% 🎯</strong></td><td style="background: #e8f8e8;"><strong>2,761</strong></td></tr>
+  <tr><td>79° to 80°</td><td>$0.09 / $0.11</td><td>~10%</td><td>686</td></tr>
+  <tr><td>81° or above</td><td>$0.08 / $0.09</td><td>~8%</td><td>966</td></tr>
+</table>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Miami's market is more concentrated — 77-78° is the heavy favorite at 44%. Notice the wide bid-ask spread ($0.41-$0.47 = 6¢ spread). That's a market-making opportunity right there: if you're willing to post a limit order at $0.43, you'd be providing liquidity in that gap.</p>
+
+<h3>Austin (Bergstrom) — March 19</h3>
+<table>
+  <tr><th>Bracket</th><th>YES Bid/Ask</th><th>Implied Prob</th><th>Volume</th></tr>
+  <tr><td>82° or below</td><td>$0.13 / $0.14</td><td>~13%</td><td>720</td></tr>
+  <tr><td>83° to 84°</td><td>$0.14 / $0.15</td><td>~14%</td><td>112</td></tr>
+  <tr><td>85° to 86°</td><td>$0.30 / $0.33</td><td>~31%</td><td>297</td></tr>
+  <tr><td>87° to 88°</td><td>$0.25 / $0.29</td><td>~27%</td><td>205</td></tr>
+  <tr><td>89° to 90°</td><td>$0.07 / $0.09</td><td>~8%</td><td>51</td></tr>
+  <tr><td>91° or above</td><td>$0.04 / $0.08</td><td>~6%</td><td>662</td></tr>
+</table>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Austin is mid-80s in March — much different range. The 89-90° bracket has only 51 contracts traded — extremely thin liquidity. This is where you might struggle to get fills but also where mispricings hide.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>✅ RESOLVED EXAMPLE: What a Completed Market Looks Like</h1>
+<!-- ============================================================ -->
+
+<h2>NYC High Temperature — March 16, 2026 (Last Sunday)</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">This market has resolved. The NWS reported the high was <strong>57-58°F</strong>. Let's see what happened:</p>
+
+<table>
+  <tr>
+    <th>Bracket</th>
+    <th>Result</th>
+    <th>Final Price</th>
+    <th>Volume</th>
+    <th>If You Bought at Open</th>
+  </tr>
+  <tr style="background: #e8f8e8;">
+    <td><strong>57° to 58°</strong></td>
+    <td><span class="result-yes">✅ YES</span></td>
+    <td>$0.99</td>
+    <td>95,328</td>
+    <td>Paid out $1.00 per contract</td>
+  </tr>
+  <tr>
+    <td>56° or below</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>42,434</td>
+    <td>Paid out $0.00</td>
+  </tr>
+  <tr>
+    <td>59° to 60°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>62,520</td>
+    <td>Paid out $0.00</td>
+  </tr>
+  <tr>
+    <td>61° to 62°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.02</td>
+    <td>45,602</td>
+    <td>Paid out $0.00</td>
+  </tr>
+  <tr>
+    <td>63° to 64°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>25,636</td>
+    <td>Paid out $0.00</td>
+  </tr>
+  <tr>
+    <td>65° or above</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>25,713</td>
+    <td>Paid out $0.00</td>
+  </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;"><strong>Total volume across all brackets: 297,233 contracts.</strong> That's roughly $100K+ in notional trading on a single day's NYC temperature. Not massive, but decent for a niche market.</p>
+
+<div class="alert">
+  <strong>⚠️ Notice:</strong> The winning bracket's last price was $0.99 (not $1.00) — that 1¢ was the tiny remaining uncertainty before official NWS confirmation. The losing brackets all traded down to $0.01-$0.02 as the day progressed and the actual temperature became clear. Markets get more efficient as resolution approaches.
+</div>
+
+<h2>NYC High Temperature — March 17, 2026 (Yesterday)</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">The high was <strong>48°F</strong> (we confirmed via NWS station data). The brackets:</p>
+
+<table>
+  <tr>
+    <th>Bracket</th>
+    <th>Result</th>
+    <th>Final Price</th>
+    <th>Volume</th>
+  </tr>
+  <tr style="background: #e8f8e8;">
+    <td><strong>55° or below</strong></td>
+    <td><span class="result-yes">✅ YES</span></td>
+    <td>$0.99</td>
+    <td>36,924</td>
+  </tr>
+  <tr>
+    <td>56° to 57°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>24,259</td>
+  </tr>
+  <tr>
+    <td>58° to 59°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>14,969</td>
+  </tr>
+  <tr>
+    <td>60° to 61°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>9,490</td>
+  </tr>
+  <tr>
+    <td>62° to 63°</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>9,923</td>
+  </tr>
+  <tr>
+    <td>64° or above</td>
+    <td><span class="result-no">❌ NO</span></td>
+    <td>$0.01</td>
+    <td>10,462</td>
+  </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Interesting — the actual high was 48°F, well below the lowest individual bracket (55°). The "55° or below" bracket won easily. The brackets are set high because last week was warmer in NYC.</p>
+
+<div class="bet-walkthrough">
+  <h3>💰 What If You'd Traded This?</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">Let's say yesterday's market opened with "55° or below" priced at $0.30 (the market expected warmer weather). You checked weather models and saw a cold front coming — your model said 75% chance the high stays under 55°F.</p>
+  <ul>
+    <li>You buy 50 contracts at $0.30 each = $15.00 cost</li>
+    <li>The cold front hits. High reaches only 48°F.</li>
+    <li>Your contracts resolve YES → 50 × $1.00 = $50.00</li>
+    <li>Profit: <strong class="result-yes">+$35.00 (233% return)</strong></li>
+  </ul>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">Now imagine doing this across 5 cities every day with a weather model that's right 60% of the time...</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>⏰ HOW THE TIMELINE WORKS</h1>
+<!-- ============================================================ -->
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Here's the lifecycle of a weather market — this is identical for tomorrow's NYC market:</p>
+
+<table>
+  <tr>
+    <th>Time</th>
+    <th>What Happens</th>
+  </tr>
+  <tr>
+    <td><strong>10:00 AM ET, Day Before</strong><br>(Today, Mar 18)</td>
+    <td>Market opens. Six brackets appear with initial prices. Trading begins. This is when early-bird traders with weather model data place first bets.</td>
+  </tr>
+  <tr>
+    <td><strong>All Day</strong><br>(Mar 18-19)</td>
+    <td>Trading continues. Prices move as weather models update (GFS runs at 00Z, 06Z, 12Z, 18Z). New data → price adjustments. You can buy or sell contracts at any time.</td>
+  </tr>
+  <tr>
+    <td><strong>During the day</strong><br>(Mar 19)</td>
+    <td>As actual hourly temps come in from Central Park, prices converge rapidly. If it's 2 PM and the temp has already hit 46°, the "45-46°" and "47-48°" brackets spike in price while lower brackets crash.</td>
+  </tr>
+  <tr>
+    <td><strong>11:59 PM ET</strong><br>(Mar 19)</td>
+    <td>Last trading time. No more orders after this. The highest temp of the day is essentially known by now.</td>
+  </tr>
+  <tr>
+    <td><strong>7-8 AM ET, Day After</strong><br>(Mar 20)</td>
+    <td>NWS publishes the official Daily Climatological Report for Central Park. The winning bracket's contracts pay $1.00; all others pay $0.00. Settlement is automatic.</td>
+  </tr>
+</table>
+
+<div class="alert alert-green">
+  <strong>✅ Key Insight:</strong> You don't have to hold until resolution! You can sell your contracts anytime before 11:59 PM. If you bought "43-44°" at $0.30 and it moves to $0.60 during the day because the temp is trending cold, you can sell for a $0.30 profit without waiting for the final NWS report. This is how active trading works vs. buy-and-hold.
+</div>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>📋 OTHER MARKET TYPES ON KALSHI</h1>
+<!-- ============================================================ -->
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Weather is just one category. Here's what else is trading right now:</p>
+
+<h2>🗳️ Politics — Who Will the Next Pope Be?</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">With recent Vatican news, this market is active. It works the same way — each candidate has a YES/NO market:</p>
+<table>
+  <tr><th>Candidate (Ticker Suffix)</th><th>YES Price</th><th>Volume</th><th>Meaning</th></tr>
+  <tr><td>PPAR (Pietro Parolin)</td><td>$0.10 – $0.15</td><td>4,065</td><td>Market gives ~12% chance</td></tr>
+  <tr><td>LANT (Luis Antonio Tagle)</td><td>$0.07 – $0.13</td><td>1,059</td><td>Market gives ~10% chance</td></tr>
+  <tr><td>PERD (Other candidates)</td><td>$0.01 – $0.04</td><td>1,880</td><td>Long shots at 1-4%</td></tr>
+  <tr><td>RLEO</td><td>$0.01 – $0.04</td><td>2,439</td><td>Long shot</td></tr>
+  <tr><td>MZUP</td><td>$0.01 – $0.04</td><td>1,997</td><td>Long shot</td></tr>
+</table>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">This is a longer-dated market (resolves before 2035). Prices move slowly based on Vatican news. The edge here is being a close watcher of Catholic Church politics — if you see a frontrunner emerging before the crowd, you buy early.</p>
+
+<h2>💼 Economics / Business</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Active economics markets on Kalshi right now:</p>
+<ul>
+  <li><strong>Will Trump halve the trade deficit?</strong> — Binary yes/no, long-dated</li>
+  <li><strong>When will Elon Musk become a trillionaire?</strong> — Date brackets</li>
+  <li><strong>Will OpenAI or Anthropic IPO first?</strong> — Head-to-head</li>
+  <li><strong>Will Ramp or Brex IPO first?</strong> — Head-to-head</li>
+  <li><strong>CPI and Jobs markets</strong> — These launch ~1 week before each data release (next CPI release: April 10)</li>
+</ul>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">The CPI/Jobs/GDP markets are the most relevant for our data-driven approach, but they're <strong>episodic</strong> — they only appear around release dates. We'd need to watch for when they launch and be ready to trade immediately.</p>
+
+<h2>🏈 Sports (Highest Volume)</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">March Madness is exploding right now — that's where most of the volume is. Sports markets work the same way but with game outcomes, player props, and parlays. NCAA tournament brackets, NBA game outcomes, Champions League matches. The multi-leg parlay markets (KXMVE* tickers we saw) are complex combo bets.</p>
+
+<h2>🔬 Science & Novelty</h2>
+<ul style="font-family: Arial, sans-serif; font-size: 14px;">
+  <li>Will AI pass the Turing test before 2030?</li>
+  <li>Nuclear fusion timeline</li>
+  <li>Mars colonization before 2050</li>
+  <li>California 8.0+ earthquake before 2035</li>
+  <li>Will humans land on Mars before California starts high-speed rail? (lol)</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h1>🎯 PUTTING IT ALL TOGETHER — A Day of Trading</h1>
+<!-- ============================================================ -->
+
+<div class="finding-box">
+  <h3>What a Typical Bot Trading Day Looks Like</h3>
+  <ol style="font-family: Arial, sans-serif; font-size: 14px;">
+    <li><strong>6:00 AM:</strong> Overnight weather model runs complete (GFS 00Z, HRRR). Bot ingests data for all 5-7 cities.</li>
+    <li><strong>7:00 AM:</strong> Previous day's markets resolve (NWS reports published). Bot logs results, updates P&L.</li>
+    <li><strong>10:00 AM ET:</strong> New markets open. Bot compares model probabilities to opening prices. Places limit orders where edge exceeds 5%.</li>
+    <li><strong>Throughout day:</strong> Bot monitors hourly weather observations. As actual temps come in, it adjusts positions — selling winners early, cutting losers, adding to high-conviction bets.</li>
+    <li><strong>Evening:</strong> Final model run (GFS 18Z). Last adjustments before midnight close.</li>
+    <li><strong>Repeat.</strong></li>
+  </ol>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">On a CPI release week, the bot also monitors economic leading indicators, places positions on CPI brackets 3-5 days before the release, and adjusts as new data comes in.</p>
+</div>
+
+<hr class="section-divider">
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center;">
+  Report prepared by Chief | Live Kalshi Examples | March 18, 2026<br>
+  Data source: Kalshi Public API (api.elections.kalshi.com) + NWS API (api.weather.gov)<br>
+  All prices and volumes are real, pulled at ~10:45 AM PST March 18, 2026<br><br>
+  <em>This report is for educational purposes. Not financial advice. Prediction market trading involves real risk of loss.</em>
+</p>
+
+</body>
+</html>
