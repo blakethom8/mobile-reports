@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction Market Platform Architecture</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 860px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 13px; white-space: pre-wrap; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-green { background: #e8f8e8; color: #27ae60; }
+  .tag-blue { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏗️ Prediction Market Platform Architecture</h1>
+  <p>Prepared by Chief | March 18, 2026</p>
+  <p>Research platform + execution system for Kalshi / later Polymarket</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>Goal:</strong> build a platform that can (1) ingest market + external data, (2) run repeatable ML research loops, (3) backtest strategies honestly, and (4) later execute live trades with risk controls. This is not just a bot — it's a full research and trading platform.
+</div>
+
+<h1>Platform Thesis</h1>
+<p>The platform should be optimized for one thing: <strong>finding and exploiting market mispricing</strong>. That means the system is built around:</p>
+<ul>
+  <li><strong>Data warehousing</strong> — historical market + external features</li>
+  <li><strong>Research loops</strong> — fixed evaluator, editable signal logic</li>
+  <li><strong>Backtesting</strong> — honest simulation with fees/spreads/capital limits</li>
+  <li><strong>Execution</strong> — later, live order placement with hard risk controls</li>
+</ul>
+
+<div class="finding-box">
+  <h3>Core Design Principle</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">We are not building a generic “AI trading bot.” We are building a <strong>domain-aware mispricing engine</strong> with a clean separation between data, research, backtesting, and live execution.</p>
+</div>
+
+<hr class="section-divider">
+
+<h1>System Layers</h1>
+
+<h2>1. Data Ingestion Layer</h2>
+<table>
+  <tr><th>Source</th><th>Purpose</th><th>Status</th></tr>
+  <tr><td>Kalshi historical markets/trades</td><td>Primary exchange dataset</td><td><span class="tag tag-green">Downloaded</span></td></tr>
+  <tr><td>Polymarket historical markets/trades</td><td>Secondary exchange dataset / later expansion</td><td><span class="tag tag-green">Downloaded</span></td></tr>
+  <tr><td>Kalshi official historical APIs</td><td>Candlesticks + new backfills</td><td><span class="tag tag-blue">Available</span></td></tr>
+  <tr><td>External domain data</td><td>Weather, macro, etc.</td><td><span class="tag tag-yellow">Next</span></td></tr>
+</table>
+
+<p>Responsibilities:</p>
+<ul>
+  <li>Download / backfill historical market data</li>
+  <li>Incrementally update recent/live data</li>
+  <li>Normalize different market structures into a common warehouse</li>
+  <li>Preserve raw data before transformation</li>
+</ul>
+
+<h2>2. Warehouse Layer</h2>
+<p>Central storage should be <strong>DuckDB + Parquet</strong>, same philosophy as the CMS work.</p>
+
+<div class="code">prediction_market.duckdb
+
+raw_kalshi_markets
+raw_kalshi_trades
+raw_polymarket_markets
+raw_polymarket_trades
+raw_external_weather
+raw_external_macro
+
+core_markets
+core_market_states
+core_trade_events
+core_resolutions
+core_external_features
+core_model_features</div>
+
+<p>Responsibilities:</p>
+<ul>
+  <li>Keep raw and normalized layers separate</li>
+  <li>Create time-aligned market state tables</li>
+  <li>Support both analytics and ML feature generation</li>
+</ul>
+
+<h2>3. Feature Engineering Layer</h2>
+<p>This is where raw data becomes something usable by signals and models.</p>
+
+<table>
+  <tr><th>Feature Family</th><th>Examples</th></tr>
+  <tr><td>Market microstructure</td><td>spread, last price, volatility, turnover, open interest change, price drift, time-to-close</td></tr>
+  <tr><td>Cross-market structure</td><td>sum-to-one deviations, sibling bracket inconsistencies, related market spreads</td></tr>
+  <tr><td>Domain features</td><td>weather model consensus, CPI leading indicators, claims release calendars</td></tr>
+  <tr><td>Execution features</td><td>liquidity buckets, slippage estimate, tradeability score</td></tr>
+</table>
+
+<h2>4. Research Layer</h2>
+<p>This copies the best part of the CMS fraud detector.</p>
+
+<div class="code">eval.py      # FIXED evaluator / backtester
+signal.py    # editable rule/model logic
+results.tsv  # experiment log
+strategies/  # prompt/strategy docs for agents
+reports/     # HTML outputs</div>
+
+<p>Responsibilities:</p>
+<ul>
+  <li>Run experiments repeatedly</li>
+  <li>Record metrics every time</li>
+  <li>Let us improve signals without changing the oracle</li>
+</ul>
+
+<h2>5. Model Layer</h2>
+<p>We should support multiple model classes, not force one worldview too early.</p>
+
+<table>
+  <tr><th>Model Type</th><th>Role</th></tr>
+  <tr><td>Rule-based signals</td><td>Baselines and sanity checks</td></tr>
+  <tr><td>Tree/boosting models</td><td>Best early structured-data learners</td></tr>
+  <tr><td>Sequence models</td><td>Karpathy-style later-stage research</td></tr>
+  <tr><td>LLM-assisted models</td><td>Narrative / mention / event-driven markets</td></tr>
+</table>
+
+<h2>6. Backtest / Simulation Layer</h2>
+<p>This is the most important integrity layer.</p>
+
+<p>Must simulate:</p>
+<ul>
+  <li>fees</li>
+  <li>bid/ask spread</li>
+  <li>position sizing</li>
+  <li>capital constraints</li>
+  <li>daily/weekly stop-losses</li>
+  <li>time-based exits</li>
+  <li>no lookahead leakage</li>
+</ul>
+
+<div class="alert alert-red">
+  <strong>Non-negotiable:</strong> if a model only works in a frictionless backtest, it doesn't work.</div>
+
+<h2>7. Execution Layer</h2>
+<p>This comes after research and backtesting are trustworthy.</p>
+
+<p>Responsibilities:</p>
+<ul>
+  <li>read live Kalshi market data</li>
+  <li>run signal inference</li>
+  <li>compute size using Kelly / fractional Kelly</li>
+  <li>place orders with hard caps</li>
+  <li>log every action</li>
+  <li>support paper-trading and live mode separately</li>
+</ul>
+
+<h2>8. Monitoring / Control Layer</h2>
+<ul>
+  <li>P&amp;L dashboard</li>
+  <li>Open positions</li>
+  <li>Model decisions / feature snapshots</li>
+  <li>Error alerts</li>
+  <li>Kill switch</li>
+</ul>
+
+<hr class="section-divider">
+
+<h1>Recommended Project Structure</h1>
+<div class="code">/home/dataops/prediction-market-lab/
+├── README.md
+├── pyproject.toml
+├── .env
+├── data/
+│   ├── raw/
+│   │   ├── kalshi/
+│   │   ├── polymarket/
+│   │   └── external/
+│   ├── warehouse/
+│   │   └── prediction_market.duckdb
+│   └── features/
+├── src/
+│   ├── ingest/
+│   │   ├── kalshi/
+│   │   ├── polymarket/
+│   │   └── external/
+│   ├── warehouse/
+│   ├── features/
+│   ├── backtest/
+│   ├── models/
+│   ├── execution/
+│   ├── risk/
+│   └── dashboard/
+├── research/
+│   ├── strategies/
+│   ├── notebooks/
+│   └── reports/
+├── eval.py
+├── signal.py
+├── results.tsv
+└── scripts/</div>
+
+<hr class="section-divider">
+
+<h1>Data Flow</h1>
+<div class="code">Historical APIs / Public datasets / External APIs
+                ↓
+         Raw ingestion jobs
+                ↓
+         Raw parquet landing zone
+                ↓
+       DuckDB normalization jobs
+                ↓
+     Feature tables / training tables
+                ↓
+     eval.py backtests signal.py/model.py
+                ↓
+         results.tsv + HTML reports
+                ↓
+      live execution (later, optional)
+                ↓
+      order logs / P&L / monitoring</div>
+
+<hr class="section-divider">
+
+<h1>Core Entities We Need</h1>
+<table>
+  <tr><th>Entity</th><th>Description</th></tr>
+  <tr><td>Market</td><td>Single contract / bracket / binary question</td></tr>
+  <tr><td>Event</td><td>Group of related markets (e.g. all NYC temp brackets for a day)</td></tr>
+  <tr><td>Market State</td><td>Snapshot in time: price, spread, OI, volume, time remaining</td></tr>
+  <tr><td>Resolution</td><td>Final outcome + settlement metadata</td></tr>
+  <tr><td>External Observation</td><td>NOAA/BLS/etc. row tied to time and domain</td></tr>
+  <tr><td>Feature Vector</td><td>Engineered representation used by signals/models</td></tr>
+  <tr><td>Trade Decision</td><td>Model output: buy/sell/skip + size + confidence</td></tr>
+  <tr><td>Execution Record</td><td>What was actually placed/filled</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h1>Research Architecture</h1>
+
+<h2>Fixed Evaluator</h2>
+<p><strong>eval.py</strong> should be sacred, same as the fraud detector.</p>
+
+<p>It should:</p>
+<ul>
+  <li>load a historical slice of market states</li>
+  <li>call <span class="code">signal.py</span> or model logic</li>
+  <li>simulate trades with fees/spreads/sizing</li>
+  <li>score results with fixed metrics</li>
+  <li>append to <span class="code">results.tsv</span></li>
+</ul>
+
+<h2>Editable Signal Layer</h2>
+<p><strong>signal.py</strong> starts simple:</p>
+<ul>
+  <li>input: feature row or market state sequence</li>
+  <li>output: fair probability, expected edge, and trade/no-trade</li>
+</ul>
+
+<h2>Metrics</h2>
+<table>
+  <tr><th>Metric</th><th>Purpose</th></tr>
+  <tr><td>P&amp;L</td><td>Did we make money?</td></tr>
+  <tr><td>ROI</td><td>Capital efficiency</td></tr>
+  <tr><td>Max drawdown</td><td>Survivability</td></tr>
+  <tr><td>Sharpe-like ratio</td><td>Risk-adjusted return</td></tr>
+  <tr><td>Brier / log loss</td><td>Probability quality</td></tr>
+  <tr><td>Trade count / turnover</td><td>Operational realism</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h1>Live Trading Architecture</h1>
+<table>
+  <tr><th>Component</th><th>Role</th></tr>
+  <tr><td>Market listener</td><td>Reads live Kalshi state / recent changes</td></tr>
+  <tr><td>Signal engine</td><td>Produces edge estimate</td></tr>
+  <tr><td>Risk engine</td><td>Position sizing, caps, stop conditions</td></tr>
+  <tr><td>Order executor</td><td>Places/cancels limit orders</td></tr>
+  <tr><td>Journal</td><td>Writes every decision and fill</td></tr>
+  <tr><td>Supervisor</td><td>Health checks, alerts, kill switch</td></tr>
+</table>
+
+<div class="finding-box">
+  <h3>Risk Controls Must Be Platform-Level, Not Model-Level</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">Even if the model goes off the rails, the platform should still stop it from blowing up the bankroll. Hard caps, daily loss limits, and max exposure live outside the model.</p>
+</div>
+
+<hr class="section-divider">
+
+<h1>Deployment Plan on Hetzner</h1>
+
+<h2>Server layout</h2>
+<div class="code">/home/dataops/
+├── prediction-market-analysis/      # public dataset repo (already downloaded)
+├── prediction-market-lab/           # our actual platform repo
+├── prediction-market-data/          # raw / synced datasets if needed
+└── logs/</div>
+
+<h2>Recommended split</h2>
+<ul>
+  <li><strong>Keep the public repo separate</strong> as a source artifact and reference dataset</li>
+  <li><strong>Build our own repo</strong> for platform logic, warehouse jobs, models, backtests, dashboards</li>
+  <li><strong>Use DuckDB first</strong>; only move to Postgres/ClickHouse if scale truly demands it</li>
+</ul>
+
+<hr class="section-divider">
+
+<h1>Phase Roadmap</h1>
+
+<h2>Phase 1 — Foundations</h2>
+<ul>
+  <li>create platform repo</li>
+  <li>build warehouse schema</li>
+  <li>normalize Kalshi dataset</li>
+  <li>build fixed eval.py</li>
+  <li>build baseline signal.py</li>
+</ul>
+
+<h2>Phase 2 — First domain</h2>
+<ul>
+  <li>attach external domain data</li>
+  <li>generate domain-specific features</li>
+  <li>run honest backtests</li>
+  <li>publish experiment reports</li>
+</ul>
+
+<h2>Phase 3 — Live simulation</h2>
+<ul>
+  <li>paper trading mode</li>
+  <li>risk engine</li>
+  <li>dashboard + monitoring</li>
+</ul>
+
+<h2>Phase 4 — Live execution</h2>
+<ul>
+  <li>Kalshi account + API auth</li>
+  <li>small-capital controlled deployment</li>
+  <li>continuous evaluation and rollback path</li>
+</ul>
+
+<hr class="section-divider">
+
+<h1>What We Are Deciding Later</h1>
+<p>The architecture intentionally does <strong>not</strong> hardcode the first betting domain yet. It supports:</p>
+<ul>
+  <li>weather</li>
+  <li>macro / CPI / jobs / Fed</li>
+  <li>financial thresholds</li>
+  <li>later, political / narrative markets</li>
+</ul>
+<p>The next discussion is about <strong>which external datasets plug into this architecture first</strong>, not whether the architecture itself works.</p>
+
+<div class="alert alert-green">
+  <strong>Recommendation:</strong> build the platform once, choose the first domain second. That keeps us from hardcoding everything around weather too early if we later decide macro is the better edge.</div>
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center; margin-top: 40px;">
+Prepared by Chief | March 18, 2026<br>
+This architecture is designed to support both research and eventual live execution on Kalshi, with Polymarket as a later extension.
+</p>
+</body>
+</html>
