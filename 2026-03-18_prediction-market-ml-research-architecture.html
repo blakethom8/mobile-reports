@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction Market ML Research Architecture</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 840px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red { background: #fde8e8; color: #c0392b; }
+  .tag-green { background: #e8f8e8; color: #27ae60; }
+  .tag-blue { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  .code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 13px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧠 Prediction Market ML Research Architecture</h1>
+  <p>Prepared by Chief | March 18, 2026</p>
+  <p>Using the downloaded Kalshi/Polymarket dataset + the CMS fraud detector playbook</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>Bottom line:</strong> We now have the raw materials to do this seriously. The public dataset is downloaded onto the Hetzner server, and the best way to structure the ML work is to copy the <strong>research loop architecture</strong> from the CMS fraud detector — not the domain specifics, but the workflow pattern.
+</div>
+
+<h1>What We Actually Have Now</h1>
+
+<h2>Hetzner Setup</h2>
+<ul>
+  <li><strong>Server:</strong> 5.78.148.70</li>
+  <li><strong>Free disk:</strong> ~259 GB before download</li>
+  <li><strong>RAM:</strong> 30 GB</li>
+  <li><strong>Repo cloned:</strong> <span class="code">/home/dataops/prediction-market-analysis</span></li>
+  <li><strong>uv installed:</strong> yes</li>
+  <li><strong>Public dataset downloaded + extracted:</strong> yes</li>
+</ul>
+
+<h2>Downloaded Dataset Review</h2>
+<table>
+  <tr><th>Dataset</th><th>Rows</th><th>Notes</th></tr>
+  <tr><td>Kalshi markets</td><td><strong>7,682,445</strong></td><td>Market snapshots / metadata rows</td></tr>
+  <tr><td>Kalshi trades</td><td><strong>72,134,741</strong></td><td>2021-06-30 through 2025-11-25</td></tr>
+  <tr><td>Polymarket markets</td><td><strong>408,863</strong></td><td>Created 2020-10-02 through 2026-02-03</td></tr>
+  <tr><td>Polymarket trades</td><td><strong>404,540,000</strong></td><td>Very large — onchain fills</td></tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">One important cleanup issue: the public archive included ~29K macOS metadata files (<span class="code">._*</span>) that had to be removed before DuckDB could query the parquet cleanly. Fixed.</p>
+
+<div class="finding-box">
+  <h3>Key Takeaway</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">We have plenty of data for modeling. The limiting factor is no longer data availability — it’s research structure and choosing the right prediction target.</p>
+</div>
+
+<hr class="section-divider">
+
+<h1>What the CMS Fraud Detector Got Right</h1>
+
+<p>The fraud detector worked because the architecture was clean and ruthless:</p>
+
+<table>
+  <tr><th>Fraud Detector Component</th><th>Why It Worked</th><th>Prediction Market Analog</th></tr>
+  <tr><td><strong>eval.py</strong> fixed oracle</td><td>Never moved the goalposts</td><td>Fixed backtest engine / benchmark evaluator</td></tr>
+  <tr><td><strong>detector.py</strong> editable scoring logic</td><td>Fast iteration on model ideas</td><td>Editable signal/model file</td></tr>
+  <tr><td><strong>results.tsv</strong></td><td>Every run logged, no vibes-based claims</td><td>Experiment ledger with Sharpe/ROI/Brier/log loss</td></tr>
+  <tr><td><strong>Ground-truth labels</strong></td><td>OIG LEIE gave objective success metric</td><td>Resolved contracts + realized payouts</td></tr>
+  <tr><td><strong>Simple baseline first</strong></td><td>AUC improved before ML complexity</td><td>Start with rule-based EV models before deep learning</td></tr>
+  <tr><td><strong>External validation</strong></td><td>Web-checking top suspects prevented self-delusion</td><td>Review top trades / mispricings manually before trusting model</td></tr>
+</table>
+
+<div class="alert alert-green">
+  <strong>Best lesson to carry over:</strong> The fraud project did <strong>research loops</strong>, not generic “ML project” theater. We should do the same here.
+</div>
+
+<hr class="section-divider">
+
+<h1>How We Should Structure Prediction Market ML Research</h1>
+
+<h2>Do NOT start with “train a model”</h2>
+<p style="font-family: Arial, sans-serif; font-size: 14px;">Same lesson as the fraud project: training a model too early is how you produce complicated nonsense. We need a clean research loop first.</p>
+
+<h2>Recommended Project Skeleton</h2>
+<div class="code">prediction-market-lab/
+├── data/
+│   ├── raw/
+│   │   ├── kalshi/
+│   │   ├── polymarket/
+│   │   └── external/
+│   ├── warehouse/
+│   │   ├── prediction_markets.duckdb
+│   │   └── parquet/
+│   └── features/
+├── research/
+│   ├── strategies/
+│   │   ├── strategy-A-market-microstructure.md
+│   │   ├── strategy-B-domain-weather.md
+│   │   ├── strategy-C-domain-macro.md
+│   │   └── strategy-D-sequence-model.md
+│   ├── reports/
+│   └── notebooks/
+├── src/
+│   ├── ingest/
+│   ├── labeling/
+│   ├── features/
+│   ├── models/
+│   ├── backtest/
+│   └── live/
+├── eval.py
+├── signal.py
+├── results.tsv
+└── README.md</div>
+
+<h2>The Core Loop</h2>
+<table>
+  <tr><th>File</th><th>Role</th></tr>
+  <tr><td><strong>eval.py</strong></td><td>Fixed evaluator. Loads historical market states + outcomes and scores a strategy/model on a strict backtest.</td></tr>
+  <tr><td><strong>signal.py</strong></td><td>Editable logic. Given a market state and optional external features, outputs probability / edge / trade action.</td></tr>
+  <tr><td><strong>results.tsv</strong></td><td>Every run recorded with metrics and description.</td></tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 14px;">That’s the fraud architecture translated into trading research.</p>
+
+<hr class="section-divider">
+
+<h1>What the Fixed Evaluator Should Measure</h1>
+
+<p>The fraud detector had AUC/AP. Prediction markets need different metrics.</p>
+
+<table>
+  <tr><th>Metric</th><th>Why it matters</th></tr>
+  <tr><td><strong>Total P&amp;L</strong></td><td>Obvious — did the strategy make money?</td></tr>
+  <tr><td><strong>ROI</strong></td><td>Capital efficiency</td></tr>
+  <tr><td><strong>Sharpe-like ratio</strong></td><td>Return adjusted for volatility</td></tr>
+  <tr><td><strong>Max drawdown</strong></td><td>How painful / survivable the strategy is</td></tr>
+  <tr><td><strong>Brier score</strong></td><td>Probability calibration</td></tr>
+  <tr><td><strong>Log loss</strong></td><td>Punishes overconfidence</td></tr>
+  <tr><td><strong>Hit rate</strong></td><td>Useful but not sufficient</td></tr>
+  <tr><td><strong>Turnover / trade count</strong></td><td>Operational realism</td></tr>
+  <tr><td><strong>Slippage / spread sensitivity</strong></td><td>Prevents fake backtests</td></tr>
+</table>
+
+<div class="alert alert-red">
+  <strong>Important:</strong> A prediction model is not enough. The evaluator has to simulate actual trading constraints: spread, fees, time-to-resolution, no lookahead leakage, and capital limits. Otherwise we’ll build a paper-rich fantasy strategy.
+</div>
+
+<hr class="section-divider">
+
+<h1>Recommended Research Tracks</h1>
+
+<h2>Track 1 — Market Microstructure (Best first baseline)</h2>
+<ul>
+  <li>Use only market-native information: price path, spread, volume, open interest, time-to-close</li>
+  <li>Question: when is the market miscalibrated just from its own behavior?</li>
+  <li>Good for both Kalshi and Polymarket</li>
+</ul>
+
+<h2>Track 2 — Domain Models (Best real edge)</h2>
+<ul>
+  <li><strong>Weather:</strong> NOAA/NWS forecasts + market prices</li>
+  <li><strong>Macro:</strong> CPI/jobs/GDP leading indicators + market prices</li>
+  <li>This is where your actual edge probably lives</li>
+</ul>
+
+<h2>Track 3 — Sequence Model / Karpathy-style</h2>
+<ul>
+  <li>Structured token sequence of market states + external inputs</li>
+  <li>Predict future price move, calibration delta, or terminal resolution</li>
+  <li>Do this only after Tracks 1 and 2 have clean baselines</li>
+</ul>
+
+<hr class="section-divider">
+
+<h1>Exact Analogy to the Fraud Detector</h1>
+
+<table>
+  <tr><th>Fraud Project</th><th>Prediction Market Project</th></tr>
+  <tr><td>Universe = NPIs</td><td>Universe = market-time snapshots</td></tr>
+  <tr><td>Label = LEIE exclusion</td><td>Label = resolved contract outcome / future price move</td></tr>
+  <tr><td>Features = billing anomalies</td><td>Features = price path + external signals</td></tr>
+  <tr><td>Detector score = fraud likelihood</td><td>Signal score = fair probability / expected edge</td></tr>
+  <tr><td>AUC/AP</td><td>P&amp;L + calibration + drawdown</td></tr>
+  <tr><td>Validate top suspects manually</td><td>Review top trades and worst losses manually</td></tr>
+</table>
+
+<h2>Where the analogy breaks</h2>
+<ul>
+  <li>Fraud detection is a static classification problem; prediction markets are time-series + execution</li>
+  <li>Fraud labels are sparse but objective; market edge depends on beating the <em>price</em>, not just predicting the final outcome</li>
+  <li>For trading, calibration versus the current market price matters more than raw classification accuracy</li>
+</ul>
+
+<div class="finding-box">
+  <h3>The Most Important Design Choice</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">Do we train the model to predict <strong>final resolution</strong>, or to predict <strong>mispricing relative to current market price</strong>? My strong recommendation: target <strong>mispricing / expected edge</strong>. Markets already encode a lot of information. The job is not “predict the world” from scratch — it’s “beat the market.”</p>
+</div>
+
+<hr class="section-divider">
+
+<h1>Recommended Phase Plan</h1>
+
+<h2>Phase 1 — Warehouse + Backtest</h2>
+<ul>
+  <li>Consolidate downloaded parquet into a DuckDB warehouse</li>
+  <li>Create normalized tables for markets, trades, and resolutions</li>
+  <li>Build <strong>eval.py</strong> backtester</li>
+  <li>Build a trivial <strong>signal.py</strong> baseline</li>
+</ul>
+
+<h2>Phase 2 — Weather Research Loop</h2>
+<ul>
+  <li>Attach NOAA/NWS forecast history</li>
+  <li>Generate features comparing market price to forecast distribution</li>
+  <li>Run repeated experiments, log to <span class="code">results.tsv</span></li>
+</ul>
+
+<h2>Phase 3 — Macro Research Loop</h2>
+<ul>
+  <li>Add CPI/jobs/Fed markets</li>
+  <li>Join BLS/BEA/Fed leading indicators</li>
+  <li>Backtest rule-based signals before ML</li>
+</ul>
+
+<h2>Phase 4 — Sequence Models</h2>
+<ul>
+  <li>Structured model on market state sequences</li>
+  <li>Compare against simple baselines, not against vibes</li>
+</ul>
+
+<hr class="section-divider">
+
+<h1>Immediate Next Steps</h1>
+<ol>
+  <li><strong>Create a dedicated repo/project on Hetzner</strong> for the lab (separate from the public dataset repo)</li>
+  <li><strong>Ingest the downloaded parquet into DuckDB</strong></li>
+  <li><strong>Write fixed eval.py</strong> for trading simulation</li>
+  <li><strong>Write baseline signal.py</strong> with one simple strategy</li>
+  <li><strong>Start with weather</strong> as the first serious research domain</li>
+</ol>
+
+<div class="alert alert-green">
+  <strong>My recommendation:</strong> copy the fraud detector’s <em>research loop discipline</em> almost exactly. That project worked because it was simple, measurable, and hard to bullshit. We want the same thing here — just for trading instead of fraud scoring.
+</div>
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center; margin-top: 40px;">
+Prepared by Chief | March 18, 2026<br>
+Based on downloaded public prediction market dataset on Hetzner + review of the CMS fraud detection project architecture.
+</p>
+
+</body>
+</html>
