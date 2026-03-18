@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Pipeline Architecture — How Forecasts Become Bets</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 860px; margin: 40px auto; color: #222; line-height: 1.72; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 22px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-blue { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 13px; white-space: pre-wrap; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-green { background: #e8f8e8; color: #27ae60; }
+  .tag-blue { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  ul li, ol li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+  .small { font-family: Arial, sans-serif; font-size: 13px; color: #666; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🌦️ Weather Pipeline Architecture — How Forecasts Become Bets</h1>
+  <p>Prepared by Chief | March 18, 2026</p>
+  <p>Plain-English architecture for turning weather information into disciplined Kalshi trading decisions</p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>One-sentence thesis:</strong> the system should first estimate reality, then compare that estimate to market prices, then decide whether the edge survives execution. In short: <strong>forecast first, bid second.</strong>
+</div>
+
+<h1>The Core Mental Model</h1>
+<p>This platform is not just a weather forecaster, and it is not just a betting bot. It is a <strong>decision engine</strong> that sits between the real world and the market.</p>
+
+<div class="finding-box">
+  <h3>The three-layer architecture of information</h3>
+  <ol>
+    <li><strong>Estimate reality</strong> — What is the actual probability distribution for tomorrow's weather outcome?</li>
+    <li><strong>Observe the market</strong> — What prices is Kalshi currently offering for those outcomes?</li>
+    <li><strong>Convert edge into action</strong> — Is any mispricing large enough to trade after spread, fees, and fill risk?</li>
+  </ol>
+</div>
+
+<p>That separation matters because these are different questions. Being good at weather prediction is not automatically the same thing as being good at trading. Markets can be noisy, slow, overreactive, or just expensive to enter.</p>
+
+<h2>Forecast first, bid second</h2>
+<p>This is the most important principle in the whole architecture.</p>
+<ul>
+  <li><strong>Forecast layer:</strong> our independent view of reality</li>
+  <li><strong>Bid / decision layer:</strong> our response to market opportunity</li>
+</ul>
+
+<p>If our model thinks there is a 38% chance of rain tomorrow, that is a belief about the world. If the market is pricing the rain contract at 24%, that is a pricing opportunity. Those are related, but they are not the same thing.</p>
+
+<div class="alert alert-green">
+  <strong>Why this is healthy:</strong> the system can produce a perfectly good forecast even when there is no trade. That keeps us from forcing action just because we built a model.</div>
+
+<h1>What Is the Atomic Unit of Analysis?</h1>
+<p>The cleanest way to structure the ML dataset is:</p>
+<div class="code">one row = one contract × one timestamp</div>
+
+<p>Every row should answer the same questions:</p>
+<ul>
+  <li>Which contract is this?</li>
+  <li>What time are we evaluating it?</li>
+  <li>What was the current market price?</li>
+  <li>What was the latest available forecast?</li>
+  <li>What did our model think fair probability was?</li>
+  <li>What was the implied edge?</li>
+  <li>Would this have been an actual trade?</li>
+</ul>
+
+<p>The right mental model here is not a static spreadsheet. It is a <strong>movie</strong>. Each row is one frame in the movie of a market evolving through time.</p>
+
+<table>
+  <tr><th>contract</th><th>timestamp</th><th>market mid</th><th>yes ask</th><th>fair prob</th><th>edge</th><th>action</th></tr>
+  <tr><td>NYC_HIGH_70+</td><td>2026-03-18 14:00</td><td>0.41</td><td>0.43</td><td>0.52</td><td>+0.09 vs ask</td><td>buy yes</td></tr>
+  <tr><td>NYC_HIGH_75+</td><td>2026-03-18 14:00</td><td>0.26</td><td>0.29</td><td>0.21</td><td>-0.08 vs ask</td><td>no trade / maybe sell</td></tr>
+</table>
+
+<h1>Why Sibling Buckets Matter</h1>
+<p>Weather contracts usually come in families:</p>
+<ul>
+  <li>65–69°F</li>
+  <li>70–74°F</li>
+  <li>75–79°F</li>
+  <li>80–84°F</li>
+</ul>
+
+<p>These are <strong>not</strong> four unrelated bets. They are four slices of the same underlying probability distribution.</p>
+
+<div class="finding-box">
+  <h3>Right question vs wrong question</h3>
+  <p class="small"><strong>Wrong:</strong> “Is bucket 75–79 good?”</p>
+  <p class="small"><strong>Right:</strong> “How is probability distributed across the full set of possible outcomes, and where does the market disagree with that shape?”</p>
+</div>
+
+<p>If our weather view shifts upward, probability mass doesn’t appear from nowhere. It moves from one bucket into adjacent buckets. That means our system should think in terms of <strong>distribution shape</strong>, not isolated binary contracts.</p>
+
+<h2>Why this changes the ML structure</h2>
+<p>The model should often work in two steps:</p>
+<ol>
+  <li>Estimate the full weather distribution at the event level</li>
+  <li>Map that distribution into fair probabilities for each contract</li>
+</ol>
+
+<p>That is much more natural than training a separate “yes/no” brain for every bucket.</p>
+
+<h1>Fair Probability vs Market Price</h1>
+<p>Another distinction that sounds subtle but matters a lot:</p>
+<table>
+  <tr><th>Concept</th><th>Meaning</th></tr>
+  <tr><td>Fair probability</td><td>What our system thinks the true chance of the outcome is</td></tr>
+  <tr><td>Market mid</td><td>The rough midpoint of current market pricing</td></tr>
+  <tr><td>Tradable price</td><td>The actual buy or sell price we can hit right now</td></tr>
+</table>
+
+<p>A contract with a 60% fair probability is not automatically a buy. It only becomes attractive if the <strong>tradable</strong> price is meaningfully lower than 60%, and lower by enough to survive friction.</p>
+
+<div class="alert alert-red">
+  <strong>Important:</strong> midpoint fantasies make bad backtests. The system must compare fair value to executable price, not just to a pretty chart price.</div>
+
+<h1>Mispricing Is Not the Same as Price Movement</h1>
+<p>This is another important distinction for how we design the pipeline.</p>
+
+<table>
+  <tr><th>Question</th><th>What it means</th><th>Why we care</th></tr>
+  <tr><td>Is this contract mispriced?</td><td>Fair probability is different from market price</td><td>Good for value selection</td></tr>
+  <tr><td>Will this price move soon?</td><td>Market may reprice in the next 15/60/180 minutes</td><td>Good for timing entries and exits</td></tr>
+  <tr><td>Will this settle YES?</td><td>Final contract outcome</td><td>Good for calibration and truth evaluation</td></tr>
+</table>
+
+<p>A contract can be genuinely mispriced and still not move for hours. A contract can also move sharply even if the underlying weather truth barely changes. That means our system should track multiple targets, not just one:</p>
+<ul>
+  <li><strong>Final resolution target</strong> — what actually happened</li>
+  <li><strong>Mispricing target</strong> — fair value vs market</li>
+  <li><strong>Timing target</strong> — short-horizon market movement</li>
+</ul>
+
+<h1>Why Execution Matters</h1>
+<p>Execution is where theoretical edge either becomes money or dies.</p>
+
+<p>Real markets have:</p>
+<ul>
+  <li>spreads</li>
+  <li>fees</li>
+  <li>thin liquidity</li>
+  <li>partial fills</li>
+  <li>quote staleness</li>
+  <li>time pressure near settlement</li>
+</ul>
+
+<div class="code">Forecast edge → Quoted edge → Executable edge → Realized edge</div>
+
+<p>That funnel is crucial. Every stage shrinks the apparent advantage. The platform has to treat that as a feature, not an inconvenience.</p>
+
+<h2>The practical consequence</h2>
+<p>Even if our weather model is “right,” we still need to ask:</p>
+<ul>
+  <li>Can we buy or sell at a real price?</li>
+  <li>Can we size into it?</li>
+  <li>Does the edge survive fees and spread?</li>
+  <li>Is there enough time left for price convergence or settlement capture?</li>
+</ul>
+
+<h1>The Right Data Structure for the MVP</h1>
+<p>For the first build, the warehouse should revolve around six core entities.</p>
+<table>
+  <tr><th>Table / entity</th><th>Role</th></tr>
+  <tr><td>contract metadata</td><td>Defines the city, weather variable, threshold/bucket, close time, and settlement rules</td></tr>
+  <tr><td>market snapshots</td><td>Stores bid/ask/mid/volume/open interest over time</td></tr>
+  <tr><td>trade flow</td><td>Captures actual trades and short-horizon market activity</td></tr>
+  <tr><td>forecast snapshots</td><td>Stores what the latest weather forecast knew at each point in time</td></tr>
+  <tr><td>sibling strip snapshots</td><td>Represents the shape of the full bucket family at a moment in time</td></tr>
+  <tr><td>settlement truth</td><td>Stores the final official observed weather outcome</td></tr>
+</table>
+
+<p>The final modeling table is then just a disciplined join of those pieces at the grain:</p>
+<div class="code">contract × timestamp</div>
+
+<h1>What Data Stack Makes Sense First?</h1>
+<p>The best MVP stack is a two-track setup:</p>
+<table>
+  <tr><th>Need</th><th>Recommended source</th><th>Why</th></tr>
+  <tr><td>Forecasting / signal generation</td><td>Open-Meteo ensemble</td><td>Fast to build, gives probability-friendly forecast data</td></tr>
+  <tr><td>Short-range refinement</td><td>Open-Meteo GFS + HRRR</td><td>Better near-expiry detail for US weather</td></tr>
+  <tr><td>Official context</td><td>NWS API</td><td>Useful for station lookup, forecast context, validation</td></tr>
+  <tr><td>Settlement / truth</td><td>Exact NWS Daily Climate Report / station source Kalshi uses</td><td>Avoids backtest fraud via source mismatch</td></tr>
+</table>
+
+<div class="alert alert-green">
+  <strong>MVP source principle:</strong> use Open-Meteo to forecast, but use the exact NWS station-based settlement source to judge truth.</div>
+
+<h2>Why this matters</h2>
+<p>If we forecast off one city-level weather source but resolve off a different airport or climate station, we create fake signal and noisy labels. That is one of the easiest ways to build a model that looks smart on paper and dumb in production.</p>
+
+<h1>A Simple Example</h1>
+<p>Suppose tomorrow’s high temperature market for New York has four sibling buckets:</p>
+<ul>
+  <li>65–69°F</li>
+  <li>70–74°F</li>
+  <li>75–79°F</li>
+  <li>80–84°F</li>
+</ul>
+
+<p>Our weather engine might produce this distribution:</p>
+<table>
+  <tr><th>Bucket</th><th>Model fair probability</th><th>Market implied probability</th><th>Initial read</th></tr>
+  <tr><td>65–69</td><td>0.12</td><td>0.18</td><td>looks overpriced</td></tr>
+  <tr><td>70–74</td><td>0.38</td><td>0.31</td><td>looks underpriced</td></tr>
+  <tr><td>75–79</td><td>0.34</td><td>0.29</td><td>mild edge</td></tr>
+  <tr><td>80–84</td><td>0.16</td><td>0.22</td><td>looks overpriced</td></tr>
+</table>
+
+<p>That still doesn’t mean we instantly trade. We would next ask:</p>
+<ul>
+  <li>What is the actual bid/ask on the contracts we want?</li>
+  <li>Is there enough liquidity?</li>
+  <li>Are forecast sources agreeing or diverging?</li>
+  <li>How close are we to settlement?</li>
+</ul>
+
+<p>Only then does the system decide whether the edge is real enough to act on.</p>
+
+<h1>How ML Fits In</h1>
+<p>ML should not be treated like magic sauce on top of a messy workflow. It has a very specific job inside this architecture.</p>
+
+<h2>Three useful modeling jobs</h2>
+<ol>
+  <li><strong>Truth estimation</strong> — estimate the fair distribution of real-world weather outcomes</li>
+  <li><strong>Mispricing estimation</strong> — quantify how far the market is from fair value</li>
+  <li><strong>Timing estimation</strong> — predict whether the market is likely to reprice soon</li>
+</ol>
+
+<p>That gives us a more realistic sequence:</p>
+<div class="code">forecast model → fair contract probabilities → edge model → execution filter</div>
+
+<h1>Phased Expansion</h1>
+<p>We should not cram surf reports, sentiment, news, and every imaginable feature into the first version.</p>
+
+<table>
+  <tr><th>Phase</th><th>What we add</th><th>Why</th></tr>
+  <tr><td>1. Core weather</td><td>Forecasts, settlement truth, contract parsing, market snapshots</td><td>Establish a clean baseline</td></tr>
+  <tr><td>2. Distribution-aware layer</td><td>Sibling bucket normalization, strip-shape features</td><td>Represent the market correctly</td></tr>
+  <tr><td>3. Execution-aware layer</td><td>Spread, liquidity, fill assumptions, fees</td><td>Make backtests honest</td></tr>
+  <tr><td>4. Richer external signals</td><td>Additional models, revisions, maybe local context features</td><td>Expand only after baseline is trustworthy</td></tr>
+</table>
+
+<div class="alert">
+  <strong>Good discipline:</strong> add one family of features at a time and make it earn its keep. Otherwise we end up with feature soup and fake confidence.</div>
+
+<h1>The System We Are Actually Building</h1>
+<p>In plain English, this platform is trying to do one thing well:</p>
+
+<div class="finding-box">
+  <h3>Final framing</h3>
+  <p>Build a disciplined pipeline that turns weather information into a fair probability distribution, maps that distribution into contract prices, compares those prices to Kalshi’s market, and only trades when the edge survives real-world execution.</p>
+</div>
+
+<p>That is the architecture of information. It is also the architecture of restraint: the platform should help us know when <em>not</em> to bet.</p>
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center; margin-top: 40px;">
+Prepared by Chief | March 18, 2026<br>
+Designed as the explanatory backbone for the weather-first prediction market system.
+</p>
+</body>
+</html>
