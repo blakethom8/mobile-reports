@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airline Wi‑Fi: Why Telegram Works When Safari Doesn't</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --line: #d9dfeb;
+      --navy: #13233a;
+      --blue: #2563eb;
+      --green: #0f9d58;
+      --yellow: #f59e0b;
+      --red: #dc2626;
+      --purple: #7c3aed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .header {
+      background: linear-gradient(135deg, #13233a 0%, #1f3b63 100%);
+      color: white;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(19, 35, 58, 0.18);
+      margin-bottom: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 2rem; line-height: 1.2; }
+    h2 {
+      margin-top: 34px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 8px;
+      font-size: 1.35rem;
+    }
+    h3 { margin-top: 24px; font-size: 1.05rem; }
+    p.lead { margin: 0; color: #dbe7ff; max-width: 860px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(16, 24, 40, 0.05);
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: white;
+    }
+    .blue { background: var(--blue); }
+    .green { background: var(--green); }
+    .yellow { background: var(--yellow); color: #1f2937; }
+    .red { background: var(--red); }
+    .purple { background: var(--purple); }
+    .diagram {
+      background: #fcfdff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 16px 0 22px;
+    }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .node {
+      min-width: 150px;
+      flex: 1 1 150px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      padding: 12px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 4px;
+      min-width: 30px;
+    }
+    .callout {
+      border-left: 5px solid var(--blue);
+      background: #eef4ff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+    .warn {
+      border-left-color: var(--yellow);
+      background: #fff7e8;
+    }
+    ul, ol { padding-left: 20px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      margin: 14px 0 22px;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: #eaf0fb;
+      font-size: 0.92rem;
+    }
+    .small { color: var(--muted); font-size: 0.92rem; }
+    code {
+      background: #eef2f7;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.92em;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>Airline Wi‑Fi: Why Telegram Works When Safari Doesn't</h1>
+      <p class="lead">A practical systems explainer on DNS, routing, policy enforcement, captive portals, messaging-only access, in-app browsers, and whether satellites are likely involved in the difference.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <span class="tag blue">Core idea</span>
+        <p>The plane probably is not giving you “the internet.” It is giving you a <strong>policy-shaped subset</strong> of the internet.</p>
+      </div>
+      <div class="card">
+        <span class="tag green">Likely result</span>
+        <p>Telegram traffic is likely allowlisted or specially classified, while normal browsing from Safari is blocked unless full access is purchased or enabled.</p>
+      </div>
+      <div class="card">
+        <span class="tag purple">Mental model</span>
+        <p>This is another <strong>client → gateway → policy → allowed capability surface</strong> architecture, similar in shape to VPNs and agent gateways.</p>
+      </div>
+    </div>
+
+    <h2>1) Quick answer</h2>
+    <p>The most likely explanation is:</p>
+    <ol>
+      <li>Your device connects to the plane's Wi‑Fi access point.</li>
+      <li>The airline network places you behind a <strong>captive portal / policy gateway</strong>.</li>
+      <li>That gateway allows some categories of traffic, such as messaging apps, while blocking general web browsing.</li>
+      <li>Telegram works because its traffic is recognized and permitted.</li>
+      <li>Safari fails because ordinary web requests are in the blocked category.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Bottom line:</strong> this is probably much more about <strong>policy enforcement on the airline network</strong> than about satellites offering different internet capabilities for different apps.
+    </div>
+
+    <h2>2) The main communication flow</h2>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node">Your phone / laptop</div>
+        <div class="arrow">→</div>
+        <div class="node">Plane Wi‑Fi access point</div>
+        <div class="arrow">→</div>
+        <div class="node">Onboard network gateway</div>
+        <div class="arrow">→</div>
+        <div class="node">Airline / provider policy system</div>
+        <div class="arrow">→</div>
+        <div class="node">Satellite or air-to-ground backhaul</div>
+        <div class="arrow">→</div>
+        <div class="node">Public internet services</div>
+      </div>
+    </div>
+
+    <p>The decision about what you can access is usually made <strong>before</strong> traffic becomes just “normal internet.” The gateway or policy system inspects or classifies your request and decides whether it is allowed.</p>
+
+    <h2>3) What DNS is doing here</h2>
+    <p>If DNS is unfamiliar, think of it like the internet's contact lookup system.</p>
+
+    <div class="grid">
+      <div class="card">
+        <span class="tag blue">Domain name</span>
+        <p><code>telegram.org</code> or <code>blakethom8.github.io</code></p>
+      </div>
+      <div class="card">
+        <span class="tag green">DNS lookup</span>
+        <p>“What IP address should I use to reach that domain?”</p>
+      </div>
+      <div class="card">
+        <span class="tag purple">Routing</span>
+        <p>Once your device has an IP, the network decides where the packets go.</p>
+      </div>
+    </div>
+
+    <h3>DNS flow</h3>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node">Safari / Telegram</div>
+        <div class="arrow">asks</div>
+        <div class="node">DNS resolver</div>
+        <div class="arrow">for IP of</div>
+        <div class="node">example.com</div>
+        <div class="arrow">returns</div>
+        <div class="node">IP address</div>
+      </div>
+    </div>
+
+    <p>Airline networks can control DNS in several ways:</p>
+    <ul>
+      <li>force your device to use the airline's DNS servers</li>
+      <li>return special answers for blocked domains</li>
+      <li>redirect some requests to the captive portal</li>
+      <li>allow resolution but still block the actual traffic later</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>Important:</strong> DNS success does <em>not</em> mean the site is allowed. You can successfully resolve a name but still have the connection blocked by policy.</div>
+
+    <h2>4) What routing is doing here</h2>
+    <p>Routing is the process of moving packets from one network hop to the next until they reach their destination.</p>
+
+    <h3>Simple routing picture</h3>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node">Your device creates packets</div>
+        <div class="arrow">→</div>
+        <div class="node">Packets go to default gateway</div>
+        <div class="arrow">→</div>
+        <div class="node">Airline network decides whether to forward, redirect, or drop them</div>
+      </div>
+    </div>
+
+    <p>In normal home internet, your traffic is usually just routed onward. On airline Wi‑Fi, the network is often much more opinionated:</p>
+    <ul>
+      <li><strong>allow</strong> this traffic category</li>
+      <li><strong>drop</strong> that traffic category</li>
+      <li><strong>redirect</strong> web requests to a payment/auth page</li>
+      <li><strong>rate-limit</strong> large or expensive traffic</li>
+    </ul>
+
+    <h2>5) Why Telegram works</h2>
+    <p>There are a few likely mechanisms, and more than one can be true at the same time.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mechanism</th>
+          <th>What it means</th>
+          <th>How it helps Telegram work</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Allowlist by domain/IP</td>
+          <td>The airline permits known Telegram endpoints.</td>
+          <td>Traffic to Telegram servers passes; other sites do not.</td>
+        </tr>
+        <tr>
+          <td>App-category policy</td>
+          <td>The network classifies traffic as messaging vs general browsing.</td>
+          <td>Messaging flows are allowed under a lower-cost plan.</td>
+        </tr>
+        <tr>
+          <td>Captive portal exception rules</td>
+          <td>Some apps bypass the normal web-login wall.</td>
+          <td>Telegram can keep sending/receiving while Safari is redirected or blocked.</td>
+        </tr>
+        <tr>
+          <td>Lower bandwidth tolerance</td>
+          <td>Messaging traffic is small and predictable.</td>
+          <td>Airlines are more willing to allow lightweight traffic.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6) Why Safari may fail</h2>
+    <p>Safari is usually your most obvious “general internet” test, so it is often where the restriction becomes visible.</p>
+
+    <div class="diagram">
+      <div class="flow">
+        <div class="node">Safari requests site</div>
+        <div class="arrow">→</div>
+        <div class="node">Airline gateway sees generic web traffic</div>
+        <div class="arrow">→</div>
+        <div class="node">Policy says “not included”</div>
+        <div class="arrow">→</div>
+        <div class="node">Block / redirect / timeout</div>
+      </div>
+    </div>
+
+    <p>Possible visible outcomes:</p>
+    <ul>
+      <li>site never loads</li>
+      <li>you get redirected to airline purchase page</li>
+      <li>DNS appears flaky</li>
+      <li>some sites hang at “connecting”</li>
+      <li>HTTPS errors or endless retry behavior</li>
+    </ul>
+
+    <h2>7) Why a GitHub Pages link might work in Telegram but not in Safari</h2>
+    <p>This is especially interesting, and there are several plausible explanations.</p>
+
+    <h3>Explanation A: Telegram's in-app browser is treated differently</h3>
+    <p>Links tapped inside Telegram may open in an in-app browser/webview rather than full Safari. The airline network or OS path may treat this differently, especially if Telegram already has an approved session path.</p>
+
+    <h3>Explanation B: Telegram prefetches or previews link metadata</h3>
+    <p>Telegram often fetches preview information for URLs. In some cases, enough of the content or route is already available that opening the link feels different from a fresh request in Safari.</p>
+
+    <h3>Explanation C: partial allowlisting + static content luck</h3>
+    <p>GitHub Pages is static hosting. It may pass through some policy edge cases more easily than arbitrary browsing, especially if only certain domains/CDN paths are blocked aggressively.</p>
+
+    <h3>Explanation D: Safari is more tightly tied to captive-portal behavior</h3>
+    <p>The OS may strongly associate Safari with the normal browsing path and captive-portal enforcement, while an in-app webview may slip through a slightly different route.</p>
+
+    <h2>8) Does this have to do with different satellites?</h2>
+    <p><strong>Probably not in the way it feels from the user side.</strong></p>
+
+    <p>Usually the main split is not:</p>
+    <ul>
+      <li>message traffic goes over one satellite</li>
+      <li>Safari traffic goes over another satellite</li>
+    </ul>
+
+    <p>More likely, it is:</p>
+    <ul>
+      <li>all traffic goes into the airline/provider network</li>
+      <li>the network applies policy before or during forwarding</li>
+      <li>only approved traffic is allowed onto the expensive shared backhaul path</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Translation:</strong> the satellite link is usually the scarce, expensive pipe. The airline/provider uses policy to decide which traffic earns a place on that pipe.
+    </div>
+
+    <h3>Could satellites still matter indirectly?</h3>
+    <p>Yes, indirectly:</p>
+    <ul>
+      <li>satellite bandwidth is limited and expensive</li>
+      <li>latency is high compared with ground internet</li>
+      <li>there may be provider-specific optimizations for light traffic</li>
+      <li>the network operator may design messaging-only plans specifically because of those constraints</li>
+    </ul>
+
+    <p>So the satellite affects the economics and policy, but the app difference is usually caused by <strong>network control policy</strong>, not by “Telegram has a different satellite.”</p>
+
+    <h2>9) The likely policy diagram</h2>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node">Packet arrives at airline gateway</div>
+        <div class="arrow">→</div>
+        <div class="node">Gateway classifies destination / protocol / user plan</div>
+        <div class="arrow">→</div>
+        <div class="node">Policy engine decides<br/>ALLOW / REDIRECT / BLOCK</div>
+        <div class="arrow">→</div>
+        <div class="node">If allowed, traffic goes over backhaul to internet</div>
+      </div>
+    </div>
+
+    <h2>10) A beginner's glossary</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Term</th>
+          <th>Plain English meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DNS</td>
+          <td>The system that translates names like <code>github.com</code> into IP addresses.</td>
+        </tr>
+        <tr>
+          <td>IP address</td>
+          <td>The numeric network address a device or service uses.</td>
+        </tr>
+        <tr>
+          <td>Routing</td>
+          <td>The process of forwarding packets toward their destination.</td>
+        </tr>
+        <tr>
+          <td>Gateway</td>
+          <td>The network control point your traffic passes through on its way out.</td>
+        </tr>
+        <tr>
+          <td>Captive portal</td>
+          <td>The login/payment gate on public Wi‑Fi that intercepts web access.</td>
+        </tr>
+        <tr>
+          <td>Allowlist</td>
+          <td>A list of approved destinations or traffic types that are permitted.</td>
+        </tr>
+        <tr>
+          <td>Backhaul</td>
+          <td>The upstream connection from the plane to the wider internet, often via satellite or air-to-ground link.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>11) Best current hypothesis for your exact experience</h2>
+    <ol>
+      <li>The plane Wi‑Fi allows messaging-class traffic.</li>
+      <li>Telegram is recognized and allowed.</li>
+      <li>Safari is treated as general web browsing and blocked.</li>
+      <li>Some links opened from inside Telegram may succeed because of in-app browser behavior, preview/prefetch behavior, or differences in policy handling.</li>
+      <li>The root cause is network policy, not a special “Telegram satellite.”</li>
+    </ol>
+
+    <h2>12) Follow-up report ideas</h2>
+    <ul>
+      <li><strong>DNS for humans:</strong> a beginner-friendly visual guide to DNS, IPs, ports, and TLS</li>
+      <li><strong>Routing for humans:</strong> how packets move across networks</li>
+      <li><strong>VPNs vs airline Wi‑Fi policy:</strong> comparing two gateway/policy systems</li>
+      <li><strong>In-app browser vs Safari:</strong> how webviews differ from full browsers in practice</li>
+    </ul>
+
+    <p class="small">Created in response to in-flight testing and discussion about Telegram, Safari, GitHub Pages, Cisco Secure Client, gateways, DNS, routing, and network policy enforcement.</p>
+  </div>
+</body>
+</html>
