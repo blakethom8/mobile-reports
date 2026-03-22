@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Approval Flow Wireframe</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#182230;--muted:#667085;--line:#dbe4ee;--navy:#16263d;--blue:#2563eb;--green:#0f9d58;--amber:#f59e0b;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:1100px;margin:0 auto;padding:26px 16px 48px}.hero{background:linear-gradient(135deg,var(--navy),#26456f);color:#fff;padding:24px;border-radius:18px}.hero p{color:#d9e5ff}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 24px rgba(16,24,40,.06);margin-top:16px}.layout{display:grid;grid-template-columns:1fr 340px;gap:16px}.bet{padding:16px;border:1px solid var(--line);border-radius:14px;background:#fbfdff;margin-bottom:12px}.btn{display:inline-block;padding:11px 14px;border-radius:12px;font-weight:800;text-decoration:none;margin-right:8px;margin-top:8px}.approve{background:#0f9d58;color:#fff}.adjust{background:#f59e0b;color:#fff}.reject{background:#dc2626;color:#fff}.muted{color:var(--muted);font-size:.92rem}.nav a{color:#cfe0ff;text-decoration:none;font-weight:700;margin-right:14px}@media(max-width:960px){.layout{grid-template-columns:1fr}}</style></head><body>
+<div class="wrap">
+  <div class="hero">
+    <div class="nav"><a href="2026-03-22_betting-platform-wireframes.html">Overview</a><a href="2026-03-22_betting-platform-ui-daily-board.html">Daily Board</a><a href="2026-03-22_betting-platform-ui-strategy-summary.html">Strategy Summary</a><a href="2026-03-22_betting-platform-ui-review-dashboard.html">Review</a></div>
+    <h1>Approval / Adjustment Flow</h1>
+    <p>This is the trust layer. Before any paper or real bet becomes active, Blake should be able to approve, adjust, or reject the strategy clearly.</p>
+  </div>
+
+  <div class="layout">
+    <div class="card">
+      <h2>Candidate set under review</h2>
+      <div class="bet"><strong>NYC 53° or below</strong><div class="muted">Proposed size: $25 paper notional · suggested confidence: medium-high · rationale: current forecast supports colder bucket</div></div>
+      <div class="bet"><strong>Chicago 42° to 43°</strong><div class="muted">Proposed size: $15 paper notional · rationale: possible market warmth premium, still watchful</div></div>
+      <div class="bet"><strong>Chicago 39° or below</strong><div class="muted">Proposed size: $10 paper notional · rationale: lower-tail optionality, price-sensitive</div></div>
+
+      <h3 style="margin-top:18px;">Adjustment controls</h3>
+      <ul>
+        <li>Lower total exposure</li>
+        <li>Remove a candidate bet</li>
+        <li>Change paper size per bet</li>
+        <li>Delay until later-day recheck</li>
+        <li>Convert a proposed bet into watch-only</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Approval actions</h2>
+      <p class="muted">Strategy status: <strong>pending_review</strong></p>
+      <a class="btn approve" href="#">Approve strategy</a>
+      <a class="btn adjust" href="#">Request adjustments</a>
+      <a class="btn reject" href="#">Reject / skip day</a>
+
+      <h3 style="margin-top:18px;">Approval notes</h3>
+      <p class="muted">Example: “Approve NYC only. Keep Chicago on watch and rerun near close.”</p>
+
+      <h3 style="margin-top:18px;">Desired behavior</h3>
+      <ul>
+        <li>Every review decision is stored explicitly</li>
+        <li>Approved bets can flow into paper bet creation</li>
+        <li>Adjustment requests should reopen the strategy cleanly</li>
+        <li>Abstaining should feel like a valid, strong action</li>
+      </ul>
+    </div>
+  </div>
+</div></body></html>

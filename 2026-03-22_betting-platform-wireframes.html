@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betting Platform Wireframes</title>
+<style>
+  :root {
+    --bg:#f4f7fb; --card:#ffffff; --ink:#172033; --muted:#667085; --line:#d9e2ec;
+    --navy:#14243d; --blue:#2563eb; --green:#0f9d58; --amber:#f59e0b; --red:#dc2626; --purple:#7c3aed;
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 18px 56px}
+  .hero{background:linear-gradient(135deg,var(--navy),#26446f);color:#fff;padding:28px;border-radius:20px;box-shadow:0 16px 36px rgba(20,36,61,.2)}
+  h1{margin:0 0 10px;font-size:2rem} h2{margin:0 0 14px;font-size:1.35rem;color:var(--navy)} p,li{line-height:1.6}
+  .sub{color:#d8e4fb;max-width:860px}.meta{margin-top:12px;font-size:.95rem;color:#bfd3f8}
+  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 26px rgba(16,24,40,.06)}
+  .stack{display:grid;gap:18px}.links{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}.linkcard{display:block;padding:16px;border-radius:14px;border:1px solid var(--line);text-decoration:none;color:inherit;background:#fbfdff}
+  .linkcard:hover{border-color:#b8cdf2;transform:translateY(-1px)} .eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+  .pill{display:inline-block;padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:700;margin:4px 6px 0 0}.pill.blue{background:#e8f0fe;color:#2458cc}.pill.green{background:#e8f8ee;color:#0b7a43}.pill.amber{background:#fff5e8;color:#b76a00}.pill.purple{background:#f3e8ff;color:#6d28d9}
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.step{padding:14px;border:1px solid var(--line);border-radius:14px;background:#fafcff}.step strong{display:block;margin-bottom:6px;color:var(--navy)}
+  .note{border-left:4px solid var(--amber);background:#fff8ec;padding:14px 16px;border-radius:8px;margin-top:14px}
+  ul{padding-left:20px} a.inline{color:var(--blue);font-weight:700;text-decoration:none}
+  @media(max-width:900px){.grid,.links,.flow{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>Betting Platform Wireframes</h1>
+    <p class="sub">A first-pass UI concept pack for the weather betting platform. The product is centered on point-in-time board generation, daily strategy review, paper bets this week, and transparent approval before any real money deployment.</p>
+    <div class="meta">March 22, 2026 · static wireframes · built to review product shape before frontend implementation</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="eyebrow">Product thesis</div>
+      <h2>What this app should help Blake do every day</h2>
+      <div>
+        <span class="pill blue">See the board</span>
+        <span class="pill green">Compare relative edge</span>
+        <span class="pill amber">Approve or adjust</span>
+        <span class="pill purple">Review outcomes</span>
+      </div>
+      <ul>
+        <li>Build the board for the day across weather cities and contracts.</li>
+        <li>Compare candidate bets <strong>against each other</strong>, not just individually.</li>
+        <li>Generate a strategy memo that is easy to approve, modify, or reject.</li>
+        <li>Track paper bets this week so the workflow is trustworthy before real deployment next week.</li>
+        <li>Keep a clean feedback loop between forecasts, rationale, outcomes, and postmortem learning.</li>
+      </ul>
+      <div class="note"><strong>Core product principle:</strong> the system should optimize for small, repeatable, explainable daily edge — not one-off hero trades.</div>
+    </div>
+
+    <div class="stack">
+      <div class="card">
+        <div class="eyebrow">Interaction model</div>
+        <h2>Recommended first operating mode</h2>
+        <ul>
+          <li>Morning or midday summary report</li>
+          <li>Blake reviews proposed bets</li>
+          <li>Blake approves, adjusts, or skips</li>
+          <li>Paper bets recorded automatically</li>
+          <li>End-of-day / next-day review updates learning loop</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Architecture boundary</div>
+        <h2>Separate live betting from research/ML</h2>
+        <p>The UI and operator workflow should live in the betting platform path. Historical backtests, archived forecasts, and model experiments remain a separate system that feeds intelligence into the app.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <div class="eyebrow">Workflow</div>
+    <h2>Daily operating loop</h2>
+    <div class="flow">
+      <div class="step"><strong>1. Build board</strong>Pull all candidate markets, current prices, forecast context, and edge signals.</div>
+      <div class="step"><strong>2. Summarize</strong>Generate daily thesis, top opportunities, watchlist, and passes.</div>
+      <div class="step"><strong>3. Review</strong>Blake approves, adjusts, or rejects the day’s strategy.</div>
+      <div class="step"><strong>4. Paper bet</strong>Record simulated bets with rationale, size, and approval notes.</div>
+      <div class="step"><strong>5. Learn</strong>Settle outcomes, compare against reasoning, and improve next day.</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <div class="eyebrow">Wireframes</div>
+    <h2>Tap through the proposed screens</h2>
+    <div class="links">
+      <a class="linkcard" href="2026-03-22_betting-platform-ui-daily-board.html">
+        <div class="eyebrow">Screen 1</div>
+        <strong>Daily Board</strong>
+        <p>Compare all available bets across cities, contracts, edge, and forecast context.</p>
+      </a>
+      <a class="linkcard" href="2026-03-22_betting-platform-ui-strategy-summary.html">
+        <div class="eyebrow">Screen 2</div>
+        <strong>Strategy Summary</strong>
+        <p>The report Blake would receive each day with thesis, proposed bets, and passes.</p>
+      </a>
+      <a class="linkcard" href="2026-03-22_betting-platform-ui-approval-flow.html">
+        <div class="eyebrow">Screen 3</div>
+        <strong>Approval Flow</strong>
+        <p>Approve, adjust, or reject the strategy and its candidate paper bets.</p>
+      </a>
+      <a class="linkcard" href="2026-03-22_betting-platform-ui-review-dashboard.html">
+        <div class="eyebrow">Screen 4</div>
+        <strong>Review Dashboard</strong>
+        <p>Track outcomes, repeated errors, missed opportunities, and process health.</p>
+      </a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <div class="eyebrow">Build implications</div>
+    <h2>Features these wireframes imply</h2>
+    <ul>
+      <li>Daily board generation job</li>
+      <li>Strategy session object with approval state</li>
+      <li>Paper bet creation from approved candidates</li>
+      <li>Abstention capture as a first-class action</li>
+      <li>Light dashboard or local app shell</li>
+      <li>Eventually: structured LLM decision pipeline on top of this UI/workflow</li>
+    </ul>
+    <p>Repository work: <a class="inline" href="https://github.com/blakethom8/prediction-market-weather">prediction-market-weather</a></p>
+  </div>
+</div>
+</body>
+</html>

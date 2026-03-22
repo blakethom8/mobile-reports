@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Daily Board Wireframe</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#182230;--muted:#667085;--line:#dbe4ee;--navy:#16263d;--blue:#2563eb;--green:#0f9d58;--amber:#f59e0b;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 48px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;background:linear-gradient(135deg,var(--navy),#24416a);color:#fff;padding:24px;border-radius:18px}.top p{color:#d8e5ff;max-width:760px}.row{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(16,24,40,.06)}h1,h2,h3{margin:0 0 10px}table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:.92rem;vertical-align:top}th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:#475467;background:#eef4fb}.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.75rem;font-weight:800}.priority{background:#e8f8ee;color:#087443}.watch{background:#fff5e8;color:#b66a00}.pass{background:#fef2f2;color:#b42318}.small{font-size:.88rem;color:var(--muted)}.chip{display:inline-block;padding:6px 10px;border-radius:10px;background:#f3f6fb;border:1px solid var(--line);margin:0 8px 8px 0}.metric{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric .box{padding:12px;border-radius:14px;background:#f9fbff;border:1px solid var(--line)}.nav a{color:#cfe0ff;text-decoration:none;font-weight:700;margin-right:14px}@media(max-width:980px){.row{grid-template-columns:1fr}.top{display:block}}</style></head><body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="nav"><a href="2026-03-22_betting-platform-wireframes.html">Overview</a><a href="2026-03-22_betting-platform-ui-strategy-summary.html">Strategy Summary</a><a href="2026-03-22_betting-platform-ui-approval-flow.html">Approval</a><a href="2026-03-22_betting-platform-ui-review-dashboard.html">Review</a></div>
+      <h1>Daily Board</h1>
+      <p>Main operator screen. The purpose is to compare the <strong>entire board</strong> before selecting any individual bet. This screen should feel like a market map, not just a list of isolated predictions.</p>
+    </div>
+    <div class="small">Mockup target: desktop first, mobile secondary</div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h2>Filters & context</h2>
+      <div class="chip">Date: 2026-03-23</div><div class="chip">Cities: NYC, CHI</div><div class="chip">Mode: Paper trading</div><div class="chip">Forecast source: NWS + market context</div>
+      <h3 style="margin-top:16px;">Board metrics</h3>
+      <div class="metric">
+        <div class="box"><strong>12</strong><div class="small">markets on board</div></div>
+        <div class="box"><strong>3</strong><div class="small">priority candidates</div></div>
+        <div class="box"><strong>4</strong><div class="small">watchlist</div></div>
+        <div class="box"><strong>5</strong><div class="small">passes</div></div>
+      </div>
+      <h3 style="margin-top:16px;">Key actions</h3>
+      <ul>
+        <li>Sort by edge vs ask</li>
+        <li>Toggle by city</li>
+        <li>Show only priority/watch</li>
+        <li>Open strategy summary</li>
+        <li>Mark board ready for review</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Candidate table</h2>
+      <table>
+        <thead><tr><th>Rank</th><th>Market</th><th>City</th><th>Price</th><th>Fair</th><th>Edge</th><th>Forecast</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>#1</td><td><strong>KXHIGHNY-26MAR23 53° or below</strong><div class="small">High temp in NYC tomorrow</div></td><td>NYC</td><td>Yes ask 0.66</td><td>0.74</td><td>+0.08</td><td>NWS high near 49°<div class="small">Cool bias confirmed</div></td><td><span class="pill priority">Priority</span></td></tr>
+          <tr><td>#2</td><td><strong>KXHIGHCHI-26MAR23 42° to 43°</strong><div class="small">High temp in Chicago tomorrow</div></td><td>CHI</td><td>Yes ask 0.37</td><td>0.44</td><td>+0.07</td><td>NWS high near 39°<div class="small">Market slightly warmer</div></td><td><span class="pill watch">Watch</span></td></tr>
+          <tr><td>#3</td><td><strong>KXHIGHCHI-26MAR23 39° or below</strong></td><td>CHI</td><td>Yes ask 0.18</td><td>0.24</td><td>+0.06</td><td>NWS high near 39°<div class="small">Interesting lower-tail exposure</div></td><td><span class="pill watch">Watch</span></td></tr>
+          <tr><td>#4</td><td><strong>KXHIGHNY-26MAR23 62° or above</strong></td><td>NYC</td><td>Yes ask 0.02</td><td>0.00</td><td>-0.02</td><td>No warm-tail support</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>#5</td><td><strong>KXHIGHNY-26MAR23 58° to 59°</strong></td><td>NYC</td><td>Yes ask 0.03</td><td>0.01</td><td>-0.02</td><td>Outside expected zone</td><td><span class="pill pass">Pass</span></td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="margin-top:12px;">Desired behavior: clicking a row opens a side panel with forecast detail, rule source, rationale history, and candidate notes.</p>
+    </div>
+  </div>
+</div></body></html>

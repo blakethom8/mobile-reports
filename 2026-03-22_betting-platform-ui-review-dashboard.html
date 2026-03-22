@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Review Dashboard Wireframe</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#182230;--muted:#667085;--line:#dbe4ee;--navy:#16263d;--green:#0f9d58;--amber:#f59e0b;--red:#dc2626;--blue:#2563eb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:1140px;margin:0 auto;padding:26px 16px 48px}.hero{background:linear-gradient(135deg,var(--navy),#26456f);color:#fff;padding:24px;border-radius:18px}.hero p{color:#d9e5ff}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(16,24,40,.06);margin-top:16px}.metric{padding:16px;border-radius:16px;background:#fbfdff;border:1px solid var(--line)}.metric strong{font-size:1.8rem;display:block}.cols{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.bet{padding:14px;border:1px solid var(--line);border-radius:14px;background:#fbfdff;margin-bottom:12px}.good{border-left:4px solid var(--green)}.warn{border-left:4px solid var(--amber)}.bad{border-left:4px solid var(--red)}.small{font-size:.92rem;color:var(--muted)}.nav a{color:#cfe0ff;text-decoration:none;font-weight:700;margin-right:14px}@media(max-width:1000px){.grid,.cols{grid-template-columns:1fr}}</style></head><body>
+<div class="wrap">
+  <div class="hero">
+    <div class="nav"><a href="2026-03-22_betting-platform-wireframes.html">Overview</a><a href="2026-03-22_betting-platform-ui-daily-board.html">Daily Board</a><a href="2026-03-22_betting-platform-ui-strategy-summary.html">Strategy Summary</a><a href="2026-03-22_betting-platform-ui-approval-flow.html">Approval</a></div>
+    <h1>Review & Learning Dashboard</h1>
+    <p>This screen closes the loop. It should help answer: were we right, wrong, early, too aggressive, too timid, or just looking at the wrong bet relative to the board?</p>
+  </div>
+
+  <div class="grid">
+    <div class="metric"><strong>+3.7%</strong><span class="small">paper P&amp;L this week</span></div>
+    <div class="metric"><strong>61%</strong><span class="small">approved bets profitable</span></div>
+    <div class="metric"><strong>4</strong><span class="small">good abstentions</span></div>
+    <div class="metric"><strong>2</strong><span class="small">repeatable errors found</span></div>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h2>Recent reviews</h2>
+      <div class="bet good"><strong>NYC cold bucket</strong><div class="small">Good process. Forecast and board comparison aligned. Position size stayed disciplined.</div></div>
+      <div class="bet warn"><strong>Chicago tail bet</strong><div class="small">Edge existed but conviction was overstated. Consider later-day recheck instead of early approval.</div></div>
+      <div class="bet bad"><strong>Warm-tail chase</strong><div class="small">Forced action. Market price looked cheap but no forecast support. Avoid repeating this pattern.</div></div>
+    </div>
+
+    <div class="card">
+      <h2>What the dashboard should surface</h2>
+      <ul>
+        <li>Performance by city</li>
+        <li>Performance by candidate bucket</li>
+        <li>Approved vs adjusted vs rejected strategies</li>
+        <li>Best abstentions</li>
+        <li>Missed opportunities</li>
+        <li>Repeated rationale mistakes</li>
+        <li>How often forecast/market disagreement actually created alpha</li>
+      </ul>
+    </div>
+  </div>
+</div></body></html>
