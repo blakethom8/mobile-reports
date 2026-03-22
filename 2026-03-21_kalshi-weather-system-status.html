@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalshi Weather System Status — Architecture Components & Build Map</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 920px; margin: 40px auto; color: #222; line-height: 1.72; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 22px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #e8f0fe; border-left: 4px solid #2980b9; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-green { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-yellow { background: #fff8e1; border-left: 4px solid #d4a017; }
+  .alert-red { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  ul li, ol li { margin-bottom: 8px; font-family: Arial, sans-serif; font-size: 14px; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 3px 8px; border-radius: 10px; }
+  .done { background: #e8f8e8; color: #1f7a3d; }
+  .partial { background: #fff3cd; color: #9a6700; }
+  .pending { background: #fde8e8; color: #b42318; }
+  .code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 13px; white-space: pre-wrap; }
+  .small { font-family: Arial, sans-serif; font-size: 12px; color: #666; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🧭 Kalshi Weather System Status</h1>
+  <p>Prepared by Chief | March 21, 2026</p>
+  <p>Architecture components, what exists today, what is partial, and what is still pending</p>
+</div>
+
+<div class="alert">
+  <strong>Purpose:</strong> make the current system legible. This report is not about the trading thesis itself; it is about the <strong>state of the build</strong> — which components exist, which are partly built, and which are still missing before the MVP testing environment is truly complete.
+</div>
+
+<h1>Executive Summary</h1>
+<p>The project has meaningfully advanced from a concept repo into a <strong>tested MVP backbone</strong>. The strongest parts today are:</p>
+<ul>
+  <li>core system architecture and data model</li>
+  <li>contract parsing and parser audit tooling</li>
+  <li>city / station registry layer</li>
+  <li>DuckDB schema and training-row materialization</li>
+  <li>Open-Meteo forecast adapter</li>
+  <li>self-test environment and end-to-end synthetic/source-shaped tests</li>
+</ul>
+
+<div class="alert alert-green">
+  <strong>Big picture:</strong> the project is now past the “toy scaffold” phase. It has a real testing spine and a real data-flow skeleton. The next major gap is the <strong>truth/settlement side</strong> and the <strong>human-readable decision replay/review layer</strong>.
+</div>
+
+<h1>System Architecture Map</h1>
+<table>
+  <tr>
+    <th>Component</th>
+    <th>Purpose</th>
+    <th>Status</th>
+    <th>What exists today</th>
+    <th>What is still pending</th>
+  </tr>
+  <tr>
+    <td><strong>1. Architecture / product model</strong></td>
+    <td>Define how forecasts become bets and how the system should be interpreted</td>
+    <td><span class="tag done">BUILT</span></td>
+    <td>Reports, docs, repo architecture, “forecast first, bid second,” contract × timestamp grain, observability design</td>
+    <td>Mainly refinement, not invention</td>
+  </tr>
+  <tr>
+    <td><strong>2. Developer / test environment</strong></td>
+    <td>Make the project runnable, testable, and hard to fake</td>
+    <td><span class="tag done">BUILT</span></td>
+    <td>Venv setup, bootstrap scripts, Makefile, unittest suite, temp-DB testing, package cleanup</td>
+    <td>Potential CI later; richer fixtures</td>
+  </tr>
+  <tr>
+    <td><strong>3. Warehouse schema</strong></td>
+    <td>Store contracts, forecasts, market snapshots, settlements, decisions, reviews</td>
+    <td><span class="tag done">BUILT</span></td>
+    <td>DuckDB raw/core/features/ops schemas and views are in place</td>
+    <td>Schema expansion for sibling-strip analytics and richer review tables</td>
+  </tr>
+  <tr>
+    <td><strong>4. Contract parser</strong></td>
+    <td>Turn Kalshi weather contract titles into structured semantics</td>
+    <td><span class="tag partial">PARTIAL+</span></td>
+    <td>Threshold/range parsing, city/date extraction, parser audit tooling, tests</td>
+    <td>More real-market title coverage, rules-text support, edge-case handling</td>
+  </tr>
+  <tr>
+    <td><strong>5. City / station registry</strong></td>
+    <td>Map contracts to settlement-aligned geography and official stations</td>
+    <td><span class="tag partial">PARTIAL+</span></td>
+    <td>City/station YAML configs, registry loader, weather_stations table, tests</td>
+    <td>Verification against exact Kalshi rule sources for each market family</td>
+  </tr>
+  <tr>
+    <td><strong>6. Forecast ingestion</strong></td>
+    <td>Bring weather forecast information into source-normalized warehouse form</td>
+    <td><span class="tag partial">PARTIAL+</span></td>
+    <td>Open-Meteo daily payload parser/fetcher, threshold distribution builder, ingestion into forecast tables, tests</td>
+    <td>More realistic uncertainty model, additional forecast sources, caching/fixtures, live adapter robustness</td>
+  </tr>
+  <tr>
+    <td><strong>7. Settlement truth ingestion</strong></td>
+    <td>Capture the official observed value the contracts resolve against</td>
+    <td><span class="tag pending">PENDING / THIN</span></td>
+    <td>Normalized ingestion path exists for settlement observations</td>
+    <td>Real official-source adapter, final/preliminary nuance, source fixtures, station/date rule handling</td>
+  </tr>
+  <tr>
+    <td><strong>8. Market snapshot ingestion</strong></td>
+    <td>Capture bid/ask/mid/volume/open interest over time</td>
+    <td><span class="tag partial">PARTIAL</span></td>
+    <td>Normalized insertion path exists; used in tests</td>
+    <td>Real Kalshi data adapter, batching, snapshot sourcing from actual market payloads</td>
+  </tr>
+  <tr>
+    <td><strong>9. Training row materialization</strong></td>
+    <td>Join contracts + forecasts + market state + settlement into model-ready rows</td>
+    <td><span class="tag done">BUILT</span></td>
+    <td>`features.v_training_rows` + `materialize_training_rows()` + end-to-end test</td>
+    <td>Sibling-strip features, missing-data handling, real-source stress testing</td>
+  </tr>
+  <tr>
+    <td><strong>10. Signal / evaluator loop</strong></td>
+    <td>Turn fair probabilities into candidate actions and score them</td>
+    <td><span class="tag partial">PARTIAL</span></td>
+    <td>Baseline signal and evaluator modules, evaluator tests</td>
+    <td>Realistic execution assumptions, fees, hold periods, richer metrics</td>
+  </tr>
+  <tr>
+    <td><strong>11. Decision journaling / rationale</strong></td>
+    <td>Log what the system thought and why a bet did or did not happen</td>
+    <td><span class="tag partial">PARTIAL</span></td>
+    <td>Decision journal tables, rationale builder, decision logger</td>
+    <td>Source-backed decision replay, richer rationale payloads, abstention review tooling</td>
+  </tr>
+  <tr>
+    <td><strong>12. Review / observability surface</strong></td>
+    <td>Human-readable inspection of bets, skips, outcomes, and lessons</td>
+    <td><span class="tag pending">PENDING</span></td>
+    <td>Architecture/reporting design exists</td>
+    <td>Actual review dashboard/report generation and postmortem workflow</td>
+  </tr>
+  <tr>
+    <td><strong>13. Live/paper trading execution</strong></td>
+    <td>Place orders or simulate them under realistic rules</td>
+    <td><span class="tag pending">NOT STARTED</span></td>
+    <td>Only conceptual design and baseline evaluator logic</td>
+    <td>Execution engine, order state, fills, fees, controls, paper mode</td>
+  </tr>
+</table>
+
+<h1>Component Inventory — What Exists Today</h1>
+<h2>Already real and tested</h2>
+<ul>
+  <li><strong>DuckDB schema + views</strong> for raw/core/features/ops</li>
+  <li><strong>contract parser</strong> with coverage for major threshold/range title patterns</li>
+  <li><strong>parser audit tooling</strong> to batch-evaluate parse quality</li>
+  <li><strong>city/station registry loader</strong></li>
+  <li><strong>market snapshot ingestion path</strong></li>
+  <li><strong>forecast snapshot ingestion path</strong></li>
+  <li><strong>Open-Meteo forecast adapter</strong></li>
+  <li><strong>settlement observation ingestion path</strong> (normalized insert layer only)</li>
+  <li><strong>training-row materialization</strong></li>
+  <li><strong>baseline signal/evaluation modules</strong></li>
+  <li><strong>decision logger / rationale scaffolding</strong></li>
+  <li><strong>20-test self-test environment</strong></li>
+</ul>
+
+<h2>Partly built but still immature</h2>
+<ul>
+  <li><strong>contract parsing</strong> — good title-level coverage, but still not deeply rules-text aware</li>
+  <li><strong>station mapping</strong> — explicit and healthy, but not fully verified against exact contract source terms</li>
+  <li><strong>forecast probability model</strong> — currently a reasonable MVP bridge, not yet final edge logic</li>
+  <li><strong>evaluation loop</strong> — exists, but still very baseline compared with the real trading/evaluation ambition</li>
+  <li><strong>decision journaling</strong> — schema exists, but not yet wired into a rich replay/review product</li>
+</ul>
+
+<h2>Still notably missing</h2>
+<ul>
+  <li><strong>official-source settlement adapter</strong></li>
+  <li><strong>real Kalshi weather market payload ingestion</strong></li>
+  <li><strong>source-backed decision replay flow</strong></li>
+  <li><strong>review/debug dashboard or report layer</strong></li>
+  <li><strong>paper-trading or live execution engine</strong></li>
+</ul>
+
+<h1>Current System Flow</h1>
+<div class="code">Contract title / metadata
+        ↓
+Parser + registry mapping
+        ↓
+Structured weather contract
+        ↓
+Forecast source (Open-Meteo) → normalized forecast snapshot + threshold probabilities
+        ↓
+Market snapshot → bid/ask/mid/volume/open interest
+        ↓
+Settlement observation → observed high / final truth
+        ↓
+Training row materialization
+        ↓
+Baseline evaluator + signal
+        ↓
+Decision journal / rationale scaffolding</div>
+
+<div class="alert alert-yellow">
+  <strong>Current truth:</strong> the left and middle parts of the pipeline are increasingly real. The right-most part — explainable decision replay and human-readable review — still needs to catch up.
+</div>
+
+<h1>What the MVP Testing Environment Is Becoming</h1>
+<p>The most important architectural shift is this: the test environment is no longer just checking whether functions run. It is increasingly checking whether the <strong>system architecture behaves honestly</strong>.</p>
+
+<table>
+  <tr><th>MVP test environment goal</th><th>Current status</th></tr>
+  <tr><td>Can we parse real-ish contracts?</td><td>Yes, with growing coverage</td></tr>
+  <tr><td>Can we map them to explicit cities/stations?</td><td>Yes</td></tr>
+  <tr><td>Can we ingest source-shaped forecast data?</td><td>Yes, via Open-Meteo</td></tr>
+  <tr><td>Can we materialize training rows?</td><td>Yes</td></tr>
+  <tr><td>Can we log decisions and rationale?</td><td>Partly</td></tr>
+  <tr><td>Can we replay source-backed decisions and inspect them?</td><td>Not fully yet</td></tr>
+  <tr><td>Can we compare forecast-source vs settlement-source assumptions cleanly?</td><td>Not fully yet</td></tr>
+</table>
+
+<h1>Recommended Next Steps</h1>
+<div class="box">
+  <h3>Immediate build order</h3>
+  <ol>
+    <li><strong>Build the real settlement adapter</strong><br><span class="small">This is the biggest current asymmetry in the system.</span></li>
+    <li><strong>Add real payload fixtures</strong><br><span class="small">Forecast + settlement + contract samples so tests become more realistic without requiring live network.</span></li>
+    <li><strong>Wire source-backed decision replay</strong><br><span class="small">Take a materialized row, generate action + rationale, and store a reviewable decision record.</span></li>
+    <li><strong>Build the first review surface</strong><br><span class="small">Even a generated report is enough at first — why bet, why skip, what happened, what changed.</span></li>
+    <li><strong>Then refine the evaluator</strong><br><span class="small">Add more realistic execution logic, edge thresholds, and review metrics.</span></li>
+  </ol>
+</div>
+
+<h1>My Read on Direction</h1>
+<div class="alert alert-green">
+  <strong>Direction check:</strong> the project appears to be moving in the right direction. The recent work did not drift into novelty or overbuilding. It tightened the core spine: testing, parsing, registries, warehouse joins, and source-shaped forecast ingestion.
+</div>
+
+<p>If the goal is to build an MVP whose main product is a <strong>rich, transparent, inspectable testing and evaluation environment</strong> for weather-market bets, then the project is on the correct path. The biggest thing to guard against now is not lack of ambition — it is letting the truth/review side lag too far behind the ingestion side.</p>
+
+<p class="small" style="text-align:center; margin-top:40px;">Prepared by Chief | March 21, 2026<br>Intended as a status map for the Kalshi weather prediction pipeline.</p>
+</body>
+</html>
