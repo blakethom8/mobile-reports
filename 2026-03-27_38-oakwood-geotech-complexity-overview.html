@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>38 Oakwood Road — Site Complexity & Build Overview</title>
+  <style>
+    :root {
+      --earth-dark: #2d2416;
+      --earth-mid: #5c4a2a;
+      --earth-warm: #8b6914;
+      --earth-gold: #c9922a;
+      --earth-light: #f5ecd7;
+      --earth-pale: #faf6ee;
+      --stone: #6b7280;
+      --stone-light: #e5e7eb;
+      --green-safe: #166534;
+      --green-bg: #f0fdf4;
+      --yellow-mid: #92400e;
+      --yellow-bg: #fffbeb;
+      --red-risk: #991b1b;
+      --red-bg: #fef2f2;
+      --blue-info: #1e40af;
+      --blue-bg: #eff6ff;
+      --text-primary: #1c1917;
+      --text-secondary: #57534e;
+      --text-muted: #a8a29e;
+      --border: #e7e5e4;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif;
+      background: var(--earth-pale);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .report-header {
+      background: linear-gradient(135deg, var(--earth-dark) 0%, var(--earth-mid) 60%, var(--earth-warm) 100%);
+      color: white;
+      padding: 56px 32px 48px;
+      text-align: center;
+    }
+    .report-header .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: 16px;
+    }
+    .report-header h1 {
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .report-header h1 span { color: var(--earth-gold); }
+    .report-header .subtitle {
+      font-size: 16px;
+      opacity: 0.8;
+      max-width: 620px;
+      margin: 0 auto 28px;
+    }
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .meta-pill {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* ── Sections ── */
+    .section { margin-top: 52px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--earth-warm);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    h2 {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 800;
+      color: var(--earth-dark);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--earth-mid);
+      margin-bottom: 8px;
+      margin-top: 28px;
+    }
+    p { color: var(--text-secondary); margin-bottom: 14px; font-size: 15px; }
+    strong { color: var(--text-primary); }
+    ul, ol { padding-left: 20px; margin-bottom: 14px; }
+    li { color: var(--text-secondary); font-size: 15px; margin-bottom: 8px; }
+    li strong { color: var(--text-primary); }
+
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ── Verdict Banner ── */
+    .verdict-banner {
+      background: linear-gradient(135deg, #1a3a2a, #2d5a3d);
+      color: white;
+      border-radius: 16px;
+      padding: 32px 28px;
+      margin-top: 24px;
+    }
+    .verdict-banner .verdict-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+    .verdict-banner h3 {
+      color: white;
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .verdict-banner p { color: rgba(255,255,255,0.85); font-size: 15px; margin-bottom: 0; }
+
+    /* ── Complexity Meter ── */
+    .complexity-block {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+    }
+    .complexity-scale { margin: 20px 0 8px; position: relative; }
+    .scale-bar {
+      height: 14px;
+      border-radius: 7px;
+      background: linear-gradient(to right, #22c55e 0%, #84cc16 30%, #eab308 55%, #f97316 75%, #ef4444 100%);
+      position: relative;
+    }
+    .scale-marker {
+      position: absolute;
+      top: -6px;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--earth-dark);
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .scale-reading { text-align: center; margin-top: 16px; }
+    .scale-reading .number {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--earth-warm);
+      line-height: 1;
+    }
+    .scale-reading .out-of { font-size: 20px; color: var(--text-muted); }
+    .scale-reading .label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ── Two-column compare ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .compare-col {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .compare-col.elevated { background: #fef9ee; border-color: #f5d98f; }
+    .compare-col .col-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .compare-col.standard .col-label { color: var(--green-safe); }
+    .compare-col.elevated .col-label { color: var(--yellow-mid); }
+    .compare-col ul { margin-bottom: 0; }
+    .compare-col li { font-size: 14px; margin-bottom: 8px; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      border-left: 4px solid;
+    }
+    .callout.green { background: var(--green-bg); border-color: #16a34a; }
+    .callout.yellow { background: var(--yellow-bg); border-color: #d97706; }
+    .callout.red { background: var(--red-bg); border-color: #dc2626; }
+    .callout.blue { background: var(--blue-bg); border-color: #2563eb; }
+    .callout .callout-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .callout.green .callout-title { color: var(--green-safe); }
+    .callout.yellow .callout-title { color: var(--yellow-mid); }
+    .callout.red .callout-title { color: var(--red-risk); }
+    .callout.blue .callout-title { color: var(--blue-info); }
+    .callout p { margin-bottom: 0; font-size: 14px; }
+
+    /* ── Factor cards ── */
+    .factor-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
+    }
+    .factor-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--earth-pale);
+      border-bottom: 1px solid var(--border);
+    }
+    .factor-icon { font-size: 22px; }
+    .factor-header-text {}
+    .factor-name {
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--earth-dark);
+    }
+    .factor-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 3px;
+    }
+    .factor-tag.above { background: #fef3c7; color: #92400e; }
+    .factor-tag.normal { background: #dcfce7; color: #166534; }
+    .factor-tag.unique { background: #fee2e2; color: #991b1b; }
+    .factor-body { padding: 18px 20px; }
+    .factor-body p { font-size: 14px; margin-bottom: 10px; }
+    .factor-body p:last-child { margin-bottom: 0; }
+
+    /* ── Timeline ── */
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .timeline-dot.green { background: #16a34a; }
+    .timeline-dot.yellow { background: #d97706; }
+    .timeline-dot.red { background: #dc2626; }
+    .timeline-content strong { display: block; font-size: 15px; color: var(--text-primary); margin-bottom: 4px; }
+    .timeline-content span { font-size: 14px; color: var(--text-secondary); }
+
+    /* ── Risk register ── */
+    .risk-item {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      box-shadow: var(--card-shadow);
+    }
+    .risk-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .risk-badge.high { background: #fee2e2; color: #991b1b; }
+    .risk-badge.medium { background: #fef3c7; color: #92400e; }
+    .risk-badge.low { background: #dcfce7; color: #166534; }
+    .risk-content strong { display: block; font-size: 15px; color: var(--text-primary); margin-bottom: 4px; }
+    .risk-content p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; }
+
+    /* ── Questions ── */
+    .question-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .question-item:last-child { border-bottom: none; }
+    .question-number {
+      width: 28px;
+      height: 28px;
+      background: var(--earth-warm);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .question-content strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    .question-content span { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 60px;
+      padding: 28px;
+      background: var(--earth-light);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .report-header { padding: 40px 20px 36px; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .factor-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════ -->
+<div class="report-header">
+  <div class="label">House Build · Site Overview</div>
+  <h1>38 Oakwood Road<br><span>Build Complexity Overview</span></h1>
+  <p class="subtitle">A plain-language interpretation of the geotechnical report findings — what the soil investigation revealed, how this site compares to other Orinda hillside builds, and the key factors that shape how this project gets built.</p>
+  <div class="meta-pills">
+    <span class="meta-pill">📋 Based on CRS Engineering Report #26013</span>
+    <span class="meta-pill">📅 March 27, 2026</span>
+    <span class="meta-pill">🏠 New Residence + ADU + Garage</span>
+    <span class="meta-pill">🏔️ Orinda, CA 94563</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════
+     SUMMARY
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Summary</div>
+  <h2>What the Soil Report Tells Us</h2>
+  <p>Before any home can be designed and built, a licensed geotechnical engineer investigates the ground beneath the site — drilling test pits, analyzing soil samples, and evaluating the geological conditions. Their report tells the design and construction team what kind of foundation the home needs, how the site must be graded, and what risks need to be managed.</p>
+  <p>CRS Engineering's investigation at 38 Oakwood Road identified conditions that are <strong>characteristic of the East Bay hills</strong> — the expansive clay soils, hillside drainage patterns, and bedrock geology found here are exactly what experienced local engineers expect in Orinda. At the same time, this site has <strong>a few features that add meaningful complexity</strong> beyond a typical hillside lot in the area.</p>
+
+  <div class="verdict-banner">
+    <div class="verdict-label">Overall Assessment</div>
+    <h3>Manageable Complexity — Well Within the Range of East Bay Hillside Construction</h3>
+    <p>Every condition identified by CRS Engineering has a well-understood engineering solution. This is not a situation that calls the project into question. It is a situation that requires careful, experienced engineering — the kind that Orinda builders work with routinely.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     COMPLEXITY RATING
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Site Complexity</div>
+  <h2>How Does This Site Compare?</h2>
+  <p>Judged on a 1–10 scale for Orinda and East Bay hillside residential construction — where 1 is a flat lot with simple soil and 10 is an active landslide zone with extreme geological challenges:</p>
+
+  <div class="complexity-block">
+    <div class="complexity-scale">
+      <div class="scale-bar">
+        <div class="scale-marker" style="left: 65%;"></div>
+      </div>
+      <div class="scale-labels">
+        <span>1 — Flat lot, standard build</span>
+        <span>10 — Extreme geological challenge</span>
+      </div>
+    </div>
+    <div class="scale-reading">
+      <div class="number">6.5<span class="out-of"> / 10</span></div>
+      <div class="label">Above Average for Orinda — Not Extreme</div>
+    </div>
+  </div>
+
+  <p style="margin-top: 24px;">The rating reflects a site where the base conditions are familiar and expected for this area, but where a specific combination of factors — described in detail below — pushes the project above typical hillside complexity. Experienced East Bay contractors and engineers have built projects like this many times.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NORMAL VS. ABOVE AVERAGE
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Context</div>
+  <h2>What's Normal for Orinda — and What's Not</h2>
+  <p>The East Bay hills — Orinda, Lafayette, Moraga, Piedmont — share a common geological character. Understanding what's typical for this region helps put the 38 Oakwood findings in context.</p>
+
+  <div class="compare-grid">
+    <div class="compare-col standard">
+      <div class="col-label">✅ Normal for Orinda Hillside Builds</div>
+      <ul>
+        <li>Expansive clay soils with moderate to high plasticity — nearly universal in the East Bay hills</li>
+        <li>Drilled pier foundations instead of standard footings — the default solution for this geology</li>
+        <li>Sandstone and claystone bedrock at shallow depths (3–8 feet) — typical Orinda Formation</li>
+        <li>Retaining walls needed to create level building pads on sloped sites</li>
+        <li>High seismic design requirements — the entire Bay Area is earthquake country</li>
+        <li>Geotechnical engineer required on-site throughout construction</li>
+        <li>Imported fill material needed when native soil doesn't meet specification</li>
+      </ul>
+    </div>
+    <div class="compare-col elevated">
+      <div class="col-label">⚠️ Above Average for This Site</div>
+      <ul>
+        <li>Natural drainage from three surrounding ridgelines converges directly into the building zone — unusually concentrated water flow toward the site</li>
+        <li>Active water seepage found near the surface in 2 of 3 test pits — more immediate than typical</li>
+        <li>Native soil fails the standard reuse test on both measures — 100% of structural fill must be imported; no on-site soil can be reused</li>
+        <li>Significant cutting <em>and</em> filling required — up to 10 feet down in some areas, up to 8 feet of fill in others</li>
+        <li>Old foundations from a demolished home remain underground — unknown scope until excavation begins</li>
+        <li>Deep slope stability not fully evaluated — the investigation couldn't reach deep enough to fully assess this</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     WHAT'S IN THE GROUND
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Subsurface Conditions</div>
+  <h2>What's Actually in the Ground</h2>
+  <p>CRS dug three test pits across the site to understand what lies beneath. Here's what they found, in plain terms:</p>
+
+  <div class="card">
+    <div class="card-title" style="color: var(--earth-mid);">The Soil Profile</div>
+    <p><strong>Upper layer (3 to 7.5 feet deep):</strong> Sandy clay — dark brown, moist to very moist, moderately stiff. This is the soil that creates most of the engineering challenges on the site. It is "expansive," meaning it swells when wet and shrinks when dry. Expansive soils exert upward pressure on slabs and foundations over time, which is why the foundation design must account for it — and why this soil cannot simply be reused as fill when grading the site.</p>
+    <p><strong>Below that — bedrock:</strong> Decomposed sandstone and claystone bedrock, ranging from 3 feet deep (at the highest test pit) to 7.5 feet deep (at a lower area of the site). This is actually good news: bedrock provides the solid anchor point that the drilled pier foundations will grip. The variation in depth across the site (3 ft vs. 7.5 ft) is normal for hillside terrain but means individual piers may need to go deeper in some locations.</p>
+    <p><strong>Water:</strong> Seasonal groundwater seepage was found near the surface in two of the three test pits — a direct result of the site's location at the bottom of a natural valley where three hillside drainage paths converge. This water presence is a key driver of construction method choices for the foundation.</p>
+  </div>
+
+  <div class="callout green">
+    <div class="callout-title">✅ No Fault Zone, No Mapped Landslide On-Site</div>
+    <p>The site is not within a mapped Alquist-Priolo earthquake fault zone — a meaningful positive for a Bay Area hillside property. No landslides are mapped on the property itself. Mapped slope failures do exist within about a mile to the north, which is why a slope stability review is a prudent next step (discussed below).</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     KEY COMPLEXITY FACTORS
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Complexity Drivers</div>
+  <h2>The Factors That Shape How This Project Gets Built</h2>
+  <p>Each item below represents a specific condition identified in the geotechnical report that influences foundation design, grading approach, materials, construction sequencing, or long-term performance of the home. None of these are showstoppers — each has a standard engineering solution — but taken together they paint a picture of a site that demands careful, experienced execution.</p>
+
+  <!-- 1 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">🪨</div>
+      <div class="factor-header-text">
+        <div class="factor-name">Drilled Pier Foundations — Not Standard Footings</div>
+        <span class="factor-tag normal">Normal for Orinda</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>A standard home on a flat lot uses spread footings — essentially a wide concrete base poured into a shallow trench. On this site, the expansive clay soils make spread footings impractical. Instead, the home requires <strong>drilled piers</strong>: vertical concrete columns drilled down through the clay layer and anchored at least 3 feet into the bedrock below.</p>
+      <p>Think of it like posts driven into the ground until they hit solid rock. These piers are then connected at the top by a continuous concrete frame (called grade beams) that carries the weight of the house. This system is the standard approach for hillside homes throughout the East Bay hills and is well-understood by local engineers and contractors.</p>
+      <p><strong>Why it matters:</strong> Drilled piers require more labor, specialized equipment, and engineering oversight than standard footings. The presence of subsurface water on this site means each pier must be drilled, the rebar cage set immediately, and concrete poured right away — a more precise sequence than on a dry site. Some piers may also require a steel sleeve (casing) to keep the hole from collapsing, and underwater concrete placement techniques if water levels are high.</p>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">🚛</div>
+      <div class="factor-header-text">
+        <div class="factor-name">All Structural Fill Must Be Imported</div>
+        <span class="factor-tag above">Above Average</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>When grading a hillside site, contractors typically excavate soil from higher areas and reuse it to build up lower areas. On most hillside lots, at least some of the native soil can be reused this way.</p>
+      <p>At 38 Oakwood, the native clay soil <strong>fails both qualification tests</strong> for reuse as structural fill — its plasticity index (a measure of how much it expands and contracts) is 21, and 81% of its particles are fine-grained. Reuse standards require less than 15 and less than 50% respectively. Because the soil doesn't qualify, <em>all</em> of the native material excavated during grading must be hauled off the site, and <em>all</em> fill material used to build up the pad and slopes must be brought in from an outside, approved source.</p>
+      <p><strong>Why it matters:</strong> This effectively doubles the earthwork operation — you're paying to remove soil from the site and paying again to bring in replacement material. The volume of fill required depends on the final grading plan and is one of the most important numbers to confirm with the civil engineer before finalizing the overall budget.</p>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">💧</div>
+      <div class="factor-header-text">
+        <div class="factor-name">Subsurface Water — A Drainage-First Site</div>
+        <span class="factor-tag unique">Site-Specific Concern</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>The property sits at the base of a natural valley where drainage from three surrounding ridgelines collects. This is visible at the surface (the site is lush and moist relative to surrounding properties) and confirmed underground — water seepage was found near the surface in two of three test pits during the investigation.</p>
+      <p>The geotechnical report is direct about this: <em>"adequate drainage is an integral part of the performance of the recommended foundations"</em> and foundations can be <em>"seriously damaged"</em> if drainage is neglected. This isn't an optional enhancement — it's a fundamental requirement for the long-term performance of the home.</p>
+      <p><strong>What this means in practice:</strong> Every retaining wall on the site requires a 12-inch gravel drainage layer behind it with perforated pipes at the base. All fill slopes require drainage pipes at their base before any fill is placed on top. Downspouts must connect to enclosed drain lines rather than splash freely near the foundation. The site must be graded to actively direct water away from all structures. Together, these form a comprehensive drainage system that is more extensive than what a typical flat-lot home requires.</p>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">⛏️</div>
+      <div class="factor-header-text">
+        <div class="factor-name">Significant Grading — In Both Directions</div>
+        <span class="factor-tag above">Above Average</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>Creating the building pad for this home requires cutting up to 10 feet down into the hillside on the uphill side, while filling up to 8 feet to build up the lower areas of the site. This bidirectional grading — significant cutting in some areas and significant filling in others — is more involved than a typical hillside pad that primarily cuts into a slope.</p>
+      <p>Where fill is placed on a slope, it cannot simply be dumped and compacted. It must be <strong>keyed and benched</strong> — the existing slope is cut into a staircase pattern before fill is placed on top, creating a mechanical interlock that prevents the fill from sliding downhill. This step-cut pattern adds labor and requires precise execution.</p>
+      <p>Drainage pipes (subdrains) must also be installed at the base of each bench step before fill goes on top — once fill is placed, there's no way to go back and add them. Getting the sequencing right is important.</p>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">🧱</div>
+      <div class="factor-header-text">
+        <div class="factor-name">Retaining Walls — Engineered to Hold a Hillside</div>
+        <span class="factor-tag normal">Normal for Orinda</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>The site currently shows retaining walls up to 6 feet tall, potentially increasing to 10 feet if the design moves to a single non-terraced wall. These are not decorative garden walls — they are structural concrete walls sitting on drilled pier foundations, designed to hold back the full weight and pressure of a hillside.</p>
+      <p>At 10 feet tall, the lateral pressure a wall must resist is considerably greater than at 6 feet (pressure increases with height). The design also accounts for the soil becoming heavier and more pressured when wet — a relevant condition given the water seepage on this site. The drainage blanket behind each wall is essential to prevent that pressure from building up to dangerous levels.</p>
+      <p><strong>Design decision still open:</strong> Whether to terrace (two or three shorter walls stepped up the slope) or go with a single taller wall is a meaningful design and cost choice that affects structural complexity, drainage requirements, and how the site looks and functions. This decision should be finalized before structural drawings are completed.</p>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">🏗️</div>
+      <div class="factor-header-text">
+        <div class="factor-name">Buried Old Foundations — Unknown Until Excavation</div>
+        <span class="factor-tag above">Above Average</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>A house that previously stood on this site was demolished between 2004 and 2005. The driveway remains visible, and aerial photos confirm the prior structure existed. CRS notes that old foundations may still be in the ground — and a small portion of the old footprint overlaps with where the new house will sit.</p>
+      <p>Before any new foundation work can begin, all remnants of the old structure — concrete foundations, footings, utility lines, debris — must be completely removed. The full extent of what's underground won't be known until grading begins. This is a normal uncertainty for sites with prior development and is managed through contingency planning in the construction schedule and budget.</p>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="factor-card">
+    <div class="factor-header">
+      <div class="factor-icon">🌄</div>
+      <div class="factor-header-text">
+        <div class="factor-name">Slope Stability — The Open Question</div>
+        <span class="factor-tag unique">Priority Action Item</span>
+      </div>
+    </div>
+    <div class="factor-body">
+      <p>The CRS investigation was limited to approximately 10 feet of depth. The report explicitly states that the potential for deeper, large-scale slope movement <em>"cannot be evaluated"</em> from this investigation — and notes that slope failures are mapped within a mile to the north. A formal slope stability analysis was not part of the original scope.</p>
+      <p>The geotechnical report rates surficial (shallow) slope movement risk as "moderate" and acknowledges that this risk cannot be completely eliminated. What remains unknown is whether deeper geological movement could be a factor — and whether the City of Orinda or the structural engineer will require that this question be formally answered before permits are issued.</p>
+      <p><strong>Why this is the most important open item:</strong> If a formal slope stability analysis is required later in the process — triggered by a permitting review or engineering recommendation — it takes time and may influence grading or foundation design. Commissioning this study proactively, before finalizing the grading plan, is significantly more efficient than being required to do it mid-process.</p>
+      <div class="callout yellow" style="margin-top: 14px; margin-bottom: 0;">
+        <div class="callout-title">⚠️ Recommended Next Step</div>
+        <p>Ask CRS Engineering directly: <em>"Given the convergent drainage and mapped slope failures within a mile, should we commission a slope stability analysis before we finalize the grading plan?"</em></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CONSTRUCTION SEQUENCING
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">How the Build Unfolds</div>
+  <h2>Construction Sequencing — What Happens and Why</h2>
+  <p>The geotechnical conditions on this site create a specific order of operations that differs from a simple flat-lot build. Understanding the sequence helps set realistic expectations for the construction timeline.</p>
+
+  <div class="timeline-item">
+    <div class="timeline-dot green"></div>
+    <div class="timeline-content">
+      <strong>Step 1 — Geotechnical Review of Final Plans</strong>
+      <span>Before any ground is broken, CRS Engineering must review and approve the final construction drawings and grading plan. This is standard practice — the geo engineer confirms that the design correctly implements their recommendations. Plan 2–4 weeks per review cycle during the design phase.</span>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Step 2 — Site Clearing and Old Foundation Removal</strong>
+      <span>The site must be cleared of all existing vegetation, debris, the old asphalt driveway, and — critically — any remnants of the old foundations still underground. The scope of foundation removal isn't known until the ground is opened up. This phase cannot be rushed; the geo engineer must observe the exposed subgrade before any new work begins.</span>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Step 3 — Grading and Earthwork (Cutting and Filling)</strong>
+      <span>This is the most complex phase. Native soil is cut down and removed from site. Before any import fill is placed on slopes, subdrain pipes are installed and the slope is step-cut (benched) to create a stable base. Fill is then placed in lifts (layers), with each lift compacted to spec and tested before the next goes on. The geo engineer must be present throughout. Import fill must be sourced, tested, and approved before it arrives.</span>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Step 4 — Drilled Pier Installation</strong>
+      <span>Once the building pad is established, pier holes are drilled. Each hole must be inspected by the geo engineer before concrete is placed. On this site, because of subsurface water, concrete must be placed immediately after drilling — the pier hole cannot be left open overnight. If water is above the threshold in a hole, concrete is placed using a tremie tube from the bottom up. All of this requires careful daily coordination between the contractor and geo engineer.</span>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Step 5 — Grade Beams and Retaining Walls</strong>
+      <span>After piers cure, the concrete grade beams connecting them are formed and poured. Retaining walls — also pier-supported — are constructed simultaneously or in sequence. Drainage blankets and perforated pipes behind walls must be installed and inspected before backfill goes in.</span>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-dot green"></div>
+    <div class="timeline-content">
+      <strong>Step 6 — Foundation Complete → Conventional Construction</strong>
+      <span>Once the foundation system is in place and approved, construction largely follows the same path as any custom home — framing, MEP rough-in, insulation, exterior, finishes. The site complexity is concentrated in steps 2–5.</span>
+    </div>
+  </div>
+
+  <div class="callout blue" style="margin-top: 8px;">
+    <div class="callout-title">📅 Schedule Reality</div>
+    <p>Steps 2–5 are each longer on this site than on a flat-lot build, primarily because the geo engineer's presence is required at each critical stage and because the sequencing (benching before filling, drilling before beaming) cannot be compressed. Building schedule flexibility into the foundation and earthwork phases is important.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     RISK REGISTER
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Open Items</div>
+  <h2>Factors That Could Expand Scope or Timeline</h2>
+  <p>The following items are not guaranteed complications — they are known unknowns that should be tracked and, where possible, resolved proactively. Addressing them early in the design process is significantly more efficient than encountering them mid-construction.</p>
+
+  <div class="risk-item">
+    <span class="risk-badge high">Address First</span>
+    <div class="risk-content">
+      <strong>Slope Stability Analysis — Not Yet Completed</strong>
+      <p>The geotechnical investigation couldn't reach deep enough to fully evaluate the risk of large-scale slope movement. No formal analysis was performed. Given the convergent drainage and nearby mapped slope failures, this question should be answered before the grading plan is finalized — not after. If the City requires it later, the process is considerably more disruptive.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge high">Confirm Early</span>
+    <div class="risk-content">
+      <strong>Import Fill Volumes — Not Yet Quantified</strong>
+      <p>How much soil needs to come off this site, and how much import fill needs to come in, depends on the final grading plan. These volumes have a significant impact on the earthwork scope. Getting the civil engineer to calculate cut and fill quantities from the grading plan early is one of the most important pre-budget steps available.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge medium">Build Into Schedule</span>
+    <div class="risk-content">
+      <strong>Subsurface Water — Extent Varies Seasonally</strong>
+      <p>Groundwater conditions "can and will fluctuate seasonally" according to CRS. Construction during wetter months may encounter more water in pier holes than during dry months, which affects the foundation construction method and pace. Planning pier installation during dryer weather, where schedule allows, is worthwhile.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge medium">Budget Contingency</span>
+    <div class="risk-content">
+      <strong>Old Foundation Removal — Unknown Scope</strong>
+      <p>The extent of buried foundations from the demolished prior home won't be known until excavation begins. It could be minimal, or it could be substantial depending on what was built and how it was demolished. This is a normal uncertainty for sites with prior development and should be carried as a contingency in the construction budget.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge medium">Decide Before Structural Drawings</span>
+    <div class="risk-content">
+      <strong>Retaining Wall Height — Design Decision Still Open</strong>
+      <p>The choice between terraced walls (two or three shorter walls) and a single 10-foot wall meaningfully affects structural design complexity, drainage requirements, and site function. This should be decided before the structural engineer begins detailed drawings, since changing wall height mid-design requires significant rework.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge low">Monitor</span>
+    <div class="risk-content">
+      <strong>Bedrock Depth Variation Across Site</strong>
+      <p>Bedrock was found at 3 feet in one test pit and 7.5 feet in another — across a relatively small area. Individual piers may need to go deeper than their design minimum in locations where bedrock is deeper. This is a normal field adjustment in this type of geology, managed by the geo engineer during pier installation.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge low">Note for Later</span>
+    <div class="risk-content">
+      <strong>Geotechnical Report Expires March 2028</strong>
+      <p>CRS states the report should not be used after two years from its date. On a July 2026 permit / Fall 2028 move-in schedule, construction will be active right at the two-year boundary. Worth confirming with CRS early on whether a brief update letter will suffice or whether a new investigation would be required if construction extends past March 2028.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     QUESTIONS
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Next Steps</div>
+  <h2>Recommended Questions for Your Project Team</h2>
+
+  <div class="card" style="padding: 20px;">
+    <div class="question-item">
+      <div class="question-number">1</div>
+      <div class="question-content">
+        <strong>To CRS Engineering: "Given the convergent drainage, active seepage, and mapped slope failures within a mile, should we commission a slope stability analysis before finalizing the grading plan?"</strong>
+        <span>This is the most important open question. Addressing it proactively prevents it from becoming a permitting or construction disruption later.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">2</div>
+      <div class="question-content">
+        <strong>To Civil Engineer: "Can you calculate the cut and fill volumes from the grading plan and confirm how much native soil we're removing and how much import fill we'll need?"</strong>
+        <span>This quantifies the earthwork scope — one of the most significant variables in the project. The answer materially affects how the budget is structured.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">3</div>
+      <div class="question-content">
+        <strong>To Architect: "Are the retaining walls finalized at 6 feet terraced, or is the 10-foot single-wall option still being considered?"</strong>
+        <span>This design decision flows into structural engineering, drainage design, and overall site planning. Earlier resolution avoids late-stage rework.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">4</div>
+      <div class="question-content">
+        <strong>To General Contractor: "Is the foundation estimate based on drilled piers with imported fill and the water management requirements in the CRS report?"</strong>
+        <span>Confirms that the construction estimate reflects the actual foundation system — not a simpler system that might have been assumed before the geo report was available.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">5</div>
+      <div class="question-content">
+        <strong>To CRS Engineering: "What does the two-year report expiration mean for our schedule — will you issue an update letter, or would additional investigation be needed?"</strong>
+        <span>Given the construction timeline, this is worth clarifying early rather than discovering a report validity issue during permitting or construction.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<div class="footer">
+  <p><strong>38 Oakwood Road — Build Complexity Overview</strong></p>
+  <p>Prepared by Chief · Based on CRS Engineering Report #26013 (March 27, 2026)</p>
+  <p style="margin-top: 8px;">This document is a plain-language interpretation of the geotechnical report findings for planning and communication purposes. All engineering decisions should be made in consultation with the licensed geotechnical engineer, structural engineer, civil engineer, and general contractor of record.</p>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
