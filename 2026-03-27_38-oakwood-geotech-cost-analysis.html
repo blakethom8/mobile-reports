@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>38 Oakwood Road — Geotechnical Cost & Complexity Analysis</title>
+  <style>
+    :root {
+      --earth-dark: #2d2416;
+      --earth-mid: #5c4a2a;
+      --earth-warm: #8b6914;
+      --earth-gold: #c9922a;
+      --earth-light: #f5ecd7;
+      --earth-pale: #faf6ee;
+      --stone: #6b7280;
+      --stone-light: #e5e7eb;
+      --green-safe: #166534;
+      --green-bg: #f0fdf4;
+      --yellow-mid: #92400e;
+      --yellow-bg: #fffbeb;
+      --red-risk: #991b1b;
+      --red-bg: #fef2f2;
+      --blue-info: #1e40af;
+      --blue-bg: #eff6ff;
+      --text-primary: #1c1917;
+      --text-secondary: #57534e;
+      --text-muted: #a8a29e;
+      --border: #e7e5e4;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif;
+      background: var(--earth-pale);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .report-header {
+      background: linear-gradient(135deg, var(--earth-dark) 0%, var(--earth-mid) 60%, var(--earth-warm) 100%);
+      color: white;
+      padding: 56px 32px 48px;
+      text-align: center;
+    }
+    .report-header .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: 16px;
+    }
+    .report-header h1 {
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .report-header h1 span { color: var(--earth-gold); }
+    .report-header .subtitle {
+      font-size: 16px;
+      opacity: 0.8;
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .meta-pill {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* ── Section spacing ── */
+    .section { margin-top: 52px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--earth-warm);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    h2 {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 800;
+      color: var(--earth-dark);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--earth-mid);
+      margin-bottom: 8px;
+      margin-top: 24px;
+    }
+    p { color: var(--text-secondary); margin-bottom: 14px; font-size: 15px; }
+    strong { color: var(--text-primary); }
+    ul, ol { padding-left: 20px; margin-bottom: 14px; }
+    li { color: var(--text-secondary); font-size: 15px; margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* ── Verdict Banner ── */
+    .verdict-banner {
+      background: linear-gradient(135deg, #1a3a2a, #2d5a3d);
+      color: white;
+      border-radius: 16px;
+      padding: 32px 28px;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    .verdict-banner .verdict-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+    .verdict-banner h3 {
+      color: white;
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .verdict-banner p { color: rgba(255,255,255,0.85); font-size: 15px; margin-bottom: 0; }
+
+    /* ── Complexity Meter ── */
+    .complexity-block {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+    }
+    .complexity-scale {
+      margin: 20px 0 8px;
+      position: relative;
+    }
+    .scale-bar {
+      height: 14px;
+      border-radius: 7px;
+      background: linear-gradient(to right, #22c55e 0%, #84cc16 30%, #eab308 55%, #f97316 75%, #ef4444 100%);
+      position: relative;
+    }
+    .scale-marker {
+      position: absolute;
+      top: -6px;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--earth-dark);
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .scale-reading {
+      text-align: center;
+      margin-top: 16px;
+    }
+    .scale-reading .number {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--earth-warm);
+      line-height: 1;
+    }
+    .scale-reading .out-of { font-size: 20px; color: var(--text-muted); }
+    .scale-reading .label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ── Callout boxes ── */
+    .callout {
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      border-left: 4px solid;
+    }
+    .callout.green { background: var(--green-bg); border-color: #16a34a; }
+    .callout.yellow { background: var(--yellow-bg); border-color: #d97706; }
+    .callout.red { background: var(--red-bg); border-color: #dc2626; }
+    .callout.blue { background: var(--blue-bg); border-color: #2563eb; }
+    .callout .callout-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .callout.green .callout-title { color: var(--green-safe); }
+    .callout.yellow .callout-title { color: var(--yellow-mid); }
+    .callout.red .callout-title { color: var(--red-risk); }
+    .callout.blue .callout-title { color: var(--blue-info); }
+    .callout p { margin-bottom: 0; font-size: 14px; }
+
+    /* ── Cost rows ── */
+    .cost-driver {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .cost-driver-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--earth-pale);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cost-driver-header .driver-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--earth-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cost-driver-header .driver-name .icon { font-size: 18px; }
+    .cost-range {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--earth-warm);
+      white-space: nowrap;
+    }
+    .cost-driver-body { padding: 16px 20px; }
+    .cost-driver-body p { font-size: 14px; margin-bottom: 8px; }
+    .cost-driver-body p:last-child { margin-bottom: 0; }
+
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .comp-cell {
+      background: var(--earth-pale);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .comp-cell .comp-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .comp-cell .comp-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .comp-cell.this-project { background: #fef3c7; }
+    .comp-cell.this-project .comp-value { color: var(--yellow-mid); }
+
+    /* ── Summary table ── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .summary-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--earth-dark);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .summary-table th:first-child { border-radius: 8px 0 0 0; }
+    .summary-table th:last-child { border-radius: 0 8px 0 0; text-align: right; }
+    .summary-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .summary-table td:last-child { text-align: right; font-weight: 700; color: var(--earth-warm); }
+    .summary-table tr:nth-child(even) td { background: var(--earth-pale); }
+    .summary-table tr.total td {
+      background: var(--earth-light);
+      font-weight: 800;
+      color: var(--earth-dark);
+      font-size: 15px;
+    }
+    .summary-table tr.total td:last-child { color: var(--earth-warm); font-size: 16px; }
+
+    /* ── Timeline ── */
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .timeline-dot.green { background: #16a34a; }
+    .timeline-dot.yellow { background: #d97706; }
+    .timeline-dot.red { background: #dc2626; }
+    .timeline-content {}
+    .timeline-content strong { display: block; font-size: 15px; color: var(--text-primary); margin-bottom: 2px; }
+    .timeline-content span { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── Risk register ── */
+    .risk-item {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .risk-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .risk-badge.high { background: #fee2e2; color: #991b1b; }
+    .risk-badge.medium { background: #fef3c7; color: #92400e; }
+    .risk-badge.low { background: #dcfce7; color: #166534; }
+    .risk-content strong { display: block; font-size: 15px; color: var(--text-primary); margin-bottom: 4px; }
+    .risk-content p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; }
+
+    /* ── Questions to ask ── */
+    .question-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .question-item:last-child { border-bottom: none; }
+    .question-number {
+      width: 28px;
+      height: 28px;
+      background: var(--earth-warm);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .question-content strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    .question-content span { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 60px;
+      padding: 28px;
+      background: var(--earth-light);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .report-header { padding: 40px 20px 36px; }
+      .comparison-row { grid-template-columns: 1fr; }
+      .cost-driver-header { flex-direction: column; align-items: flex-start; }
+      .summary-table { font-size: 12px; }
+      .summary-table th, .summary-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════ -->
+<div class="report-header">
+  <div class="label">House Build · Geotechnical Analysis</div>
+  <h1>38 Oakwood Road<br><span>Geotech Cost &amp; Complexity Report</span></h1>
+  <p class="subtitle">A plain-language breakdown of the CRS Engineering geotechnical findings, what they mean for your build, and how they compare to other Orinda hillside projects.</p>
+  <div class="meta-pills">
+    <span class="meta-pill">📋 CRS Engineering Report #26013</span>
+    <span class="meta-pill">📅 March 27, 2026</span>
+    <span class="meta-pill">🏠 3,600 SF House + 1,200 SF ADU + 850 SF Garage</span>
+    <span class="meta-pill">🏔️ Orinda, CA 94563</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════
+     EXECUTIVE SUMMARY
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Executive Summary</div>
+  <h2>The Short Version</h2>
+  <p>The geotechnical report from CRS Engineering reveals a site that is <strong>more complex than a flat-lot build, but well within the range of what experienced Orinda hillside contractors handle routinely.</strong> The key findings — expansive clay soils, drilled pier foundations, imported non-expansive fill, and subsurface water seepage — are characteristic of the East Bay hills geology and represent known, solvable engineering challenges.</p>
+  <p>This is not a "stop the project" situation. It is a "price it correctly and manage it carefully" situation. The estimated cost premium over a comparable flat-lot home ranges from <strong>$550K–$1.2M</strong>, with the most likely scenario around $800K–$900K. One meaningful risk remains open: the slope stability question was not fully evaluated, and closing that gap proactively is the single most important next step.</p>
+
+  <div class="verdict-banner">
+    <div class="verdict-label">Overall Assessment</div>
+    <h3>Moderate-High Complexity for Orinda — Buildable with Proper Engineering</h3>
+    <p>All conditions identified are understood and have industry-standard solutions. The foundation system (drilled piers to bedrock) is the standard approach for this geology. The cost premiums are real and quantifiable. The project is feasible within the stated $5.8M budget if it was modeled with hillside complexity in mind.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     COMPLEXITY RATING
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Site Complexity</div>
+  <h2>How Hard Is This Build?</h2>
+  <p>On a 1–10 complexity scale for Orinda/East Bay hillside residential construction:</p>
+
+  <div class="complexity-block">
+    <div class="complexity-scale">
+      <div class="scale-bar">
+        <div class="scale-marker" style="left: 65%;"></div>
+      </div>
+      <div class="scale-labels">
+        <span>1 — Flat lot, standard footings</span>
+        <span>10 — Active landslide, extreme conditions</span>
+      </div>
+    </div>
+    <div class="scale-reading">
+      <div class="number">6.5<span class="out-of"> / 10</span></div>
+      <div class="label">Moderate-High Complexity · Above average, not extreme</div>
+    </div>
+  </div>
+
+  <h3>What makes this above average:</h3>
+  <ul>
+    <li><strong>Convergent valley drainage</strong> — Natural drains from three surrounding ridgelines funnel directly into your building zone. Most hillside lots have drainage flowing across or away from the site.</li>
+    <li><strong>Active subsurface water seepage</strong> — Found in 2 of 3 test pits, near the surface. This complicates pier construction and requires robust retaining wall drainage.</li>
+    <li><strong>100% import fill required</strong> — Native clay soils fail the non-expansive test (Plasticity Index = 21). On many Orinda lots, some native material can be reused as structural fill. Here, none of it can.</li>
+    <li><strong>Bidirectional earthwork</strong> — 10-foot cuts AND 8-foot fills. Most hillside pads require significant work in only one direction.</li>
+    <li><strong>Buried old foundations</strong> — A previous house was demolished between 2004–2005; old foundations may still exist underground and must be removed.</li>
+    <li><strong>Slope stability not fully evaluated</strong> — The investigation was limited to ~10 feet depth; deep-seated slope movement risk remains an open question.</li>
+  </ul>
+
+  <h3>What is normal for Orinda at this scale:</h3>
+  <ul>
+    <li>Expansive clay soils (PI in the 18–25 range) — standard East Bay Hills geology</li>
+    <li>Drilled pier foundations to bedrock — the default foundation solution for this region</li>
+    <li>Sandstone/claystone bedrock at 3–8 feet depth — typical Orinda Formation</li>
+    <li>High seismic design requirements (SDS = 1.56g)</li>
+    <li>Retaining walls up to 10 feet for terracing hillside pads</li>
+    <li>Required geotechnical engineer presence during construction</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     GEOLOGY CONTEXT
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Geological Context</div>
+  <h2>What's Under the Ground and Why It Matters</h2>
+
+  <div class="card">
+    <div class="card-title" style="color: var(--earth-mid);">📍 Site Setting</div>
+    <p>The property sits at the toe of a ridgeline valley — a natural collection point where drainage from three surrounding hillside spurs converges. The site is currently undeveloped (a prior home was removed ~2004), with an asphalt driveway remaining. The new house will cut into the ascending northwest slope.</p>
+  </div>
+
+  <h3>Subsurface Profile (3 Test Pits)</h3>
+  <div class="comparison-row">
+    <div class="comp-cell" style="background: #f5f3ff;">
+      <div class="comp-label">Upper Layer (3–7.5 ft)</div>
+      <div class="comp-value">Sandy Clay (CL)</div>
+      <p style="font-size:13px; color: var(--text-secondary); margin-top:6px; margin-bottom:0;">Dark brown, moist to very moist, medium stiff to stiff. <strong>Expansive.</strong> Cannot be reused as structural fill.</p>
+    </div>
+    <div class="comp-cell" style="background: #fefce8;">
+      <div class="comp-label">Underlying Bedrock (variable depth)</div>
+      <div class="comp-value">Sandstone &amp; Claystone</div>
+      <p style="font-size:13px; color: var(--text-secondary); margin-top:6px; margin-bottom:0;">Decomposed to moderately weathered. Light yellowish brown. Very soft to soft. <strong>Good for pier embedment.</strong></p>
+    </div>
+  </div>
+
+  <h3>Key Soil Test Results</h3>
+  <div class="card" style="padding: 20px;">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Result</th>
+          <th style="text-align:right;">Non-Expansive Threshold</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Plasticity Index (PI)</td>
+          <td><strong style="color: #b45309;">21</strong></td>
+          <td style="text-align:right; color: var(--text-muted);">&lt; 15 required</td>
+        </tr>
+        <tr>
+          <td>Passing #200 Sieve (fines)</td>
+          <td><strong style="color: #b45309;">81%</strong></td>
+          <td style="text-align:right; color: var(--text-muted);">&lt; 50% required</td>
+        </tr>
+        <tr>
+          <td>Liquid Limit</td>
+          <td>37</td>
+          <td style="text-align:right; color: var(--text-muted);">—</td>
+        </tr>
+        <tr>
+          <td>Moisture Content</td>
+          <td>16–23%</td>
+          <td style="text-align:right; color: var(--text-muted);">—</td>
+        </tr>
+        <tr>
+          <td>Pocket Penetrometer</td>
+          <td>1.0–2.5 tsf</td>
+          <td style="text-align:right; color: var(--text-muted);">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size: 13px; color: var(--text-muted); margin-top: 12px; margin-bottom: 0;">Both PI and fines content significantly exceed non-expansive thresholds → all structural fill must be imported.</p>
+  </div>
+
+  <h3>Seismic Parameters</h3>
+  <p>The site is <strong>not within an Alquist-Priolo fault zone</strong> — a meaningful positive. However, seismic ground acceleration values are high (SDS = 1.56g, PGAm = 0.84g), reflecting the broader Bay Area seismic environment. Site Class C (dense soil / soft rock) — a moderate designation, neither the worst nor the best.</p>
+
+  <div class="callout green">
+    <div class="callout-title">✅ No Active Fault Hazard</div>
+    <p>The site is not within a mapped Alquist-Priolo earthquake fault zone, and no mapped landslides exist on the property itself. Mapped slope failures do exist within 1 mile north — which is why the slope stability question matters.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     WHAT THE FOUNDATION LOOKS LIKE
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Foundation System</div>
+  <h2>What Gets Built Underground</h2>
+
+  <p>CRS recommends <strong>drilled pier (caisson) foundations</strong> — vertical concrete columns drilled down through the clay and embedded into bedrock. These are connected at the top by continuous concrete grade beams, which carry the structural loads of the house. This is not an unusual call: drilled piers to bedrock are the industry standard for the East Bay hills.</p>
+
+  <div class="card">
+    <div class="card-title" style="color: var(--earth-mid);">Drilled Pier Specifications</div>
+    <div class="comparison-row">
+      <div>
+        <ul style="margin-bottom:0;">
+          <li><strong>Minimum diameter:</strong> 16 inches</li>
+          <li><strong>Minimum pier length:</strong> 10 feet</li>
+          <li><strong>Bedrock embedment:</strong> 3 feet minimum</li>
+          <li><strong>Minimum pier spacing:</strong> 3× pier diameter</li>
+        </ul>
+      </div>
+      <div>
+        <ul style="margin-bottom:0;">
+          <li><strong>Allowable skin friction:</strong> 450 psf (in bedrock)</li>
+          <li><strong>Grade beam uplift design:</strong> 1,000 psf</li>
+          <li><strong>Settlement (total):</strong> ≤ 1 inch</li>
+          <li><strong>Settlement (differential):</strong> ≤ ½ inch / 50 ft</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout yellow">
+    <div class="callout-title">⚠️ Water Complicates Pier Construction</div>
+    <p>Because of active subsurface seepage, piers must be built using a "drill, set, and pour" method rather than the simpler standard approach. If more than 6 inches of water pools in the pier hole, concrete must be placed by tremie (a bottom-up underwater pour), and steel casing may be required to prevent bore hole collapse. Each of these adds cost and time per pier.</p>
+  </div>
+
+  <h3>Grade Beams</h3>
+  <p>All piers are connected with continuous concrete grade beams — the structural frame that ties the foundation together. Grade beams must extend minimum 12 inches below finished grade and are designed for 1,000 psf uplift force (the expansive soil pushing up seasonally). Grade beams carry the full structural load from the house; they get zero support from the soil itself.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     COST DRIVERS
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Cost Impact Analysis</div>
+  <h2>What Drives the Premium Over a Flat-Lot Build</h2>
+  <p>Bay Area 2025 baseline for a custom home at your quality level: <strong>$700–$1,000/SF</strong> before site complexity premiums. For ~5,650 SF total (house + ADU + garage), that's approximately <strong>$4.0M–$5.6M</strong> in base construction costs before site conditions. The following are the incremental premiums your site adds on top of that baseline.</p>
+
+  <!-- COST DRIVER 1 -->
+  <div class="cost-driver">
+    <div class="cost-driver-header">
+      <div class="driver-name"><span class="icon">🪨</span> Foundation System — Drilled Piers + Grade Beams</div>
+      <div class="cost-range">+$150K – $300K premium</div>
+    </div>
+    <div class="cost-driver-body">
+      <p>For a 5,650 SF building program on this site, expect 50–80 drilled piers at minimum. Each pier requires drilling, setting rebar cages, and pouring concrete — more involved than digging a standard trench footing. With the water complication (tremie method, potential casing), cost per pier is higher than a dry-hole site.</p>
+      <div class="comparison-row">
+        <div class="comp-cell">
+          <div class="comp-label">Standard Flat Lot (spread footings)</div>
+          <div class="comp-value">$80K – $150K</div>
+        </div>
+        <div class="comp-cell this-project">
+          <div class="comp-label">38 Oakwood (drilled piers + grade beams)</div>
+          <div class="comp-value">$250K – $450K</div>
+        </div>
+      </div>
+      <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">Reference: Hillside foundation systems in comparable Bay Area markets (LA, Marin) range from $150K to $1.5M+ depending on site severity. This project is in the moderate-high range of that spectrum.</p>
+    </div>
+  </div>
+
+  <!-- COST DRIVER 2 -->
+  <div class="cost-driver">
+    <div class="cost-driver-header">
+      <div class="driver-name"><span class="icon">🚛</span> Earthwork &amp; Import Fill</div>
+      <div class="cost-range">+$200K – $500K premium</div>
+    </div>
+    <div class="cost-driver-body">
+      <p>This is the <strong>biggest wildcard cost</strong> on the project and the most important number to nail down with your civil engineer before finalizing the budget.</p>
+      <p>The problem: <em>all native soil excavated during grading must be hauled off-site and disposed of</em>, because it fails the non-expansive test. Simultaneously, <em>all fill used to build up the pad must be imported</em> from an approved non-expansive source. You're paying twice — once to export your soil, once to import better soil — instead of simply re-grading with what's already there.</p>
+      <ul>
+        <li><strong>Native soil export (10-ft cuts):</strong> ~$40–$60/CY to haul and dump in Bay Area. Estimated volume: 1,500–3,000 CY depending on final grading plan. Cost: $60K–$180K.</li>
+        <li><strong>Import non-expansive fill (8-ft fills):</strong> ~$50–$75/CY delivered (Bay Area premium). Estimated volume: 1,500–3,500 CY. Material cost: $75K–$260K.</li>
+        <li><strong>Keying &amp; benching labor premium:</strong> All fill on slopes requires step-cuts into the existing hillside per CRS spec. Adds ~30–40% to raw grading cost. Premium: $30K–$60K.</li>
+        <li><strong>Subdrain installation:</strong> Required at all keyways and benches — 4" perforated pipe in 12" gravel bed, with solid outlet lines. ~$15K–$40K.</li>
+        <li><strong>Old foundation removal:</strong> Unknown scope until excavation begins. Budget: $15K–$40K contingency.</li>
+        <li><strong>Compaction testing &amp; moisture conditioning:</strong> Required at each lift; adds cost and schedule dependencies. ~$10K–$20K premium.</li>
+      </ul>
+      <div class="callout yellow">
+        <div class="callout-title">⚠️ Action Required</div>
+        <p>Get your civil engineer to run fill volume calculations against the grading plan before finalizing the budget. This line item has the widest range of any cost driver and is most likely to be underestimated.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- COST DRIVER 3 -->
+  <div class="cost-driver">
+    <div class="cost-driver-header">
+      <div class="driver-name"><span class="icon">🧱</span> Retaining Walls</div>
+      <div class="cost-range">+$60K – $200K premium</div>
+    </div>
+    <div class="cost-driver-body">
+      <p>Walls are currently shown at a maximum of 6 feet (terraced). The design may go to a single 10-foot wall if terracing is eliminated. Board-form concrete stem walls, all on drilled pier foundations.</p>
+      <ul>
+        <li><strong>10-ft walls on pier foundations:</strong> $400–$700/LF in Bay Area, depending on complexity and backfill configuration. Estimated 200–400 LF of wall. Total: $80K–$280K.</li>
+        <li><strong>All walls require drainage blankets:</strong> 12-inch gravel layer + 4" perforated pipe at base + filter fabric. Adds $50–$80/LF to wall cost.</li>
+        <li><strong>Hydrostatic pressure surcharge:</strong> Not included in CRS's earth pressure values — structural engineer must add this separately given the subsurface water presence.</li>
+      </ul>
+      <div class="comparison-row">
+        <div class="comp-cell">
+          <div class="comp-label">Simple 4-ft gravity walls (flat lot)</div>
+          <div class="comp-value">$150 – $250/LF</div>
+        </div>
+        <div class="comp-cell this-project">
+          <div class="comp-label">38 Oakwood (8–10 ft, pier-supported)</div>
+          <div class="comp-value">$450 – $750/LF</div>
+        </div>
+      </div>
+      <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">Decision point: terraced vs. single tall wall. Terracing spreads cost into multiple shorter walls but requires more horizontal footprint. A single 10-ft wall is structurally more demanding but may make better use of the site area. Worth discussing with your structural engineer before finalizing the grading plan.</p>
+    </div>
+  </div>
+
+  <!-- COST DRIVER 4 -->
+  <div class="cost-driver">
+    <div class="cost-driver-header">
+      <div class="driver-name"><span class="icon">💧</span> Site Drainage Systems</div>
+      <div class="cost-range">+$30K – $80K premium</div>
+    </div>
+    <div class="cost-driver-body">
+      <p>CRS is emphatic: drainage is "an integral part of the performance of the recommended foundations" and foundations can be "seriously damaged" if neglected. Given the convergent valley drainage and active subsurface seepage, your drainage system must go well beyond what a typical flat-lot home requires.</p>
+      <ul>
+        <li>Subdrains at all keyways and benches (required)</li>
+        <li>Drainage blankets + perforated pipes at all retaining walls</li>
+        <li>Tight-line downspout connections (no splash blocks adjacent to structure)</li>
+        <li>Site grading to 2–5% slope away from all building perimeters</li>
+        <li>No drainage discharge onto any slopes</li>
+        <li>Existing drainage must be maintained and remain functional during construction</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- COST DRIVER 5 -->
+  <div class="cost-driver">
+    <div class="cost-driver-header">
+      <div class="driver-name"><span class="icon">🔬</span> Geotechnical &amp; Structural Engineering Premiums</div>
+      <div class="cost-range">+$40K – $80K premium</div>
+    </div>
+    <div class="cost-driver-body">
+      <p>Every pier excavation must be observed by the geotechnical engineer. All cut slopes must be inspected. All grading requires compaction testing. This is substantially more engineering involvement than a flat-lot build.</p>
+      <ul>
+        <li><strong>Construction-phase geo services</strong> (pier obs, grading, compaction): $30K–$60K (vs. $8K–$15K on a flat lot)</li>
+        <li><strong>Structural engineering premium</strong> for pier + grade beam design, uplift analysis, retaining wall design, and high seismic forces: $15K–$30K premium over standard structural</li>
+        <li><strong>Civil engineering</strong> for grading plan, drainage design, subdrain layout: included in above range</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- COST DRIVER 6 -->
+  <div class="cost-driver">
+    <div class="cost-driver-header">
+      <div class="driver-name"><span class="icon">⚠️</span> Risk Contingency (Site-Specific Unknowns)</div>
+      <div class="cost-range">+$75K – $150K reserve</div>
+    </div>
+    <div class="cost-driver-body">
+      <p>These are not guaranteed costs, but represent real risks that should be carried as contingency in the budget:</p>
+      <ul>
+        <li><strong>Subsurface water complications during pier drilling</strong> — If casing and tremie method are required for many or most piers, add $2K–$5K per pier. On 60 piers, that's up to $300K of risk, though typical exposure is $20K–$80K.</li>
+        <li><strong>Old foundation removal</strong> — Unknown extent until excavation. Could be minor; could require significant breaking and hauling if foundations are extensive. Budget $15K–$40K.</li>
+        <li><strong>Slope stability investigation &amp; remediation</strong> — If triggered by the city or structural engineer, the study alone is $15K–$30K. Any required remediation (soil nails, tiebacks, deeper pier design) could add $150K–$500K. This is the one risk that could meaningfully change the project economics. (See Risk Register.)</li>
+        <li><strong>Soil variability across site</strong> — Bedrock depth ranged from 3 ft to 7.5 ft across just 3 test pits. Piers may need to be deeper than designed in some locations, which is discovered and priced in the field.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TOTAL SUMMARY -->
+  <div class="section-title" style="margin-top:36px;">Cost Summary</div>
+  <div class="card" style="padding: 20px;">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Cost Driver</th>
+          <th>Low</th>
+          <th>Mid</th>
+          <th style="text-align:right;">High</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Foundation (piers + grade beams) premium</td>
+          <td>$150K</td>
+          <td>$225K</td>
+          <td style="text-align:right;">$300K</td>
+        </tr>
+        <tr>
+          <td>Earthwork &amp; import fill premium</td>
+          <td>$200K</td>
+          <td>$350K</td>
+          <td style="text-align:right;">$500K</td>
+        </tr>
+        <tr>
+          <td>Retaining walls premium</td>
+          <td>$60K</td>
+          <td>$130K</td>
+          <td style="text-align:right;">$200K</td>
+        </tr>
+        <tr>
+          <td>Site drainage systems</td>
+          <td>$30K</td>
+          <td>$55K</td>
+          <td style="text-align:right;">$80K</td>
+        </tr>
+        <tr>
+          <td>Geo &amp; structural engineering premium</td>
+          <td>$40K</td>
+          <td>$60K</td>
+          <td style="text-align:right;">$80K</td>
+        </tr>
+        <tr>
+          <td>Risk contingency (unknowns)</td>
+          <td>$75K</td>
+          <td>$112K</td>
+          <td style="text-align:right;">$150K</td>
+        </tr>
+        <tr class="total">
+          <td><strong>Total Site Complexity Premium</strong></td>
+          <td><strong>~$555K</strong></td>
+          <td><strong>~$932K</strong></td>
+          <td style="text-align:right;"><strong>~$1.31M</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size: 13px; color: var(--text-muted); margin-top: 14px; margin-bottom: 0;">Premiums are <em>incremental costs above a comparable flat-lot build</em> — not total project cost. A $5.8M total budget includes these premiums. The earthwork estimate has the widest uncertainty and should be refined with a formal grading plan before finalizing the budget.</p>
+  </div>
+
+  <!-- AS % OF BUDGET -->
+  <div class="callout blue" style="margin-top: 16px;">
+    <div class="callout-title">📊 Budget Context</div>
+    <p>The mid-case site complexity premium (~$930K) represents approximately <strong>16% of your $5.8M total budget</strong>. Bay Area hillside construction specialists report that foundation and site work typically represents <strong>15–25% of total project cost</strong> on challenging hillside sites — which means you are squarely in the expected range for a project of this type.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TIMELINE
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Timeline Considerations</div>
+  <h2>Schedule Impact vs. a Standard Build</h2>
+  <p>A custom home at your scale in the Bay Area typically takes <strong>18–24 months</strong> from groundbreaking to move-in. Your site conditions add time in several specific places:</p>
+
+  <div class="timeline-item">
+    <div class="timeline-dot green"></div>
+    <div class="timeline-content">
+      <strong>Pre-Construction Geotech Reviews (+0 weeks)</strong>
+      <span>CRS must review final construction drawings and approve the grading plan before work begins. Budget this into design schedule. Typical turnaround: 2–4 weeks per review cycle, but this is design-phase time, not construction-phase.</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Site Clearing &amp; Old Foundation Removal (+1–3 weeks)</strong>
+      <span>Unknown extent of buried foundations. Discovery happens during clearing. Minor: 1 week. Extensive old foundation: 3 weeks. Schedule buffer needed here before pier drilling can begin.</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Earthwork — Keying, Benching, Subdrains (+2–4 weeks premium)</strong>
+      <span>Properly keying and benching fill slopes, installing subdrains at each keyway/bench, and coordinating geo engineer attendance for all grading operations takes significantly longer than simple grading. Compaction testing at each lift adds schedule dependencies.</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Pier Drilling &amp; Inspection (+2–4 weeks premium)</strong>
+      <span>The geotechnical engineer must observe every pier excavation before concrete is poured. With 50–80 piers, this creates a sequential inspection dependency. If subsurface water is encountered in pier holes (likely given TP2/TP3 seepage), tremie pours and potential casing add time per pier. Cure time before grade beam construction: 3–7 days.</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot yellow"></div>
+    <div class="timeline-content">
+      <strong>Import Fill Procurement (+1–2 weeks)</strong>
+      <span>Non-expansive fill must be sourced, sampled, tested, and approved by the geotechnical engineer before it arrives on-site. In the Bay Area, lead time for large volumes of specification fill can run 2–4 weeks. Don't let this be the critical path item.</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot red"></div>
+    <div class="timeline-content">
+      <strong>Subsurface Water Complications Risk (+2–6 weeks if triggered)</strong>
+      <span>If water is more extensive than anticipated during pier drilling — requiring engineered dewatering systems or redesign of pier locations — expect 2–6 weeks of unplanned delay. This is a risk item, not a certainty.</span>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-dot red"></div>
+    <div class="timeline-content">
+      <strong>Slope Stability Analysis (if required) (+3–9 months)</strong>
+      <span>If a formal slope stability analysis is triggered — by the City, the structural engineer, or a subsequent geotechnical review — this must be completed and approved before grading permits can be finalized. Study + peer review + City approval: 3–9 months. This is the single largest potential schedule risk on the project.</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px; background: var(--earth-pale);">
+    <div class="card-title" style="color: var(--earth-mid);">Expected Schedule Premium (excluding slope stability)</div>
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-top: 8px;">
+      <div>
+        <div style="font-size: 32px; font-weight: 900; color: var(--earth-warm);">6–15 wks</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Added to construction timeline<br>vs. flat-lot comparable</div>
+      </div>
+      <div style="flex: 1; min-width: 200px;">
+        <p style="font-size: 14px; margin-bottom: 0;">On an 18–24 month construction schedule, this is approximately a <strong>10–25% buffer</strong> to build into your milestone plan. Work with your GC to front-load geo engineer attendance scheduling so it doesn't become a critical path delay.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     RISK REGISTER
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Risk Register</div>
+  <h2>Open Items That Could Change the Calculus</h2>
+  <p>All risks below are manageable. They are listed because each has a meaningful potential to expand scope, cost, or timeline if not addressed proactively.</p>
+
+  <div class="risk-item">
+    <span class="risk-badge high">High Priority</span>
+    <div class="risk-content">
+      <strong>Slope Stability — Not Fully Evaluated</strong>
+      <p>CRS explicitly states that deep-seated slope movement "cannot be evaluated" from their investigation (limited to ~10 ft depth), and no slope stability analysis was performed. Mapped slope failures exist within 1 mile north. If the City of Orinda or your structural engineer triggers a formal slope stability requirement, the study takes 3–9 months and potential remediation could add $150K–$500K+. <strong>Proactively ask CRS: "Given the convergent drainage and nearby slope failures, should we commission a slope stability analysis now?"</strong> It's far cheaper to do it before permit drawings than mid-process.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge high">High Priority</span>
+    <div class="risk-content">
+      <strong>Earthwork Volume — Not Yet Quantified</strong>
+      <p>The budget range for earthwork and import fill ($200K–$500K) has the widest uncertainty of any cost driver. The actual number depends on final grading plan volumes, which haven't been calculated yet. A formal cut/fill analysis from the civil engineer is the single most important pre-budget step. The difference between the low and high case here is $300K. Don't let this be a budget surprise during construction.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge medium">Medium Priority</span>
+    <div class="risk-content">
+      <strong>Subsurface Water — Extent Unknown</strong>
+      <p>Water seepage was found near the surface in 2 of 3 test pits. The report acknowledges that groundwater conditions "can and will fluctuate seasonally" and no local groundwater monitoring data exists. During dry season construction, water may be less of an issue. During wet season, it may be more extensive. Make sure the pier drilling schedule accounts for possible wet-season complications, and build tremie/casing contingency into the foundation budget.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge medium">Medium Priority</span>
+    <div class="risk-content">
+      <strong>Buried Old Foundations — Unknown Extent</strong>
+      <p>A previous house was removed from the site ~2004–2005. CRS notes that "potentially some existing foundations" remain underground, with a portion overlapping the new house footprint. The scope of removal won't be known until excavation begins. If foundations are extensive or deep, removal cost and schedule impact could be significant. Budget $15K–$40K contingency and keep the schedule flexible at the start of grading.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge medium">Medium Priority</span>
+    <div class="risk-content">
+      <strong>Retaining Wall Height Decision</strong>
+      <p>Currently shown at 6 feet (terraced) but may go to 10 feet (non-terraced). This is not just an aesthetic choice — it materially changes structural complexity, foundation demands, drainage requirements, and cost. A 10-ft wall requires higher lateral earth pressure design, larger piers, and more robust drainage than a 6-ft terraced system. Finalize this decision early so structural engineering isn't redone mid-process.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge low">Low Priority</span>
+    <div class="risk-content">
+      <strong>Bedrock Depth Variability</strong>
+      <p>Bedrock was encountered at 3 ft in TP1 but not until 7.5 ft in TP2 — a 4.5-foot variation across the site. Individual piers may need to be drilled deeper than designed when variable conditions are encountered in the field. This is a minor, normal uncertainty for this type of geology, but worth noting for the GC's field management plan.</p>
+    </div>
+  </div>
+
+  <div class="risk-item">
+    <span class="risk-badge low">Low Priority</span>
+    <div class="risk-content">
+      <strong>Report Expiration — March 2028</strong>
+      <p>CRS states the report "should not be used" after 2 years from its date (March 27, 2026). If construction extends beyond March 2028 or permits aren't issued before then, an updated geotechnical report may be required. On a July 2026 permits / Fall 2028 move-in schedule, you're right at the boundary. Coordinate with CRS on what "expiration" means practically (update vs. new investigation).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     QUESTIONS TO ASK YOUR TEAM
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Action Items</div>
+  <h2>Questions to Ask Your Team</h2>
+
+  <div class="card" style="padding: 20px;">
+    <div class="question-item">
+      <div class="question-number">1</div>
+      <div class="question-content">
+        <strong>To CRS Engineering: "Given the convergent drainage, active seepage, and mapped landslides within a mile, should we commission a slope stability analysis before we finalize the grading plan?"</strong>
+        <span>This is the single most important question. Getting ahead of it prevents the worst-case timeline scenario (3–9 months mid-process).</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">2</div>
+      <div class="question-content">
+        <strong>To Civil Engineer: "Can you run cut/fill volume calculations against the grading plan and tell me exactly how many cubic yards of native soil we're exporting and non-expansive fill we're importing?"</strong>
+        <span>This closes the biggest budget uncertainty. The difference between low and high earthwork estimate is $300K — you need the real number.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">3</div>
+      <div class="question-content">
+        <strong>To your GC: "Was your budget estimate based on drilled piers and full imported fill, or a simpler foundation assumption?"</strong>
+        <span>If the GC's early estimate assumed standard spread footings, the foundation line item is likely $150K–$300K low. Confirm the foundation system is priced correctly.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">4</div>
+      <div class="question-content">
+        <strong>To Structural Engineer: "Are you accounting for the 1,000 psf uplift requirement on grade beams, the hydrostatic surcharge on retaining walls, and the SDS = 1.56g seismic demand?"</strong>
+        <span>These are all in the CRS report and must be in the structural design inputs. Worth confirming they've been transferred correctly from the geo report.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">5</div>
+      <div class="question-content">
+        <strong>To Architect: "Are the retaining walls final at 6 feet terraced, or are we still considering the 10-foot single wall option?"</strong>
+        <span>The wall height decision materially affects structural engineering scope, cost, and the drainage design. Lock this down before structural drawings begin.</span>
+      </div>
+    </div>
+    <div class="question-item">
+      <div class="question-number">6</div>
+      <div class="question-content">
+        <strong>To CRS Engineering: "What does the 2-year report expiration mean practically for our schedule — will you issue an updated letter, or would a new investigation be required?"</strong>
+        <span>On a July 2026 permits / Fall 2028 move-in schedule, you're right at the 2-year boundary. Worth clarifying early.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TECHNICAL APPENDIX
+═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Technical Reference</div>
+  <h2>Key Specifications at a Glance</h2>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div class="card" style="padding: 20px;">
+      <div class="card-title" style="color: var(--earth-mid);">Foundation Specs</div>
+      <ul style="margin-bottom:0;">
+        <li>Pier diameter: ≥ 16 inches</li>
+        <li>Pier length: ≥ 10 feet</li>
+        <li>Bedrock embedment: ≥ 3 feet</li>
+        <li>Pier spacing: ≥ 3× diameter</li>
+        <li>Skin friction: 450 psf (in bedrock)</li>
+        <li>Grade beam uplift: 1,000 psf design</li>
+        <li>Settlement (total): ≤ 1 inch</li>
+        <li>Settlement (diff): ≤ ½ inch / 50 ft</li>
+      </ul>
+    </div>
+    <div class="card" style="padding: 20px;">
+      <div class="card-title" style="color: var(--earth-mid);">Fill &amp; Compaction</div>
+      <ul style="margin-bottom:0;">
+        <li>Non-expansive fill under slabs: 24 inches min</li>
+        <li>Crushed rock under slabs: 6 inches</li>
+        <li>Vapor retarder: 15-mil minimum</li>
+        <li>Fill ≤ 5 ft: 90% compaction (ASTM D1557)</li>
+        <li>Fill &gt; 5 ft: 95% compaction (ASTM D1557)</li>
+        <li>Moisture: ≥ 3% above optimum</li>
+        <li>Import fill: PI &lt; 15, &lt; 50% passing #200</li>
+        <li>Keyway width: ≥ 8 feet or ⅓ fill height</li>
+      </ul>
+    </div>
+    <div class="card" style="padding: 20px;">
+      <div class="card-title" style="color: var(--earth-mid);">Retaining Wall Pressures</div>
+      <ul style="margin-bottom:0;">
+        <li>Active (flat backfill): 60 pcf EFP</li>
+        <li>Active (2:1 slope): 85 pcf EFP</li>
+        <li>At-rest (flat): 75 pcf EFP</li>
+        <li>At-rest (2:1 slope): 95 pcf EFP</li>
+        <li>Gravel drain: 12 inches thick</li>
+        <li>Drain pipe: 4-inch perforated at base</li>
+        <li>Compaction near walls: hand equipment only (within H feet)</li>
+      </ul>
+    </div>
+    <div class="card" style="padding: 20px;">
+      <div class="card-title" style="color: var(--earth-mid);">Seismic Parameters (2025 CBC)</div>
+      <ul style="margin-bottom:0;">
+        <li>Site Class: C</li>
+        <li>SS (0.2s): 2.26g</li>
+        <li>S1 (1.0s): 0.94g</li>
+        <li>SDS: 1.56g</li>
+        <li>SD1: 0.83g</li>
+        <li>PGAm: 0.84g</li>
+        <li>Alquist-Priolo zone: No</li>
+        <li>Landslide on-site: None mapped</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<div class="footer">
+  <p><strong>38 Oakwood Road — Geotechnical Cost &amp; Complexity Analysis</strong></p>
+  <p>Prepared by Chief · Based on CRS Engineering Report #26013 (March 27, 2026)</p>
+  <p style="margin-top: 8px;">This analysis is for planning and decision-support purposes. All cost estimates are ranges based on Bay Area market data and should be validated with project-specific bids from licensed contractors. Engage your geotechnical engineer, civil engineer, and general contractor to refine these figures before finalizing the project budget.</p>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
