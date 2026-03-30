@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building Snappy: The Developer's Guide to Web Performance</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root {
+  --deep: #0f172a;
+  --mid: #1e3a5f;
+  --accent: #3b82f6;
+  --accent-light: #60a5fa;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --code-bg: #1e293b;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, var(--deep) 0%, var(--mid) 60%, #2563eb 100%);
+  color: white;
+  padding: 60px 32px 52px;
+  text-align: center;
+}
+.hero .label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.hero h1 span { color: var(--accent-light); }
+.hero .subtitle {
+  font-size: 17px;
+  opacity: 0.8;
+  max-width: 640px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+.meta-pills {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+}
+.meta-pill {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── Nav ── */
+.nav-bar {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.nav-bar a {
+  display: inline-block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.nav-bar a:hover {
+  color: var(--accent);
+  background: #eff6ff;
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── Sections ── */
+.section { margin-top: 56px; }
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.section-badge .num {
+  background: var(--accent);
+  color: white;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+}
+.section-badge .label-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.section h2 {
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: 800;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.section .section-desc {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-bottom: 28px;
+  max-width: 700px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-shadow);
+}
+.card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.card p, .card li {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.card ul, .card ol {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+.card li { margin-bottom: 6px; }
+
+/* ── Callout boxes ── */
+.callout {
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-size: 14px;
+  line-height: 1.65;
+  display: flex;
+  gap: 12px;
+}
+.callout .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-insight {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+.callout-warning {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+.callout-rule {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+/* ── Code blocks ── */
+pre {
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+pre code {
+  padding: 20px !important;
+  display: block;
+}
+code:not(pre code) {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+/* ── Tables ── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+th, td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+tr:hover td { background: #fafbfd; }
+
+/* ── Pipeline diagram ── */
+.pipeline {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 24px 0;
+}
+.pipeline-step {
+  background: var(--accent);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 90px;
+  transition: transform 0.2s;
+}
+.pipeline-step:hover { transform: scale(1.05); }
+.pipeline-arrow {
+  font-size: 20px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── Demo areas ── */
+.demo-area {
+  background: #f8fafc;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+}
+.demo-area h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-blue {
+  background: var(--accent);
+  color: white;
+}
+.btn-blue:hover { background: #2563eb; }
+.btn-green {
+  background: var(--accent-green);
+  color: white;
+}
+.btn-green:hover { background: #059669; }
+.btn-red {
+  background: var(--accent-red);
+  color: white;
+}
+.btn-red:hover { background: #dc2626; }
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+.btn-outline:hover { background: #eff6ff; }
+.result-box {
+  background: var(--code-bg);
+  color: #e2e8f0;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+  margin-top: 12px;
+  min-height: 40px;
+  line-height: 1.6;
+}
+
+/* ── Pattern cards ── */
+.pattern-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.pattern-header {
+  padding: 20px 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+.pattern-header:hover { background: #fafbfd; }
+.pattern-num {
+  background: var(--accent);
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800;
+  flex-shrink: 0;
+}
+.pattern-title {
+  font-size: 18px;
+  font-weight: 700;
+  flex: 1;
+}
+.pattern-toggle {
+  font-size: 20px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+.pattern-body {
+  padding: 0 28px 28px;
+  display: none;
+}
+.pattern-card.open .pattern-body { display: block; }
+.pattern-card.open .pattern-toggle { transform: rotate(180deg); }
+
+/* ── Comparison cards ── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+.compare-slow {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 20px;
+}
+.compare-fast {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 20px;
+}
+.compare-slow h4 { color: var(--accent-red); font-size: 14px; margin-bottom: 10px; }
+.compare-fast h4 { color: var(--accent-green); font-size: 14px; margin-bottom: 10px; }
+
+/* ── Screener tool ── */
+.screener-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.screener-item:last-child { border-bottom: none; }
+.screener-toggle {
+  width: 44px; height: 24px;
+  background: #cbd5e1;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.screener-toggle::after {
+  content: '';
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.screener-toggle.on {
+  background: var(--accent-red);
+}
+.screener-toggle.on::after {
+  transform: translateX(20px);
+}
+.screener-label {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.risk-meter {
+  background: #f1f5f9;
+  border-radius: 10px;
+  height: 20px;
+  overflow: hidden;
+  margin: 16px 0 8px;
+}
+.risk-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: all 0.4s ease;
+  width: 0%;
+}
+.risk-label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.recommendation {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #1e40af;
+  display: none;
+}
+.recommendation.visible { display: block; }
+
+/* ── Tabs ── */
+.tab-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── FPS display ── */
+.fps-display {
+  font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+  font-size: 32px;
+  font-weight: 800;
+  text-align: center;
+  padding: 16px;
+}
+.fps-good { color: var(--accent-green); }
+.fps-bad { color: var(--accent-red); }
+
+/* ── Checklist mode ── */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+}
+.checklist-item input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--accent);
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+/* ── Blueprint box ── */
+.blueprint {
+  background: linear-gradient(135deg, var(--deep), var(--mid));
+  color: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.blueprint h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: var(--accent-light);
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .compare-grid { grid-template-columns: 1fr; }
+  .pipeline { gap: 6px; }
+  .pipeline-step { min-width: 70px; padding: 8px 12px; font-size: 11px; }
+  .card { padding: 20px; }
+  .pattern-body { padding: 0 20px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<div class="hero">
+  <div class="label">Interactive Technical Guide</div>
+  <h1>Building <span>Snappy</span></h1>
+  <div class="subtitle">Why your app feels slow — and how to fix it at the architecture level. A deep dive on rendering pipelines, data patterns, and the tools that make data-rich web apps feel instant.</div>
+  <div class="meta-pills">
+    <span class="meta-pill">March 2026</span>
+    <span class="meta-pill">7 Sections</span>
+    <span class="meta-pill">Interactive Demos</span>
+    <span class="meta-pill">Performance Screener</span>
+  </div>
+</div>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<div class="nav-bar">
+  <a href="#s1">1. Rendering Pipeline</a>
+  <a href="#s2">2. DOM vs Canvas vs WebGL</a>
+  <a href="#s3">3. Big Four Patterns</a>
+  <a href="#s4">4. Metrics</a>
+  <a href="#s5">5. Performance Screener</a>
+  <a href="#s6">6. Before / After</a>
+  <a href="#s7">7. Stack Cheat Sheet</a>
+</div>
+
+<div class="container">
+
+<!-- ════════════════════ S1: RENDERING PIPELINE ════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-badge">
+    <div class="num">1</div>
+    <div class="label-text">The Rendering Pipeline</div>
+  </div>
+  <h2>How Browsers Actually Work</h2>
+  <p class="section-desc">Every user interaction triggers a cascade of work on the browser's main thread. Understanding this pipeline is the foundation of all performance thinking.</p>
+
+  <div class="card">
+    <h3>The Main Thread Pipeline</h3>
+    <p>When something changes in the UI, the browser runs through up to five stages — all on a single thread. If any stage takes too long, the user sees jank.</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step" style="background:#6366f1">JS Execute</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step" style="background:#8b5cf6">Style Calc</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step" style="background:#a855f7">Layout</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step" style="background:#c084fc">Paint</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step" style="background:var(--accent-green)">Composite</div>
+    </div>
+
+    <ul>
+      <li><strong>JS Execute:</strong> Your event handlers, data transforms, framework render cycles</li>
+      <li><strong>Style Calculation:</strong> Browser figures out which CSS rules apply to which elements</li>
+      <li><strong>Layout (Reflow):</strong> Browser calculates geometry — position, size, spacing for every affected element</li>
+      <li><strong>Paint:</strong> Fill in pixels — backgrounds, text, borders, shadows</li>
+      <li><strong>Composite:</strong> Combine painted layers (the cheap step — GPU-accelerated)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>The Frame Budget</h3>
+    <p>At <strong>60fps</strong>, you have <strong>16.67ms</strong> per frame. At <strong>120fps</strong> (iPhone ProMotion, iPad), it's <strong>8.33ms</strong>. Subtract ~4ms for browser housekeeping, and you're left with:</p>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin:20px 0">
+      <div style="text-align:center;flex:1;min-width:140px">
+        <div style="font-size:42px;font-weight:800;color:var(--accent)">~12ms</div>
+        <div style="font-size:13px;color:var(--text-muted);font-weight:600">Your budget @ 60fps</div>
+      </div>
+      <div style="text-align:center;flex:1;min-width:140px">
+        <div style="font-size:42px;font-weight:800;color:var(--accent-red)">~4ms</div>
+        <div style="font-size:13px;color:var(--text-muted);font-weight:600">Your budget @ 120fps</div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="icon">&#9888;</div>
+      <div><strong>Layout Thrashing</strong> is the #1 killer of frame budgets. It happens when you interleave DOM reads and writes in a loop — each read forces the browser to recalculate layout before it can answer your query.</div>
+    </div>
+  </div>
+
+  <div class="demo-area">
+    <h4>Interactive Demo: Layout Thrashing</h4>
+    <p style="font-size:14px;margin-bottom:16px;color:var(--text-muted)">This demo creates 200 boxes, then reads and writes their dimensions. Watch how interleaved reads/writes (bad) takes dramatically longer than batched operations (good).</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn btn-red" onclick="runThrashBad()">Run Bad (Interleaved)</button>
+      <button class="btn btn-green" onclick="runThrashGood()">Run Good (Batched)</button>
+    </div>
+    <div id="thrash-boxes" style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:12px"></div>
+    <div class="result-box" id="thrash-result">Click a button to run the demo...</div>
+  </div>
+
+  <div class="callout callout-insight">
+    <div class="icon">&#128161;</div>
+    <div><strong>Key Insight:</strong> Every DOM geometry query you make inside a loop (offsetWidth, getBoundingClientRect, scrollTop) is potentially forcing a synchronous layout recalculation. Batch your reads, then batch your writes.</div>
+  </div>
+</div>
+
+<!-- ════════════════════ S2: DOM vs CANVAS vs WEBGL ════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-badge">
+    <div class="num">2</div>
+    <div class="label-text">Rendering Models</div>
+  </div>
+  <h2>DOM vs Canvas vs WebGL</h2>
+  <p class="section-desc">There are three fundamentally different ways to put pixels on screen. Choosing the right one is the single biggest architecture decision for a data-rich app.</p>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>DOM</th>
+            <th>Canvas 2D</th>
+            <th>WebGL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight:700">Best for</td><td>Interactive UI, forms, text</td><td>Custom 2D graphics, charts</td><td>Maps, 3D, millions of points</td></tr>
+          <tr><td style="font-weight:700">Layout engine</td><td>Browser handles it</td><td>You handle it</td><td>You handle it</td></tr>
+          <tr><td style="font-weight:700">Perf ceiling</td><td style="color:var(--accent-yellow);font-weight:700">Medium</td><td style="color:var(--accent-green);font-weight:700">High</td><td style="color:var(--accent-green);font-weight:700">Very High</td></tr>
+          <tr><td style="font-weight:700">Dev complexity</td><td style="color:var(--accent-green)">Low</td><td style="color:var(--accent-yellow)">Medium</td><td style="color:var(--accent-red)">High</td></tr>
+          <tr><td style="font-weight:700">Accessibility</td><td style="color:var(--accent-green)">Built-in</td><td style="color:var(--accent-red)">Manual</td><td style="color:var(--accent-red)">Manual</td></tr>
+          <tr><td style="font-weight:700">Examples</td><td>React apps, forms, tables</td><td>Chart.js, Pretext, timelines</td><td>Mapbox, Deck.gl, Figma</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:20px">When to use each</h3>
+    <ul>
+      <li><strong>DOM</strong> — default choice. Use it when you need forms, text selection, links, accessibility, SEO. Falls apart above ~1,000 frequently-updating elements.</li>
+      <li><strong>Canvas 2D</strong> — pixel-perfect rendering with no reflow. You own hit-testing, text selection, and accessibility. Great for charts, custom timelines, and data-dense visualizations.</li>
+      <li><strong>WebGL</strong> — GPU-accelerated. Handles millions of primitives at 60fps. Every major map (Mapbox, Google Maps) and advanced visualization (Figma, Deck.gl) runs on WebGL.</li>
+    </ul>
+
+    <div class="callout callout-insight">
+      <div class="icon">&#128161;</div>
+      <div><strong>Pretext (@chenglou/pretext)</strong> is a hybrid approach worth knowing: it uses Canvas's font measurement engine as ground truth, then delivers pure arithmetic for layout. Result: 300–500x faster text measurement than DOM. Relevant when building data-dense UIs where text layout is a bottleneck.</div>
+    </div>
+  </div>
+
+  <div class="demo-area">
+    <h4>Interactive Demo: DOM vs Canvas Rendering (500 Blocks)</h4>
+    <p style="font-size:14px;margin-bottom:16px;color:var(--text-muted)">Both panels render 500 colored blocks and animate them. Watch the FPS difference when both run simultaneously.</p>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-blue" onclick="startRenderDemo()">Start Both</button>
+      <button class="btn btn-outline" onclick="stopRenderDemo()">Stop</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--accent-red)">DOM Rendering</div>
+        <div id="dom-render" style="width:100%;height:240px;overflow:hidden;border:2px solid var(--border);border-radius:8px;position:relative;background:#fef2f2"></div>
+        <div class="fps-display" id="dom-fps">-- fps</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--accent-green)">Canvas Rendering</div>
+        <canvas id="canvas-render" style="width:100%;height:240px;border:2px solid var(--border);border-radius:8px;background:#ecfdf5"></canvas>
+        <div class="fps-display" id="canvas-fps">-- fps</div>
+      </div>
+    </div>
+    <div class="result-box" id="render-result">Click "Start Both" to begin the stress test...</div>
+  </div>
+</div>
+
+<!-- ════════════════════ S3: BIG FOUR PATTERNS ════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-badge">
+    <div class="num">3</div>
+    <div class="label-text">Architecture Patterns</div>
+  </div>
+  <h2>The Big Four Patterns for Snappy Data-Rich Apps</h2>
+  <p class="section-desc">These four patterns solve the most common performance problems in data-heavy applications. Click each to expand.</p>
+
+  <!-- Pattern 1: Virtualization -->
+  <div class="pattern-card open">
+    <div class="pattern-header" onclick="togglePattern(this)">
+      <div class="pattern-num">1</div>
+      <div class="pattern-title">Virtualization — Only Render What's Visible</div>
+      <div class="pattern-toggle">&#9660;</div>
+    </div>
+    <div class="pattern-body">
+      <p><strong>Problem:</strong> You have 50,000 rows in a table. Rendering all 50,000 DOM nodes freezes the browser for seconds and eats hundreds of MB of RAM.</p>
+
+      <div class="callout callout-rule">
+        <div class="icon">&#9989;</div>
+        <div><strong>Rule of Thumb:</strong> If your list or table can exceed ~100 rows, virtualize it. The user can only see ~20-40 rows at a time anyway.</div>
+      </div>
+
+      <h3 style="margin-top:20px">How it works</h3>
+      <p>Virtual scrolling maintains a "render window" — only the rows currently visible in the viewport (plus a small overscan buffer) exist in the DOM. As the user scrolls, rows are recycled: old ones are removed, new ones are created. The scrollbar is faked with a spacer element at the correct total height.</p>
+
+      <pre><code class="language-javascript">// TanStack Virtual — minimal example (50,000 rows, ~30 in DOM at any time)
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+function VirtualList({ items }) {
+  const parentRef = useRef(null);
+
+  const virtualizer = useVirtualizer({
+    count: items.length,       // 50,000
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 40,    // estimated row height in px
+    overscan: 5,               // render 5 extra rows above/below
+  });
+
+  return (
+    &lt;div ref={parentRef} style={{ height: '600px', overflow: 'auto' }}>
+      &lt;div style={{ height: virtualizer.getTotalSize() }}>
+        {virtualizer.getVirtualItems().map(vRow => (
+          &lt;div key={vRow.key}
+            style={{
+              position: 'absolute',
+              top: 0,
+              transform: \`translateY(\${vRow.start}px)\`,
+              height: vRow.size,
+            }}>
+            {items[vRow.index].name}
+          &lt;/div>
+        ))}
+      &lt;/div>
+    &lt;/div>
+  );
+}</code></pre>
+
+      <h3 style="margin-top:20px">Libraries</h3>
+      <ul>
+        <li><strong>TanStack Virtual</strong> — framework-agnostic, supports variable heights, grids</li>
+        <li><strong>react-window</strong> — simpler API, fixed or variable sizes</li>
+        <li><strong>AG Grid</strong> — full enterprise grid with built-in virtualization</li>
+      </ul>
+
+      <div class="callout callout-warning">
+        <div class="icon">&#9888;</div>
+        <div><strong>The Variable-Height Problem:</strong> Virtual scrolling needs to know each row's height before it's rendered (for scroll position math). Variable-height rows require measurement or estimation. TanStack Virtual handles this with <code>measureElement</code>, but it adds complexity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pattern 2: Server-Side Data Ops -->
+  <div class="pattern-card">
+    <div class="pattern-header" onclick="togglePattern(this)">
+      <div class="pattern-num">2</div>
+      <div class="pattern-title">Server-Side Data Operations</div>
+      <div class="pattern-toggle">&#9660;</div>
+    </div>
+    <div class="pattern-body">
+      <p><strong>Problem:</strong> You shipped 50,000 rows to the browser and now you're sorting and filtering in JavaScript. Each operation takes 200ms+ and blocks the UI.</p>
+
+      <div class="callout callout-rule">
+        <div class="icon">&#9989;</div>
+        <div><strong>Rule of Thumb:</strong> Never sort, filter, or search more than ~1,000 rows in client-side JavaScript. SQL is orders of magnitude faster, and it doesn't block the UI thread.</div>
+      </div>
+
+      <h3 style="margin-top:20px">Search-as-you-type Architecture</h3>
+      <p>The pattern: debounce user input → send query to server → server does the heavy lifting (SQL, full-text search) → return minimal JSON → render results.</p>
+
+      <pre><code class="language-javascript">// Debounced search — the right pattern for large datasets
+function SearchInput({ onResults }) {
+  const [query, setQuery] = useState('');
+  const controller = useRef(null);
+
+  useEffect(() => {
+    if (!query || query.length < 2) return;
+
+    // Cancel previous in-flight request
+    controller.current?.abort();
+    controller.current = new AbortController();
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          \`/api/search?q=\${encodeURIComponent(query)}&limit=20\`,
+          { signal: controller.current.signal }
+        );
+        const data = await res.json();
+        onResults(data.results);
+      } catch (e) {
+        if (e.name !== 'AbortError') throw e;
+      }
+    }, 150); // 150ms debounce — sweet spot
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  return &lt;input value={query} onChange={e => setQuery(e.target.value)} />;
+}</code></pre>
+
+      <h3 style="margin-top:20px">DuckDB — The Secret Weapon</h3>
+      <p><strong>DuckDB</strong> is an embeddable analytical database that runs sub-100ms queries on millions of rows. It can run in-process (no separate server), supports SQL, and even compiles to WASM for the browser. For dashboards and analytical tools, it's transformative.</p>
+
+      <ul>
+        <li><strong>Pagination</strong> — simpler, better for SEO, more predictable memory usage</li>
+        <li><strong>Infinite scroll</strong> — better UX for feeds and exploration, but harder to implement correctly (memory management, scroll position restoration)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Pattern 3: Web Workers -->
+  <div class="pattern-card">
+    <div class="pattern-header" onclick="togglePattern(this)">
+      <div class="pattern-num">3</div>
+      <div class="pattern-title">Web Workers — Don't Block the Main Thread</div>
+      <div class="pattern-toggle">&#9660;</div>
+    </div>
+    <div class="pattern-body">
+      <p><strong>Problem:</strong> You're parsing a 5MB FHIR bundle or running a complex data transform. The entire UI freezes for 800ms while the main thread grinds through it.</p>
+
+      <div class="callout callout-insight">
+        <div class="icon">&#128161;</div>
+        <div><strong>What is a Web Worker?</strong> A separate JavaScript thread that runs in parallel to your main thread. Workers can't touch the DOM, but they can do heavy computation without blocking user interaction. Communication happens via <code>postMessage</code>.</div>
+      </div>
+
+      <h3 style="margin-top:20px">What to offload to workers</h3>
+      <ul>
+        <li>FHIR bundle parsing (1,180 patients? That's worker territory)</li>
+        <li>Heavy data transforms, aggregations, grouping</li>
+        <li>Search indexing (build a Fuse.js index off-thread)</li>
+        <li>CSV/Excel file parsing</li>
+        <li>Image processing or compression</li>
+      </ul>
+
+      <pre><code class="language-javascript">// worker.js — runs on a separate thread
+self.onmessage = function(e) {
+  const { type, payload } = e.data;
+
+  if (type === 'PARSE_FHIR_BUNDLE') {
+    // Heavy work happens here — main thread stays responsive
+    const patients = payload.entry
+      .filter(e => e.resource.resourceType === 'Patient')
+      .map(e => ({
+        id: e.resource.id,
+        name: e.resource.name?.[0]?.text || 'Unknown',
+        birthDate: e.resource.birthDate,
+        conditions: extractConditions(e.resource),
+      }));
+
+    self.postMessage({ type: 'PARSED', patients });
+  }
+};
+
+// main.js — stays snappy
+const worker = new Worker('worker.js');
+
+worker.postMessage({
+  type: 'PARSE_FHIR_BUNDLE',
+  payload: hugeFhirBundle  // 5MB of FHIR data
+});
+
+worker.onmessage = (e) => {
+  if (e.data.type === 'PARSED') {
+    renderPatientList(e.data.patients); // UI updates instantly
+  }
+};</code></pre>
+
+      <div class="callout callout-warning">
+        <div class="icon">&#9888;</div>
+        <div><strong>Transferable objects:</strong> Large ArrayBuffers can be <em>transferred</em> (zero-copy) to/from workers instead of cloned. Use <code>postMessage(data, [buffer])</code> for large binary data to avoid the serialization cost.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pattern 4: Maps -->
+  <div class="pattern-card">
+    <div class="pattern-header" onclick="togglePattern(this)">
+      <div class="pattern-num">4</div>
+      <div class="pattern-title">Maps — Canvas/WebGL or Die</div>
+      <div class="pattern-toggle">&#9660;</div>
+    </div>
+    <div class="pattern-body">
+      <p><strong>Problem:</strong> You're rendering 2,000 provider locations as <code>&lt;div&gt;</code> markers in the DOM. Pan and zoom are at 8fps. The page uses 400MB of RAM.</p>
+
+      <div class="callout callout-rule">
+        <div class="icon">&#9989;</div>
+        <div><strong>Rule of Thumb:</strong> DOM map markers stop scaling at ~500 pins. Past that, you need WebGL rendering and clustering.</div>
+      </div>
+
+      <h3 style="margin-top:20px">Clustering with Supercluster</h3>
+      <p>Never render individual pins at wide zoom levels. <strong>Supercluster</strong> groups nearby points into clusters that expand as the user zooms in. This keeps the rendered element count constant regardless of dataset size.</p>
+
+      <pre><code class="language-javascript">// Mapbox GL + Supercluster — minimal clustering example
+import mapboxgl from 'mapbox-gl';
+
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v11',
+  center: [-98.5, 39.8],
+  zoom: 4,
+});
+
+map.on('load', () => {
+  map.addSource('providers', {
+    type: 'geojson',
+    data: providersGeoJSON,  // 10,000+ points
+    cluster: true,
+    clusterMaxZoom: 14,
+    clusterRadius: 50,
+  });
+
+  // Cluster circles
+  map.addLayer({
+    id: 'clusters',
+    type: 'circle',
+    source: 'providers',
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': ['step', ['get', 'point_count'],
+        '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
+      'circle-radius': ['step', ['get', 'point_count'],
+        20, 100, 30, 750, 40],
+    },
+  });
+
+  // Individual points (only visible at high zoom)
+  map.addLayer({
+    id: 'points',
+    type: 'circle',
+    source: 'providers',
+    filter: ['!', ['has', 'point_count']],
+    paint: { 'circle-radius': 6, 'circle-color': '#3b82f6' },
+  });
+});</code></pre>
+
+      <h3 style="margin-top:20px">The Stack</h3>
+      <ul>
+        <li><strong>Mapbox GL JS / MapLibre GL</strong> — WebGL-based maps, handles millions of features</li>
+        <li><strong>Deck.gl</strong> — data visualization layers on top of maps: heatmaps, hexbins, scatter plots, arc layers — all GPU-accelerated, millions of points at 60fps</li>
+        <li><strong>Supercluster</strong> — fast geospatial point clustering, works with any map library</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ S4: METRICS ════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-badge">
+    <div class="num">4</div>
+    <div class="label-text">Measuring Performance</div>
+  </div>
+  <h2>Performance Metrics — What "Snappy" Actually Means</h2>
+  <p class="section-desc">You can't optimize what you can't measure. Here's the framework for thinking about — and talking about — web performance.</p>
+
+  <div class="card">
+    <h3>The Three Feelings</h3>
+    <p>Users don't think in milliseconds. They have three distinct performance-related feelings:</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0">
+      <div style="background:#eff6ff;border-radius:10px;padding:20px;text-align:center">
+        <div style="font-size:28px;margin-bottom:6px">&#9889;</div>
+        <div style="font-weight:800;font-size:15px">"It responded"</div>
+        <div style="font-size:32px;font-weight:800;color:var(--accent);margin:8px 0">&lt;100ms</div>
+        <div style="font-size:13px;color:var(--text-muted)">Input latency target</div>
+      </div>
+      <div style="background:#ecfdf5;border-radius:10px;padding:20px;text-align:center">
+        <div style="font-size:28px;margin-bottom:6px">&#128640;</div>
+        <div style="font-weight:800;font-size:15px">"It loaded"</div>
+        <div style="font-size:32px;font-weight:800;color:var(--accent-green);margin:8px 0">&lt;3s</div>
+        <div style="font-size:13px;color:var(--text-muted)">Time to Interactive</div>
+      </div>
+      <div style="background:#faf5ff;border-radius:10px;padding:20px;text-align:center">
+        <div style="font-size:28px;margin-bottom:6px">&#127912;</div>
+        <div style="font-weight:800;font-size:15px">"It's smooth"</div>
+        <div style="font-size:32px;font-weight:800;color:#8b5cf6;margin:8px 0">60fps</div>
+        <div style="font-size:13px;color:var(--text-muted)">Frame rate target</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>The 100ms Wall</h3>
+    <p>This is the single most important number in web performance:</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0">
+      <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:24px;font-weight:800;color:var(--accent-green)">&lt;100ms</div>
+        <div style="font-size:13px;color:#065f46;margin-top:4px">Feels instant</div>
+      </div>
+      <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:24px;font-weight:800;color:#92400e">100–300ms</div>
+        <div style="font-size:13px;color:#92400e;margin-top:4px">Feels sluggish</div>
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:24px;font-weight:800;color:var(--accent-red)">300ms–1s</div>
+        <div style="font-size:13px;color:#991b1b;margin-top:4px">Feels slow</div>
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:24px;font-weight:800;color:var(--accent-red)">&gt;1s</div>
+        <div style="font-size:13px;color:#991b1b;margin-top:4px">Feels broken</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>The RAIL Model (Google's Framework)</h3>
+    <p>RAIL gives you UX-driven performance budgets for four categories of work:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Category</th><th>Budget</th><th>What it covers</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;color:var(--accent)">Response</td><td>&lt;100ms</td><td>React to user input (click, tap, type). If you can't finish in 100ms, show a loading state.</td></tr>
+          <tr><td style="font-weight:700;color:var(--accent)">Animation</td><td>&lt;16ms/frame</td><td>Visual transitions, scrolling, dragging. Each frame gets 16ms (aim for 10ms to leave room).</td></tr>
+          <tr><td style="font-weight:700;color:var(--accent)">Idle</td><td>50ms chunks</td><td>Use idle time for deferred work (analytics, prefetching). Keep each chunk under 50ms so you can respond to input instantly.</td></tr>
+          <tr><td style="font-weight:700;color:var(--accent)">Load</td><td>&lt;3s TTI</td><td>Page should be interactive within 3s on mid-range mobile with 3G. For data apps: show skeleton/content progressively.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Browser DevTools — Your Performance Lab</h3>
+    <p>Three tabs you should know intimately:</p>
+
+    <div style="margin:16px 0">
+      <div style="background:#f1f5f9;border-radius:10px;padding:18px;margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Performance Tab</div>
+        <p style="font-size:14px;color:var(--text-muted);margin:0">Record a user interaction. The <strong>flame chart</strong> shows exactly where time is spent on the main thread. Yellow = JS, purple = layout, green = paint. Look for long tasks (&gt;50ms) in the "Main" section. The frame timeline at the top shows dropped frames as red bars.</p>
+      </div>
+      <div style="background:#f1f5f9;border-radius:10px;padding:18px;margin-bottom:12px">
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Network Tab</div>
+        <p style="font-size:14px;color:var(--text-muted);margin:0">The <strong>waterfall view</strong> reveals request chains — requests that can't start until others finish. Look for: oversized payloads (are you shipping 5MB of JSON?), render-blocking resources, and slow TTFB (server response time). Filter by "XHR" to see just your API calls.</p>
+      </div>
+      <div style="background:#f1f5f9;border-radius:10px;padding:18px">
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Lighthouse</div>
+        <p style="font-size:14px;color:var(--text-muted);margin:0">Automated audit that scores Performance, Accessibility, Best Practices, and SEO. <strong>Fix in this order:</strong> Largest Contentful Paint (LCP) → Cumulative Layout Shift (CLS) → Interaction to Next Paint (INP). These are the Core Web Vitals that actually matter.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ S5: PERFORMANCE SCREENER ════════════════════ -->
+<div class="section" id="s5">
+  <div class="section-badge">
+    <div class="num">5</div>
+    <div class="label-text">Diagnostic Tool</div>
+  </div>
+  <h2>The Performance Screener</h2>
+  <p class="section-desc">Use this tool to evaluate an existing app or plan a new one. Two modes: diagnose problems or plan architecture.</p>
+
+  <div class="card">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('rateStack', this)">Rate My Stack</button>
+      <button class="tab-btn" onclick="switchTab('planBuild', this)">Plan a Build</button>
+    </div>
+
+    <!-- Mode A: Rate My Stack -->
+    <div id="rateStack" class="tab-content active">
+      <p style="margin-bottom:16px;font-size:14px;color:var(--text-muted)">Toggle the issues that apply to your app. Your risk score and recommendations update in real time.</p>
+
+      <div id="screener-items">
+        <div class="screener-item" data-risk="15" data-rec="Virtualize your tables with TanStack Virtual or AG Grid. Only ~30 DOM rows should exist at any time, regardless of total dataset size.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">I have tables with more than 500 rows</div>
+        </div>
+        <div class="screener-item" data-risk="20" data-rec="Switch to Mapbox GL or MapLibre with WebGL rendering. DOM markers hit a wall at ~500 pins. Use clustering (Supercluster) for any dataset over 200 points.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">I'm rendering map pins as DOM elements</div>
+        </div>
+        <div class="screener-item" data-risk="18" data-rec="Move filtering and sorting to the server (SQL). DuckDB can handle millions of rows in <100ms. Only ship the current page of results to the client.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">I filter or sort data in JavaScript on the client</div>
+        </div>
+        <div class="screener-item" data-risk="15" data-rec="Move parsing to a Web Worker. The main thread should never do heavy computation. Use postMessage to send results back when ready.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">I parse large files synchronously on the main thread</div>
+        </div>
+        <div class="screener-item" data-risk="10" data-rec="Add a 150ms debounce to your search input. Cancel in-flight requests with AbortController when a new keystroke arrives. Ship only the top 20 results.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">My search hits the server on every keystroke</div>
+        </div>
+        <div class="screener-item" data-risk="12" data-rec="Switch to a Canvas-based chart library (e.g., uPlot, ECharts with canvas renderer) or aggregate data server-side before rendering. DOM charts fall apart above ~1K points.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">I'm using a DOM-based chart library with &gt;1,000 data points</div>
+        </div>
+        <div class="screener-item" data-risk="10" data-rec="Add virtualization. Even if your list is currently short, if it *can* grow past 100 items, virtualize proactively. TanStack Virtual takes <30 min to integrate.">
+          <button class="screener-toggle" onclick="toggleScreener(this)"></button>
+          <div class="screener-label">I'm not virtualizing long lists</div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px">
+        <div class="risk-label">Risk Score: <span id="risk-score" style="color:var(--accent-green)">0 / 100</span></div>
+        <div class="risk-meter">
+          <div class="risk-fill" id="risk-fill" style="background:var(--accent-green)"></div>
+        </div>
+      </div>
+
+      <div id="screener-recommendations" style="margin-top:16px"></div>
+
+      <div class="blueprint" id="rateBlueprint" style="display:none">
+        <h4>Performance Blueprint</h4>
+        <div id="rateBlueprintText"></div>
+      </div>
+    </div>
+
+    <!-- Mode B: Plan a Build -->
+    <div id="planBuild" class="tab-content">
+      <p style="margin-bottom:16px;font-size:14px;color:var(--text-muted)">Answer these questions about your planned app to get architecture recommendations.</p>
+
+      <div style="margin-bottom:20px">
+        <label style="font-weight:700;font-size:14px;display:block;margin-bottom:8px">How many rows/items will your largest dataset have?</label>
+        <select id="plan-rows" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;width:100%;max-width:400px" onchange="updatePlanBlueprint()">
+          <option value="small">Under 100</option>
+          <option value="medium">100 – 1,000</option>
+          <option value="large" selected>1,000 – 50,000</option>
+          <option value="huge">50,000+</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-weight:700;font-size:14px;display:block;margin-bottom:8px">Does the app need maps?</label>
+        <select id="plan-maps" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;width:100%;max-width:400px" onchange="updatePlanBlueprint()">
+          <option value="none">No maps</option>
+          <option value="few">Yes, with &lt;200 markers</option>
+          <option value="many" selected>Yes, with 200+ markers</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-weight:700;font-size:14px;display:block;margin-bottom:8px">Will users search or filter the data?</label>
+        <select id="plan-search" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;width:100%;max-width:400px" onchange="updatePlanBlueprint()">
+          <option value="no">No</option>
+          <option value="simple">Yes, simple filtering</option>
+          <option value="fulltext" selected>Yes, full-text search</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-weight:700;font-size:14px;display:block;margin-bottom:8px">Any heavy data parsing? (large files, FHIR bundles, etc.)</label>
+        <select id="plan-parsing" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;width:100%;max-width:400px" onchange="updatePlanBlueprint()">
+          <option value="no">No</option>
+          <option value="yes" selected>Yes</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-weight:700;font-size:14px;display:block;margin-bottom:8px">Does the data update in real-time?</label>
+        <select id="plan-realtime" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;width:100%;max-width:400px" onchange="updatePlanBlueprint()">
+          <option value="no" selected>No, fetched on demand</option>
+          <option value="yes">Yes, real-time updates</option>
+        </select>
+      </div>
+
+      <div class="blueprint" id="planBlueprint">
+        <h4>Recommended Architecture</h4>
+        <div id="planBlueprintText"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ S6: BEFORE / AFTER ════════════════════ -->
+<div class="section" id="s6">
+  <div class="section-badge">
+    <div class="num">6</div>
+    <div class="label-text">Side-by-Side</div>
+  </div>
+  <h2>Architecture Patterns: Before &amp; After</h2>
+  <p class="section-desc">Concrete examples of common mistakes and their fixes, with estimated performance impact.</p>
+
+  <!-- Comparison 1: Table Rendering -->
+  <div class="card">
+    <h3>Table Rendering — 10,000 Rows</h3>
+    <div class="compare-grid">
+      <div class="compare-slow">
+        <h4>&#10060; The Slow Way</h4>
+        <pre style="font-size:12px;margin:8px 0"><code class="language-javascript">// Render ALL 10,000 rows as real DOM nodes
+// Sort by re-sorting the JS array and re-rendering everything
+function renderTable(data) {
+  const tbody = document.querySelector('tbody');
+  tbody.innerHTML = data.map(row =>
+    `<tr><td>${row.name}</td>
+     <td>${row.date}</td></tr>`
+  ).join('');
+}
+
+// On sort click:
+data.sort((a, b) => a.name.localeCompare(b.name));
+renderTable(data); // 10,000 DOM nodes created</code></pre>
+        <p style="font-size:13px;color:#991b1b;margin-top:8px"><strong>Impact:</strong> ~800ms to render, ~200ms to sort, 10,000 DOM nodes eating 80MB+ RAM. Scrolling jank on mobile.</p>
+      </div>
+      <div class="compare-fast">
+        <h4>&#9989; The Fast Way</h4>
+        <pre style="font-size:12px;margin:8px 0"><code class="language-javascript">// Server-side sort + virtual scroll
+// Only ~30 DOM rows exist at any time
+const query = await fetch(
+  `/api/data?sort=name&page=1&limit=30`
+);
+
+// TanStack Virtual handles the render window
+const virtualizer = useVirtualizer({
+  count: serverTotalCount,  // 10,000
+  getScrollElement: () => parentRef.current,
+  estimateSize: () => 44,
+  overscan: 5,
+});</code></pre>
+        <p style="font-size:13px;color:#065f46;margin-top:8px"><strong>Impact:</strong> ~5ms to render 30 rows, sort is instant (SQL), 30 DOM nodes, butter-smooth scrolling.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison 2: Search -->
+  <div class="card">
+    <h3>Search — 50,000 Item Dataset</h3>
+    <div class="compare-grid">
+      <div class="compare-slow">
+        <h4>&#10060; The Slow Way</h4>
+        <pre style="font-size:12px;margin:8px 0"><code class="language-javascript">// Filter 50K items on EVERY keypress
+input.addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  const filtered = allItems.filter(item =>
+    item.name.toLowerCase().includes(q) ||
+    item.description.toLowerCase().includes(q)
+  );
+  renderResults(filtered); // could be 40K results
+});</code></pre>
+        <p style="font-size:13px;color:#991b1b;margin-top:8px"><strong>Impact:</strong> ~150ms per keystroke to filter + re-render. UI freezes while typing. Rendering thousands of matching results compounds the problem.</p>
+      </div>
+      <div class="compare-fast">
+        <h4>&#9989; The Fast Way</h4>
+        <pre style="font-size:12px;margin:8px 0"><code class="language-javascript">// Debounce 150ms → server full-text search
+// Return only 20 results
+let timer;
+input.addEventListener('input', (e) => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const res = await fetch(
+      `/api/search?q=${encodeURIComponent(
+        e.target.value)}&limit=20`
+    );
+    renderResults(await res.json());
+  }, 150);
+});</code></pre>
+        <p style="font-size:13px;color:#065f46;margin-top:8px"><strong>Impact:</strong> Zero client-side computation. DuckDB/Postgres FTS returns 20 results in &lt;10ms. Only 20 DOM nodes to render. Typing is never blocked.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison 3: Map Pins -->
+  <div class="card">
+    <h3>Map Markers — 2,000 Locations</h3>
+    <div class="compare-grid">
+      <div class="compare-slow">
+        <h4>&#10060; The Slow Way</h4>
+        <pre style="font-size:12px;margin:8px 0"><code class="language-javascript">// 2,000 DOM marker divs
+locations.forEach(loc => {
+  const marker = document.createElement('div');
+  marker.className = 'map-pin';
+  marker.style.left = project(loc.lng) + 'px';
+  marker.style.top = project(loc.lat) + 'px';
+  mapContainer.appendChild(marker);
+});
+// On pan/zoom: update all 2,000 positions</code></pre>
+        <p style="font-size:13px;color:#991b1b;margin-top:8px"><strong>Impact:</strong> 2,000 DOM nodes, each repositioned on every frame during pan. ~8fps on mobile. 400MB memory.</p>
+      </div>
+      <div class="compare-fast">
+        <h4>&#9989; The Fast Way</h4>
+        <pre style="font-size:12px;margin:8px 0"><code class="language-javascript">// WebGL rendering + clustering
+map.addSource('locations', {
+  type: 'geojson',
+  data: locationsGeoJSON,
+  cluster: true,
+  clusterMaxZoom: 14,
+  clusterRadius: 50,
+});
+// Mapbox renders everything on GPU
+// ~20 cluster circles at zoom-out
+// Individual pins only at high zoom</code></pre>
+        <p style="font-size:13px;color:#065f46;margin-top:8px"><strong>Impact:</strong> Zero DOM markers. GPU renders all points. 60fps pan/zoom. Works with 100,000+ points. ~50MB memory.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ S7: STACK CHEAT SHEET ════════════════════ -->
+<div class="section" id="s7">
+  <div class="section-badge">
+    <div class="num">7</div>
+    <div class="label-text">Quick Reference</div>
+  </div>
+  <h2>The Stack Cheat Sheet</h2>
+  <p class="section-desc">Your quick-reference card for building fast data-rich apps.</p>
+
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:25%">Need</th>
+            <th style="width:30%">Reach For</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700">Large data tables</td>
+            <td>TanStack Table + TanStack Virtual</td>
+            <td>Best-in-class, framework-agnostic, virtualization built in</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Search-as-you-type</td>
+            <td>Debounce + DuckDB / Postgres FTS</td>
+            <td>Server-side is always faster for large datasets</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Maps with many markers</td>
+            <td>Mapbox GL / MapLibre GL</td>
+            <td>WebGL rendering, scales to millions of points</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Data viz layers on maps</td>
+            <td>Deck.gl</td>
+            <td>Built for this — heatmaps, scatter, hexbin, arc layers, all GPU-accelerated</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Heavy parsing / computation</td>
+            <td>Web Workers</td>
+            <td>Keep the main thread free for UI responsiveness</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Text measurement at scale</td>
+            <td>Pretext (@chenglou/pretext)</td>
+            <td>300–500x faster than DOM measurement via Canvas font metrics</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Complex data viz</td>
+            <td>Canvas-based: uPlot, ECharts (canvas)</td>
+            <td>DOM charting breaks down above ~1K data points</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">Real-time data</td>
+            <td>WebSockets + optimistic UI</td>
+            <td>Don't poll — push. Update UI before server confirms for perceived speed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout callout-insight" style="margin-top:24px">
+    <div class="icon">&#128161;</div>
+    <div><strong>The meta-rule:</strong> Performance is an architecture decision, not an optimization step. If you choose the wrong rendering model or data strategy upfront, no amount of memoization or lazy loading will save you. Make the big calls right — rendering model, data flow, computation placement — and the details take care of themselves.</div>
+  </div>
+</div>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<div style="margin-top:60px;padding:32px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:13px">
+  <p>Built as an interactive reference guide &middot; March 2026</p>
+  <p style="margin-top:4px">Part of <a href="index.html" style="color:var(--accent);text-decoration:none;font-weight:600">Blake's Reports</a></p>
+</div>
+
+</div><!-- /container -->
+
+<!-- ════════════════════ JAVASCRIPT ════════════════════ -->
+<script>
+// Initialize highlight.js
+document.addEventListener('DOMContentLoaded', () => {
+  hljs.highlightAll();
+  updatePlanBlueprint();
+});
+
+// ── Pattern card toggle ──
+function togglePattern(header) {
+  header.closest('.pattern-card').classList.toggle('open');
+}
+
+// ── Tab switching ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ════════════════════ S1 DEMO: Layout Thrashing ════════════════════
+(function initThrashBoxes() {
+  const container = document.getElementById('thrash-boxes');
+  for (let i = 0; i < 200; i++) {
+    const box = document.createElement('div');
+    box.style.cssText = `width:12px;height:12px;background:hsl(${(i * 7) % 360},70%,60%);border-radius:2px;`;
+    container.appendChild(box);
+  }
+})();
+
+function runThrashBad() {
+  const boxes = document.getElementById('thrash-boxes').children;
+  const start = performance.now();
+  // BAD: interleaved read/write — forces layout recalc on EVERY iteration
+  for (let i = 0; i < boxes.length; i++) {
+    const width = boxes[i].offsetWidth; // READ (forces layout)
+    boxes[i].style.width = (width + Math.random() * 2) + 'px'; // WRITE
+  }
+  const elapsed = (performance.now() - start).toFixed(2);
+  const el = document.getElementById('thrash-result');
+  el.innerHTML = `<span style="color:#ef4444;font-weight:700">BAD (interleaved):</span> ${elapsed}ms for 200 elements\n` +
+    `Each iteration forced a synchronous layout recalculation.\n` +
+    `At 60fps you have 12ms — this pattern in a real app with 1000+ elements will destroy your frame budget.`;
+}
+
+function runThrashGood() {
+  const boxes = document.getElementById('thrash-boxes').children;
+  const start = performance.now();
+  // GOOD: batch all reads, then batch all writes
+  const widths = [];
+  for (let i = 0; i < boxes.length; i++) {
+    widths.push(boxes[i].offsetWidth); // READ all first
+  }
+  for (let i = 0; i < boxes.length; i++) {
+    boxes[i].style.width = (widths[i] + Math.random() * 2) + 'px'; // WRITE all
+  }
+  const elapsed = (performance.now() - start).toFixed(2);
+  const el = document.getElementById('thrash-result');
+  el.innerHTML = `<span style="color:#10b981;font-weight:700">GOOD (batched):</span> ${elapsed}ms for 200 elements\n` +
+    `Only ONE layout recalculation needed (after all reads, before writes).\n` +
+    `This is typically 2–10x faster than interleaved reads/writes.`;
+}
+
+// ════════════════════ S2 DEMO: DOM vs Canvas ════════════════════
+let renderAnimId = null;
+let domBlocks = [];
+let canvasBlocks = [];
+let domFrames = [];
+let canvasFrames = [];
+let domLastTime = 0;
+let canvasLastTime = 0;
+
+function startRenderDemo() {
+  stopRenderDemo();
+
+  const domContainer = document.getElementById('dom-render');
+  const canvas = document.getElementById('canvas-render');
+  const ctx = canvas.getContext('2d');
+
+  // Set canvas resolution
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * (window.devicePixelRatio || 1);
+  canvas.height = rect.height * (window.devicePixelRatio || 1);
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+  const W = rect.width;
+  const H = rect.height;
+
+  // Clear DOM container
+  domContainer.innerHTML = '';
+
+  // Generate blocks
+  domBlocks = [];
+  canvasBlocks = [];
+  for (let i = 0; i < 500; i++) {
+    const color = `hsl(${(i * 3) % 360}, 70%, 55%)`;
+    const x = Math.random() * (W - 14);
+    const y = Math.random() * (H - 14);
+    const vx = (Math.random() - 0.5) * 3;
+    const vy = (Math.random() - 0.5) * 3;
+
+    // DOM block
+    const div = document.createElement('div');
+    div.style.cssText = `position:absolute;width:10px;height:10px;background:${color};border-radius:2px;left:${x}px;top:${y}px;`;
+    domContainer.appendChild(div);
+    domBlocks.push({ el: div, x, y, vx, vy });
+
+    // Canvas block
+    canvasBlocks.push({ x, y, vx, vy, color });
+  }
+
+  domFrames = [];
+  canvasFrames = [];
+  domLastTime = performance.now();
+  canvasLastTime = performance.now();
+
+  function animateDOM(now) {
+    const delta = now - domLastTime;
+    domLastTime = now;
+    if (delta > 0 && delta < 200) domFrames.push(1000 / delta);
+    if (domFrames.length > 60) domFrames.shift();
+
+    for (const b of domBlocks) {
+      b.x += b.vx;
+      b.y += b.vy;
+      if (b.x < 0 || b.x > W - 14) b.vx *= -1;
+      if (b.y < 0 || b.y > H - 14) b.vy *= -1;
+      b.el.style.left = b.x + 'px';
+      b.el.style.top = b.y + 'px';
+    }
+
+    const avgFps = domFrames.length > 0 ? (domFrames.reduce((a, b) => a + b, 0) / domFrames.length) : 0;
+    const fpsEl = document.getElementById('dom-fps');
+    fpsEl.textContent = Math.round(avgFps) + ' fps';
+    fpsEl.className = 'fps-display ' + (avgFps >= 50 ? 'fps-good' : 'fps-bad');
+
+    renderAnimId = requestAnimationFrame(animateDOM);
+  }
+
+  function animateCanvas(now) {
+    const delta = now - canvasLastTime;
+    canvasLastTime = now;
+    if (delta > 0 && delta < 200) canvasFrames.push(1000 / delta);
+    if (canvasFrames.length > 60) canvasFrames.shift();
+
+    ctx.clearRect(0, 0, W, H);
+    for (const b of canvasBlocks) {
+      b.x += b.vx;
+      b.y += b.vy;
+      if (b.x < 0 || b.x > W - 14) b.vx *= -1;
+      if (b.y < 0 || b.y > H - 14) b.vy *= -1;
+      ctx.fillStyle = b.color;
+      ctx.fillRect(b.x, b.y, 10, 10);
+    }
+
+    const avgFps = canvasFrames.length > 0 ? (canvasFrames.reduce((a, b) => a + b, 0) / canvasFrames.length) : 0;
+    const fpsEl = document.getElementById('canvas-fps');
+    fpsEl.textContent = Math.round(avgFps) + ' fps';
+    fpsEl.className = 'fps-display ' + (avgFps >= 50 ? 'fps-good' : 'fps-bad');
+
+    requestAnimationFrame(animateCanvas);
+  }
+
+  renderAnimId = requestAnimationFrame(animateDOM);
+  requestAnimationFrame(animateCanvas);
+
+  document.getElementById('render-result').innerHTML =
+    'Running... Both panels animate 500 colored blocks. Watch the FPS counters.\n' +
+    'DOM moves 500 absolutely-positioned divs each frame (triggers layout).\n' +
+    'Canvas draws 500 rectangles with fillRect (no layout engine involved).';
+}
+
+function stopRenderDemo() {
+  if (renderAnimId) cancelAnimationFrame(renderAnimId);
+  renderAnimId = null;
+  document.getElementById('dom-fps').textContent = '-- fps';
+  document.getElementById('dom-fps').className = 'fps-display';
+  document.getElementById('canvas-fps').textContent = '-- fps';
+  document.getElementById('canvas-fps').className = 'fps-display';
+}
+
+// ════════════════════ S5: SCREENER TOOL ════════════════════
+function toggleScreener(btn) {
+  btn.classList.toggle('on');
+  updateScreenerScore();
+}
+
+function updateScreenerScore() {
+  const items = document.querySelectorAll('.screener-item');
+  let score = 0;
+  const activeRecs = [];
+
+  items.forEach(item => {
+    const toggle = item.querySelector('.screener-toggle');
+    if (toggle.classList.contains('on')) {
+      score += parseInt(item.dataset.risk);
+      activeRecs.push(item.dataset.rec);
+    }
+  });
+
+  score = Math.min(score, 100);
+
+  // Update score display
+  const scoreEl = document.getElementById('risk-score');
+  scoreEl.textContent = score + ' / 100';
+
+  const fill = document.getElementById('risk-fill');
+  fill.style.width = score + '%';
+
+  if (score < 25) {
+    scoreEl.style.color = 'var(--accent-green)';
+    fill.style.background = 'var(--accent-green)';
+  } else if (score < 50) {
+    scoreEl.style.color = 'var(--accent-yellow)';
+    fill.style.background = 'var(--accent-yellow)';
+  } else {
+    scoreEl.style.color = 'var(--accent-red)';
+    fill.style.background = 'var(--accent-red)';
+  }
+
+  // Update recommendations
+  const recContainer = document.getElementById('screener-recommendations');
+  if (activeRecs.length === 0) {
+    recContainer.innerHTML = '';
+    document.getElementById('rateBlueprint').style.display = 'none';
+    return;
+  }
+
+  recContainer.innerHTML = activeRecs.map((rec, i) =>
+    `<div class="recommendation visible" style="margin-bottom:8px"><strong>Fix ${i + 1}:</strong> ${rec}</div>`
+  ).join('');
+
+  // Generate blueprint
+  const blueprint = document.getElementById('rateBlueprint');
+  blueprint.style.display = 'block';
+  let text = 'Based on your current stack: ';
+  if (score >= 50) {
+    text += 'Your app has significant performance risks that will be noticeable to users. ';
+  } else if (score >= 25) {
+    text += 'Your app has moderate performance concerns that may cause issues at scale. ';
+  } else {
+    text += 'Your app has minor performance considerations. ';
+  }
+  text += `Focus on these ${activeRecs.length} area${activeRecs.length > 1 ? 's' : ''}: `;
+  text += activeRecs.map((r, i) => r.split('.')[0] + '.').join(' ');
+  document.getElementById('rateBlueprintText').textContent = text;
+}
+
+// ════════════════════ S5: PLAN A BUILD ════════════════════
+function updatePlanBlueprint() {
+  const rows = document.getElementById('plan-rows')?.value || 'large';
+  const maps = document.getElementById('plan-maps')?.value || 'many';
+  const search = document.getElementById('plan-search')?.value || 'fulltext';
+  const parsing = document.getElementById('plan-parsing')?.value || 'yes';
+  const realtime = document.getElementById('plan-realtime')?.value || 'no';
+
+  let parts = [];
+
+  // Data table recommendation
+  if (rows === 'small') {
+    parts.push('Your dataset is small enough for plain DOM rendering — no virtualization needed.');
+  } else if (rows === 'medium') {
+    parts.push('At 100–1K rows, consider virtualization if the list will grow. TanStack Virtual is a lightweight option that adds almost no overhead.');
+  } else if (rows === 'large') {
+    parts.push('With 1K–50K rows, you need server-side pagination/sorting and virtual scrolling. Use TanStack Table + TanStack Virtual. Never ship more than one page of data to the client.');
+  } else {
+    parts.push('At 50K+ rows, this is a heavy data app. Server-side operations are mandatory — use DuckDB or Postgres with pagination. Virtual scroll with TanStack Virtual. Consider whether a Canvas-based grid (like AG Grid with canvas rendering) would serve better than DOM.');
+  }
+
+  // Map recommendation
+  if (maps === 'none') {
+    parts.push('No map considerations needed.');
+  } else if (maps === 'few') {
+    parts.push('With under 200 markers, a standard Mapbox/MapLibre setup works fine. Add clustering if the count might grow.');
+  } else {
+    parts.push('With 200+ map markers, use Mapbox GL or MapLibre with WebGL rendering. Enable built-in clustering (Supercluster). For data visualization layers (heatmaps, hexbins), add Deck.gl.');
+  }
+
+  // Search recommendation
+  if (search === 'no') {
+    parts.push('No search considerations.');
+  } else if (search === 'simple') {
+    parts.push('For simple filtering, debounce input by 150ms and run the filter server-side if your dataset exceeds 1K rows.');
+  } else {
+    parts.push('For full-text search, use server-side search (Postgres FTS or DuckDB). Debounce 150ms, cancel in-flight requests with AbortController, return max 20 results. Never search client-side on large datasets.');
+  }
+
+  // Parsing
+  if (parsing === 'yes') {
+    parts.push('Move all heavy parsing to Web Workers. The main thread should never do synchronous work that takes more than 50ms. Use postMessage to shuttle results back.');
+  }
+
+  // Realtime
+  if (realtime === 'yes') {
+    parts.push('For real-time data, use WebSockets (not polling). Apply optimistic UI updates — show the change immediately and reconcile when the server confirms. Use a state management approach that can handle server-pushed updates cleanly.');
+  }
+
+  document.getElementById('planBlueprintText').innerHTML = parts.map(p => `<p style="margin-bottom:10px">${p}</p>`).join('');
+}
+</script>
+</body>
+</html>
