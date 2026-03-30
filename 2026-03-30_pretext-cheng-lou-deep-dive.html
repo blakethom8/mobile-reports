@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pretext: Cheng Lou's Layout Revolution</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root {
+  --deep: #0f172a;
+  --mid: #1e3a5f;
+  --accent: #3b82f6;
+  --accent-light: #60a5fa;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #8b5cf6;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --code-bg: #1e293b;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.04);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+/* Hero */
+.hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%); color: white; padding: 60px 32px 52px; text-align: center; }
+.hero .label { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; opacity: 0.55; margin-bottom: 16px; }
+.hero h1 { font-size: clamp(28px, 5vw, 46px); font-weight: 800; line-height: 1.15; margin-bottom: 14px; }
+.hero h1 span { color: #a5b4fc; }
+.hero .subtitle { font-size: 17px; opacity: 0.8; max-width: 660px; margin: 0 auto 32px; line-height: 1.6; }
+.meta-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.meta-pill { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; }
+
+/* Nav */
+.nav-bar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 20px; position: sticky; top: 0; z-index: 100; overflow-x: auto; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.nav-bar a { display: inline-block; color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 8px; transition: all 0.15s; }
+.nav-bar a:hover { color: var(--accent); background: #eff6ff; }
+
+/* Layout */
+.container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+.section { padding: 52px 0 36px; }
+.section-header { margin-bottom: 28px; }
+.section-header h2 { font-size: 26px; font-weight: 800; color: var(--deep); margin-bottom: 8px; }
+.section-header p { color: var(--text-muted); font-size: 15px; max-width: 680px; }
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: var(--card-shadow); }
+.card h3 { font-size: 15px; font-weight: 700; color: var(--deep); margin-bottom: 10px; }
+.card p, .card li { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+.card ul { padding-left: 18px; margin-top: 8px; }
+.card ul li { margin-bottom: 5px; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+/* Accent cards */
+.card-accent-blue { border-left: 4px solid var(--accent); }
+.card-accent-green { border-left: 4px solid var(--accent-green); }
+.card-accent-yellow { border-left: 4px solid var(--accent-yellow); }
+.card-accent-red { border-left: 4px solid var(--accent-red); }
+.card-accent-purple { border-left: 4px solid var(--accent-purple); }
+
+/* Stat blocks */
+.stat-row { display: flex; flex-wrap: wrap; gap: 16px; }
+.stat-box { flex: 1; min-width: 160px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; box-shadow: var(--card-shadow); }
+.stat-box .num { font-size: 36px; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+.stat-box .label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-box.blue .num { color: var(--accent); }
+.stat-box.green .num { color: var(--accent-green); }
+.stat-box.purple .num { color: var(--accent-purple); }
+.stat-box.yellow .num { color: var(--accent-yellow); }
+.stat-box.red .num { color: var(--accent-red); }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: var(--border); border-radius: 2px; }
+.timeline-item { position: relative; margin-bottom: 28px; }
+.timeline-item::before { content: ''; position: absolute; left: -24px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid white; box-shadow: 0 0 0 2px var(--accent); }
+.timeline-item h4 { font-size: 14px; font-weight: 700; color: var(--deep); margin-bottom: 4px; }
+.timeline-item p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* Code */
+pre { background: var(--code-bg); border-radius: 10px; padding: 20px; overflow-x: auto; margin: 16px 0; font-size: 13px; line-height: 1.6; }
+code.inline { background: #f1f5f9; color: #e11d48; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace; }
+
+/* Pipeline diagram */
+.pipeline { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 20px; background: var(--code-bg); border-radius: 12px; justify-content: center; }
+.pipe-step { background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 130px; }
+.pipe-step .step-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #a5b4fc; margin-bottom: 4px; }
+.pipe-step .step-name { font-size: 13px; font-weight: 700; color: white; }
+.pipe-step .step-time { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+.pipe-arrow { color: #475569; font-size: 18px; font-weight: bold; }
+.pipe-step.hot { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); }
+.pipe-step.hot .step-label { color: #6ee7b7; }
+
+/* Comparison table */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.compare-table th { background: var(--deep); color: white; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+.compare-table th:first-child { border-radius: 8px 0 0 0; }
+.compare-table th:last-child { border-radius: 0 8px 0 0; }
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: #f8fafc; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+.badge-red { background: #fee2e2; color: #dc2626; }
+.badge-green { background: #d1fae5; color: #059669; }
+.badge-yellow { background: #fef3c7; color: #d97706; }
+.badge-blue { background: #dbeafe; color: #2563eb; }
+
+/* Quote block */
+.quote { background: #f0f9ff; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+.quote p { font-size: 15px; font-style: italic; color: var(--text); line-height: 1.7; }
+.quote cite { font-size: 12px; color: var(--text-muted); font-style: normal; font-weight: 600; margin-top: 8px; display: block; }
+
+/* Use case cards */
+.usecase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.usecase-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow); }
+.usecase-card .icon { font-size: 24px; margin-bottom: 10px; }
+.usecase-card h4 { font-size: 14px; font-weight: 700; color: var(--deep); margin-bottom: 6px; }
+.usecase-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.usecase-card .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.usecase-card .before, .usecase-card .after { font-size: 11px; padding: 6px 8px; border-radius: 6px; }
+.usecase-card .before { background: #fee2e2; color: #991b1b; }
+.usecase-card .after { background: #d1fae5; color: #065f46; }
+.usecase-card .before span, .usecase-card .after span { font-weight: 700; display: block; margin-bottom: 2px; }
+
+/* Big number callout */
+.callout-banner { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: 12px; padding: 28px 32px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.callout-banner .big-num { font-size: 64px; font-weight: 900; color: #a5b4fc; line-height: 1; flex-shrink: 0; }
+.callout-banner .callout-text h3 { font-size: 18px; font-weight: 700; color: white; margin-bottom: 6px; }
+.callout-banner .callout-text p { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+/* Footer */
+.footer { background: var(--deep); color: rgba(255,255,255,0.5); text-align: center; padding: 28px 20px; font-size: 12px; margin-top: 60px; }
+.footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .stat-row { flex-direction: column; }
+  .pipeline { flex-direction: column; }
+  .pipe-arrow { transform: rotate(90deg); }
+  .callout-banner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="label">Deep Dive · Web UI Architecture</div>
+  <h1>The <span>Pretext</span> Revolution<br>Cheng Lou's Approach to Text Layout</h1>
+  <p class="subtitle">How a 15KB JavaScript library is eliminating 30 years of browser layout reflow — and why the viral demos are the least interesting thing about it.</p>
+  <div class="meta-pills">
+    <span class="meta-pill">📦 @chenglou/pretext</span>
+    <span class="meta-pill">⭐ 7,000+ stars in 3 days</span>
+    <span class="meta-pill">🚀 500x faster hot path</span>
+    <span class="meta-pill">🔗 github.com/chenglou/pretext</span>
+    <span class="meta-pill">📅 March 2026</span>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav-bar">
+  <a href="#problem">The Problem</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#benchmarks">Benchmarks</a>
+  <a href="#api">API</a>
+  <a href="#usecases">Use Cases</a>
+  <a href="#demos">Demos</a>
+  <a href="#context">Context & Impact</a>
+  <a href="#vsdom">vs. DOM</a>
+  <a href="#takeaways">Takeaways</a>
+</nav>
+
+<!-- Section 1: The Problem -->
+<section class="section" id="problem">
+  <div class="container">
+    <div class="section-header">
+      <h2>🔴 The 30-Year Problem: Layout Reflow</h2>
+      <p>Every time you ask a browser how tall a block of text is, you pay a hidden tax. Pretext is the first library to eliminate it at scale.</p>
+    </div>
+
+    <div class="callout-banner" style="margin-bottom: 28px;">
+      <div class="big-num">30ms+</div>
+      <div class="callout-text">
+        <h3>Cost of Layout Thrashing on a 500-Item List</h3>
+        <p>When UI components independently call <code style="color:#a5b4fc">getBoundingClientRect()</code> or <code style="color:#a5b4fc">offsetHeight</code> on 500 text blocks, the browser must synchronously recompute the entire document layout for each read. That's 30ms+ per frame — well past the 16.6ms budget for 60fps.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-accent-red">
+        <h3>🛑 The DOM Measurement Loop (Old Way)</h3>
+        <p>The traditional approach for dynamic text sizing:</p>
+        <ol style="padding-left:18px; margin-top:10px;">
+          <li style="margin-bottom:6px; font-size:14px; color:var(--text-muted)">Insert element into DOM</li>
+          <li style="margin-bottom:6px; font-size:14px; color:var(--text-muted)">Call <code class="inline">getBoundingClientRect()</code></li>
+          <li style="margin-bottom:6px; font-size:14px; color:var(--text-muted)">Browser pauses: recomputes layout</li>
+          <li style="margin-bottom:6px; font-size:14px; color:var(--text-muted)">Returns height</li>
+          <li style="margin-bottom:6px; font-size:14px; color:var(--text-muted)">Repeat × 500 items = 500 reflows</li>
+        </ol>
+        <p style="margin-top:12px; color:#dc2626; font-weight:600; font-size:13px;">Result: Main thread blocked. Visual stutter. Bad UX.</p>
+      </div>
+
+      <div class="card card-accent-green">
+        <h3>✅ The Pretext Insight</h3>
+        <p><code class="inline">canvas.measureText()</code> uses the <strong>same font engine</strong> as DOM rendering but operates <strong>outside the browser's layout process entirely</strong>.</p>
+        <ul>
+          <li>Measure word widths via canvas once</li>
+          <li>Cache those widths per font config</li>
+          <li>From then on: layout = pure arithmetic</li>
+          <li>No DOM reads. No reflows. Ever again.</li>
+        </ul>
+        <p style="margin-top:12px; color:#059669; font-weight:600; font-size:13px;">Result: 0.09ms for 500 text blocks. Zero layout recalculations.</p>
+      </div>
+    </div>
+
+    <div class="quote" style="margin-top:24px;">
+      <p>"The problem is forced layout recalculation, where the browser has to pause and re-measure the page layout before it can continue. When a UI component needs to know the height of a block of text, the standard approach is to measure it from the DOM. Do this for 500 text blocks in a virtual list and you've forced 500 of these pauses. This pattern, called layout thrashing, remains a leading cause of visual stuttering in complex web applications."</p>
+      <cite>— dev.to/denodell, "You're Looking at the Wrong Pretext Demo"</cite>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 2: Architecture -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="section-header">
+      <h2>⚙️ Architecture: The Two-Phase Model</h2>
+      <p>Pretext's genius is a clean separation between expensive one-time work and cheap repeated work. The hot path is pure arithmetic.</p>
+    </div>
+
+    <div class="pipeline" style="margin-bottom:28px;">
+      <div class="pipe-step">
+        <div class="step-label">Phase 1 · One-Time</div>
+        <div class="step-name">prepare()</div>
+        <div class="step-time">~19ms / 500 texts</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="step-label">Internal</div>
+        <div class="step-name">Normalize Text</div>
+        <div class="step-time">whitespace, unicode</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="step-label">Internal</div>
+        <div class="step-name">Intl.Segmenter</div>
+        <div class="step-time">locale-aware breaks</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="step-label">Internal</div>
+        <div class="step-name">canvas.measureText</div>
+        <div class="step-time">width cache built</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step hot">
+        <div class="step-label">Phase 2 · Hot Path</div>
+        <div class="step-name">layout()</div>
+        <div class="step-time">~0.09ms / 500 texts</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step hot">
+        <div class="step-label">Output</div>
+        <div class="step-name">{ height, lineCount }</div>
+        <div class="step-time">pure arithmetic</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>prepare() — The Expensive Pass (Once)</h3>
+        <p>Does all the hard work upfront, returning an opaque <code class="inline">PreparedText</code> handle:</p>
+        <ul>
+          <li><strong>Normalize whitespace</strong> — handles tabs, hard breaks, unicode spaces</li>
+          <li><strong>Segment with Intl.Segmenter</strong> — locale-aware word boundaries for every language</li>
+          <li><strong>Bidirectional text</strong> — mixed English/Arabic/Hebrew/RTL handled correctly</li>
+          <li><strong>Canvas font measurement</strong> — actual font engine widths, cached per segment</li>
+          <li><strong>Returns opaque handle</strong> — pass to layout() as many times as needed</li>
+        </ul>
+        <p style="margin-top:12px; font-size:12px; color:var(--text-muted);">⚠️ Never call prepare() again for the same text + font — that defeats the caching.</p>
+      </div>
+
+      <div class="card">
+        <h3>layout() — The Fast Path (Repeated)</h3>
+        <p>Pure arithmetic over cached widths. Called on every resize, scroll, or container change:</p>
+        <ul>
+          <li><strong>Walk cached widths</strong> — no DOM, no canvas, just numbers</li>
+          <li><strong>Track running line width</strong> — insert line breaks when maxWidth exceeded</li>
+          <li><strong>Returns height + lineCount</strong> — the data you need for virtualization</li>
+          <li><strong>0.09ms for 500 items</strong> — fast enough for 120fps without batching</li>
+        </ul>
+        <p style="margin-top:12px; font-size:12px; color:var(--text-muted);">✅ Safe to call in animation frames, resize observers, and scroll handlers.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px; background: #f0fdf4;">
+      <h3>Why canvas.measureText() Works as a Ground Truth</h3>
+      <p style="font-size:14px;">Browsers use the same font engine for both canvas text rendering and DOM text rendering. When you call <code class="inline">canvas.measureText('Hello')</code>, you get the exact same width the browser would use when laying out a <code class="inline">&lt;span&gt;Hello&lt;/span&gt;</code> in the DOM — but without triggering the layout system. Pretext exploits this equivalence to build a pure-math layout engine that produces results identical to the browser's own engine. Cheng Lou explicitly validates against the browser as the ground truth, which is why the library is described as "very AI-friendly" — you can iterate on layout logic in a deterministic, reflow-free environment.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 3: Benchmarks -->
+<section class="section" id="benchmarks">
+  <div class="container">
+    <div class="section-header">
+      <h2>📊 Benchmarks & Performance Numbers</h2>
+      <p>The numbers are real — but understanding what they measure (and what they don't) is important.</p>
+    </div>
+
+    <div class="stat-row" style="margin-bottom:28px;">
+      <div class="stat-box blue">
+        <div class="num">500×</div>
+        <div class="label">Faster Hot Path</div>
+      </div>
+      <div class="stat-box green">
+        <div class="num">0.09ms</div>
+        <div class="label">layout() / 500 blocks</div>
+      </div>
+      <div class="stat-box yellow">
+        <div class="num">19ms</div>
+        <div class="label">prepare() / 500 blocks</div>
+      </div>
+      <div class="stat-box purple">
+        <div class="num">15KB</div>
+        <div class="label">Bundle Size</div>
+      </div>
+      <div class="stat-box red">
+        <div class="num">30ms+</div>
+        <div class="label">DOM Thrash / 500 blocks</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>Honest Benchmark Interpretation</h3>
+      <p>Cheng Lou himself calls the 500× comparison "unfair" — and he's right to flag it. Here's the full picture:</p>
+      <br>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>DOM Approach</th>
+            <th>Pretext</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>First render (cold)</strong></td>
+            <td>~30ms (layout thrash)</td>
+            <td>~19ms (prepare) + 0.09ms</td>
+            <td><span class="badge badge-blue">~1.5× faster</span> on first load</td>
+          </tr>
+          <tr>
+            <td><strong>On resize (hot)</strong></td>
+            <td>~30ms (forced reflow)</td>
+            <td>~0.09ms (arithmetic only)</td>
+            <td><span class="badge badge-green">500× faster</span> — this is the real win</td>
+          </tr>
+          <tr>
+            <td><strong>Scroll virtualization</strong></td>
+            <td>Guesstimate or measure-on-mount</td>
+            <td>Exact prediction before mount</td>
+            <td><span class="badge badge-green">No layout shift</span></td>
+          </tr>
+          <tr>
+            <td><strong>Repeated layouts</strong></td>
+            <td>Full cost every time</td>
+            <td>0.09ms every time after prepare()</td>
+            <td><span class="badge badge-green">Compounds over session</span></td>
+          </tr>
+          <tr>
+            <td><strong>Single text block, once</strong></td>
+            <td>Fast (single reflow)</td>
+            <td>Overkill — use CSS</td>
+            <td><span class="badge badge-yellow">Not the use case</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quote">
+      <p>"It runs once when the text appears, and every subsequent resize takes the fast path, where the performance boost is real and substantial."</p>
+      <cite>— dev.to/denodell</cite>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 4: API -->
+<section class="section" id="api">
+  <div class="container">
+    <div class="section-header">
+      <h2>🔧 The API Surface</h2>
+      <p>Pretext offers two use-case tiers: simple height prediction, and full manual line layout.</p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card card-accent-blue">
+        <h3>Use Case 1: Height Prediction</h3>
+        <p>The most common pattern — predict text height before DOM insertion for virtualization and positioning.</p>
+      </div>
+      <div class="card card-accent-purple">
+        <h3>Use Case 2: Manual Line Layout</h3>
+        <p>Full control over line routing — for canvas, SVG, WebGL, server-side rendering, and complex editorial layouts.</p>
+      </div>
+    </div>
+
+<pre><code class="language-javascript">// ── USE CASE 1: Height Prediction (DOM rendering) ──────────────────────────
+
+import { prepare, layout } from '@chenglou/pretext'
+
+// One-time setup per unique (text, font) combination
+const prepared = prepare('AGI 春天到了. بدأت الرحلة 🚀', '16px Inter')
+
+// Hot path: call on every container resize, zero reflow
+const { height, lineCount } = layout(prepared, containerWidth, lineHeight)
+
+// Pre-wrap mode for textarea content
+const preparedPre = prepare(textareaValue, '16px Inter', { whiteSpace: 'pre-wrap' })
+const { height: preHeight } = layout(preparedPre, containerWidth, 20)
+
+
+// ── USE CASE 2A: Line-by-Line (canvas, SVG, WebGL) ─────────────────────────
+
+import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext'
+
+const prepared = prepareWithSegments('Hello world. 你好世界.', '18px "Helvetica Neue"')
+const { lines } = layoutWithLines(prepared, 320, 26)
+
+// Render to canvas:
+for (let i = 0; i < lines.length; i++) {
+  ctx.fillText(lines[i].text, 0, i * 26)
+}
+
+
+// ── USE CASE 2B: Width-tight "shrink wrap" ─────────────────────────────────
+
+import { walkLineRanges } from '@chenglou/pretext'
+
+let maxW = 0
+walkLineRanges(prepared, 320, line => {
+  if (line.width > maxW) maxW = line.width
+})
+// maxW = tightest container that still fits — "multiline shrink wrap"
+// This has been missing from the web for 30 years.
+
+
+// ── USE CASE 2C: Variable-width lines (float around images) ────────────────
+
+import { layoutNextLine } from '@chenglou/pretext'
+
+let cursor = { segmentIndex: 0, graphemeIndex: 0 }
+let y = 0
+
+while (true) {
+  // Lines beside the image are narrower
+  const width = y &lt; image.bottom ? columnWidth - image.width : columnWidth
+  const line = layoutNextLine(prepared, cursor, width)
+  if (line === null) break
+  ctx.fillText(line.text, 0, y)
+  cursor = line.end
+  y += 26
+}</code></pre>
+
+    <div class="card" style="margin-top:16px; background:#fefce8; border-color:#fde68a;">
+      <h3>⚠️ Critical Usage Note: prepare() is Expensive</h3>
+      <p>Never call <code class="inline">prepare()</code> in a loop or on every render. The pattern is:</p>
+      <ul>
+        <li><strong>prepare()</strong> — once, when text content changes (new message loaded, content edited)</li>
+        <li><strong>layout()</strong> — every time the container resizes, scrolls, or rerenders</li>
+      </ul>
+      <p style="margin-top:8px;">Calling prepare() on every resize defeats the entire architecture and will be <em>slower</em> than the DOM approach.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 5: Use Cases -->
+<section class="section" id="usecases">
+  <div class="container">
+    <div class="section-header">
+      <h2>🎯 Production Use Cases</h2>
+      <p>The demos went viral for the wrong reasons. Here's what actually matters for production apps.</p>
+    </div>
+
+    <div class="usecase-grid">
+      <div class="usecase-card">
+        <div class="icon">💬</div>
+        <h4>Virtual Scrolling Chat Lists</h4>
+        <p>Predict message heights before they mount. Render only visible messages. No guesstimates, no layout shift when scrolling.</p>
+        <div class="before-after">
+          <div class="before"><span>Before</span>Measure-on-mount + guesstimate. Layout shift on scroll. Janky.</div>
+          <div class="after"><span>After</span>Exact height pre-computed. Zero layout shift. 120fps scroll.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">📐</div>
+        <h4>Masonry Layouts</h4>
+        <p>True masonry grids with variable-height text cards — without DOM reads. Heights computed in pure JS before any paint.</p>
+        <div class="before-after">
+          <div class="before"><span>Before</span>Insert all cards, measure, reposition. Expensive and causes FOUC.</div>
+          <div class="after"><span>After</span>Compute positions mathematically. Single paint pass. No flash.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">🤖</div>
+        <h4>AI Streaming UIs</h4>
+        <p>As tokens stream in, container height can update without DOM reads. Scroll anchoring stays correct. No cumulative layout shift.</p>
+        <div class="before-after">
+          <div class="before"><span>Before</span>Height jumps as tokens arrive. Scroll position lost. Reflow on every chunk.</div>
+          <div class="after"><span>After</span>Height predicted from token count. Smooth CLS score. Anchor stable.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">🏗️</div>
+        <h4>Accordion / Expandable Sections</h4>
+        <p>Know the expanded height before animating. No "height: auto" animation hacks. Smooth transitions from 0 to exact height.</p>
+        <div class="before-after">
+          <div class="before"><span>Before">height: auto</span>Unmeasurable for CSS transitions. Need JS hacks or cloned elements.</div>
+          <div class="after"><span>After</span>Exact height pre-known. Transition from 0 → N px. No DOM clone needed.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">📰</div>
+        <h4>Editorial Multi-Column Layout</h4>
+        <p>Route text around images, pull quotes, and obstacles — line by line, with variable column widths. Previously only possible in native apps.</p>
+        <div class="before-after">
+          <div class="before"><span>Before">CSS float/columns</span>Limited. No obstacle awareness. No fine-grained control.</div>
+          <div class="after"><span>After</span>layoutNextLine() routes each line individually. Full editorial control.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">🔬</div>
+        <h4>AI Development Verification</h4>
+        <p>Verify at build/test time that button labels don't overflow — without a browser. Server-side layout validation for CI pipelines.</p>
+        <div class="before-after">
+          <div class="before"><span>Before</span>Visual regression tests only. Requires a browser. Slow CI.</div>
+          <div class="after"><span>After</span>Pure JS height checks in Node. Browser-free layout assertions in tests.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">🎯</div>
+        <h4>Multiline "Shrink Wrap"</h4>
+        <p>Find the tightest container width that still fits a text block without overflow. <code class="inline">walkLineRanges()</code> returns the widest line — this has been missing from the web for 30 years.</p>
+        <div class="before-after">
+          <div class="before"><span>Before</span>Binary search with DOM measurements. Expensive. Causes reflows per iteration.</div>
+          <div class="after"><span>After</span>Binary search over walkLineRanges(). Zero DOM. Pure arithmetic.</div>
+        </div>
+      </div>
+
+      <div class="usecase-card">
+        <div class="icon">🖼️</div>
+        <h4>Canvas / SVG / WebGL Text</h4>
+        <p>Render rich multiline text to non-DOM targets with accurate line breaks, bidirectional support, and correct wrapping.</p>
+        <div class="before-after">
+          <div class="before"><span>Before</span>Manual character measurement. No bidi. No locale awareness. Inaccurate wrapping.</div>
+          <div class="after"><span>After</span>layoutWithLines() handles everything. Render to any target.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 6: Demos -->
+<section class="section" id="demos">
+  <div class="container">
+    <div class="section-header">
+      <h2>🎨 Official Demos (chenglou.me/pretext)</h2>
+      <p>The community fixated on the visual demos. They are impressive — but they're the sideshow, not the main event.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>🪗 Accordion</h3>
+        <p>Expand/collapse sections whose heights are computed via Pretext. Smooth transitions with exact pixel targets.</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;">✅ Production pattern</p>
+      </div>
+      <div class="card">
+        <h3>💬 Bubbles</h3>
+        <p>Tight multiline message bubbles that keep the same line count with less wasted area — "shrink wrap" in action.</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;">✅ Production pattern</p>
+      </div>
+      <div class="card">
+        <h3>🗺️ Dynamic Layout</h3>
+        <p>Fixed-height editorial spread with obstacle-aware title routing and continuous text flow around elements.</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;">✅ Production pattern</p>
+      </div>
+      <div class="card">
+        <h3>🧱 Masonry</h3>
+        <p>Text-card occlusion demo where height prediction comes from Pretext instead of DOM reads. True masonry.</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;">✅ Production pattern</p>
+      </div>
+      <div class="card">
+        <h3>📝 Rich Text</h3>
+        <p>Inline rich text, code spans, links, and chips laid out together — pills stay whole while text wraps naturally.</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;">✅ Production pattern</p>
+      </div>
+      <div class="card">
+        <h3>⚖️ Justification</h3>
+        <p>CSS justification vs. greedy hyphenation vs. Knuth-Plass paragraph layout — side by side comparison.</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;">🔬 Advanced pattern</p>
+      </div>
+      <div class="card" style="border-color:#fde68a; background:#fffbeb;">
+        <h3>🐉 Dragon Demo (Viral)</h3>
+        <p>A dragon that parts text like water — visually stunning. Community loved it. 7K stars largely because of this.</p>
+        <p style="margin-top:8px; font-size:12px; color:#d97706; font-weight:600;">⚠️ Not the point — fun, not production</p>
+      </div>
+      <div class="card" style="border-color:#fde68a; background:#fffbeb;">
+        <h3>💨 Fluid Smoke ASCII</h3>
+        <p>Fluid smoke rendered as typographic ASCII art. Viral on Twitter/X. Gorgeous. Also not the main use case.</p>
+        <p style="margin-top:8px; font-size:12px; color:#d97706; font-weight:600;">⚠️ Showcase, not production</p>
+      </div>
+      <div class="card" style="border-color:#fde68a; background:#fffbeb;">
+        <h3>🔵 Wireframe Torus</h3>
+        <p>3D wireframe torus rendered through a character grid. Proof of concept for canvas-level control via Pretext.</p>
+        <p style="margin-top:8px; font-size:12px; color:#d97706; font-weight:600;">⚠️ Proof of concept</p>
+      </div>
+    </div>
+
+    <div class="quote" style="margin-top:24px;">
+      <p>"The community has spent three days building dragons. It should be building chat interfaces. And the fact that the dragons went viral while the measurement engine went unnoticed tells us something important about how the frontend community evaluates tools: we optimize for what we can see, not for what matters most to the people using what we build."</p>
+      <cite>— dev.to/denodell, "You're Looking at the Wrong Pretext Demo"</cite>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 7: Context & Impact -->
+<section class="section" id="context">
+  <div class="container">
+    <div class="section-header">
+      <h2>🧠 Context: Who is Cheng Lou?</h2>
+      <p>Pretext isn't his first time identifying a constraint everyone accepted as given and removing it with a better abstraction.</p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px;">
+      <div class="card">
+        <h3>Track Record</h3>
+        <ul>
+          <li><strong>react-motion</strong> — popularized physics-based animation in React when CSS transitions were the only option. Made declarative animation intuitive.</li>
+          <li><strong>ReasonML / ReScript</strong> — brought OCaml's type system to frontend developers. Challenged the assumption that frontend JS had to be weakly typed.</li>
+          <li><strong>Meta/Facebook Research</strong> — worked on text layout research at Meta. Pretext builds on Sebastian Markbage's earlier experiments there.</li>
+          <li><strong>Pretext</strong> — challenges the assumption that you need the DOM to measure text.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The Pattern</h3>
+        <p>Each of Lou's major contributions follows the same structure:</p>
+        <ol style="padding-left:18px; margin-top:10px;">
+          <li style="margin-bottom:8px; font-size:14px; color:var(--text-muted)"><strong>Identify a constraint</strong> that everyone accepts as fundamental</li>
+          <li style="margin-bottom:8px; font-size:14px; color:var(--text-muted)"><strong>Question the assumption</strong> beneath it</li>
+          <li style="margin-bottom:8px; font-size:14px; color:var(--text-muted)"><strong>Find an equivalent</strong> that doesn't carry the original cost</li>
+          <li style="margin-bottom:8px; font-size:14px; color:var(--text-muted)"><strong>Build a clean abstraction</strong> over the faster path</li>
+          <li style="font-size:14px; color:var(--text-muted)"><strong>Prove it in the open</strong> with demos that are impossible to ignore</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>Meta Research: text-layout prototype</h4>
+        <p>Sebastian Markbage's research at Meta proved that canvas font metrics could substitute for DOM measurement. Cheng Lou built an earlier prototype (<code class="inline">chenglou/text-layout</code>) that validated the concept.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>March 2026: Pretext v1 Released</h4>
+        <p>npm package <code class="inline">@chenglou/pretext</code> published. Full production-grade internationalization, bidirectional text support, and the two-phase architecture.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>Day 1–2: Viral Demos</h4>
+        <p>Dragon, fluid smoke, and wireframe torus demos circulate on Twitter/X. Community focuses on the visual spectacle.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>Day 3: 7,000+ GitHub Stars</h4>
+        <p>One of the fastest-growing frontend libraries of 2026. Community articles begin appearing analyzing the real use cases.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>Now: Production Adoption Begins</h4>
+        <p>dev.to, cloudmagazin, and others publish deep dives. The conversation shifts from demos to the measurement engine that will change how production apps handle text.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 8: vs DOM -->
+<section class="section" id="vsdom">
+  <div class="container">
+    <div class="section-header">
+      <h2>⚖️ Pretext vs. DOM Approaches vs. CSS</h2>
+      <p>When to use which. Pretext isn't always the right tool — but for dynamic text in complex layouts, it changes everything.</p>
+    </div>
+
+    <table class="compare-table" style="background:white; border-radius:12px; overflow:hidden; box-shadow:var(--card-shadow);">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>CSS Only</th>
+          <th>DOM Measurement</th>
+          <th>Pretext</th>
+          <th>Winner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Static text, known size</td>
+          <td><span class="badge badge-green">✅ Perfect</span></td>
+          <td><span class="badge badge-yellow">Overkill</span></td>
+          <td><span class="badge badge-yellow">Overkill</span></td>
+          <td>CSS</td>
+        </tr>
+        <tr>
+          <td>Single dynamic text block</td>
+          <td><span class="badge badge-green">✅ Fine</span></td>
+          <td><span class="badge badge-yellow">Works</span></td>
+          <td><span class="badge badge-yellow">Setup cost</span></td>
+          <td>CSS/DOM</td>
+        </tr>
+        <tr>
+          <td>Virtual list (100+ items)</td>
+          <td><span class="badge badge-red">❌ Can't size</span></td>
+          <td><span class="badge badge-yellow">Slow (thrash)</span></td>
+          <td><span class="badge badge-green">✅ Ideal</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>Resize-responsive layout</td>
+          <td><span class="badge badge-green">✅ Usually</span></td>
+          <td><span class="badge badge-red">❌ Reflow each time</span></td>
+          <td><span class="badge badge-green">✅ 0.09ms each time</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>Accordion expand animation</td>
+          <td><span class="badge badge-red">❌ height:auto hack</span></td>
+          <td><span class="badge badge-yellow">Works, complex</span></td>
+          <td><span class="badge badge-green">✅ Exact target height</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>Masonry layout</td>
+          <td><span class="badge badge-yellow">CSS masonry (draft)</span></td>
+          <td><span class="badge badge-red">❌ Many reflows</span></td>
+          <td><span class="badge badge-green">✅ Zero reflows</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>Canvas / SVG rendering</td>
+          <td><span class="badge badge-red">❌ N/A</span></td>
+          <td><span class="badge badge-red">❌ N/A</span></td>
+          <td><span class="badge badge-green">✅ Full line control</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>AI streaming text</td>
+          <td><span class="badge badge-yellow">CLS issues</span></td>
+          <td><span class="badge badge-red">❌ Reflow per chunk</span></td>
+          <td><span class="badge badge-green">✅ Pre-computed height</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>Server-side layout assertions</td>
+          <td><span class="badge badge-red">❌ Browser required</span></td>
+          <td><span class="badge badge-red">❌ Browser required</span></td>
+          <td><span class="badge badge-green">✅ Pure Node.js</span></td>
+          <td><strong>Pretext</strong></td>
+        </tr>
+        <tr>
+          <td>i18n / bidirectional text</td>
+          <td><span class="badge badge-green">✅ Browser handles</span></td>
+          <td><span class="badge badge-green">✅ Browser handles</span></td>
+          <td><span class="badge badge-green">✅ Intl.Segmenter + bidi</span></td>
+          <td>Tie</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- Section 9: Takeaways -->
+<section class="section" id="takeaways">
+  <div class="container">
+    <div class="section-header">
+      <h2>🎯 Key Takeaways</h2>
+      <p>What this means for how we build web UIs — now and going forward.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-accent-blue">
+        <h3>1. Layout Thrashing Has a Solution</h3>
+        <p>For 30 years, "how tall is this text?" required a DOM read. That's no longer true. Pretext decouples text measurement from the browser's layout engine, eliminating an entire class of performance problems.</p>
+      </div>
+      <div class="card card-accent-green">
+        <h3>2. The Hot Path is the Point</h3>
+        <p>prepare() once, layout() forever. The architecture is designed for resize-heavy, scroll-heavy, AI-streaming UIs where layout is called thousands of times per session. That's where the 500× improvement compounds.</p>
+      </div>
+      <div class="card card-accent-purple">
+        <h3>3. Accessibility is Preserved</h3>
+        <p>Unlike Canvas-only approaches, Pretext predicts height for DOM text nodes. The text still lives in the DOM — screen readers, selection, copy/paste, find-in-page, and translation all work exactly as before.</p>
+      </div>
+      <div class="card card-accent-yellow">
+        <h3>4. AI UIs are a First-Class Citizen</h3>
+        <p>Deterministic, browser-free layout makes Pretext ideal for AI-generated and AI-streaming UIs where you need to know layout before the text is rendered. Lou explicitly calls this out in the README.</p>
+      </div>
+      <div class="card card-accent-green">
+        <h3>5. Multiline Shrink Wrap is Finally Possible</h3>
+        <p>walkLineRanges() returns the widest line, enabling "shrink wrap" — the tightest container width that fits multiline text without overflow. This layout primitive has been missing from the web since its inception.</p>
+      </div>
+      <div class="card card-accent-blue">
+        <h3>6. The Viral Demos Obscured the Real Story</h3>
+        <p>Dragons and ASCII smoke went viral. The measurement engine that enables production-grade virtualization, masonry, and accordion layouts went mostly unnoticed. The most impactful features aren't always the most visual.</p>
+      </div>
+    </div>
+
+    <div class="callout-banner" style="margin-top:28px;">
+      <div class="big-num">→</div>
+      <div class="callout-text">
+        <h3>The Bottom Line</h3>
+        <p>Pretext doesn't replace React, CSS, or the DOM. It removes one specific, expensive operation — text height measurement — from the browser's layout pipeline and replaces it with pure arithmetic. For any app with dynamic text in complex layouts (virtual lists, masonry, accordions, AI UIs), this is a step-function improvement in performance and correctness. 15KB. Zero dependencies. Install it.</p>
+        <p style="margin-top:8px; opacity:0.7; font-size:13px;">npm install @chenglou/pretext · github.com/chenglou/pretext · demos: chenglou.me/pretext</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  <p>Report prepared by Chief · March 30, 2026 · Sources: github.com/chenglou/pretext · chenglou.me/pretext · dev.to/denodell · Related: <a href="2026-03-30_web-performance-snappy-ui-guide.html">Web Performance Snappy UI Guide</a></p>
+</div>
+
+<script>hljs.highlightAll();</script>
+</body>
+</html>
