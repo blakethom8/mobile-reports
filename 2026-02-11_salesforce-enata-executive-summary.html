@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Integration - Executive Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        header {
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #0066cc;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        h2 {
+            color: #0066cc;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        h3 {
+            color: #333;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 12px;
+        }
+        
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-left: 4px solid #0066cc;
+            margin: 20px 0;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-left: 4px solid #ff9800;
+            margin: 20px 0;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            padding: 20px;
+            border-left: 4px solid #28a745;
+            margin: 20px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #0066cc;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .column-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .column-box h4 {
+            color: #0066cc;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .column-box ul {
+            margin-left: 15px;
+        }
+        
+        .column-box li {
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.6em;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Salesforce Integration - Executive Summary</h1>
+            <p class="meta">
+                <strong>For:</strong> Marty Moesta, Enata | <strong>Date:</strong> February 11, 2026 | <strong>Author:</strong> Blake Thomson, Cedars-Sinai
+            </p>
+        </header>
+
+        <div class="highlight-box">
+            <h3 style="margin-top: 0;">Integration Goal</h3>
+            <p><strong>Two-part transition:</strong> Enata ingests our Salesforce data structure initially, then hosts with continuous sync via cron jobs to maintain our analytical workflows while adopting Enata's AI-enabled CRM platform.</p>
+        </div>
+
+        <section>
+            <h2>System Overview at a Glance</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Core Salesforce Objects</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Database Tables</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">LLM-Enriched Tables</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">14</span>
+                    <span class="stat-label">Semantic Enrichment Fields</span>
+                </div>
+            </div>
+
+            <h3>Data Architecture</h3>
+            <div class="two-column">
+                <div class="column-box">
+                    <h4>📊 Core Salesforce Data</h4>
+                    <ul>
+                        <li><strong>sf_users</strong> - Sales reps/BD team</li>
+                        <li><strong>sf_accounts</strong> - Medical practices</li>
+                        <li><strong>sf_contacts</strong> - Healthcare providers</li>
+                        <li><strong>sf_activities</strong> - Tasks + Events (merged)</li>
+                        <li><strong>sf_task_who_relations</strong> - Many-to-many junction</li>
+                    </ul>
+                </div>
+                <div class="column-box">
+                    <h4>🤖 LLM-Enhanced Layer</h4>
+                    <ul>
+                        <li><strong>sf_enhanced_activities</strong> - Semantic enrichments (initiative, sentiment, intent)</li>
+                        <li><strong>sf_enhanced_providers</strong> - Relationship state & metrics</li>
+                        <li><strong>sf_activity_providers</strong> - Provider-activity network</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Critical Custom Fields</h2>
+            <p><strong>MNO Prefix (Custom BD Fields):</strong> These custom Salesforce fields drive our analytics and must be preserved:</p>
+            
+            <div class="two-column">
+                <div class="column-box">
+                    <h4>Activity Classification</h4>
+                    <ul>
+                        <li><code>MNO_Type__c</code> - BD_Outreach, MD_to_MD_Visits, Events</li>
+                        <li><code>MNO_Subtype_c__c</code> - Cold_Call, Lunch, Dinner</li>
+                        <li><code>MNO_Setting__c</code> - Virtual, In-Person, Phone</li>
+                        <li><code>MN_Tags__c</code> - Initiative tags (HRBP, TACRI)</li>
+                        <li><code>Attendees_Concatenation__c</code> - Multi-provider activities</li>
+                    </ul>
+                </div>
+                <div class="column-box">
+                    <h4>Provider Fields</h4>
+                    <ul>
+                        <li><code>NPI__c</code> - National Provider Identifier</li>
+                        <li><code>Specialty__c</code> - Medical specialty</li>
+                        <li><code>Geography__c</code> - Territory assignment</li>
+                        <li><code>Network_picklist__c</code> - Network affiliation</li>
+                        <li><code>Last_Outreach_Activity_Date__c</code> - Stalled detection</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>LLM Enrichment Pipeline</h2>
+            <p><strong>Purpose:</strong> Extract semantic meaning from unstructured activity notes at scale</p>
+            
+            <div class="success-box">
+                <h4 style="margin-top: 0;">Key Enrichment Fields (14 total)</h4>
+                <ul style="columns: 2; -webkit-columns: 2; -moz-columns: 2;">
+                    <li><strong>initiative_tag</strong> - Strategic program (HRBP, TACRI, etc.)</li>
+                    <li><strong>activity_intent</strong> - Purpose (First_Contact, Conversion, etc.)</li>
+                    <li><strong>outcome_sentiment</strong> - Positive/neutral/negative</li>
+                    <li><strong>relationship_stage</strong> - Pipeline position</li>
+                    <li><strong>strategic_value</strong> - Importance score (1-5)</li>
+                    <li><strong>follow_up_needed</strong> - Action required flag</li>
+                    <li><strong>competitor_mention</strong> - Competitive intelligence</li>
+                    <li><strong>mentioned_entities</strong> - Extracted physicians/practices</li>
+                    <li><strong>onboarding_milestone</strong> - New physician progress</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Cost:</strong> ~$1 per 1,000 activities (Claude Haiku) | <strong>Processing:</strong> 500-1000 activities/hour</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚠️ Critical Nuances for Enata</h2>
+            
+            <div class="warning-box">
+                <h3 style="margin-top: 0;">1. Tasks + Events Merged into Single Table</h3>
+                <p><strong>Decision:</strong> We merge Salesforce Task and Event objects into <code>sf_activities</code></p>
+                <p><strong>Why:</strong> BD analysis treats both as "activities" — the distinction between planned (Event) and completed (Task) is less important than unified activity history</p>
+                <p><strong>Impact:</strong> Query logic must handle <code>type</code> field ('Task' or 'Event') if distinction needed</p>
+            </div>
+
+            <div class="warning-box">
+                <h3 style="margin-top: 0;">2. Targeted Sync (Not Full Database)</h3>
+                <p><strong>Current approach:</strong> Only sync contacts/accounts that have activities (via TaskWhoRelation)</p>
+                <p><strong>Benefit:</strong> ~70% reduction in database size and sync time</p>
+                <p><strong>Trade-off:</strong> Cannot query "all providers" — only those we've engaged</p>
+                <p><strong>Recommendation:</strong> Maintain this approach unless Enata needs full contact visibility</p>
+            </div>
+
+            <div class="warning-box">
+                <h3 style="margin-top: 0;">3. Enrichment Architecture is Portable</h3>
+                <p><strong>Current:</strong> Database-agnostic (SQLAlchemy ORM), runs as batch jobs</p>
+                <p><strong>Options for Enata:</strong></p>
+                <ul>
+                    <li><strong>Option A:</strong> Enata hosts enrichment service (we provide code)</li>
+                    <li><strong>Option B:</strong> We continue running enrichment, sync enriched data to Enata</li>
+                    <li><strong>Option C:</strong> Hybrid — Enata provides API, we call for enrichments</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Analytics & Reporting</h2>
+            <div class="two-column">
+                <div class="column-box">
+                    <h4>Query Access Methods</h4>
+                    <ul>
+                        <li><strong>MCP Server Tools</strong> - 15+ tools (foundation, analytics, intelligence layers)</li>
+                        <li><strong>LangGraph Agent</strong> - Natural language interface</li>
+                        <li><strong>Direct SQL</strong> - PostgreSQL queries</li>
+                        <li><strong>Chainlit UI</strong> - Web chat + data tables</li>
+                    </ul>
+                </div>
+                <div class="column-box">
+                    <h4>Key Query Patterns</h4>
+                    <ul>
+                        <li>Initiative performance (group by <code>initiative_tag</code>)</li>
+                        <li>Rep activity breakdown (filter by <code>owner_id</code>)</li>
+                        <li>Provider pipeline (filter by <code>relationship_stage</code>)</li>
+                        <li>Stalled relationships (<code>days_since_last_activity</code>)</li>
+                        <li>Sentiment analysis (filter by <code>outcome_sentiment</code>)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Sync Strategy</h2>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0;">Recommended Frequency</h3>
+                <ul>
+                    <li><strong>Core Salesforce data:</strong> Daily overnight sync (12am-2am PST)</li>
+                    <li><strong>LLM enrichments:</strong> Weekly batch (Sundays)</li>
+                    <li><strong>Provider aggregations:</strong> Weekly (after enrichment)</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Rationale:</strong> 24-hour lag is acceptable for BD analytics (not operational). Balances freshness with API costs and processing time.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Recommended Migration Path</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <p><strong>Phase 1 (Week 1-2):</strong> Initial ingestion, validate mappings, test sample queries</p>
+                <p><strong>Phase 2 (Week 3-4):</strong> Dual-run validation — sync both systems in parallel, compare results</p>
+                <p><strong>Phase 3 (Week 5):</strong> Cutover — update connection strings, disable old sync, monitor 48h</p>
+                <p><strong>Phase 4 (Week 6+):</strong> Optimization — tune performance, integrate Enata AI features</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ol style="font-size: 1.05em; line-height: 1.8;">
+                <li>Provide anonymized sample dataset (100 activities, 50 contacts)</li>
+                <li>Schema review call — walk through nuances, answer questions</li>
+                <li>Define REST API endpoints matching current MCP tool signatures</li>
+                <li>Agree on dual-run period and cutover timeline</li>
+                <li>Decide enrichment hosting model (Enata vs. Cedars vs. hybrid)</li>
+            </ol>
+        </section>
+
+        <section>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0;">📄 Full Technical Documentation</h3>
+                <p>Complete 15-page technical report available: <code>2026-02-11_salesforce-enata-integration-overview.html</code></p>
+                <p>Includes: Complete schema reference, all field mappings, indexes, query examples, data quality considerations, and enrichment prompts.</p>
+            </div>
+        </section>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e0e0e0; color: #666; font-size: 0.9em;">
+            <p><strong>Contact:</strong> Blake Thomson | blakethomson8@gmail.com | Business Development Team, Cedars-Sinai Health System</p>
+            <p style="margin-top: 10px;"><strong>Version:</strong> 1.0 | <strong>Date:</strong> February 11, 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

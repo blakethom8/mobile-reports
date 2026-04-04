@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chief Environment Architecture Report — March 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fafafa;
+    padding: 24px 16px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    background: #0f1e35;
+    color: white;
+    padding: 36px 40px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+  }
+  .header h1 { font-size: 26px; font-weight: bold; letter-spacing: 0.5px; }
+  .header .subtitle { color: #8fabc7; font-size: 14px; margin-top: 6px; font-style: italic; }
+  .header .meta { color: #6b8cad; font-size: 12px; margin-top: 16px; font-family: monospace; }
+
+  /* Sections */
+  .section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    padding: 32px 40px;
+  }
+  .section:last-child { border-radius: 0 0 8px 8px; }
+
+  h2 {
+    font-size: 19px;
+    font-weight: bold;
+    color: #0f1e35;
+    border-left: 4px solid #c0392b;
+    padding-left: 12px;
+    margin: 32px 0 16px 0;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin: 20px 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  th { background: #0f1e35; color: white; text-align: left; padding: 10px 12px; font-weight: 600; font-size: 12px; letter-spacing: 0.3px; }
+  td { padding: 9px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  tr:hover td { background: #f0f5ff; }
+  td code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+  /* Tags/Pills */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Helvetica Neue', sans-serif;
+    white-space: nowrap;
+  }
+  .tag-green { background: #d4edda; color: #155724; }
+  .tag-red { background: #f8d7da; color: #721c24; }
+  .tag-yellow { background: #fff3cd; color: #856404; }
+  .tag-blue { background: #d1ecf1; color: #0c5460; }
+  .tag-gray { background: #e2e3e5; color: #383d41; }
+  .tag-purple { background: #e2d9f3; color: #5a189a; }
+
+  /* Alerts */
+  .alert {
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 16px 0;
+    font-size: 13px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    border-left: 4px solid;
+  }
+  .alert-blue { background: #d1ecf1; border-color: #17a2b8; color: #0c5460; }
+  .alert-yellow { background: #fff3cd; border-color: #ffc107; color: #856404; }
+  .alert-green { background: #d4edda; border-color: #28a745; color: #155724; }
+  .alert-red { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+  /* Finding box */
+  .finding-box {
+    border: 1px solid #c0392b;
+    border-left: 5px solid #c0392b;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+    background: #fff8f8;
+    font-size: 13px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .finding-box strong { display: block; margin-bottom: 4px; color: #c0392b; }
+
+  /* Code blocks */
+  pre {
+    background: #1e2a3a;
+    color: #a8d1f0;
+    padding: 16px 20px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+  p code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; }
+
+  /* Lists */
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin: 4px 0; font-size: 14px; }
+
+  p { margin: 8px 0; font-size: 14px; }
+
+  hr.section-divider { border: none; border-top: 2px solid #eee; margin: 28px 0; }
+
+  .citation { font-size: 11px; color: #888; font-family: 'Helvetica Neue', Arial, sans-serif; margin-top: 4px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .card-title { font-weight: bold; color: #0f1e35; margin-bottom: 6px; font-size: 13px; }
+
+  .toc { background: #f0f5ff; border: 1px solid #c5d8f5; border-radius: 6px; padding: 16px 20px; margin: 16px 0; }
+  .toc a { color: #1a4f8a; text-decoration: none; font-size: 13px; }
+  .toc a:hover { text-decoration: underline; }
+  .toc li { margin: 3px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🎯 Chief Environment Architecture Report</h1>
+    <div class="subtitle">Full inventory and architecture plan — Mac Mini, MacBook, GitHub, Hetzner, OpenClaw</div>
+    <div class="meta">
+      Generated: 2026-03-06 | Author: Chief (main agent) | Status: Reference Document<br>
+      Purpose: Pre-restructure baseline. Do not begin file operations without explicit instruction.
+    </div>
+  </div>
+
+  <div class="section">
+
+    <!-- TOC -->
+    <div class="toc">
+      <strong style="display:block; margin-bottom:8px; color:#0f1e35;">Contents</strong>
+      <ol>
+        <li><a href="#machines">Machine Inventory & Network Topology</a></li>
+        <li><a href="#github">GitHub Repository Registry</a></li>
+        <li><a href="#macbook-repos">MacBook ~/Repo Inventory</a></li>
+        <li><a href="#workspace">Chief-Server Workspace Structure (Current State)</a></li>
+        <li><a href="#infrastructure">Production Infrastructure (Hetzner VPS)</a></li>
+        <li><a href="#openclaw-config">OpenClaw Configuration</a></li>
+        <li><a href="#projects">Active Project Registry (Cross-Referenced)</a></li>
+        <li><a href="#target-structure">Target Workspace Structure (Proposed)</a></li>
+        <li><a href="#action-plan">Action Plan & Setup TODOs</a></li>
+        <li><a href="#decisions">Key Decisions Log</a></li>
+      </ol>
+    </div>
+
+    <div class="alert alert-blue">
+      <strong>📸 This is a snapshot report, not an execution plan.</strong>
+      Everything below reflects the environment as of 2026-03-06. File moves, repo clones, and structural changes should be done in a dedicated work session with explicit instruction to proceed.
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="machines">1. Machine Inventory & Network Topology</h2>
+
+    <pre>
+  MacBook (100.103.7.78)               Phone / Anywhere
+  dev workstation, ~/Repo/                    │
+        │                                     │
+        └──────────── Tailscale VPN ──────────┘
+                             │
+                    Mac Mini "chief-server"
+                       (100.105.36.5)
+                      Always-on brain
+                             │
+                   OpenClaw Gateway :18789
+                    Tailscale serve → HTTPS
+                  https://chief-server.tailfcadd3.ts.net
+                             │
+               ┌─────────────┴─────────────┐
+       Hetzner VPS 1                Hetzner VPS 2
+        5.78.142.73                  5.78.148.70
+   mydoclist.com                healthcaredataai.com
+   Provider Search              CMS Data API
+   Analytics :8082              blakethomson.studio</pre>
+
+    <table>
+      <tr><th>Machine</th><th>Role</th><th>Tailscale IP</th><th>Always On</th><th>OS</th><th>Status</th></tr>
+      <tr>
+        <td><strong>chief-server</strong><br><code>Mac Mini</code></td>
+        <td>Always-on brain, OpenClaw host, background tasks, orchestration</td>
+        <td><code>100.105.36.5</code></td>
+        <td><span class="tag tag-green">✅ Yes</span></td>
+        <td>macOS 25.2.0 (arm64)</td>
+        <td><span class="tag tag-green">Active</span></td>
+      </tr>
+      <tr>
+        <td><strong>MacBook</strong></td>
+        <td>Development workstation, active coding, VS Code, local dev</td>
+        <td><code>100.103.7.78</code></td>
+        <td><span class="tag tag-yellow">⚡ Sleep/wake</span></td>
+        <td>macOS</td>
+        <td><span class="tag tag-green">Reachable</span></td>
+      </tr>
+      <tr>
+        <td><strong>Hetzner VPS 1</strong></td>
+        <td>Provider Search (mydoclist.com) + Analytics API (:8082)</td>
+        <td><code>5.78.142.73</code></td>
+        <td><span class="tag tag-green">✅ Yes</span></td>
+        <td>Ubuntu</td>
+        <td><span class="tag tag-green">Live</span></td>
+      </tr>
+      <tr>
+        <td><strong>Hetzner VPS 2</strong></td>
+        <td>CMS Data API (healthcaredataai.com) + blakethomson.studio</td>
+        <td><code>5.78.148.70</code></td>
+        <td><span class="tag tag-green">✅ Yes</span></td>
+        <td>Ubuntu 24.04</td>
+        <td><span class="tag tag-green">Live</span></td>
+      </tr>
+    </table>
+
+    <h3>SSH Access</h3>
+    <ul>
+      <li><strong>MacBook → chief-server:</strong> <code>ssh blake@100.105.36.5</code> ✅ works (Tailscale)</li>
+      <li><strong>chief-server → MacBook:</strong> <code>ssh blake@100.103.7.78</code> ✅ confirmed working today</li>
+      <li><strong>chief-server → Hetzner VPS 1:</strong> <code>ssh root@5.78.142.73</code></li>
+      <li><strong>chief-server → Hetzner VPS 2:</strong> <code>ssh root@5.78.148.70</code></li>
+      <li>⚠️ No <code>~/.ssh/config</code> shortcuts configured yet on chief-server — add <code>Host macbook</code> and <code>Host vps1/vps2</code> entries</li>
+    </ul>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="github">2. GitHub Repository Registry</h2>
+    <p class="citation">Account: blakethom8 | Auth: ✅ Authenticated via keyring (scopes: gist, read:org, repo, workflow)</p>
+
+    <h3>Active / Recently Updated</h3>
+    <table>
+      <tr><th>Repo</th><th>Description</th><th>Private</th><th>Last Commit</th><th>Status</th></tr>
+      <tr>
+        <td><code>chief-workspace</code></td>
+        <td>Local chief's brain — OpenClaw workspace</td>
+        <td><span class="tag tag-yellow">🔒 Private</span></td>
+        <td>2026-03-05 — Create CONFIGURATION-EXPLAINED.md</td>
+        <td><span class="tag tag-green">Active</span></td>
+      </tr>
+      <tr>
+        <td><code>personal-website</code></td>
+        <td>blakethomson.studio — personal site</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-03-05 — Docker fix</td>
+        <td><span class="tag tag-green">Active / Live</span></td>
+      </tr>
+      <tr>
+        <td><code>cms-data</code></td>
+        <td>CMS pipeline + healthcare data API + match engine</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-03-04 — Security fix: rotate API key</td>
+        <td><span class="tag tag-green">Active / Live</span></td>
+      </tr>
+      <tr>
+        <td><code>provider-search</code></td>
+        <td>Healthcare provider search tool for physician liaisons</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-02-21 — Add comprehensive docs</td>
+        <td><span class="tag tag-blue">MVP Live</span></td>
+      </tr>
+      <tr>
+        <td><code>provider-intel</code></td>
+        <td>Provider intelligence — notebooks, pipeline, search</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-02-17 — Add debug notebooks</td>
+        <td><span class="tag tag-yellow">Inactive / Research</span></td>
+      </tr>
+      <tr>
+        <td><code>learning-modules</code></td>
+        <td>Free learning modules: web security, frontend, LLM frontends</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-02-21</td>
+        <td><span class="tag tag-yellow">Low priority</span></td>
+      </tr>
+      <tr>
+        <td><code>excel-mcp</code></td>
+        <td>Self-evolving Excel analytics toolkit — MCP server + Claude Desktop dashboard</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-02-13</td>
+        <td><span class="tag tag-yellow">Parked</span></td>
+      </tr>
+      <tr>
+        <td><code>bash-pi-openclaw-education</code></td>
+        <td>Educational guide to bash + Pi + OpenClaw agentic patterns</td>
+        <td><span class="tag tag-gray">Public</span></td>
+        <td>2026-02-10</td>
+        <td><span class="tag tag-yellow">Published</span></td>
+      </tr>
+      <tr>
+        <td><code>healthcare-ai</code></td>
+        <td>Private — healthcare AI app (Chainlit, FastAPI, full stack)</td>
+        <td><span class="tag tag-yellow">🔒 Private</span></td>
+        <td>2026-02-05 — Port mapping updates</td>
+        <td><span class="tag tag-gray">Stale / Parked</span></td>
+      </tr>
+    </table>
+
+    <h3>Older / Archived / Reference</h3>
+    <table>
+      <tr><th>Repo</th><th>Notes</th><th>Status</th></tr>
+      <tr><td><code>blakethom8</code></td><td>GitHub profile README</td><td><span class="tag tag-gray">Static</span></td></tr>
+      <tr><td><code>project_base</code></td><td>FastAPI learning tutorial (private)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>ai-assistant</code></td><td>Earlier AI assistant prototype (private, 2025)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>spearmint</code></td><td>Fork for prototyping features (private, 2025)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>cool-mint</code></td><td>2025 project (public)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>sfdc</code></td><td>Salesforce work (private, 2025)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>provider_management123</code> / <code>provider_management</code></td><td>Earlier provider management prototypes (private)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>openclaw</code></td><td>Fork of OpenClaw (2026-02-01)</td><td><span class="tag tag-gray">Reference</span></td></tr>
+      <tr><td><code>Thomson_Practical_Assignment_11.1</code></td><td>School assignment (2024)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+      <tr><td><code>Patient-Readmission-Capstone</code></td><td>Haas capstone project (2023)</td><td><span class="tag tag-gray">Archive</span></td></tr>
+    </table>
+
+    <div class="finding-box">
+      <strong>📌 Repo Gap: social-media-exchange</strong>
+      The social-media-exchange project has comprehensive documentation in the workspace (~16 files, fully architected) but NO GitHub repo yet. It's ready to initialize and push.
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="macbook-repos">3. MacBook ~/Repo Inventory</h2>
+    <p class="citation">Accessed via SSH: blake@100.103.7.78 — MacBook was awake and reachable today</p>
+
+    <div class="alert alert-yellow">
+      ⚠️ <strong>None of these repos exist on chief-server.</strong> <code>~/Repo/</code> does not exist on the Mac Mini. All code currently lives on the MacBook only. This is the main gap to address.
+    </div>
+
+    <h3>~/Repo/ Root Level</h3>
+    <table>
+      <tr><th>Folder / File</th><th>What It Is</th><th>On GitHub?</th><th>Priority to Clone to chief-server</th></tr>
+      <tr><td><code>provider-search/</code></td><td>Full FastAPI + React provider search app</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-blue">High — active MVP</span></td></tr>
+      <tr><td><code>cms-data/</code></td><td>CMS pipeline, DuckDB, data API, match engine</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-blue">High — live API</span></td></tr>
+      <tr><td><code>personal-website/</code></td><td>blakethomson.studio source</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-yellow">Medium</span></td></tr>
+      <tr><td><code>health-ai/</code></td><td>Full-stack healthcare AI app (Chainlit, FastAPI, React)</td><td><span class="tag tag-green">✅ Yes (private: healthcare-ai)</span></td><td><span class="tag tag-gray">Low — parked</span></td></tr>
+      <tr><td><code>provider-intel/</code></td><td>Provider intelligence notebooks & pipeline</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-gray">Low — inactive</span></td></tr>
+      <tr><td><code>learning-modules/</code></td><td>Public learning content</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-gray">Low</span></td></tr>
+      <tr><td><code>excel-mcp/</code></td><td>Excel MCP server for Claude Desktop</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-gray">Low</span></td></tr>
+      <tr><td><code>bash-pi-openclaw-education/</code></td><td>Educational content repo</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-gray">Low</span></td></tr>
+      <tr><td><code>blakethom8/</code></td><td>GitHub profile README folder</td><td><span class="tag tag-green">✅ Yes</span></td><td><span class="tag tag-gray">No</span></td></tr>
+      <tr><td><code>genai-accelerator-labs/</code></td><td>Unknown — not on GitHub</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-yellow">Assess</span></td></tr>
+      <tr><td><code>cloud-run-lab/</code></td><td>GCP Cloud Run experiments</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">Low</span></td></tr>
+      <tr><td><code>desktop-tutorial/</code></td><td>Unknown</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">Assess</span></td></tr>
+      <tr><td><code>data/</code></td><td>Local data files (likely not a git repo)</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">No</span></td></tr>
+      <tr><td><code>personal-site/</code></td><td>Older personal site? Separate from personal-website</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-yellow">Assess</span></td></tr>
+      <tr><td><code>project_a/</code></td><td>Unknown</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">Assess</span></td></tr>
+      <tr><td><code>openclaw_not_personal_for_code_review/</code></td><td>OpenClaw fork for code review purposes</td><td><span class="tag tag-red">❌ Not pushed</span></td><td><span class="tag tag-gray">No</span></td></tr>
+      <tr><td><code>provider-search-prototypes/</code></td><td>Earlier provider search experiments</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">Assess / Archive</span></td></tr>
+      <tr><td><code>sketch-apps/</code></td><td>Unknown</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">Assess</span></td></tr>
+      <tr><td><code>system-management/</code></td><td>System management scripts?</td><td><span class="tag tag-red">❌ Not found</span></td><td><span class="tag tag-gray">Assess</span></td></tr>
+      <tr><td><code>project_base/</code></td><td>FastAPI tutorial (private on GitHub)</td><td><span class="tag tag-green">✅ Private</span></td><td><span class="tag tag-gray">No</span></td></tr>
+    </table>
+
+    <h3>~/Repo/chief/ (Chief's Project Workspace on MacBook)</h3>
+    <table>
+      <tr><th>Folder</th><th>Contents</th><th>On GitHub?</th><th>Notes</th></tr>
+      <tr>
+        <td><code>chief/house-build/</code></td>
+        <td>Full house build project — meeting preps, emails, reports, trackers, PDFs, source docs, DWG refs</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Very active. Rich content. Chief-server workspace has DWGs but NOT these docs. Big gap.</td>
+      </tr>
+      <tr>
+        <td><code>chief/wedding/</code></td>
+        <td>TODO.md only</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Minimal. Chief-server has nothing for wedding.</td>
+      </tr>
+      <tr>
+        <td><code>chief/business-analyst-agent/</code></td>
+        <td>README.md + TODO.md</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Early stage. Chief-server workspace has nothing for this.</td>
+      </tr>
+      <tr>
+        <td><code>chief/data/</code></td>
+        <td>Unknown</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Needs review</td>
+      </tr>
+      <tr>
+        <td><code>chief/documents/</code></td>
+        <td>Unknown</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Needs review</td>
+      </tr>
+      <tr>
+        <td><code>chief/exports/</code></td>
+        <td>Unknown</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Needs review</td>
+      </tr>
+      <tr>
+        <td><code>chief/software-development-concept/</code></td>
+        <td>openclaw-architecture-guide.md</td>
+        <td><span class="tag tag-red">❌ No</span></td>
+        <td>Architecture notes — should live in workspace</td>
+      </tr>
+    </table>
+
+    <div class="finding-box">
+      <strong>⚡ Critical Gap: house-build MacBook → chief-server</strong>
+      The MacBook has extensive house-build project docs (meeting preps, email summaries, project trackers, source PDFs, reports) that are NOT in the chief-server workspace. Chief-server only has the DWG files. These need to be consolidated — either sync to chief-server or decide MacBook is the source of truth for house-build.
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="workspace">4. Chief-Server Workspace (Current State)</h2>
+    <p class="citation">Location: ~/.openclaw/workspace/ | 53 items at root | Last updated: 2026-03-05</p>
+
+    <h3>Root Level Files</h3>
+    <table>
+      <tr><th>File</th><th>Purpose</th><th>Action</th></tr>
+      <tr><td><code>AGENTS.md</code></td><td>Session startup instructions</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>SOUL.md</code></td><td>Chief's personality & values</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>USER.md</code></td><td>About Blake</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>IDENTITY.md</code></td><td>Who Chief is</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>WORK.md</code></td><td>Professional workflows</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>PERSONAL.md</code></td><td>Personal life management</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>MEMORY.md</code></td><td>Long-term curated memory</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>TODO.md</code></td><td>Central task list</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>HEARTBEAT.md</code></td><td>Periodic check config</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>TOOLS.md</code></td><td>Local tool notes</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>SYSTEM-ARCHITECTURE.md</code></td><td>Environment design decisions</td><td><span class="tag tag-green">Keep at root</span></td></tr>
+      <tr><td><code>ENVIRONMENT-RESTRUCTURE-PLAN.md</code></td><td>Planning doc for this session</td><td><span class="tag tag-yellow">→ archive/ after this session</span></td></tr>
+      <tr><td><code>MIGRATION-PLAN.md</code></td><td>Migration reference</td><td><span class="tag tag-yellow">→ archive/migration/</span></td></tr>
+      <tr><td><code>OPENCLAW-MIGRATION-CHECKLIST.md</code></td><td>Setup checklist</td><td><span class="tag tag-yellow">→ archive/migration/</span></td></tr>
+      <tr><td><code>OPENCLAW-SETUP.md</code></td><td>Setup notes</td><td><span class="tag tag-yellow">→ archive/migration/</span></td></tr>
+      <tr><td><code>WORKSPACE-SETUP-CHECKLIST.md</code></td><td>Setup checklist</td><td><span class="tag tag-yellow">→ archive/migration/</span></td></tr>
+      <tr><td><code>Anthropic_Cover_Letter.md</code></td><td>Job application content</td><td><span class="tag tag-blue">→ personal/career/</span></td></tr>
+      <tr><td><code>Anthropic_Why_Anthropic_*.md</code></td><td>Job application content</td><td><span class="tag tag-blue">→ personal/career/</span></td></tr>
+      <tr><td><code>Blake_Thomson_Resume_*.docx/md</code></td><td>Resumes</td><td><span class="tag tag-blue">→ personal/career/</span></td></tr>
+      <tr><td><code>CRON_REPORT_2026-02-13_Feature1.md</code></td><td>Stale cron artifact</td><td><span class="tag tag-red">→ archive/cron-artifacts/</span></td></tr>
+      <tr><td><code>FEATURE2_SUMMARY.md</code></td><td>Stale cron artifact</td><td><span class="tag tag-red">→ archive/cron-artifacts/</span></td></tr>
+      <tr><td><code>FEATURE_PLAN_2026-02-13.md</code></td><td>Stale cron artifact</td><td><span class="tag tag-red">→ archive/cron-artifacts/</span></td></tr>
+      <tr><td><code>VOICE_WORKFLOW.md</code></td><td>Voice setup reference</td><td><span class="tag tag-blue">→ config/</span></td></tr>
+      <tr><td><code>browser-automation-learning.md</code></td><td>Learning notes</td><td><span class="tag tag-blue">→ config/ or ideas/</span></td></tr>
+      <tr><td><code>hetzner-setup-plan.md</code></td><td>Server setup docs</td><td><span class="tag tag-blue">→ ops/</span></td></tr>
+      <tr><td><code>ryan_med_school_response.txt</code></td><td>Personal draft</td><td><span class="tag tag-blue">→ personal/contacts/</span></td></tr>
+      <tr><td><code>ryan_response_draft.txt</code></td><td>Personal draft</td><td><span class="tag tag-blue">→ personal/contacts/</span></td></tr>
+      <tr><td><code>sgv_ent_medical_schools.csv</code></td><td>Healthcare data file</td><td><span class="tag tag-blue">→ personal/contacts/ or ops/data/</span></td></tr>
+    </table>
+
+    <h3>Subfolders</h3>
+    <table>
+      <tr><th>Folder</th><th>Contents</th><th>Target Location</th><th>Health</th></tr>
+      <tr><td><code>memory/</code></td><td>37 daily notes (some fragmented — multiple files per day for 2026-02-05 and 2026-03-05)</td><td>Keep at root</td><td><span class="tag tag-yellow">Needs consolidation</span></td></tr>
+      <tr><td><code>reports/</code></td><td>56+ HTML reports + templates/ subfolder. Well-named with dates.</td><td>Keep at root</td><td><span class="tag tag-green">Good</span></td></tr>
+      <tr><td><code>house-build/</code></td><td>DWG files + creek-setback/ research. Missing MacBook docs.</td><td>→ projects/house-build/</td><td><span class="tag tag-yellow">Incomplete (see gap above)</span></td></tr>
+      <tr><td><code>social-media-exchange/</code></td><td>Full documentation suite (16 files, ARCHITECTURE, CLAUDE, ROADMAP, research/)</td><td>→ projects/social-media-exchange/</td><td><span class="tag tag-green">Well-documented, ready to build</span></td></tr>
+      <tr><td><code>ehi-ignite-challenge/</code></td><td>README + research/ (2 files)</td><td>→ projects/ehi-ignite-challenge/</td><td><span class="tag tag-yellow">Early stage</span></td></tr>
+      <tr><td><code>business-concepts/</code></td><td>5 concept docs (prompt-to-app, data-agent, P2P, rendering, multi-agent)</td><td>→ ideas/</td><td><span class="tag tag-green">Good</span></td></tr>
+      <tr><td><code>anthropic-application/</code></td><td>Application materials</td><td>→ personal/career/</td><td><span class="tag tag-yellow">Exists, orphan files need to join it</span></td></tr>
+      <tr><td><code>blog-posts/</code></td><td>Blog drafts (overlaps with personal-website)</td><td>→ content/blog/</td><td><span class="tag tag-yellow">Duplication risk</span></td></tr>
+      <tr><td><code>podcasts/</code></td><td>22 files — transcripts + summaries</td><td>→ content/podcasts/</td><td><span class="tag tag-green">Good</span></td></tr>
+      <tr><td><code>inbox-cleanup/</code></td><td>Email system docs</td><td>→ personal/inbox/</td><td><span class="tag tag-gray">Reference</span></td></tr>
+      <tr><td><code>marketing/</code></td><td>1 file (surf-session-ai.html)</td><td>→ ideas/ or content/</td><td><span class="tag tag-yellow">Thin</span></td></tr>
+      <tr><td><code>meetings/</code></td><td>1 meeting brief</td><td>→ personal/meetings/</td><td><span class="tag tag-yellow">Thin</span></td></tr>
+      <tr><td><code>projects/fraud-analysis/</code></td><td>1 README</td><td>→ ideas/fraud-analysis/</td><td><span class="tag tag-gray">Stub</span></td></tr>
+      <tr><td><code>agentic-design/</code></td><td>1 HTML report</td><td>→ ideas/ or reports/</td><td><span class="tag tag-gray">Thin</span></td></tr>
+      <tr><td><code>scripts/</code></td><td>2 JS files (surfline-calendar, system-monitor)</td><td>Keep as scripts/</td><td><span class="tag tag-gray">Fine</span></td></tr>
+    </table>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="infrastructure">5. Production Infrastructure</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Hetzner VPS 1 — 5.78.142.73</div>
+        <strong>Domain:</strong> mydoclist.com<br>
+        <strong>Services:</strong><br>
+        • Provider Search app (Docker, :3000 web, :8000 API)<br>
+        • Analytics API (:8082) — dashboard + DuckDB<br>
+        • Daily HTML reports (2 AM cron)<br>
+        <br>
+        <span class="tag tag-green">✅ Live</span>
+      </div>
+      <div class="card">
+        <div class="card-title">Hetzner VPS 2 — 5.78.148.70</div>
+        <strong>Domains:</strong> healthcaredataai.com, blakethomson.studio<br>
+        <strong>Services:</strong><br>
+        • CMS Data API (FastAPI + DuckDB, port 8080 → nginx HTTPS)<br>
+        • Personal website (Docker)<br>
+        • SSL: Let's Encrypt (exp 2026-06-01)<br>
+        • API Key: <code>1bb250cd...</code><br>
+        <br>
+        <span class="tag tag-green">✅ Live</span>
+      </div>
+    </div>
+
+    <h3>Services Summary</h3>
+    <table>
+      <tr><th>Service</th><th>URL</th><th>Tech</th><th>Status</th></tr>
+      <tr><td>Provider Search</td><td>mydoclist.com</td><td>FastAPI + React + Docker</td><td><span class="tag tag-green">Live</span></td></tr>
+      <tr><td>Analytics Dashboard</td><td>5.78.142.73:8082</td><td>FastAPI + DuckDB</td><td><span class="tag tag-green">Live</span></td></tr>
+      <tr><td>CMS Data API</td><td>healthcaredataai.com</td><td>FastAPI + DuckDB (read-only)</td><td><span class="tag tag-green">Live / HTTPS</span></td></tr>
+      <tr><td>Personal Website</td><td>blakethomson.studio</td><td>Docker + nginx</td><td><span class="tag tag-green">Live / HTTPS</span></td></tr>
+    </table>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="openclaw-config">6. OpenClaw Configuration</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Agent: chief (main)</div>
+        <strong>Model:</strong> claude-sonnet-4-6 (primary)<br>
+        <strong>Fallbacks:</strong> Opus45, GPT-4o<br>
+        <strong>Heartbeat:</strong> Every 30 min<br>
+        <strong>Max concurrent:</strong> 4 agents, 8 subagents<br>
+        <strong>Workspace:</strong> ~/.openclaw/workspace/<br>
+        <strong>Compaction:</strong> safeguard mode
+      </div>
+      <div class="card">
+        <div class="card-title">Auth Profiles</div>
+        <strong>Anthropic:</strong> ✅ API key<br>
+        <strong>OpenAI:</strong> ✅ API key<br>
+        <strong>GitHub (gh CLI):</strong> ✅ blakethom8 (just set up today)<br>
+        <strong>gog (Gmail/Calendar):</strong> ✅ Configured<br>
+        <strong>Google Places:</strong> ✅ AIzaSyD6NB1Ky...<br>
+        <strong>Gemini (nano-banana-pro):</strong> ✅ AIzaSyDELh7...<br>
+        <strong>OpenAI Whisper API:</strong> ✅ Configured
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Channels</div>
+        <strong>Telegram:</strong> ✅ Active (bot: 8242579072)<br>
+        &nbsp;&nbsp;• DM policy: pairing<br>
+        &nbsp;&nbsp;• Group policy: allowlist<br>
+        &nbsp;&nbsp;• Streaming: partial<br>
+        <strong>Webchat:</strong> ✅ https://chief-server.tailfcadd3.ts.net<br>
+        <strong>Reaction scope:</strong> group-mentions (minimal)
+      </div>
+      <div class="card">
+        <div class="card-title">Gateway</div>
+        <strong>Port:</strong> 18789 (loopback bind)<br>
+        <strong>Mode:</strong> local + Tailscale serve<br>
+        <strong>Auth:</strong> Token mode<br>
+        <strong>Tailscale:</strong> serve mode (resetOnExit: false)<br>
+        <strong>Webchat origin:</strong> chief-server.tailfcadd3.ts.net<br>
+        <strong>Tools profile:</strong> full (exec/bash enabled)
+      </div>
+    </div>
+
+    <h3>Installed Skills</h3>
+    <p style="font-size:13px; font-family:'Helvetica Neue', sans-serif;">apple-reminders, clawhub, coding-agent, gh-issues, github, gog, goplaces, healthcheck, model-usage, nano-banana-pro, nano-pdf, openai-whisper, openai-whisper-api, peekaboo, skill-creator, summarize, video-frames, weather, xurl</p>
+
+    <h3>Coding Agent</h3>
+    <p><strong>Default:</strong> Claude Code (<code>claude</code> / <code>claude -p</code>). Codex available as backup.</p>
+
+    <div class="finding-box">
+      <strong>📌 Missing: Second Agent (coding-focused)</strong>
+      The plan calls for a <code>coding</code> agent isolated from personal context — deep technical context, server access, project CLAUDE.md files. Not yet created. Command would be: <code>openclaw agents add coding</code>. Channel and workspace TBD.
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="projects">7. Active Project Registry (Cross-Referenced)</h2>
+
+    <table>
+      <tr><th>Project</th><th>Type</th><th>Workspace</th><th>MacBook ~/Repo</th><th>GitHub</th><th>Deploy</th><th>Status</th></tr>
+      <tr>
+        <td><strong>Provider Search</strong></td>
+        <td>Product</td>
+        <td>notes only</td>
+        <td><code>provider-search/</code> ✅</td>
+        <td><code>blakethom8/provider-search</code> ✅</td>
+        <td>Hetzner VPS 1</td>
+        <td><span class="tag tag-green">MVP Live</span></td>
+      </tr>
+      <tr>
+        <td><strong>CMS Data Pipeline + API</strong></td>
+        <td>Infrastructure + Product</td>
+        <td>—</td>
+        <td><code>cms-data/</code> ✅</td>
+        <td><code>blakethom8/cms-data</code> ✅</td>
+        <td>Hetzner VPS 2</td>
+        <td><span class="tag tag-blue">Active / Live</span></td>
+      </tr>
+      <tr>
+        <td><strong>Personal Website</strong></td>
+        <td>Product</td>
+        <td>—</td>
+        <td><code>personal-website/</code> ✅</td>
+        <td><code>blakethom8/personal-website</code> ✅</td>
+        <td>Hetzner VPS 2</td>
+        <td><span class="tag tag-green">Live</span></td>
+      </tr>
+      <tr>
+        <td><strong>House Build (Orinda)</strong></td>
+        <td>Personal Project</td>
+        <td><code>house-build/</code> (DWGs only)</td>
+        <td><code>chief/house-build/</code> ✅ (full docs)</td>
+        <td>❌ None</td>
+        <td>—</td>
+        <td><span class="tag tag-yellow">Design Phase — Month 2</span></td>
+      </tr>
+      <tr>
+        <td><strong>Social Media Exchange</strong></td>
+        <td>Idea → Product</td>
+        <td><code>social-media-exchange/</code> ✅ (full docs)</td>
+        <td>—</td>
+        <td>❌ No repo yet</td>
+        <td>Vercel + Supabase (planned)</td>
+        <td><span class="tag tag-blue">Documented, Ready to Build</span></td>
+      </tr>
+      <tr>
+        <td><strong>EHI Ignite Challenge</strong></td>
+        <td>Competition</td>
+        <td><code>ehi-ignite-challenge/</code> (minimal)</td>
+        <td>—</td>
+        <td>❌ No repo yet</td>
+        <td>—</td>
+        <td><span class="tag tag-yellow">Research Phase</span></td>
+      </tr>
+      <tr>
+        <td><strong>Wedding</strong></td>
+        <td>Personal</td>
+        <td>—</td>
+        <td><code>chief/wedding/</code> (TODO only)</td>
+        <td>❌ None</td>
+        <td>devonandblake.com</td>
+        <td><span class="tag tag-yellow">June 20 2026</span></td>
+      </tr>
+      <tr>
+        <td><strong>Business Analyst Agent</strong></td>
+        <td>Idea → Product</td>
+        <td>—</td>
+        <td><code>chief/business-analyst-agent/</code> (README + TODO)</td>
+        <td>❌ None</td>
+        <td>—</td>
+        <td><span class="tag tag-gray">Not started</span></td>
+      </tr>
+      <tr>
+        <td><strong>provider-intel</strong></td>
+        <td>Research</td>
+        <td>—</td>
+        <td><code>provider-intel/</code></td>
+        <td><code>blakethom8/provider-intel</code> ✅</td>
+        <td>—</td>
+        <td><span class="tag tag-gray">Parked / Research</span></td>
+      </tr>
+      <tr>
+        <td><strong>healthcare-ai</strong></td>
+        <td>Prototype</td>
+        <td>—</td>
+        <td><code>health-ai/</code></td>
+        <td><code>blakethom8/healthcare-ai</code> 🔒</td>
+        <td>—</td>
+        <td><span class="tag tag-gray">Stale</span></td>
+      </tr>
+    </table>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="target-structure">8. Target Workspace Structure (Proposed)</h2>
+
+    <div class="alert alert-green">
+      This is the proposed clean structure. Nothing here has been executed. Awaiting explicit instruction to begin.
+    </div>
+
+<pre>
+~/.openclaw/workspace/
+│
+├── 📋 ROOT (always loaded by Chief each session — keep clean)
+│   ├── AGENTS.md                  session startup instructions
+│   ├── SOUL.md                    personality & values
+│   ├── USER.md                    about Blake
+│   ├── IDENTITY.md                who Chief is
+│   ├── WORK.md                    professional workflows
+│   ├── PERSONAL.md                personal life management
+│   ├── MEMORY.md                  long-term curated memory
+│   ├── TODO.md                    central task list
+│   ├── HEARTBEAT.md               periodic check config
+│   ├── TOOLS.md                   local tool notes (cameras, SSH, etc.)
+│   └── SYSTEM-ARCHITECTURE.md    environment reference (living doc)
+│
+├── 📝 memory/                     daily notes (YYYY-MM-DD.md)
+│   ├── 2026-02-01.md ... 2026-03-06.md
+│   └── heartbeat-state.json
+│
+├── 📊 reports/                    ALL generated reports — flat, date-prefixed
+│   └── templates/                 Blueprint template + others
+│
+├── 🏗️ projects/                   active work with timelines
+│   ├── house-build/               Orinda home
+│   │   ├── DWG files (existing)
+│   │   ├── creek-setback/ (existing)
+│   │   ├── emails/                PULL FROM MacBook ~/Repo/chief/house-build/emails/
+│   │   ├── project/               PULL FROM MacBook ~/Repo/chief/house-build/project/
+│   │   ├── reports/               PULL FROM MacBook ~/Repo/chief/house-build/reports/
+│   │   └── source-docs/           PULL FROM MacBook ~/Repo/chief/house-build/source-docs/
+│   ├── ehi-ignite-challenge/      (existing, minimal)
+│   ├── social-media-exchange/     (existing, comprehensive)
+│   └── wedding/                   PULL/CREATE from MacBook
+│
+├── 💡 ideas/                      explorations without hard timelines
+│   ├── prompt-to-app-platform.md
+│   ├── openclaw-style-data-agent.md
+│   ├── peer-to-peer-compute-marketplace.md
+│   ├── rendering-engine-architecture.md
+│   ├── multi-agent-organization-patterns.md
+│   ├── fraud-analysis/
+│   └── browser-automation-learning.md
+│
+├── ✍️ content/                    blog, podcasts, research
+│   ├── blog/
+│   │   ├── drafts/
+│   │   └── published/
+│   ├── podcasts/                  (MOVE from workspace root podcasts/)
+│   └── research/
+│
+├── 👤 personal/                   personal life (non-code)
+│   ├── career/                    resumes, applications
+│   │   └── anthropic-application/ (MOVE from workspace root)
+│   ├── contacts/                  ryan drafts, CSV, etc.
+│   ├── inbox/                     email system docs (MOVE from inbox-cleanup/)
+│   └── meetings/                  meeting briefs (MOVE from workspace root meetings/)
+│
+├── ⚙️ ops/                        infrastructure & server docs
+│   ├── hetzner-setup-plan.md      (MOVE from root)
+│   └── chief-setup-guide.md       (MOVE from ~/chief-setup-guide.md)
+│
+├── 🔧 config/                     Chief's own config & reference
+│   └── VOICE_WORKFLOW.md          (MOVE from root)
+│
+├── 📦 archive/                    completed / stale items
+│   ├── migration/                 MIGRATION-PLAN.md, checklists, setup docs
+│   └── cron-artifacts/            stale cron reports (CRON_REPORT, FEATURE*.md)
+│
+└── 📜 scripts/                    utility scripts (existing, keep)
+    ├── surfline-calendar-report.js
+    └── system-monitor.js
+</pre>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="action-plan">9. Action Plan & Setup TODOs</h2>
+
+    <h3>Phase 1 — Workspace Cleanup (Chief-Server Only)</h3>
+    <p>These are pure file moves on chief-server. No external dependencies.</p>
+    <table>
+      <tr><th>#</th><th>Action</th><th>From</th><th>To</th><th>Risk</th></tr>
+      <tr><td>1</td><td>Create new directory structure</td><td>—</td><td><code>projects/ ideas/ content/ personal/ ops/ config/ archive/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>2</td><td>Move migration docs</td><td>Root</td><td><code>archive/migration/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>3</td><td>Move cron artifacts</td><td>Root</td><td><code>archive/cron-artifacts/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>4</td><td>Move career/application files</td><td>Root + anthropic-application/</td><td><code>personal/career/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>5</td><td>Move personal contacts</td><td>Root (ryan_*.txt, sgv_*.csv)</td><td><code>personal/contacts/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>6</td><td>Move ops docs</td><td>Root (hetzner-setup-plan.md)</td><td><code>ops/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>7</td><td>Move config docs</td><td>Root (VOICE_WORKFLOW.md)</td><td><code>config/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>8</td><td>Move blog-posts/</td><td>blog-posts/</td><td><code>content/blog/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>9</td><td>Move podcasts/</td><td>podcasts/</td><td><code>content/podcasts/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>10</td><td>Move inbox-cleanup/</td><td>inbox-cleanup/</td><td><code>personal/inbox/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>11</td><td>Move meetings/</td><td>meetings/</td><td><code>personal/meetings/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>12</td><td>Move business-concepts/</td><td>business-concepts/</td><td><code>ideas/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>13</td><td>Move house-build/, ehi-ignite-challenge/, social-media-exchange/</td><td>Root dirs</td><td><code>projects/</code></td><td><span class="tag tag-green">None</span></td></tr>
+      <tr><td>14</td><td>Consolidate memory files (5x 2026-02-05, 5x 2026-03-05)</td><td>memory/</td><td>Single daily files per date</td><td><span class="tag tag-yellow">Low — review before merging</span></td></tr>
+      <tr><td>15</td><td>Move chief-setup-guide.md</td><td>~/chief-setup-guide.md</td><td><code>ops/</code></td><td><span class="tag tag-green">None</span></td></tr>
+    </table>
+
+    <h3>Phase 2 — MacBook → Chief-Server Sync</h3>
+    <p>Pull MacBook content to chief-server. MacBook must be awake (SSH via Tailscale).</p>
+    <table>
+      <tr><th>#</th><th>Action</th><th>Source (MacBook)</th><th>Dest (Chief-Server)</th><th>Method</th></tr>
+      <tr><td>1</td><td>Sync house-build docs</td><td><code>~/Repo/chief/house-build/</code></td><td><code>workspace/projects/house-build/</code></td><td>rsync or scp</td></tr>
+      <tr><td>2</td><td>Pull wedding TODO</td><td><code>~/Repo/chief/wedding/</code></td><td><code>workspace/projects/wedding/</code></td><td>scp</td></tr>
+      <tr><td>3</td><td>Pull business-analyst-agent</td><td><code>~/Repo/chief/business-analyst-agent/</code></td><td><code>workspace/projects/</code> or <code>ideas/</code></td><td>scp</td></tr>
+      <tr><td>4</td><td>Pull openclaw-architecture-guide.md</td><td><code>~/Repo/chief/software-development-concept/</code></td><td><code>workspace/ideas/</code></td><td>scp</td></tr>
+      <tr><td>5</td><td>Review ~/Repo/chief/data/, documents/, exports/</td><td>MacBook</td><td>TBD</td><td>SSH browse first</td></tr>
+    </table>
+
+    <h3>Phase 3 — Repo Clones on Chief-Server</h3>
+    <p>Create <code>~/Repo/</code> on chief-server and clone active repos via GitHub.</p>
+    <table>
+      <tr><th>Repo</th><th>Why Clone</th><th>Priority</th></tr>
+      <tr><td><code>provider-search</code></td><td>Active product — may need to pull + deploy fixes</td><td><span class="tag tag-blue">High</span></td></tr>
+      <tr><td><code>cms-data</code></td><td>Live API — ops management, pipeline runs</td><td><span class="tag tag-blue">High</span></td></tr>
+      <tr><td><code>personal-website</code></td><td>Live site — deploy docs, content pipeline</td><td><span class="tag tag-yellow">Medium</span></td></tr>
+      <tr><td><code>chief-workspace</code></td><td>Already IS the workspace — clone is optional/redundant</td><td><span class="tag tag-gray">Low (already tracked locally)</span></td></tr>
+    </table>
+
+    <h3>Phase 4 — New Repos to Create</h3>
+    <table>
+      <tr><th>Repo</th><th>Action</th><th>Notes</th></tr>
+      <tr><td><code>social-media-exchange</code></td><td>Create private GitHub repo, push workspace docs</td><td>Documentation is complete. Initialize Next.js project inside it.</td></tr>
+      <tr><td><code>business-analyst-agent</code></td><td>Create private GitHub repo</td><td>When ready to start development</td></tr>
+    </table>
+
+    <h3>Phase 5 — System Setup</h3>
+    <table>
+      <tr><th>#</th><th>Task</th><th>Status</th></tr>
+      <tr><td>1</td><td>Add SSH shortcuts to ~/.ssh/config (chief-server → macbook, vps1, vps2)</td><td><span class="tag tag-red">TODO</span></td></tr>
+      <tr><td>2</td><td>Create coding agent: <code>openclaw agents add coding</code></td><td><span class="tag tag-red">TODO</span></td></tr>
+      <tr><td>3</td><td>Set up <code>chief@blakethomson.studio</code> email identity</td><td><span class="tag tag-red">TODO (optional)</span></td></tr>
+      <tr><td>4</td><td>gh CLI ✅ (done today)</td><td><span class="tag tag-green">DONE</span></td></tr>
+      <tr><td>5</td><td>Memory consolidation: merge fragmented daily files</td><td><span class="tag tag-red">TODO</span></td></tr>
+    </table>
+
+    <hr class="section-divider">
+
+    <!-- ─────────────────────────────────────────────────────── -->
+    <h2 id="decisions">10. Key Decisions Log</h2>
+
+    <table>
+      <tr><th>Date</th><th>Decision</th><th>Rationale</th></tr>
+      <tr><td>2026-03-05</td><td>GitHub = code sync bridge (MacBook push → GitHub → chief-server pull → Hetzner deploy)</td><td>No direct file sync for code. Clean, auditable.</td></tr>
+      <tr><td>2026-03-05</td><td>chief-server workspace = source of truth for memory/plans</td><td>Always on, single location for brain</td></tr>
+      <tr><td>2026-03-05</td><td>Workspace restructure: purpose-based directories</td><td>Clean separation: projects/ideas/content/personal/ops</td></tr>
+      <tr><td>2026-03-05</td><td>Reports stay flat with date-prefix naming</td><td>56+ reports, flat is more searchable than nested</td></tr>
+      <tr><td>2026-03-05</td><td>blog-posts/ → content/blog/ (merge)</td><td>Eliminate duplication with personal-website content pipeline</td></tr>
+      <tr><td>2026-03-05</td><td>Email identity: Option C first (delegate), Option B later (chief@blakethomson.studio)</td><td>Delegate for triage now, own identity for outreach later</td></tr>
+      <tr><td>2026-03-06</td><td>gh CLI authenticated on chief-server</td><td>Enables repo access, issue tracking, CI management from chief-server</td></tr>
+      <tr><td>TBD</td><td>house-build: sync MacBook → chief-server via rsync</td><td>MacBook has full project history; chief-server only has DWGs</td></tr>
+      <tr><td>TBD</td><td>Second agent (coding) channel TBD</td><td>Separate Telegram bot or same bot, different trigger?</td></tr>
+    </table>
+
+    <hr class="section-divider">
+
+    <div class="alert alert-blue">
+      <strong>🎯 Summary: What To Do Next</strong><br><br>
+      1. <strong>Confirm this report is accurate</strong> — flag any gaps or corrections<br>
+      2. <strong>Phase 1 workspace cleanup</strong> — all moves within chief-server, zero risk, can do immediately<br>
+      3. <strong>Phase 2 MacBook sync</strong> — pull house-build docs to chief-server (MacBook needs to be awake)<br>
+      4. <strong>Phase 3 repo clones</strong> — mkdir ~/Repo on chief-server, clone provider-search and cms-data<br>
+      5. <strong>Phase 4 new repos</strong> — create social-media-exchange GitHub repo<br>
+      6. <strong>Phase 5 system</strong> — SSH config shortcuts, coding agent, memory consolidation
+    </div>
+
+    <p class="citation" style="margin-top: 24px; text-align: center;">
+      Generated: 2026-03-06 by Chief (main agent) | ~/.openclaw/workspace/ARCHITECTURE-REPORT-2026-03-06.html
+    </p>
+
+  </div>
+</div>
+</body>
+</html>

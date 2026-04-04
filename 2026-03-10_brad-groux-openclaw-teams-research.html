@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Georgia, serif; max-width: 820px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .code { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li { margin-bottom: 6px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Brad Groux / OpenClaw + Microsoft Teams — Research Brief</h1>
+  <p><strong>Prepared by:</strong> Chief</p>
+  <p><strong>Date:</strong> March 10, 2026</p>
+  <p><strong>Context:</strong> Research on Brad Groux's OpenClaw Teams work and how it applies to the Enterprise AI Assistant project</p>
+  <p><strong>Sources:</strong> Brad's tweet, GitHub (BradGroux), OpenClaw local docs, openclawforge.com</p>
+</div>
+
+<div class="alert alert-green">
+  <strong>Bottom Line Up Front:</strong> Brad Groux just became the official OpenClaw Teams maintainer after spending 2 months running it in production at enterprise scale. He wrote the most complete public guide for this setup and built a companion orchestration tool (Veritas Kanban) specifically designed for multi-agent work via OpenClaw. His setup is nearly identical to what you're building for the Enterprise AI Assistant — same stack, same channel, same use case.
+</div>
+
+<h2>1. Who Is Brad Groux</h2>
+
+<table>
+  <tr><th>Field</th><th>Detail</th></tr>
+  <tr><td>Name</td><td>Brad Groux</td></tr>
+  <tr><td>Company</td><td>CEO, <a href="https://digitalmeld.io">Digital Meld</a> — AI-driven enterprise automation</td></tr>
+  <tr><td>Location</td><td>Houston, TX</td></tr>
+  <tr><td>GitHub</td><td><a href="https://github.com/BradGroux">github.com/BradGroux</a> (8 repos; OpenClaw repo pinned)</td></tr>
+  <tr><td>Twitter/X</td><td><a href="https://twitter.com/bradgroux">@BradGroux</a></td></tr>
+  <tr><td>Podcast</td><td>"Start Small, Think Big" — AI/enterprise automation focus</td></tr>
+  <tr><td>Role</td><td>Now official OpenClaw maintainer for the Microsoft Teams plugin</td></tr>
+</table>
+
+<p>He got there by writing a production how-to guide for OpenClaw + Teams (when the docs were thin), running it for 2 months in real enterprise environments, and catching a critical bug that had been silently dropping every channel message since the last update. Peter Steinberger (<span class="code">@steipete</span>) and <span class="code">@onusoz</span> on the OpenClaw team noticed and brought him on.</p>
+
+<hr class="section-divider">
+
+<h2>2. The Tweet — Key Points</h2>
+
+<blockquote>
+  "Microsoft Teams is where enterprise lives. If AI agents are going to matter, they need to work where the work already happens, not just in terminals and chat apps built for developers."
+  <br>— Brad Groux, @BradGroux, March 9, 2026
+</blockquote>
+
+<p>The embedded tweet in his post links to his January article: <strong>"How I Got OpenClaw (formerly Clawdbot) Running in Microsoft Teams (Step-by-Step)"</strong> — which has 428 views and was the piece that caught the OpenClaw team's attention.</p>
+
+<p>Key signals from the tweet:</p>
+<ul>
+  <li>Setup required: Azure Bot Service, Entra ID, Cloudflare tunnels — "real enterprise plumbing"</li>
+  <li>Bug he fixed: debug wrappers were swallowing all channel message data — every message since last update was silently dropped; took 3 hours of patching compiled runtime loggers</li>
+  <li>He's now the go-to person for Teams integration questions</li>
+  <li>Explicitly invited the Microsoft Teams team to reach out: "There's a lot we could build together"</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>3. His GitHub: Veritas Kanban</h2>
+
+<p>Brad's flagship project is <a href="https://github.com/BradGroux/veritas-kanban"><strong>Veritas Kanban</strong></a> (544 stars, 51 forks) — a lightweight, file-based orchestration platform for agentic AI, explicitly built and tested with OpenClaw.</p>
+
+<div class="finding-box">
+  <h3>What Veritas Kanban Does</h3>
+  <p>Think of it as GitHub Actions — but for AI agents. Tasks are markdown files. Workflows are YAML. No database, no Docker, no Redis. Everything is grep-friendly and version-controlled.</p>
+  <ul>
+    <li><strong>Multi-agent dashboard</strong> — spawn OpenClaw agents on tasks, track status in real-time, model attribution (Claude vs GPT), expandable agent cards</li>
+    <li><strong>Squad Chat protocol</strong> — agents share a communication channel with lifecycle events (spawned/completed/failed)</li>
+    <li><strong>YAML pipelines</strong> — sequential steps, parallel fan-out/fan-in, loop iteration, human-in-the-loop gates, retry routing</li>
+    <li><strong>MCP Server</strong> — 26 tools across 6 categories via Model Context Protocol</li>
+    <li><strong>Task dependency graphs</strong> — with cycle detection, crash-recovery checkpointing, observational memory with importance scoring</li>
+    <li><strong>Git worktrees per task</strong> — no branch switching conflicts; built-in code review with diff viewer, inline comments, approval workflows</li>
+    <li><strong>OpenClaw native</strong> — uses <span class="code">sessions_spawn</span> for agent orchestration; designed as a companion layer</li>
+  </ul>
+</div>
+
+<p>His other repos (8 total, most private) include the openclaw/openclaw repo pinned — confirming his maintainer role.</p>
+
+<hr class="section-divider">
+
+<h2>4. OpenClaw Teams Integration — How It Actually Works</h2>
+
+<p>This is pulled directly from the local OpenClaw docs (<span class="code">/opt/homebrew/lib/node_modules/openclaw/docs/channels/msteams.md</span>, updated 2026-01-21).</p>
+
+<h3>Architecture</h3>
+<ul>
+  <li>Ships as a <strong>separate plugin</strong> (moved out of core in 2026.1.15): <span class="code">openclaw plugins install @openclaw/msteams</span></li>
+  <li>Connects via <strong>Azure Bot Service</strong> → Bot Framework webhook → OpenClaw gateway</li>
+  <li>Bot listens on <span class="code">/api/messages</span> (port 3978 by default)</li>
+  <li>Requires a <strong>Teams app manifest</strong> (ZIP package) sideloaded into Teams</li>
+</ul>
+
+<h3>Credential Setup (3 values needed)</h3>
+<table>
+  <tr><th>Value</th><th>Where to Get It</th><th>Config Key</th></tr>
+  <tr><td>App ID</td><td>Azure Bot → Configuration</td><td><span class="code">appId</span></td></tr>
+  <tr><td>App Password (client secret)</td><td>Azure Bot → Manage Password → App Registration → Certificates &amp; Secrets</td><td><span class="code">appPassword</span></td></tr>
+  <tr><td>Tenant ID</td><td>App Registration → Overview → Directory (tenant) ID</td><td><span class="code">tenantId</span></td></tr>
+</table>
+
+<div class="alert alert-yellow">
+  <strong>Deprecation Note:</strong> Multi-tenant bots were deprecated after 2025-07-31. New bots must use <strong>Single Tenant</strong> type. This matters for your Azure account setup.
+</div>
+
+<h3>Minimal Config</h3>
+<pre style="background:#f4f4f4; padding:14px; border-radius:4px; font-size:13px; overflow-x:auto;">
+{
+  channels: {
+    msteams: {
+      enabled: true,
+      appId: "&lt;APP_ID&gt;",
+      appPassword: "&lt;APP_PASSWORD&gt;",
+      tenantId: "&lt;TENANT_ID&gt;",
+      webhook: { port: 3978, path: "/api/messages" }
+    }
+  }
+}
+</pre>
+
+<h3>RSC Permissions (Teams Manifest)</h3>
+<p>The app manifest defines what the bot can read/send in Teams. Key RSC permissions:</p>
+<table>
+  <tr><th>Permission</th><th>Scope</th><th>What It Enables</th></tr>
+  <tr><td>ChannelMessage.Read.Group</td><td>Team channels</td><td>Receive all channel messages without @mention</td></tr>
+  <tr><td>ChannelMessage.Send.Group</td><td>Team channels</td><td>Send to channels</td></tr>
+  <tr><td>ChatMessage.Read.Chat</td><td>Group chats</td><td>Receive all group chat messages without @mention</td></tr>
+  <tr><td>Member.Read.Group + TeamMember.Read.Group</td><td>Both</td><td>Roster access</td></tr>
+</table>
+
+<h3>RSC-Only vs. Graph API</h3>
+<table>
+  <tr><th>Capability</th><th>RSC Only</th><th>+ Graph API</th></tr>
+  <tr><td>Real-time messages</td><td>✅ Yes (webhook)</td><td>✅ Yes</td></tr>
+  <tr><td>Message history</td><td>❌ No</td><td>✅ Yes (ChannelMessage.Read.All)</td></tr>
+  <tr><td>Attachments/images in channels</td><td>❌ No (HTML stub only)</td><td>✅ Yes (downloads from SharePoint/OneDrive)</td></tr>
+  <tr><td>File sending in group chats</td><td>❌ No</td><td>✅ Yes (needs sharePointSiteId)</td></tr>
+  <tr><td>Admin consent required</td><td>No</td><td>✅ Yes</td></tr>
+</table>
+
+<h3>Access Control</h3>
+<ul>
+  <li><strong>DMs:</strong> Default is <span class="code">dmPolicy: "pairing"</span> — unknown senders ignored until approved. Allowlist uses AAD object IDs (not email/name — those are mutable).</li>
+  <li><strong>Groups/Channels:</strong> Default is <span class="code">groupPolicy: "allowlist"</span> — blocked unless you configure <span class="code">groupAllowFrom</span>. Or set <span class="code">groupPolicy: "open"</span> with mention gating.</li>
+  <li><strong>Per-team/channel tools:</strong> You can configure which tools are allowed per team, per channel, per sender — very granular.</li>
+</ul>
+
+<h3>Sessions &amp; Routing</h3>
+<ul>
+  <li>DMs → main session (user tied to their AAD object ID)</li>
+  <li>Channel messages → isolated session per conversation: <span class="code">agent:&lt;id&gt;:msteams:channel:&lt;conversationId&gt;</span></li>
+  <li>Replies always go back to the channel they came from</li>
+</ul>
+
+<h3>Adaptive Cards</h3>
+<p>Polls and arbitrary rich cards are sent as Adaptive Cards (Teams has no native poll API). Cards can be sent to users or conversation IDs via the <span class="code">message</span> tool or CLI.</p>
+
+<h3>Local Development Tunneling</h3>
+<p>Teams can't reach localhost. Options: ngrok (<span class="code">ngrok http 3978</span>) or Tailscale Funnel. Set the Azure Bot Messaging Endpoint to the tunnel URL.</p>
+
+<hr class="section-divider">
+
+<h2>5. Brad's Enterprise Setup Guide (openclawforge.com)</h2>
+
+<p>His article at <a href="https://openclawforge.com/blog/how-to-connect-openclaw-to-microsoft-teams-for-enterprise/">openclawforge.com</a> covers the enterprise angle specifically:</p>
+
+<ul>
+  <li><strong>Why OpenClaw over standard Teams bots:</strong> Standard bots are rigid linear logic (slash commands only). OpenClaw is agentic — it monitors channels, identifies needs, and executes multi-step sequences across APIs. Modularity is the key differentiator.</li>
+  <li><strong>Data sovereignty angle:</strong> OpenClaw routes LLM interactions through your own infrastructure — sensitive corporate data doesn't hit public model training sets. Directly addresses healthcare compliance concerns.</li>
+  <li><strong>Recommended skills for enterprise Teams:</strong>
+    <ul>
+      <li>PDF summarization (drop report → instant executive summary)</li>
+      <li>GitHub integration (PR monitoring, issue summaries)</li>
+      <li>Meeting management (action items from transcriptions)</li>
+      <li>Natural language SQL queries against internal databases</li>
+      <li>Notification routing (filter DevOps alerts into specific channels)</li>
+    </ul>
+  </li>
+  <li><strong>Security model:</strong> Restrict by Tenant ID in Azure Bot Service; OAuth2 for high-stakes skills; dedicated gateway for audit logging; principle of least privilege</li>
+  <li><strong>Common gotchas:</strong> Ngrok URL changes after restart (use static reverse proxy); Teams Admin Center must explicitly "Allow" the app org-wide (not just sideloaded); don't overload with too many skills at once</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>6. Relevance to the Enterprise AI Assistant Project</h2>
+
+<div class="finding-box">
+  <h3>This Is Exactly What You're Building</h3>
+  <p>The Enterprise AI Assistant architecture (Azure Container Apps + Graph API + Bot Framework + PostgreSQL, deployed into client's Azure tenant) maps almost perfectly onto what Brad has documented and built production tooling for. The difference is you're building a product/service for others — Brad built it for his own firm first, then formalized it.</p>
+</div>
+
+<h3>Stack Alignment</h3>
+<table>
+  <tr><th>Component</th><th>Brad's Setup</th><th>Your Enterprise Assistant</th></tr>
+  <tr><td>Channel</td><td>Microsoft Teams (Bot Framework)</td><td>Microsoft Teams (Bot Framework)</td></tr>
+  <tr><td>Auth</td><td>Entra ID (Single Tenant Azure Bot)</td><td>Azure + Entra ID</td></tr>
+  <tr><td>Hosting</td><td>Private cloud / Cloudflare tunnel</td><td>Azure Container Apps (in client's tenant)</td></tr>
+  <tr><td>Data access</td><td>Graph API (history, attachments)</td><td>Graph API (email, calendar, files)</td></tr>
+  <tr><td>Agent layer</td><td>OpenClaw gateway + plugin</td><td>OpenClaw gateway + Teams plugin</td></tr>
+  <tr><td>Orchestration</td><td>Veritas Kanban (sessions_spawn)</td><td>Your "Claws" (Email, Calendar, Data, etc.)</td></tr>
+</table>
+
+<h3>Key Insights for Your Build</h3>
+
+<ol>
+  <li>
+    <strong>The silent message-drop bug Brad fixed is important.</strong>
+    Brad fixed a bug where every channel message was being silently dropped since the last update. If you're deploying this to Dave Devries or other clients, you need Brad's patched version — make sure you're on OpenClaw 2026.3.8 or higher (your current version) which should include this fix.
+  </li>
+  <li>
+    <strong>Single Tenant is the right call for enterprise deployments.</strong>
+    Multi-tenant bots are deprecated. Each client gets their own Azure Bot in their own tenant — this actually aligns perfectly with your "deploy inside client's Azure tenant" model and eliminates shared credential risk.
+  </li>
+  <li>
+    <strong>Graph API permissions are required for the assistant capabilities you want.</strong>
+    RSC-only gives you real-time message receiving. But email (Graph), calendar (Graph), file access (Graph + SharePoint) — all of those need admin consent in the client's tenant. The Graph permission set you need: <span class="code">Mail.Read</span>, <span class="code">Mail.Send</span>, <span class="code">Calendars.ReadWrite</span>, <span class="code">Files.Read.All</span>, <span class="code">ChannelMessage.Read.All</span>, <span class="code">User.Read.All</span>.
+  </li>
+  <li>
+    <strong>Per-team/channel tool policies = product feature.</strong>
+    OpenClaw allows <span class="code">tools</span> config per team, channel, and sender. This is your access control model for enterprise — a VP gets different tool access than a manager. Document this as a product capability.
+  </li>
+  <li>
+    <strong>Veritas Kanban is worth studying closely.</strong>
+    For multi-agent orchestration within Teams (spawning sub-agents for longer tasks, tracking them, routing results back), his YAML pipeline model and Squad Chat protocol are exactly the kind of patterns you'd want for the "Claw" architecture. No need to reinvent this wheel.
+  </li>
+  <li>
+    <strong>Azure account blocker = same blocker Brad had.</strong>
+    The Gmail-tied Microsoft account issue you hit is a common friction point. Brad dealt with this too. Solution: create a new Microsoft account with a non-Gmail address for the Azure Bot registration, separate from your personal M365 login. The bot itself doesn't need to be tied to your personal identity.
+  </li>
+</ol>
+
+<hr class="section-divider">
+
+<h2>7. Recommended Next Steps</h2>
+
+<table>
+  <tr><th>Action</th><th>Priority</th><th>Notes</th></tr>
+  <tr><td>Read Brad's full article</td><td><span class="tag tag-green">High</span></td><td><a href="https://openclawforge.com/blog/how-to-connect-openclaw-to-microsoft-teams-for-enterprise/">openclawforge.com</a> — enterprise-specific setup guide</td></tr>
+  <tr><td>Star / watch Veritas Kanban</td><td><span class="tag tag-green">High</span></td><td>Multi-agent orchestration patterns directly applicable; study Squad Chat Protocol and YAML pipelines</td></tr>
+  <tr><td>Follow @BradGroux</td><td><span class="tag tag-blue">Medium</span></td><td>He's actively publishing on OpenClaw Teams; worth staying in his orbit. Could be a peer/collaborator.</td></tr>
+  <tr><td>Resolve Azure account blocker</td><td><span class="tag tag-green">High</span></td><td>Create fresh Microsoft account (non-Gmail) for Azure Bot Service. Don't tie to personal M365 login.</td></tr>
+  <tr><td>Map Graph API permission set</td><td><span class="tag tag-green">High</span></td><td>Define the exact permissions needed for email + calendar + files + Teams. Plan admin consent flow for client onboarding.</td></tr>
+  <tr><td>Review Teams manifest example in local docs</td><td><span class="tag tag-blue">Medium</span></td><td>Full working manifest in <span class="code">/opt/homebrew/lib/node_modules/openclaw/docs/channels/msteams.md</span></td></tr>
+  <tr><td>Consider reaching out to Brad</td><td><span class="tag tag-yellow">Optional</span></td><td>He's looking to talk with enterprise Teams builders. His frame (Digital Meld = enterprise AI automation) overlaps with yours. Not a competitor if you're healthcare-focused.</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<p class="citation">
+  Sources: @BradGroux tweet (x.com/bradgroux/status/2031125782211235995, March 9, 2026) · github.com/BradGroux/veritas-kanban · openclawforge.com/blog/how-to-connect-openclaw-to-microsoft-teams-for-enterprise/ · Local OpenClaw docs: /opt/homebrew/lib/node_modules/openclaw/docs/channels/msteams.md (updated 2026-01-21) · github.com/BradGroux (profile, March 10, 2026)
+</p>
+
+</body>
+</html>

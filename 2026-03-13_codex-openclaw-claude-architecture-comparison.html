@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Codex vs OpenClaw vs Claude Code — Local Architecture Comparison</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Georgia, serif;
+      background: #f7f5f2;
+      color: #1f2937;
+      line-height: 1.65;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    .header {
+      background: #0f172a;
+      color: white;
+      padding: 32px;
+      border-radius: 16px;
+      margin-bottom: 28px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+    }
+    .header h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+      line-height: 1.2;
+    }
+    .header p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 1.03rem;
+    }
+    h2 {
+      margin-top: 34px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #b91c1c;
+      color: #111827;
+    }
+    h3 {
+      margin-top: 24px;
+      color: #111827;
+    }
+    .alert, .finding-box {
+      background: white;
+      border-left: 6px solid #b91c1c;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 18px 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .alert.blue { border-left-color: #2563eb; }
+    .alert.green { border-left-color: #15803d; }
+    .alert.yellow { border-left-color: #ca8a04; }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .tag.red { background: #fee2e2; color: #991b1b; }
+    .tag.green { background: #dcfce7; color: #166534; }
+    .tag.blue { background: #dbeafe; color: #1d4ed8; }
+    .tag.yellow { background: #fef3c7; color: #92400e; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin: 16px 0 24px;
+    }
+    th {
+      background: #111827;
+      color: white;
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+    }
+    td {
+      padding: 12px 14px;
+      border-top: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.92em;
+    }
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 14px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+    ul li, ol li { margin-bottom: 8px; }
+    .citation {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Codex vs OpenClaw vs Claude Code</h1>
+      <p>Local architecture walkthrough of <code>~/.codex</code>, <code>~/.openclaw</code>, and <code>~/.claude</code> — what each system stores, where the patterns overlap, and what we should learn for the enterprise agent.</p>
+    </div>
+
+    <div class="alert blue">
+      <strong>Bottom line:</strong> these systems are converging on similar primitives — auth, config, sessions, skills, logs, memory/state, and project trust. The big difference is that <strong>OpenClaw has a real workspace philosophy</strong>, while Codex and Claude Code feel more like <strong>local coding runtimes</strong> with heavier internal state and thinner user-facing filesystem structure.
+    </div>
+
+    <h2>1. Executive Summary</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Codex</h3>
+        <p>A local coding-agent runtime with OAuth auth, SQLite-backed internal state, shell snapshots, sessions, skills, and automation tables.</p>
+      </div>
+      <div class="card">
+        <h3>OpenClaw</h3>
+        <p>A broader personal-agent operating environment: gateway, channels, cron, devices, workspace files, memory DB, delivery queue, and agent orchestration.</p>
+      </div>
+      <div class="card">
+        <h3>Claude Code</h3>
+        <p>A coding-agent environment with project transcripts, file history, session env snapshots, shell snapshots, todos, plugin metadata, and debug logs.</p>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>System</th>
+          <th>Feels Like</th>
+          <th>Primary Strength</th>
+          <th>Best Mental Model</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Codex</td>
+          <td>Productized coding runtime</td>
+          <td>Structured local state + auth + automation patterns</td>
+          <td>"Local coding engine with persistent runtime state"</td>
+        </tr>
+        <tr>
+          <td>OpenClaw</td>
+          <td>Agent operating system</td>
+          <td>Workspace, messaging, proactive execution, orchestration</td>
+          <td>"Personal/local agent platform"</td>
+        </tr>
+        <tr>
+          <td>Claude Code</td>
+          <td>Coding assistant runtime</td>
+          <td>Project/session traceability and file history</td>
+          <td>"Project-centric coding session archive"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Smoke Test: Codex Coding Path</h2>
+    <div class="finding-box">
+      <strong>Result:</strong> the Codex coding path is working, but the local Codex CLI config is still pointed at the wrong default model.
+    </div>
+    <ul>
+      <li>First test failed with <code>o4-mini</code> because that model is not supported on the ChatGPT-account auth path.</li>
+      <li>Second test succeeded when forced to <code>gpt-5.4</code>.</li>
+      <li>Conclusion: <strong>auth is good, runtime is good, local Codex CLI default model should be updated to <code>gpt-5.4</code></strong>.</li>
+    </ul>
+    <pre>Successful smoke test:
+CODEX_OK cwd=/Users/blake/Repo/enterprise-assistant</pre>
+
+    <h2>3. What Lives in <code>~/.codex</code></h2>
+    <p>The <code>.codex</code> folder looks like a compact local control plane for the Codex runtime.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Path</th>
+          <th>What It Appears To Do</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>auth.json</code></td>
+          <td>Stores auth mode and OAuth tokens</td>
+          <td>Sensitive. Includes ChatGPT plan metadata and refresh/access tokens.</td>
+        </tr>
+        <tr>
+          <td><code>config.toml</code></td>
+          <td>Human-editable runtime config</td>
+          <td>Very small: model, personality, project trust.</td>
+        </tr>
+        <tr>
+          <td><code>.codex-global-state.json</code></td>
+          <td>App/UI state</td>
+          <td>Workspace roots, experiment flags, desktop state.</td>
+        </tr>
+        <tr>
+          <td><code>logs_1.sqlite</code></td>
+          <td>Logging/event store</td>
+          <td>General runtime logs in SQLite.</td>
+        </tr>
+        <tr>
+          <td><code>state_5.sqlite</code></td>
+          <td>Internal state machine / jobs DB</td>
+          <td>Contains jobs, outputs, migrations, agent job items.</td>
+        </tr>
+        <tr>
+          <td><code>sqlite/codex-dev.db</code></td>
+          <td>Automation/inbox DB</td>
+          <td>Contains <code>automations</code>, <code>automation_runs</code>, <code>inbox_items</code>.</td>
+        </tr>
+        <tr>
+          <td><code>shell_snapshots/</code></td>
+          <td>Captured shell state</td>
+          <td>Useful for reproducibility and command-context recovery.</td>
+        </tr>
+        <tr>
+          <td><code>skills/</code></td>
+          <td>Instruction packs</td>
+          <td>System skills like docs, skill-creator, skill-installer.</td>
+        </tr>
+        <tr>
+          <td><code>sessions/</code></td>
+          <td>Session persistence</td>
+          <td>Likely conversation/runtime session state.</td>
+        </tr>
+        <tr>
+          <td><code>memories/</code></td>
+          <td>Memory layer</td>
+          <td>Present, but not obviously central in the way OpenClaw workspace memory is.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert green">
+      <strong>Important observation:</strong> Codex uses a <strong>small human config + large internal SQLite state</strong> pattern. That is very productized. Operators edit a tiny config file, while the runtime manages the heavy lifting internally.
+    </div>
+
+    <h2>4. What Lives in <code>~/.openclaw</code></h2>
+    <p><code>.openclaw</code> is materially broader. It is not just a coding runtime — it is the local operating environment for a general-purpose agent.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Path</th>
+          <th>Role</th>
+          <th>Why It Matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>openclaw.json</code></td>
+          <td>Main config</td>
+          <td>Auth profiles, models, channels, tools, gateway.</td>
+        </tr>
+        <tr>
+          <td><code>workspace/</code></td>
+          <td>The agent's human-readable brain</td>
+          <td>SOUL, USER, WORK, MEMORY, project context, reports, scripts.</td>
+        </tr>
+        <tr>
+          <td><code>memory/main.sqlite</code></td>
+          <td>Semantic memory index</td>
+          <td>Embeddings/chunks for recall.</td>
+        </tr>
+        <tr>
+          <td><code>cron/</code></td>
+          <td>Scheduled work</td>
+          <td>Jobs and run history.</td>
+        </tr>
+        <tr>
+          <td><code>devices/</code></td>
+          <td>Paired node/device state</td>
+          <td>Makes OpenClaw multi-device.</td>
+        </tr>
+        <tr>
+          <td><code>delivery-queue/</code></td>
+          <td>Outbound delivery management</td>
+          <td>Proactive messaging/retries.</td>
+        </tr>
+        <tr>
+          <td><code>logs/</code></td>
+          <td>Gateway/config/runtime logs</td>
+          <td>Operational visibility.</td>
+        </tr>
+        <tr>
+          <td><code>credentials/</code>, <code>telegram/</code></td>
+          <td>Channel state</td>
+          <td>Provider-specific operational data.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="finding-box">
+      <strong>OpenClaw’s differentiator:</strong> the workspace is not just storage — it is the explicit memory and operating model. That is a stronger human-comprehensible design than hiding everything in app-managed state.
+    </div>
+
+    <h2>5. What Lives in <code>~/.claude</code></h2>
+    <p>Claude Code sits somewhere between Codex and OpenClaw: more visible than Codex in some ways, but still clearly project/session-centric rather than workspace-centric.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Path</th>
+          <th>What It Suggests</th>
+          <th>Takeaway</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>history.jsonl</code></td>
+          <td>Linear conversation/event history</td>
+          <td>Transcript-first persistence.</td>
+        </tr>
+        <tr>
+          <td><code>projects/</code></td>
+          <td>Per-project session grouping</td>
+          <td>Project-centric organization.</td>
+        </tr>
+        <tr>
+          <td><code>file-history/</code></td>
+          <td>Tracked file versions</td>
+          <td>Strong for coding traceability and rollback.</td>
+        </tr>
+        <tr>
+          <td><code>session-env/</code></td>
+          <td>Captured environment per session</td>
+          <td>Useful for reproducibility.</td>
+        </tr>
+        <tr>
+          <td><code>shell-snapshots/</code></td>
+          <td>Shell state capture</td>
+          <td>Same broad reliability instinct as Codex.</td>
+        </tr>
+        <tr>
+          <td><code>todos/</code></td>
+          <td>Task state per session/agent</td>
+          <td>Explicit task planning surface.</td>
+        </tr>
+        <tr>
+          <td><code>plugins/</code></td>
+          <td>Plugin/marketplace system</td>
+          <td>Extensibility via plugins rather than OpenClaw-style workspace skills alone.</td>
+        </tr>
+        <tr>
+          <td><code>debug/</code>, <code>backups/</code></td>
+          <td>Operational diagnostics and state backups</td>
+          <td>Productized operational hygiene.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Shared Architectural Patterns</h2>
+    <p>All three systems independently converge on the same core ideas:</p>
+    <ul>
+      <li><strong>Auth is local and durable</strong> — tokens/identity live on disk.</li>
+      <li><strong>Config is separate from runtime state</strong> — small editable config, larger managed state.</li>
+      <li><strong>Sessions are persisted</strong> — transcripts and session artifacts survive restarts.</li>
+      <li><strong>Shell/environment capture matters</strong> — both Codex and Claude snapshot shell context.</li>
+      <li><strong>Skills/plugins/instruction packs are modular</strong> — capabilities are composable.</li>
+      <li><strong>SQLite is a serious winner</strong> — especially for logs, jobs, run state, and memory indexes.</li>
+    </ul>
+
+    <div class="alert yellow">
+      <strong>This matters for the enterprise agent:</strong> these are not random implementation details. They are emerging as the standard local architecture for serious tool-using agents.
+    </div>
+
+    <h2>7. Where Codex and Claude Code Are Similar</h2>
+    <ul>
+      <li>Both are clearly <strong>coding-agent-first</strong>, not general personal-agent systems.</li>
+      <li>Both keep project/session state locally.</li>
+      <li>Both snapshot shell or environment context.</li>
+      <li>Both maintain logs/debug data and some internal persistence that is more runtime-oriented than human-oriented.</li>
+    </ul>
+
+    <h2>8. Where OpenClaw Is Different</h2>
+    <ol>
+      <li><strong>Workspace-as-brain:</strong> OpenClaw makes the filesystem itself a first-class memory layer.</li>
+      <li><strong>Proactive runtime:</strong> cron, messaging, devices, delivery queue, paired nodes.</li>
+      <li><strong>Broader scope:</strong> OpenClaw is not just a coding tool — it is a local assistant platform.</li>
+      <li><strong>Human legibility:</strong> the most important knowledge is visible in markdown files, not hidden inside app state.</li>
+    </ol>
+
+    <h2>9. Best Learnings to Steal for the Enterprise Agent</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Learning</th>
+          <th>Why It Matters</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Use SQLite heavily</td>
+          <td>Great for local job queues, automations, approvals, memory metadata, and run history.</td>
+          <td>Codex + OpenClaw</td>
+        </tr>
+        <tr>
+          <td>Keep config small</td>
+          <td>Operators should edit a minimal config while the runtime manages noisy state.</td>
+          <td>Codex</td>
+        </tr>
+        <tr>
+          <td>Track per-project trust</td>
+          <td>Different workspaces should have different trust/sandbox policies.</td>
+          <td>Codex</td>
+        </tr>
+        <tr>
+          <td>Capture shell/environment state</td>
+          <td>Improves reproducibility and debugging.</td>
+          <td>Codex + Claude</td>
+        </tr>
+        <tr>
+          <td>Separate jobs from chat</td>
+          <td>Use inbox items, automations, runs, outputs — not everything should be one conversation stream.</td>
+          <td>Codex</td>
+        </tr>
+        <tr>
+          <td>Preserve a human-readable workspace</td>
+          <td>Long-horizon continuity is better when key knowledge lives in files humans can inspect and edit.</td>
+          <td>OpenClaw</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="finding-box">
+      <strong>Strongest hybrid architecture for Blake’s enterprise assistant:</strong><br/>
+      <br/>
+      <strong>OpenClaw-style workspace + Codex-style runtime SQLite + Claude/Codex-style shell snapshots + explicit job/automation tables.</strong>
+    </div>
+
+    <h2>10. My Opinionated Take</h2>
+    <p>If I had to rank the architectural ideas:</p>
+    <ol>
+      <li><strong>OpenClaw has the best memory/workspace philosophy.</strong></li>
+      <li><strong>Codex has the cleanest productized runtime/state split.</strong></li>
+      <li><strong>Claude Code has strong project traceability and file/session operational patterns.</strong></li>
+    </ol>
+
+    <p>The ideal future system probably combines all three:</p>
+    <ul>
+      <li>OpenClaw’s readable workspace and identity system</li>
+      <li>Codex’s internal state and automation architecture</li>
+      <li>Claude’s project/file history and session tracking rigor</li>
+    </ul>
+
+    <h2>11. Recommended Next Steps</h2>
+    <ol>
+      <li><strong>Update Codex CLI config</strong> from <code>o4-mini</code> to <code>gpt-5.4</code>.</li>
+      <li><strong>Optionally inspect the Codex SQLite schemas</strong> more deeply if you want to reverse-engineer automations/jobs.</li>
+      <li><strong>Write an enterprise-agent architecture note</strong> based on this hybrid model.</li>
+      <li><strong>Consider per-project trust levels</strong> in your own enterprise assistant design.</li>
+    </ol>
+
+    <div class="citation">
+      Generated from local inspection of <code>~/.codex</code>, <code>~/.openclaw</code>, and <code>~/.claude</code> on 2026-03-13. Includes live smoke-test findings from the Codex CLI auth/model setup.
+    </div>
+  </div>
+</body>
+</html>

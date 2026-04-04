@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Integration Overview - Enata Onboarding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        header {
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #0066cc;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        h2 {
+            color: #0066cc;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        h3 {
+            color: #333;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            color: #555;
+            font-size: 1.1em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        
+        th {
+            background: #0066cc;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        
+        .callout {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #0066cc;
+            margin: 15px 0;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ff9800;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+        }
+        
+        .architecture-diagram {
+            background: #fafafa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Salesforce Integration Overview</h1>
+            <p class="meta">
+                <strong>Prepared for:</strong> Marty Moesta, Enata<br>
+                <strong>Date:</strong> February 11, 2026<br>
+                <strong>Author:</strong> Blake Thomson, Cedars-Sinai Health System
+            </p>
+        </header>
+
+        <section>
+            <h2>Executive Summary</h2>
+            <p>This document provides a comprehensive overview of Cedars-Sinai's current Salesforce data integration, including the database schema, data synchronization pipeline, LLM-based enrichment layer, and reporting/analytics capabilities. This information is intended to facilitate a smooth transition to Enata's AI-enabled CRM platform while ensuring continuity of our current analytical workflows.</p>
+            
+            <div class="callout">
+                <strong>Integration Model:</strong> Two-Part System
+                <ul>
+                    <li><strong>Phase 1 (Initial):</strong> Enata ingests our existing Salesforce data structure</li>
+                    <li><strong>Phase 2 (Ongoing):</strong> Enata hosts the data with cron jobs to continuously sync with our Salesforce backend</li>
+                    <li><strong>Goal:</strong> Preserve current analytics capabilities while transitioning to Enata's platform</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Current Architecture Overview</h2>
+            
+            <div class="architecture-diagram">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        Salesforce (Source)                               │
+│  Objects: Account, Contact, User, Task, Event, TaskWhoRelation         │
+└────────────────────────────┬────────────────────────────────────────────┘
+                             │
+                             │ Salesforce REST API
+                             │ (sync via Python client)
+                             ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    PostgreSQL Database (Supabase)                        │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────┐    │
+│  │                    Core Salesforce Tables                       │    │
+│  │  • sf_accounts       • sf_contacts      • sf_users             │    │
+│  │  • sf_activities     • sf_task_who_relations                   │    │
+│  └────────────────────────────────────────────────────────────────┘    │
+│                             │                                            │
+│                             │ LLM Enrichment Pipeline                    │
+│                             ▼                                            │
+│  ┌────────────────────────────────────────────────────────────────┐    │
+│  │                  LLM-Enhanced Tables                            │    │
+│  │  • sf_enhanced_activities  (semantic enrichments)              │    │
+│  │  • sf_enhanced_providers   (relationship state)                │    │
+│  │  • sf_activity_providers   (junction/many-to-many)             │    │
+│  └────────────────────────────────────────────────────────────────┘    │
+└────────────────────────────┬────────────────────────────────────────────┘
+                             │
+                             │ Query Layer
+                             ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         Analytics Layer                                  │
+│  • MCP Server Tools (foundation, analytics, intelligence)               │
+│  • LangGraph Salesforce Analyst Agent                                   │
+│  • Chainlit Chat Interface                                              │
+└─────────────────────────────────────────────────────────────────────────┘
+            </div>
+        </section>
+
+        <section>
+            <h2>Salesforce Objects & Data Model</h2>
+            
+            <h3>1. Core Salesforce Objects</h3>
+            <p>Our integration syncs five primary Salesforce objects into corresponding PostgreSQL tables:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Salesforce Object</th>
+                        <th>Database Table</th>
+                        <th>Purpose</th>
+                        <th>Key Fields</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>User</strong></td>
+                        <td>sf_users</td>
+                        <td>Sales reps / Business Development team members</td>
+                        <td>Username, Name, Email, IsActive</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Account</strong></td>
+                        <td>sf_accounts</td>
+                        <td>Organizations / Medical practices</td>
+                        <td>Name, Type</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contact</strong></td>
+                        <td>sf_contacts</td>
+                        <td>Healthcare providers (physicians, staff)</td>
+                        <td>Name, NPI, Specialty, Geography, Network</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task + Event</strong></td>
+                        <td>sf_activities</td>
+                        <td>BD outreach activities (merged into single table)</td>
+                        <td>Subject, Description, ActivityDate, MNO_Type, Owner</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TaskWhoRelation</strong></td>
+                        <td>sf_task_who_relations</td>
+                        <td>Many-to-many: Tasks linked to multiple Contacts</td>
+                        <td>TaskId, RelationId (ContactId)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2. Custom Salesforce Fields (MNO Prefix)</h3>
+            <p>Cedars-Sinai uses custom fields with the "MNO" prefix for BD activity classification:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Type</th>
+                        <th>Purpose</th>
+                        <th>Example Values</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>MNO_Type__c</code></td>
+                        <td>Picklist</td>
+                        <td>Primary activity classification</td>
+                        <td>BD_Outreach, MD_to_MD_Visits, Events, Onboarding_Tasks</td>
+                    </tr>
+                    <tr>
+                        <td><code>MNO_Subtype_c__c</code></td>
+                        <td>Picklist</td>
+                        <td>Secondary classification</td>
+                        <td>Cold_Call, Lunch, Dinner, MD_to_MD_w_Community</td>
+                    </tr>
+                    <tr>
+                        <td><code>MNO_Setting__c</code></td>
+                        <td>Picklist</td>
+                        <td>Activity setting</td>
+                        <td>Virtual, In-Person, Phone</td>
+                    </tr>
+                    <tr>
+                        <td><code>MN_Tags__c</code></td>
+                        <td>Text</td>
+                        <td>Flexible tagging</td>
+                        <td>HRBP, TACRI, New_Physician</td>
+                    </tr>
+                    <tr>
+                        <td><code>Comments_Short__c</code></td>
+                        <td>Text</td>
+                        <td>Brief activity notes</td>
+                        <td>Brief summary separate from full description</td>
+                    </tr>
+                    <tr>
+                        <td><code>Attendees_Concatenation__c</code></td>
+                        <td>Text</td>
+                        <td>List of all attendees</td>
+                        <td>Comma-separated provider names</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3. Contact Custom Fields</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Type</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>NPI__c</code></td>
+                        <td>Text</td>
+                        <td>National Provider Identifier (10-digit unique ID)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Specialty__c</code></td>
+                        <td>Picklist</td>
+                        <td>Provider medical specialty</td>
+                    </tr>
+                    <tr>
+                        <td><code>Specialty_Group__c</code></td>
+                        <td>Picklist</td>
+                        <td>Specialty grouping (broader category)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Is_Physician__c</code></td>
+                        <td>Checkbox</td>
+                        <td>Distinguish physicians from other staff</td>
+                    </tr>
+                    <tr>
+                        <td><code>Active__c</code></td>
+                        <td>Checkbox</td>
+                        <td>Active vs. inactive provider</td>
+                    </tr>
+                    <tr>
+                        <td><code>Network_picklist__c</code></td>
+                        <td>Picklist</td>
+                        <td>Cedars network affiliation</td>
+                    </tr>
+                    <tr>
+                        <td><code>Sub_Network__c</code></td>
+                        <td>Picklist</td>
+                        <td>Sub-network or division</td>
+                    </tr>
+                    <tr>
+                        <td><code>Geography__c</code></td>
+                        <td>Picklist</td>
+                        <td>Geographic territory</td>
+                    </tr>
+                    <tr>
+                        <td><code>Primary_Geography__c</code></td>
+                        <td>Picklist</td>
+                        <td>Primary geographic assignment</td>
+                    </tr>
+                    <tr>
+                        <td><code>Last_Outreach_Activity_Date__c</code></td>
+                        <td>Date</td>
+                        <td>Most recent BD outreach date</td>
+                    </tr>
+                    <tr>
+                        <td><code>Contact_Account_Name__c</code></td>
+                        <td>Text</td>
+                        <td>Denormalized account name for performance</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Database Schema Details</h2>
+            
+            <h3>Core Tables Schema</h3>
+            
+            <h4>sf_contacts (Healthcare Providers)</h4>
+            <div class="code-block">
+Table: sf_contacts
+Primary Key: id (UUID)
+Unique: salesforce_id (Salesforce Contact.Id)
+
+Key Columns:
+- salesforce_id: Salesforce ID (18 chars)
+- name, first_name, last_name: Provider name
+- npi, specialty, specialty_group: Provider classification
+- is_physician, active: Status flags
+- network, sub_network, geography, primary_geography: Network/location
+- account_id: Link to sf_accounts
+- last_activity_date, last_outreach_activity_date: Activity tracking
+- sf_created_date, sf_last_modified_date: Salesforce timestamps
+- last_synced_at: Local sync timestamp
+
+Indexes:
+- Primary lookups: name, npi, email
+- Filter indexes: specialty, specialty_group, primary_geography, network, is_physician, active
+- Foreign key: account_id
+            </div>
+
+            <h4>sf_activities (Tasks + Events Combined)</h4>
+            <div class="code-block">
+Table: sf_activities
+Primary Key: id (UUID)
+Unique: salesforce_id (Salesforce Task.Id or Event.Id)
+
+Key Columns:
+- salesforce_id: Salesforce ID
+- type: 'Task' or 'Event'
+- subject, description: Activity content
+- activity_date: Date of activity
+- status, priority, is_closed: Task status
+- mno_type, mno_subtype, mno_setting: Custom BD classifications
+- mn_tags, comments_short: Tagging and notes
+- contact_id: Foreign key to sf_contacts (primary contact)
+- who_id, what_id, account_id, owner_id: Salesforce relationships
+- attendees_concatenation: All attendees
+- start_datetime, end_datetime, duration_minutes, location: Event fields
+- sf_created_date, sf_last_modified_date, last_synced_at: Timestamps
+
+Indexes:
+- Primary filters: activity_date + owner_id, owner_id + mno_type
+- Lookups: type, mno_type, mno_subtype, status, contact_id, who_id, account_id
+            </div>
+
+            <h4>sf_task_who_relations (Many-to-Many Junction)</h4>
+            <div class="code-block">
+Table: sf_task_who_relations
+Primary Key: id (int)
+Unique: salesforce_id
+
+Purpose: Links a single task to multiple contacts (e.g., group lunch with 3 physicians)
+
+Key Columns:
+- salesforce_id: Salesforce TaskWhoRelation.Id
+- task_id: Salesforce Task.Id
+- relation_id: Salesforce Contact.Id
+- type: Relation type
+- is_deleted: Soft delete flag
+
+Indexes:
+- task_id, relation_id, (task_id, relation_id) composite
+            </div>
+
+            <h3>Sync Strategy</h3>
+            <div class="callout">
+                <h4>Targeted Sync (Performance Optimization)</h4>
+                <p>Rather than syncing all Salesforce data, we use a targeted approach:</p>
+                <ol>
+                    <li><strong>Contacts:</strong> Only sync contacts that have activities (via TaskWhoRelation)</li>
+                    <li><strong>Accounts:</strong> Only sync accounts linked to contacts with activities</li>
+                    <li><strong>Users:</strong> Only active users</li>
+                    <li><strong>Activities:</strong> All tasks and events (not filtered)</li>
+                </ol>
+                <p><strong>Rationale:</strong> BD analysis focuses on providers we've engaged with, not the entire contact database. This reduces sync time and database size by ~70%.</p>
+            </div>
+
+            <h3>Sync Modes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mode</th>
+                        <th>Behavior</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>upsert</strong></td>
+                        <td>Update existing or create new (based on salesforce_id)</td>
+                        <td>Default mode for incremental syncs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>overwrite</strong></td>
+                        <td>Clear all data, then rebuild from Salesforce</td>
+                        <td>Full refresh (rarely used)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>incremental</strong></td>
+                        <td>Only records modified since last sync</td>
+                        <td>Hourly/daily syncs (requires last_sync tracking)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>insert_only</strong></td>
+                        <td>Skip existing records, only add new</td>
+                        <td>Initial backfill without overwriting manual edits</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>LLM Enrichment Layer</h2>
+            
+            <p>The raw Salesforce data is enhanced with LLM-derived semantic fields to enable strategic analytics. This enrichment pipeline runs after sync and creates three additional tables:</p>
+
+            <h3>1. sf_enhanced_activities (Semantic Activity Enrichments)</h3>
+            <p><strong>Purpose:</strong> Extract meaning from unstructured activity notes at scale</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Enrichment Field</th>
+                        <th>Type</th>
+                        <th>Purpose</th>
+                        <th>Example Values</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>initiative_tag</code></td>
+                        <td>String</td>
+                        <td>Strategic program classification</td>
+                        <td>HRBP, TACRI_Oncology, New_Physician_Onboarding, Sports_Medicine</td>
+                    </tr>
+                    <tr>
+                        <td><code>activity_intent</code></td>
+                        <td>String</td>
+                        <td>Strategic purpose</td>
+                        <td>First_Contact, Relationship_Building, Conversion_Attempt, Follow_Up</td>
+                    </tr>
+                    <tr>
+                        <td><code>outcome_sentiment</code></td>
+                        <td>String</td>
+                        <td>How well the interaction went</td>
+                        <td>positive, neutral, negative, unknown</td>
+                    </tr>
+                    <tr>
+                        <td><code>outcome_score</code></td>
+                        <td>Float</td>
+                        <td>Numeric sentiment score</td>
+                        <td>-1.0 to 1.0</td>
+                    </tr>
+                    <tr>
+                        <td><code>outcome_key_phrase</code></td>
+                        <td>Text</td>
+                        <td>Phrase indicating sentiment</td>
+                        <td>"Great lunch, exchanged cell numbers"</td>
+                    </tr>
+                    <tr>
+                        <td><code>relationship_stage</code></td>
+                        <td>String</td>
+                        <td>Pipeline stage</td>
+                        <td>Prospecting, Engaged, Introduced, Converted, Active_Referrer, Stalled</td>
+                    </tr>
+                    <tr>
+                        <td><code>strategic_value</code></td>
+                        <td>Integer</td>
+                        <td>Activity importance (1-5)</td>
+                        <td>5=conversion, 4=high-value, 3=meaningful, 2=routine, 1=admin</td>
+                    </tr>
+                    <tr>
+                        <td><code>follow_up_needed</code></td>
+                        <td>Boolean</td>
+                        <td>Requires action</td>
+                        <td>true/false</td>
+                    </tr>
+                    <tr>
+                        <td><code>follow_up_type</code></td>
+                        <td>String</td>
+                        <td>Type of follow-up</td>
+                        <td>Schedule_Meeting, Send_Information, Make_Introduction</td>
+                    </tr>
+                    <tr>
+                        <td><code>next_steps</code></td>
+                        <td>Text</td>
+                        <td>Extracted action items</td>
+                        <td>"Schedule lunch with Dr. Smith"</td>
+                    </tr>
+                    <tr>
+                        <td><code>competitor_mention</code></td>
+                        <td>Boolean</td>
+                        <td>Competitive intelligence flag</td>
+                        <td>true/false</td>
+                    </tr>
+                    <tr>
+                        <td><code>competitor_context</code></td>
+                        <td>Text</td>
+                        <td>Competitive situation description</td>
+                        <td>"Physician currently rounds only at UCLA"</td>
+                    </tr>
+                    <tr>
+                        <td><code>mentioned_entities</code></td>
+                        <td>JSON</td>
+                        <td>Extracted entities</td>
+                        <td>{"physicians": ["Smith"], "practices": ["UCLA"], "programs": ["HRBP"]}</td>
+                    </tr>
+                    <tr>
+                        <td><code>onboarding_milestone</code></td>
+                        <td>String</td>
+                        <td>Onboarding step completed</td>
+                        <td>MD_Intro, SharePoint_Setup, Bio_Card, Headshot, Department_Intro</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2. sf_enhanced_providers (Provider Relationship State)</h3>
+            <p><strong>Purpose:</strong> Track current relationship status and aggregate metrics per provider</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>current_relationship_stage</code></td>
+                        <td>String</td>
+                        <td>Current stage in referral pipeline</td>
+                    </tr>
+                    <tr>
+                        <td><code>engagement_score</code></td>
+                        <td>Float</td>
+                        <td>Calculated: frequency × recency × sentiment</td>
+                    </tr>
+                    <tr>
+                        <td><code>total_activities_count</code></td>
+                        <td>Integer</td>
+                        <td>Number of activities with this provider</td>
+                    </tr>
+                    <tr>
+                        <td><code>positive/neutral/negative_activities_count</code></td>
+                        <td>Integer</td>
+                        <td>Sentiment breakdown</td>
+                    </tr>
+                    <tr>
+                        <td><code>avg_strategic_value</code></td>
+                        <td>Float</td>
+                        <td>Average activity value (1-5)</td>
+                    </tr>
+                    <tr>
+                        <td><code>days_since_last_activity</code></td>
+                        <td>Integer</td>
+                        <td>For stalled relationship detection</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_new_physician</code></td>
+                        <td>Boolean</td>
+                        <td>New Cedars physician flag</td>
+                    </tr>
+                    <tr>
+                        <td><code>onboarding_complete</code></td>
+                        <td>Boolean</td>
+                        <td>Onboarding status</td>
+                    </tr>
+                    <tr>
+                        <td><code>onboarding_milestones_completed</code></td>
+                        <td>JSON Array</td>
+                        <td>["MD_Intro", "SharePoint_Setup"]</td>
+                    </tr>
+                    <tr>
+                        <td><code>primary_rep_id</code></td>
+                        <td>String</td>
+                        <td>Rep with most interactions</td>
+                    </tr>
+                    <tr>
+                        <td><code>initiative_affinity</code></td>
+                        <td>JSON</td>
+                        <td>{"HRBP": 5, "TACRI": 2} - activity counts by initiative</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3. sf_activity_providers (Many-to-Many Junction)</h3>
+            <p><strong>Purpose:</strong> Link activities to ALL providers involved (not just primary contact)</p>
+            
+            <div class="callout">
+                <h4>Why This Table Exists</h4>
+                <p>A single activity (e.g., group lunch) may involve multiple providers. The junction table captures all provider-activity relationships, enabling queries like:</p>
+                <ul>
+                    <li>"Show all activities involving Dr. Smith" (even if not primary contact)</li>
+                    <li>"Who attends events together?" (network analysis)</li>
+                    <li>"What providers were mentioned in this activity's notes?"</li>
+                </ul>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>activity_id</code></td>
+                        <td>Foreign key to sf_enhanced_activities</td>
+                    </tr>
+                    <tr>
+                        <td><code>provider_id</code></td>
+                        <td>Foreign key to sf_enhanced_providers</td>
+                    </tr>
+                    <tr>
+                        <td><code>provider_name</code></td>
+                        <td>Denormalized for query efficiency</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_primary</code></td>
+                        <td>Boolean: primary contact vs. attendee vs. mentioned</td>
+                    </tr>
+                    <tr>
+                        <td><code>role</code></td>
+                        <td>"primary", "attendee", "mentioned"</td>
+                    </tr>
+                    <tr>
+                        <td><code>source</code></td>
+                        <td>"contact_id", "attendees_parsed", "notes_extracted"</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Enrichment Process</h3>
+            <div class="architecture-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Salesforce Sync → Core Tables                            │
+│    (sf_activities, sf_contacts populated)                   │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. LLM Enrichment Service (Batch or On-Write)              │
+│    • SELECT activities WHERE enrichment_timestamp IS NULL   │
+│    • For each activity:                                     │
+│      - Build prompt with activity data                      │
+│      - Call LLM API (Claude Haiku)                         │
+│      - Parse JSON response                                  │
+│      - Write to sf_enhanced_activities                      │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. Provider State Aggregation                               │
+│    • Group activities by provider                           │
+│    • Calculate engagement scores, sentiment breakdown       │
+│    • Determine current relationship stage                   │
+│    • Track onboarding progress                              │
+│    • Write to sf_enhanced_providers                         │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 4. Activity-Provider Junction Population                    │
+│    • Extract providers from contact_id                      │
+│    • Parse attendees_concatenation                          │
+│    • Extract entities from notes                            │
+│    • Write to sf_activity_providers                         │
+└─────────────────────────────────────────────────────────────┘
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Important: Enrichment Model</h4>
+                <p>Current enrichments use <code>claude-haiku-4-5</code> (fast, cost-effective).</p>
+                <p><strong>Cost estimate:</strong> ~$0.001 per activity (~$1 per 1,000 activities)</p>
+                <p>Enrichment metadata tracks model and version for auditability and re-processing if prompts change.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Reporting & Analytics Layer</h2>
+
+            <h3>MCP Server Tools (Query Layer)</h3>
+            <p>Data access is provided via MCP (Model Context Protocol) server with three tool layers:</p>
+
+            <h4>Layer 1: Foundation Tools (Query Layer)</h4>
+            <ul>
+                <li><code>mcp_query_activities</code> - Flexible activity search with 15+ filter parameters</li>
+                <li><code>mcp_query_providers</code> - Provider search with relationship stage, engagement filters</li>
+                <li><code>mcp_get_activity_details</code> - Full details for single activity</li>
+                <li><code>mcp_get_provider_profile</code> - Complete provider profile with history</li>
+            </ul>
+
+            <h4>Layer 2: Analytics Tools (Aggregation Layer)</h4>
+            <ul>
+                <li><code>mcp_get_initiative_metrics</code> - Performance by initiative (HRBP, TACRI, etc.)</li>
+                <li><code>mcp_get_pipeline_analysis</code> - Provider funnel by relationship stage</li>
+                <li><code>mcp_get_sentiment_analysis</code> - Win/loss patterns with quotes</li>
+                <li><code>mcp_get_competitive_analysis</code> - Competitive intelligence summary</li>
+                <li><code>mcp_get_activity_quality_analysis</code> - Strategic value distribution</li>
+            </ul>
+
+            <h4>Layer 3: Intelligence Tools (Complex Insights)</h4>
+            <ul>
+                <li><code>mcp_get_rep_performance_summary</code> - Individual rep dashboards</li>
+                <li><code>mcp_get_onboarding_dashboard</code> - New physician progress tracking</li>
+                <li><code>mcp_find_stalled_relationships</code> - At-risk relationships</li>
+                <li><code>mcp_get_network_map</code> - Provider co-occurrence analysis</li>
+            </ul>
+
+            <h3>Salesforce Analyst Agent (Conversational Interface)</h3>
+            <p>LangGraph-based ReAct agent providing natural language access to all MCP tools:</p>
+            
+            <div class="callout">
+                <h4>Agent Capabilities</h4>
+                <ul>
+                    <li><strong>Natural language queries:</strong> "What did Sara do for HRBP last quarter?"</li>
+                    <li><strong>Multi-step reasoning:</strong> Tool selection, data retrieval, analysis, synthesis</li>
+                    <li><strong>Streaming responses:</strong> Real-time token streaming to UI</li>
+                    <li><strong>Structured data output:</strong> DataFrames for Analyst View alongside chat</li>
+                    <li><strong>Excel export:</strong> Direct download of query results</li>
+                </ul>
+            </div>
+
+            <h3>Example Analytics Queries</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Tools Used</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"What has Jin done this quarter?"</td>
+                        <td>mcp_query_activities (filter: rep_name="Jin", start_date=Q1)</td>
+                        <td>Activity list with initiative tags, sentiment</td>
+                    </tr>
+                    <tr>
+                        <td>"Show orthopedic surgeons we're engaged with"</td>
+                        <td>mcp_query_providers (specialty="Orthopedic", relationship_stage="Engaged")</td>
+                        <td>Provider list with engagement scores, recent activity</td>
+                    </tr>
+                    <tr>
+                        <td>"How is HRBP performing?"</td>
+                        <td>mcp_get_initiative_metrics (initiative="HRBP")</td>
+                        <td>Activity counts, sentiment breakdown, strategic value</td>
+                    </tr>
+                    <tr>
+                        <td>"Which relationships are stalled?"</td>
+                        <td>mcp_find_stalled_relationships (days=60)</td>
+                        <td>Providers with no contact in 60+ days, last activity</td>
+                    </tr>
+                    <tr>
+                        <td>"Who needs onboarding follow-up?"</td>
+                        <td>mcp_get_onboarding_dashboard (onboarding_complete=false)</td>
+                        <td>New physicians, completed/pending milestones</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Key Nuances & Recommendations for Enata</h2>
+
+            <h3>1. Data Model Nuances</h3>
+            
+            <div class="warning">
+                <h4>⚠️ Tasks + Events Merged into Single Table</h4>
+                <p><strong>Decision:</strong> We merge Salesforce Task and Event objects into a single <code>sf_activities</code> table.</p>
+                <p><strong>Rationale:</strong> BD analysis treats both as "activities" — the distinction between planned (Event) and completed (Task) is less important than the unified activity history.</p>
+                <p><strong>Implication for Enata:</strong> If maintaining separate Task/Event tables, ensure query logic can handle both or consider adopting the merged model.</p>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Targeted Sync (Not Full Database)</h4>
+                <p><strong>Current approach:</strong> Only sync contacts/accounts with activities (via TaskWhoRelation).</p>
+                <p><strong>Benefit:</strong> ~70% reduction in database size and sync time.</p>
+                <p><strong>Trade-off:</strong> Cannot query "all providers" — only those we've engaged.</p>
+                <p><strong>Recommendation:</strong> Maintain this targeted approach unless Enata's platform needs full contact visibility for other features.</p>
+            </div>
+
+            <h3>2. Custom Field Dependencies</h3>
+            
+            <div class="callout">
+                <h4>Critical Custom Fields (Must Preserve)</h4>
+                <p>These custom Salesforce fields are core to our analytics:</p>
+                <ul>
+                    <li><code>MNO_Type__c</code>, <code>MNO_Subtype_c__c</code>, <code>MNO_Setting__c</code> - Activity classification</li>
+                    <li><code>MN_Tags__c</code>, <code>Comments_Short__c</code> - Flexible tagging and notes</li>
+                    <li><code>Attendees_Concatenation__c</code> - Multi-provider activities</li>
+                    <li><code>NPI__c</code>, <code>Specialty__c</code>, <code>Geography__c</code> - Provider filtering</li>
+                    <li><code>Network_picklist__c</code>, <code>Sub_Network__c</code> - Network analysis</li>
+                    <li><code>Last_Outreach_Activity_Date__c</code> - Stalled relationship detection</li>
+                </ul>
+                <p><strong>Action:</strong> Ensure Enata's data model includes these fields or equivalent mappings.</p>
+            </div>
+
+            <h3>3. LLM Enrichment Pipeline</h3>
+
+            <div class="success">
+                <h4>✓ Enrichment Architecture is Portable</h4>
+                <p>The enrichment pipeline is database-agnostic (SQLAlchemy ORM). Key considerations:</p>
+                <ul>
+                    <li><strong>Batch processing:</strong> Nightly/weekly enrichment jobs for new activities</li>
+                    <li><strong>Idempotency:</strong> Enrichments can be re-run (keyed by activity_id)</li>
+                    <li><strong>Cost:</strong> ~$1 per 1,000 activities (Claude Haiku)</li>
+                    <li><strong>Performance:</strong> ~500-1000 activities/hour (API rate limits)</li>
+                </ul>
+                <p><strong>Recommendation:</strong> Enata can host enrichment service or we can continue running it and sync enriched data.</p>
+            </div>
+
+            <h3>4. Sync Frequency & Real-time Needs</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Layer</th>
+                        <th>Current Sync Frequency</th>
+                        <th>Real-time Required?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Core Salesforce data (Activities, Contacts)</td>
+                        <td>Daily (overnight)</td>
+                        <td>No - 24h lag acceptable</td>
+                    </tr>
+                    <tr>
+                        <td>LLM enrichments</td>
+                        <td>Weekly (batch)</td>
+                        <td>No - enrichments are analytical, not operational</td>
+                    </tr>
+                    <tr>
+                        <td>Provider state aggregations</td>
+                        <td>Weekly (after enrichment)</td>
+                        <td>No - used for dashboards, not day-to-day operations</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout">
+                <h4>Sync Recommendation</h4>
+                <p>Daily overnight sync (12am-2am PST) for core data. Weekly batch enrichment (Sundays) for LLM processing. This balances freshness with API costs and processing time.</p>
+            </div>
+
+            <h3>5. Reporting Continuity</h3>
+
+            <div class="warning">
+                <h4>⚠️ Preserve Query Patterns</h4>
+                <p>Key queries we need to maintain:</p>
+                <ul>
+                    <li><strong>Initiative-based filtering:</strong> "Show HRBP activities" (relies on <code>initiative_tag</code>)</li>
+                    <li><strong>Rep performance:</strong> "Sara's activities this quarter" (group by rep + date range)</li>
+                    <li><strong>Provider pipeline:</strong> "Engaged orthopedic surgeons" (filter by specialty + relationship stage)</li>
+                    <li><strong>Geographic analysis:</strong> "South Bay activities" (filter by geography)</li>
+                    <li><strong>Sentiment analysis:</strong> "Positive outcomes this month" (filter by sentiment)</li>
+                    <li><strong>Stalled relationships:</strong> "No contact in 60+ days" (calculate days_since_last_activity)</li>
+                </ul>
+                <p><strong>Action:</strong> Test that Enata's query layer can replicate these patterns. Provide sample queries for validation.</p>
+            </div>
+
+            <h3>6. Data Quality Considerations</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Issue</th>
+                        <th>Impact</th>
+                        <th>Mitigation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inconsistent specialty naming</td>
+                        <td>Provider filtering unreliable</td>
+                        <td>Specialty standardization layer in enrichment</td>
+                    </tr>
+                    <tr>
+                        <td>Multiple contacts for same provider</td>
+                        <td>Duplicate relationships</td>
+                        <td>NPI-based deduplication (NPI is unique federal ID)</td>
+                    </tr>
+                    <tr>
+                        <td>Free-text geography</td>
+                        <td>Geographic analysis fragmented</td>
+                        <td>Geographic standardization (e.g., "South Bay" = Marina del Rey, Torrance, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>Missing custom field values</td>
+                        <td>Incomplete enrichments</td>
+                        <td>Default values, confidence thresholds</td>
+                    </tr>
+                    <tr>
+                        <td>Attendees in notes vs. TaskWhoRelation</td>
+                        <td>Incomplete network mapping</td>
+                        <td>Parse attendees_concatenation + extract from notes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>7. API & Access Patterns</h3>
+
+            <div class="callout">
+                <h4>Current Access Methods</h4>
+                <ul>
+                    <li><strong>MCP Server:</strong> Tool-based access for LLM agents</li>
+                    <li><strong>Direct SQL:</strong> PostgreSQL queries for custom reports</li>
+                    <li><strong>LangGraph Agent:</strong> Natural language interface</li>
+                    <li><strong>Chainlit UI:</strong> Web-based chat + data tables</li>
+                </ul>
+                <p><strong>Recommendation:</strong> Enata should provide REST API matching MCP tool signatures for minimal code changes.</p>
+            </div>
+
+            <h3>8. Enrichment Versioning & Re-processing</h3>
+
+            <div class="success">
+                <h4>✓ Enrichments are Versioned</h4>
+                <p>Every enriched record tracks:</p>
+                <ul>
+                    <li><code>enrichment_timestamp</code> - When processed</li>
+                    <li><code>enrichment_model</code> - Which LLM model used</li>
+                    <li><code>enrichment_version</code> - Prompt version</li>
+                </ul>
+                <p><strong>Benefit:</strong> Can re-enrich historical data if prompts improve or model upgrades.</p>
+                <p><strong>Recommendation:</strong> Maintain this metadata structure for audit trail and quality control.</p>
+            </div>
+
+            <h3>9. Performance Optimization</h3>
+
+            <div class="callout">
+                <h4>Current Indexes (Critical for Query Performance)</h4>
+                <p>The schema includes extensive indexing for common query patterns. Key composite indexes:</p>
+                <ul>
+                    <li><code>(activity_date, owner_id)</code> - "Activities by rep over time"</li>
+                    <li><code>(owner_id, mno_type)</code> - "Rep's activity type breakdown"</li>
+                    <li><code>(initiative_tag, activity_date)</code> - "Initiative performance over time"</li>
+                    <li><code>(current_relationship_stage, geography)</code> - "Pipeline by territory"</li>
+                    <li><code>(is_new_physician, onboarding_complete)</code> - "Onboarding status"</li>
+                </ul>
+                <p><strong>Action:</strong> Ensure Enata's database preserves these indexes or equivalents.</p>
+            </div>
+
+            <h3>10. Migration Path Recommendation</h3>
+
+            <div class="architecture-diagram">
+Phase 1: Initial Ingestion (Week 1-2)
+─────────────────────────────────────
+1. Enata ingests full snapshot of current database
+2. Validate row counts, field mappings, indexes
+3. Run sample queries to verify performance
+4. Test enrichment pipeline on Enata infrastructure
+
+Phase 2: Dual-Run Validation (Week 3-4)
+────────────────────────────────────────
+1. Run cron jobs on both systems in parallel
+2. Compare data drift, sync performance
+3. Validate enrichment results match
+4. Test reporting continuity
+
+Phase 3: Cutover (Week 5)
+──────────────────────────
+1. Update application connection strings to Enata
+2. Disable old sync jobs
+3. Monitor for 48h
+4. Archive old database (keep for 30 days)
+
+Phase 4: Optimization (Week 6+)
+────────────────────────────────
+1. Tune Enata-specific performance optimizations
+2. Integrate Enata's AI features
+3. Expand analytics capabilities
+            </div>
+        </section>
+
+        <section>
+            <h2>Appendix: Field Mapping Reference</h2>
+            
+            <h3>Complete Field List by Table</h3>
+            
+            <h4>sf_contacts (43 fields)</h4>
+            <div class="code-block" style="font-size: 0.85em;">
+id, salesforce_id, name, first_name, last_name, title, email, phone,
+npi, specialty, specialty_group, is_physician, active,
+network, sub_network, geography, primary_geography,
+mailing_city, mailing_state, mailing_postal_code,
+account_id, account_name,
+last_activity_date, last_outreach_activity_date,
+sf_created_date, sf_last_modified_date, last_synced_at,
+created_at, updated_at
+            </div>
+
+            <h4>sf_activities (45 fields)</h4>
+            <div class="code-block" style="font-size: 0.85em;">
+id, salesforce_id, type, subject, description, activity_date,
+status, priority, is_closed, is_deleted,
+mno_type, mno_subtype, mno_setting, mn_tags, comments_short,
+contact_id, who_id, what_id, account_id, owner_id,
+start_datetime, end_datetime, duration_minutes, location, is_all_day_event,
+who_count, attendees_concatenation,
+sf_created_date, sf_last_modified_date, last_synced_at,
+created_at, updated_at
+            </div>
+
+            <h4>sf_enhanced_activities (37 fields)</h4>
+            <div class="code-block" style="font-size: 0.85em;">
+activity_id (PK), salesforce_id, activity_date, rep_name, rep_id, mno_type, mno_subtype,
+initiative_tag, activity_intent,
+outcome_sentiment, outcome_score, outcome_key_phrase,
+relationship_stage, strategic_value,
+next_steps, follow_up_needed, follow_up_type,
+competitor_mention, competitor_context,
+mentioned_entities (JSON), onboarding_milestone,
+enrichment_timestamp, enrichment_model, enrichment_version, processing_error,
+created_at, updated_at
+            </div>
+
+            <h4>sf_enhanced_providers (32 fields)</h4>
+            <div class="code-block" style="font-size: 0.85em;">
+provider_id (PK), salesforce_id, provider_name, specialty, specialty_group, geography,
+current_relationship_stage, relationship_stage_updated_at, relationship_stage_source_activity_id,
+engagement_score, last_activity_date, first_activity_date, total_activities_count,
+positive_activities_count, neutral_activities_count, negative_activities_count,
+avg_strategic_value, days_since_last_activity,
+is_new_physician, onboarding_start_date,
+onboarding_milestones_completed (JSON), onboarding_milestones_pending (JSON),
+onboarding_complete, onboarding_completion_date,
+mentioned_with_providers (JSON), primary_rep_id, primary_rep_name, secondary_rep_ids (JSON),
+initiative_affinity (JSON),
+last_aggregation_timestamp, activities_aggregated_count,
+created_at, updated_at
+            </div>
+
+            <h4>sf_activity_providers (14 fields)</h4>
+            <div class="code-block" style="font-size: 0.85em;">
+id (PK), activity_id (FK), provider_id (FK),
+provider_name, provider_specialty,
+is_primary, role, relationship_advanced, milestone_achieved, source,
+created_at, updated_at
+            </div>
+        </section>
+
+        <section>
+            <h2>Contact & Next Steps</h2>
+            
+            <div class="callout">
+                <h4>For Questions or Clarifications</h4>
+                <p><strong>Blake Thomson</strong><br>
+                Business Development Team<br>
+                Cedars-Sinai Health System<br>
+                <a href="mailto:blakethomson8@gmail.com">blakethomson8@gmail.com</a></p>
+            </div>
+
+            <h3>Suggested Next Steps</h3>
+            <ol>
+                <li><strong>Data Sample Export:</strong> Provide Enata with anonymized sample dataset (100 activities, 50 contacts)</li>
+                <li><strong>Schema Review Call:</strong> Walk through nuances, answer questions</li>
+                <li><strong>API Specification:</strong> Define REST endpoints matching current MCP tools</li>
+                <li><strong>Migration Timeline:</strong> Agree on dual-run period and cutover date</li>
+                <li><strong>Enrichment Hosting Decision:</strong> Enata-hosted vs. Cedars-hosted enrichment service</li>
+            </ol>
+        </section>
+
+        <footer style="margin-top: 60px; padding-top: 20px; border-top: 2px solid #e0e0e0; color: #666; font-size: 0.9em;">
+            <p><strong>Document Version:</strong> 1.0</p>
+            <p><strong>Last Updated:</strong> February 11, 2026</p>
+            <p><strong>Status:</strong> Draft for Review</p>
+        </footer>
+    </div>
+</body>
+</html>

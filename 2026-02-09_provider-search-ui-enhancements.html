@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provider Search UI Enhancements - 2026-02-09</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8fafc; padding: 2rem; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: #0f172a; }
+    .subtitle { color: #64748b; margin-bottom: 2rem; font-size: 0.95rem; }
+    .section { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .section h2 { font-size: 1.1rem; font-weight: 600; color: #334155; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+    .section h3 { font-size: 0.95rem; font-weight: 600; color: #475569; margin: 1rem 0 0.5rem 0; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.4rem; color: #475569; }
+    li strong { color: #1e293b; }
+    .tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500; margin-right: 0.5rem; }
+    .tag-feature { background: #dbeafe; color: #1e40af; }
+    .tag-fix { background: #fef3c7; color: #92400e; }
+    .tag-refactor { background: #e0e7ff; color: #3730a3; }
+    .status-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .status-table th, .status-table td { padding: 0.6rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    .status-table th { background: #f8fafc; font-weight: 600; color: #475569; }
+    .status-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; font-size: 0.8rem; margin-right: 0.5rem; }
+    .status-hard { background: #d1fae5; color: #065f46; }
+    .status-soft { background: #dbeafe; color: #1e40af; }
+    .status-existing { background: #ede9fe; color: #5b21b6; }
+    .status-nontarget { background: #ffedd5; color: #c2410c; }
+    .status-dne { background: #e5e7eb; color: #374151; }
+    .commit-info { background: #f1f5f9; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; }
+    .commit-info strong { color: #334155; }
+    .highlight { background: #fef9c3; padding: 0.1rem 0.3rem; border-radius: 3px; }
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .section { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Provider Search UI Enhancements</h1>
+    <p class="subtitle">Session: February 9, 2026 | Branch: development-2026-02-09 | Commit: 64ce769</p>
+
+    <div class="section">
+      <h2>Overview</h2>
+      <p>Major UI/UX improvements focused on consistency across views, a redesigned status system, and improved information hierarchy. The application now defaults to Map view with automatic provider selection for immediate context.</p>
+    </div>
+
+    <div class="section">
+      <h2>Status System Overhaul</h2>
+      <p>Complete redesign of the provider status system with professional naming and distinct visual colors.</p>
+      
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Icon</th>
+            <th>Color</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status-icon status-hard">●</span> Hard Lead</td>
+            <td>●</td>
+            <td>Green (emerald)</td>
+            <td>High-priority prospect, ready for outreach</td>
+          </tr>
+          <tr>
+            <td><span class="status-icon status-soft">◐</span> Soft Lead</td>
+            <td>◐</td>
+            <td>Blue</td>
+            <td>Potential prospect, needs more research</td>
+          </tr>
+          <tr>
+            <td><span class="status-icon status-existing">◆</span> Existing</td>
+            <td>◆</td>
+            <td>Purple</td>
+            <td>Already in network/relationship exists</td>
+          </tr>
+          <tr>
+            <td><span class="status-icon status-nontarget">○</span> Non-Target</td>
+            <td>○</td>
+            <td>Orange</td>
+            <td>Not a fit for current campaign</td>
+          </tr>
+          <tr>
+            <td><span class="status-icon status-dne">?</span> Does Not Exist</td>
+            <td>?</td>
+            <td>Dark Gray</td>
+            <td>Business closed, moved, or data incorrect</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Status UI Features</h3>
+      <ul>
+        <li><strong>Clickable in all views</strong> — Table, Map sidebar, Browse sidebar all have popup selectors</li>
+        <li><strong>Row highlighting</strong> — Rows change background color to match their status</li>
+        <li><strong>ActionPane integration</strong> — Status button in header with label underneath</li>
+        <li><strong>Dropdown with labels</strong> — Popup shows icon + text label for each option</li>
+        <li><strong>Tooltips preserved</strong> — Hover shows status name via title attribute</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Layout & Navigation Changes</h2>
+      
+      <h3><span class="tag tag-feature">Feature</span> Default View → Map</h3>
+      <ul>
+        <li>Application now opens in Map view instead of Table view</li>
+        <li>Map view provides better spatial context for healthcare provider searches</li>
+      </ul>
+
+      <h3><span class="tag tag-feature">Feature</span> Auto-Select First Provider</h3>
+      <ul>
+        <li>When search results load, first provider is automatically selected</li>
+        <li>ActionPane immediately shows provider details — no empty state on load</li>
+      </ul>
+
+      <h3><span class="tag tag-refactor">Refactor</span> Header Reorganization</h3>
+      <ul>
+        <li><strong>Left:</strong> Search form (query + location + button)</li>
+        <li><strong>Center:</strong> View toggle (Table / Map / Board / Browse) — prominently centered</li>
+        <li><strong>Right:</strong> Results count ("showing 20 of 25 results")</li>
+        <li>Removed Bulk Add campaign selector (feature paused)</li>
+        <li>Fixed-width left/right sections ensure true centering of view toggle</li>
+      </ul>
+
+      <h3><span class="tag tag-feature">Feature</span> Shared ActionPane State</h3>
+      <ul>
+        <li>Selected provider persists when switching between Table/Map/Board/Browse views</li>
+        <li>ActionPane toggle state also persists across view switches</li>
+        <li>Consistent w-96 width across all views</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Table View Improvements</h2>
+      <ul>
+        <li><span class="tag tag-refactor">Refactor</span> <strong>Removed green alternating row shading</strong> — was conflicting with status colors</li>
+        <li><span class="tag tag-feature">Feature</span> <strong>Row backgrounds match status</strong> — visual scan shows status at a glance</li>
+        <li><span class="tag tag-feature">Feature</span> <strong>Selected row indicator</strong> — blue background + inset ring outline</li>
+        <li><span class="tag tag-refactor">Refactor</span> <strong>Smaller text in data columns</strong> — Name stays same size, other columns use text-xs</li>
+        <li><span class="tag tag-refactor">Refactor</span> <strong>Export CSV moved to top bar</strong> — next to results count, more discoverable</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Map View Sidebar</h2>
+      <ul>
+        <li><span class="tag tag-refactor">Refactor</span> <strong>Simplified provider info</strong> — Shows name + rating + review count (removed specialty)</li>
+        <li><span class="tag tag-feature">Feature</span> <strong>Clickable status buttons</strong> — Same popup selector as table view</li>
+        <li><span class="tag tag-feature">Feature</span> <strong>Selected row outline</strong> — Matches table view styling</li>
+        <li><span class="tag tag-feature">Feature</span> <strong>Status-based row colors</strong> — Consistent with table view</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Search & Data</h2>
+      <ul>
+        <li><span class="tag tag-feature">Feature</span> <strong>Default sort by review count</strong> — Higher reviews = larger practices float to top</li>
+        <li>Sorting applied server-side before caching for efficiency</li>
+        <li>Cached results also sorted on retrieval (backwards compatible)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Backend Updates</h2>
+      <ul>
+        <li><span class="tag tag-fix">Fix</span> <strong>API accepts new status values</strong> — Updated validation in /providers/statuses endpoint</li>
+        <li><span class="tag tag-fix">Fix</span> <strong>setStatus handles undefined</strong> — Properly clears status for both auth and anonymous users</li>
+        <li>Valid statuses: hard_lead, soft_lead, existing, non_target, does_not_exist</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Files Modified</h2>
+      <ul>
+        <li><code>web/src/app/AppSearch.tsx</code> — Header layout, default view, auto-select, SplitView status</li>
+        <li><code>web/src/app/components/ActionPane.tsx</code> — Status button with label, dropdown redesign</li>
+        <li><code>web/src/app/components/ExcelTableView.tsx</code> — Row styling, status popup, export button</li>
+        <li><code>web/src/app/components/BrowseView.tsx</code> — Status popup, row styling</li>
+        <li><code>web/src/app/components/StatusIndicator.tsx</code> — Color updates</li>
+        <li><code>web/src/app/hooks/useProviderStatuses.ts</code> — setStatus undefined handling</li>
+        <li><code>web/src/types/provider.ts</code> — New status types and colors</li>
+        <li><code>api/routers/statuses.py</code> — Accept new status values</li>
+        <li><code>api/search/api.py</code> — Sort by review count</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Commit Information</h2>
+      <div class="commit-info">
+        <strong>Branch:</strong> development-2026-02-09<br>
+        <strong>Commit:</strong> 64ce769<br>
+        <strong>Parent:</strong> development (17 commits ahead)<br>
+        <strong>Files changed:</strong> 9<br>
+        <strong>Insertions:</strong> +626<br>
+        <strong>Deletions:</strong> -479
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

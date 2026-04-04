@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Optimization & Agent Improvements | Feb 12, 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 40px;
+            border-bottom: 4px solid #667eea;
+        }
+        
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header .meta {
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #4a5568;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+        
+        h4 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        strong {
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .badge-warning {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+        
+        .badge-danger {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .badge-info {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        
+        .callout {
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+        
+        .callout-success {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .callout-warning {
+            border-left-color: #ed8936;
+            background: #fffaf0;
+        }
+        
+        .callout h4 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 50px 0;
+        }
+        
+        footer {
+            background: #f7fafc;
+            padding: 30px 40px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 8px;
+            }
+            
+            header, .content, footer {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 1.6em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 System Optimization & Agent Improvements</h1>
+            <div class="meta">
+                Blake Thomson | February 12, 2026<br>
+                Memory Optimization Analysis + Agent Architecture Roadmap
+            </div>
+        </header>
+        
+        <div class="content">
+            <h2>Executive Summary</h2>
+            <p>Analysis of current MacBook Pro memory usage reveals ~43GB utilization with Docker Desktop consuming 10GB. Proposed optimizations can free ~9GB RAM with minimal workflow disruption. Additionally, this report outlines three architectural improvements for Chief's agent capabilities: tool/skill discovery, event-driven triggers, and context-aware project understanding.</p>
+            
+            <div class="callout callout-success">
+                <h4>Key Takeaway</h4>
+                <p><strong>Realistic savings: 9GB freed in ~1 hour of setup work.</strong> This brings usage from 43GB → 34GB, leaving 14GB free for heavy workloads or future VM hosting needs.</p>
+            </div>
+
+            <h2>Part I: Memory Optimization Strategy</h2>
+            
+            <h3>Current Memory Profile</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Application</th>
+                        <th>Memory Usage</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Docker Desktop (Virtualization)</strong></td>
+                        <td>9.2 GB</td>
+                        <td><span class="badge badge-danger">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td>openclaw-gateway</td>
+                        <td>2.3 GB</td>
+                        <td><span class="badge badge-info">Required</span></td>
+                    </tr>
+                    <tr>
+                        <td>Spotlight</td>
+                        <td>1.5 GB</td>
+                        <td><span class="badge badge-info">System</span></td>
+                    </tr>
+                    <tr>
+                        <td>Chrome</td>
+                        <td>706 MB</td>
+                        <td><span class="badge badge-warning">Dev Tool</span></td>
+                    </tr>
+                    <tr>
+                        <td>Spotify</td>
+                        <td>664 MB</td>
+                        <td><span class="badge badge-success">Replaceable</span></td>
+                    </tr>
+                    <tr>
+                        <td>OpenClaw app</td>
+                        <td>641 MB</td>
+                        <td><span class="badge badge-success">Closeable</span></td>
+                    </tr>
+                    <tr>
+                        <td>claude CLI</td>
+                        <td>590 MB</td>
+                        <td><span class="badge badge-info">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cursor/Codex (combined)</td>
+                        <td>1.2 GB</td>
+                        <td><span class="badge badge-warning">Dev Tool</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p><strong>Docker Container Reality:</strong> While Docker Desktop shows 10GB allocation, actual containers only use ~292MB:</p>
+            <ul>
+                <li>provider-search-web: 59 MB</li>
+                <li>provider-search-api: 100 MB</li>
+                <li>postgrest: 95 MB</li>
+                <li>postgres: 29 MB</li>
+                <li>redis: 10 MB</li>
+            </ul>
+            <p>The 9.7GB overhead is Docker Desktop's VM, filesystem layer, and reserved memory pool.</p>
+
+            <h3>Optimization Recommendations</h3>
+
+            <h4><span class="badge badge-success">✅ High Value</span> Docker Desktop → Colima</h4>
+            <p><strong>Savings: 6GB</strong> | <strong>Effort: Low (30 minutes)</strong></p>
+            <p>Replace Docker Desktop with Colima, a lightweight CLI-based container runtime that uses the same Docker engine without the Electron GUI overhead.</p>
+            
+            <pre><code>brew install colima docker docker-compose
+colima start --memory 4  # 4GB configurable limit
+docker ps                # same commands, zero workflow change
+docker compose up        # same compose files</code></pre>
+            
+            <div class="callout">
+                <h4>Why This Works</h4>
+                <p>Docker Desktop bundles a GUI, update manager, Kubernetes integration, and other features you don't use. Colima is pure Docker runtime with precise memory control. Your provider-search compose files work identically.</p>
+            </div>
+            
+            <p><strong>⚠️ One caveat:</strong> Test provider-search docker-compose with Colima first to verify compatibility (should be seamless).</p>
+
+            <h4><span class="badge badge-success">✅ Easy Win</span> Spotify Desktop → Web Player</h4>
+            <p><strong>Savings: 950MB</strong> | <strong>Effort: Trivial (bookmark)</strong></p>
+            <p>Use <code>https://open.spotify.com</code> in Safari instead of the Electron desktop app. The web player is feature-complete for playback.</p>
+            
+            <p><strong>Trade-off:</strong> Lose desktop notifications and media key controls, but playback quality and library access are identical.</p>
+
+            <h4><span class="badge badge-warning">⚠️ Partial</span> Chrome → Safari (for browsing only)</h4>
+            <p><strong>Savings: 300-500MB</strong> | <strong>Effort: Trivial (habit change)</strong></p>
+            <p><strong>Strategy:</strong> Safari for general browsing, Chrome only when actively developing provider-search.</p>
+            
+            <p><strong>Why keep Chrome for dev:</strong></p>
+            <ul>
+                <li>Chrome DevTools are industry standard for frontend debugging</li>
+                <li>React DevTools extension superior on Chrome</li>
+                <li>Network tab, performance profiling essential for provider-search work</li>
+                <li>Chief's <code>browser</code> tool requires Chrome for automation</li>
+            </ul>
+
+            <h4><span class="badge badge-danger">❌ Not Recommended</span> Cursor/Codex → Neovim + Claude Code</h4>
+            <p><strong>Potential Savings: 1.2GB</strong> | <strong>Effort: High (steep learning curve)</strong></p>
+            <p>While this saves memory, it loses significant productivity value:</p>
+            <ul>
+                <li>Cursor's inline edits and multi-file refactoring are valuable</li>
+                <li>Codebase awareness superior to terminal-only workflow</li>
+                <li>Neovim + Claude Code is powerful but requires time investment</li>
+            </ul>
+            
+            <p><strong>Better approach:</strong> Close Cursor when not actively coding (same as OpenClaw app suggestion).</p>
+
+            <h4><span class="badge badge-success">✅ Trivial</span> Close OpenClaw App When Idle</h4>
+            <p><strong>Savings: 1.9GB</strong> | <strong>Effort: Trivial</strong></p>
+            <p>The OpenClaw desktop app can be closed when not actively chatting. The <code>openclaw-gateway</code> (2.3GB) must stay running for Chief to function.</p>
+
+            <h3>Realistic Savings Plan</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Optimization</th>
+                        <th>Savings</th>
+                        <th>Effort</th>
+                        <th>Workflow Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Docker Desktop → Colima</td>
+                        <td><strong>6 GB</strong></td>
+                        <td>Low (30 min)</td>
+                        <td>None — same commands</td>
+                    </tr>
+                    <tr>
+                        <td>Spotify → Web Player</td>
+                        <td><strong>950 MB</strong></td>
+                        <td>Trivial</td>
+                        <td>Lose desktop controls</td>
+                    </tr>
+                    <tr>
+                        <td>Chrome → Safari (browsing)</td>
+                        <td><strong>300-500 MB</strong></td>
+                        <td>Trivial</td>
+                        <td>Habit change only</td>
+                    </tr>
+                    <tr>
+                        <td>Close OpenClaw app when idle</td>
+                        <td><strong>1.9 GB</strong></td>
+                        <td>Trivial</td>
+                        <td>None — gateway stays up</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="background: #f7fafc; font-weight: bold; text-align: center;">
+                            TOTAL: ~9 GB freed | 1 hour total setup
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="callout callout-success">
+                <h4>Result</h4>
+                <p><strong>Before:</strong> 43GB used, 5GB free<br>
+                <strong>After:</strong> 34GB used, 14GB free<br>
+                <strong>Headroom gained:</strong> Much healthier for heavy workloads and potential VM hosting</p>
+            </div>
+
+            <h3>Browser Control Capabilities</h3>
+            <p><strong>Question:</strong> "Are you better at using Safari or Chrome command lines?"</p>
+            <p><strong>Answer: Chrome, by a significant margin.</strong></p>
+            
+            <p>Chief has the <code>browser</code> tool with two modes:</p>
+            <ul>
+                <li><strong>Chrome Extension Relay:</strong> Take over your actual Chrome tabs (when toolbar button clicked)</li>
+                <li><strong>OpenClaw Managed Browser:</strong> Isolated Chromium instance with full programmatic control</li>
+            </ul>
+            
+            <p>Safari lacks this level of automation capability. For web scraping, form filling, testing, and automation tasks, Chrome is the only practical option.</p>
+            
+            <p><strong>Recommended browser strategy:</strong></p>
+            <ul>
+                <li><strong>General browsing:</strong> Safari (RAM efficient)</li>
+                <li><strong>Provider-search development:</strong> Chrome (DevTools, React debugging)</li>
+                <li><strong>Automation/scraping:</strong> Chrome (Chief can control it)</li>
+            </ul>
+
+            <div class="section-divider"></div>
+
+            <h2>Part II: Agent Architecture Improvements</h2>
+            
+            <p>Beyond memory optimization, three architectural enhancements can significantly improve Chief's effectiveness and autonomy:</p>
+
+            <h3>1. Tool Discovery & Skill Intelligence</h3>
+            
+            <h4>Current State</h4>
+            <p>Chief has access to 13 skills (apple-reminders, coding-agent, github, gog, healthcheck, local-places, nano-banana-pro, nano-pdf, openai-image-gen, openai-whisper-api, skill-creator, video-frames, weather) but relies on:</p>
+            <ul>
+                <li><strong>Explicit skill matching:</strong> Scans <code>&lt;available_skills&gt;</code> descriptions in prompt context</li>
+                <li><strong>User prompting:</strong> "Use the GitHub skill" or "Check Apple Reminders"</li>
+                <li><strong>Manual TOOLS.md notes:</strong> User-documented local specifics (camera names, SSH hosts, TTS preferences)</li>
+            </ul>
+            
+            <p><strong>Gap:</strong> Chief doesn't proactively discover when a skill would be useful without explicit task description matching.</p>
+
+            <h4>Proposed Enhancement: Intelligent Skill Suggestion System</h4>
+            
+            <p><strong>Architecture:</strong></p>
+            <ol>
+                <li><strong>Skill Capability Index:</strong> Maintain a structured JSON index of all skills with:
+                    <ul>
+                        <li>Tool capabilities (APIs, CLI commands, data sources)</li>
+                        <li>Example use cases</li>
+                        <li>Input/output formats</li>
+                        <li>Dependency requirements</li>
+                    </ul>
+                </li>
+                <li><strong>Context-Aware Prompting:</strong> When user mentions keywords, auto-suggest relevant skills:
+                    <pre><code>User: "What's the weather like?"
+Chief (internal): weather skill matches → read SKILL.md
+Chief: *checks weather skill* "72°F and sunny in Santa Monica..."</code></pre>
+                </li>
+                <li><strong>Skill Discovery on Demand:</strong> Add a <code>skills_search</code> tool:
+                    <pre><code>skills_search(query="image generation")
+→ Returns: nano-banana-pro (Gemini), openai-image-gen (DALL-E)</code></pre>
+                </li>
+            </ol>
+
+            <p><strong>Implementation Path:</strong></p>
+            <ol>
+                <li>Create <code>~/.openclaw/workspace/skill-index.json</code> with structured capability metadata</li>
+                <li>Add <code>skills_search</code> function tool (semantic search over descriptions + capabilities)</li>
+                <li>Update skill-creator to auto-generate index entries when new skills are created</li>
+                <li>Modify prompt to check skill-index.json before answering "I don't have a tool for that"</li>
+            </ol>
+
+            <div class="callout">
+                <h4>Example: TOOLS.md Enhancement</h4>
+                <p>Current TOOLS.md is free-form notes. Enhance it with structured sections:</p>
+                <pre><code>## Camera Configuration
+cameras:
+  living-room:
+    location: main area
+    fov: 180° wide angle
+    node: blake-macbook-pro
+  front-door:
+    location: entrance
+    motion: true
+    node: raspberry-pi-4
+
+## SSH Hosts
+hosts:
+  home-server:
+    ip: 192.168.1.100
+    user: admin
+    key: ~/.ssh/home_rsa</code></pre>
+                <p>Allow Chief to query TOOLS.md programmatically: <code>memory_search(query="camera names")</code> → "living-room, front-door"</p>
+            </div>
+
+            <h3>2. Event-Driven Triggers & Contextual Memory</h3>
+            
+            <h4>Current State</h4>
+            <p>Chief operates in two modes:</p>
+            <ul>
+                <li><strong>Interactive (main session):</strong> Responds to direct user messages</li>
+                <li><strong>Scheduled (cron jobs):</strong> Runs isolated tasks at defined intervals</li>
+            </ul>
+            
+            <p><strong>Gap:</strong> No reactive triggers based on external events (new email, git push, deployment failure, calendar event starting soon).</p>
+
+            <h4>Proposed Enhancement: Event-Driven Trigger System</h4>
+            
+            <p><strong>Architecture:</strong></p>
+            <ol>
+                <li><strong>Event Watchers:</strong> Lightweight processes monitoring:
+                    <ul>
+                        <li>File system changes (<code>fswatch</code> on project directories)</li>
+                        <li>Git webhooks (push, PR opened, CI failure)</li>
+                        <li>Email inbox (new messages matching filters)</li>
+                        <li>Calendar (event starting in &lt;30 minutes)</li>
+                        <li>System notifications (Slack mention, Discord DM)</li>
+                    </ul>
+                </li>
+                <li><strong>Trigger Configuration File:</strong> <code>~/.openclaw/triggers.json</code>
+                    <pre><code>{
+  "triggers": [
+    {
+      "name": "provider-search-push",
+      "event": "git.push",
+      "repo": "~/Repo/provider-search",
+      "action": {
+        "type": "cron.wake",
+        "message": "Git push detected in provider-search. Run tests and verify deployment."
+      }
+    },
+    {
+      "name": "urgent-email",
+      "event": "email.received",
+      "filter": "from:devon@example.com OR subject:urgent",
+      "action": {
+        "type": "notify",
+        "message": "Urgent email from Devon: {subject}"
+      }
+    },
+    {
+      "name": "meeting-reminder",
+      "event": "calendar.upcoming",
+      "timeframe": "30m",
+      "action": {
+        "type": "session.send",
+        "message": "Meeting in 30 minutes: {event.title}"
+      }
+    }
+  ]
+}</code></pre>
+                </li>
+                <li><strong>Contextual Memory per Trigger:</strong> When an event fires, inject relevant context:
+                    <ul>
+                        <li>For <code>git.push</code> → Load repo README, recent commit messages, current branch</li>
+                        <li>For <code>email.received</code> → Load thread history, sender relationship context</li>
+                        <li>For <code>calendar.upcoming</code> → Load event details, attendees, related project files</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p><strong>Implementation Path:</strong></p>
+            <ol>
+                <li>Add <code>triggers</code> configuration section to <code>openclaw.json</code> or standalone <code>triggers.json</code></li>
+                <li>Create lightweight event watcher processes (fswatch, webhook listener, calendar poller)</li>
+                <li>Extend <code>cron.wake</code> to accept event context payload</li>
+                <li>Add trigger-specific memory loading (e.g., "on git.push, read ARCHITECTURE.md + CHANGELOG.md")</li>
+            </ol>
+
+            <div class="callout callout-warning">
+                <h4>Memory Management Challenge</h4>
+                <p>Event-driven triggers can't load all context every time (token budget). Solution: <strong>Trigger-specific context profiles</strong></p>
+                <pre><code>triggers.json:
+{
+  "name": "provider-search-push",
+  "context": {
+    "files": ["README.md", "ARCHITECTURE.md", "CHANGELOG.md"],
+    "memory": "memory/provider-search-notes.md",
+    "recent_messages": 5
+  }
+}</code></pre>
+                <p>This ensures Chief wakes up with <em>just enough</em> context to be useful without burning tokens on irrelevant history.</p>
+            </div>
+
+            <h4>Example Use Cases</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Trigger Action</th>
+                        <th>Context Loaded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Git push to <code>provider-search</code></td>
+                        <td>Run tests, verify Docker build</td>
+                        <td>README, recent commits, CI logs</td>
+                    </tr>
+                    <tr>
+                        <td>Email from Devon about wedding</td>
+                        <td>Summarize + suggest action items</td>
+                        <td>Wedding project TODO, venue details</td>
+                    </tr>
+                    <tr>
+                        <td>Calendar event in 30 min</td>
+                        <td>Notify + load prep materials</td>
+                        <td>Event agenda, attendee bios, related docs</td>
+                    </tr>
+                    <tr>
+                        <td>House build permit status change</td>
+                        <td>Update house-build TODO</td>
+                        <td>Permit tracker, next steps checklist</td>
+                    </tr>
+                    <tr>
+                        <td>Provider-search API error (health check fail)</td>
+                        <td>Diagnose and attempt restart</td>
+                        <td>Docker logs, .env config, recent changes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3. Context-Aware Project Understanding</h3>
+            
+            <h4>Current State</h4>
+            <p>When working in a project directory, Chief relies on:</p>
+            <ul>
+                <li>User explicitly mentioning "read the README"</li>
+                <li>MEMORY.md containing project background notes</li>
+                <li>Trial and error exploring file structure</li>
+            </ul>
+            
+            <p><strong>Gap:</strong> No automatic context loading when switching between projects (provider-search vs. house-build vs. wedding planning).</p>
+
+            <h4>Proposed Enhancement: Auto-Load Project Context</h4>
+            
+            <p><strong>Simple Rule:</strong> "When working in a project folder, review its README first to understand the project."</p>
+            
+            <p><strong>Architecture:</strong></p>
+            <ol>
+                <li><strong>Project Registry:</strong> Maintain <code>~/.openclaw/projects.json</code>:
+                    <pre><code>{
+  "projects": [
+    {
+      "name": "provider-search",
+      "path": "~/Repo/provider-search",
+      "context_files": ["README.md", "ARCHITECTURE.md", "docs/ROADMAP.md"],
+      "last_active": "2026-02-12T08:00:00Z"
+    },
+    {
+      "name": "house-build",
+      "path": "~/Repo/chief/house-build",
+      "context_files": ["README.md", "TODO.md", "permits/status.md"],
+      "last_active": "2026-02-10T14:30:00Z"
+    },
+    {
+      "name": "wedding",
+      "path": "~/Repo/chief/wedding",
+      "context_files": ["README.md", "TODO.md", "vendors.md"],
+      "last_active": "2026-02-09T19:00:00Z"
+    }
+  ]
+}</code></pre>
+                </li>
+                <li><strong>Path-Based Context Detection:</strong> When user mentions a file path or <code>cd</code> into a directory:
+                    <pre><code>User: "Check provider-search docker logs"
+Chief (internal): "provider-search" detected → load context_files
+Chief: *reads README.md + ARCHITECTURE.md*
+Chief: "Provider-search is a FastAPI + React app with Supabase. Let me check the logs..."</code></pre>
+                </li>
+                <li><strong>Session Workspace Tracking:</strong> When <code>exec</code> runs with a <code>workdir</code>, check if it's a known project and auto-load context if not already loaded in current session</li>
+            </ol>
+
+            <p><strong>Implementation Path:</strong></p>
+            <ol>
+                <li>Create <code>projects.json</code> in workspace root (manually for now, auto-discovery later)</li>
+                <li>Add <code>project_context_load</code> internal function that:
+                    <ul>
+                        <li>Detects current project from file paths or user message</li>
+                        <li>Reads specified context files (README, ARCHITECTURE, TODO)</li>
+                        <li>Injects into working memory for current session</li>
+                    </ul>
+                </li>
+                <li>Update prompt system: "Before working with files in a registered project, load its context files if not already loaded this session"</li>
+                <li>Add memory optimization: Cache project context for session duration, only re-read if files modified (check mtime)</li>
+            </ol>
+
+            <div class="callout">
+                <h4>Example Flow: Switching Projects</h4>
+                <pre><code>User: "Update the provider-search TODO with NPI enrichment task"
+
+Chief (internal check):
+  - Path mentions "provider-search" → lookup in projects.json
+  - Context files: README.md, ARCHITECTURE.md, docs/ROADMAP.md
+  - Already loaded this session? No
+  - → Read context files now
+
+Chief: *reads 3 files (under 30 seconds)*
+Chief: "Provider-search is a FastAPI backend + React frontend for physician search.
+       I'll add NPI enrichment to docs/ROADMAP.md under Phase 1..."
+       
+User: "Now check the house-build permit status"
+
+Chief (internal check):
+  - Path change: "house-build" → different project
+  - Context files: README.md, TODO.md, permits/status.md
+  - → Read context files now
+
+Chief: *reads 3 files*
+Chief: "House build is a custom home in Orinda (main + ADU + garage).
+       Checking permits/status.md now..."</code></pre>
+            </div>
+
+            <h4>Benefits</h4>
+            <ul>
+                <li><strong>Fewer clarifying questions:</strong> Chief already knows project structure and goals</li>
+                <li><strong>Accurate file operations:</strong> Knows where TODOs live, what folders contain what</li>
+                <li><strong>Better decision-making:</strong> Understands project constraints (e.g., "provider-search is private" vs "learning-modules is public")</li>
+                <li><strong>Smoother multi-project workflows:</strong> Context switches automatically when you do</li>
+            </ul>
+
+            <h3>Combined Architecture Vision</h3>
+            
+            <p>When all three improvements are implemented, Chief's workflow becomes:</p>
+            
+            <ol>
+                <li><strong>User mentions a task:</strong> "Fix the provider-search auth bug"</li>
+                <li><strong>Project detection:</strong> "provider-search" → auto-load README.md, ARCHITECTURE.md, ROADMAP.md</li>
+                <li><strong>Skill discovery:</strong> Check skill-index.json → github skill + coding-agent skill relevant</li>
+                <li><strong>Execute work:</strong> Read files, run commands, use appropriate skills</li>
+                <li><strong>Set up trigger:</strong> "If this fails again, trigger a wake event with Docker logs"</li>
+                <li><strong>Complete & log:</strong> Update memory/2026-02-12.md with outcome + learnings</li>
+            </ol>
+            
+            <p>Later, when the trigger fires:</p>
+            <ol>
+                <li><strong>Event detected:</strong> provider-search health check fails</li>
+                <li><strong>Wake Chief with context:</strong> Load recent Docker logs + .env config</li>
+                <li><strong>Diagnose automatically:</strong> Check known issues, attempt restart</li>
+                <li><strong>Report outcome:</strong> Notify user if intervention needed, otherwise log resolution</li>
+            </ol>
+
+            <h3>Implementation Priority</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Enhancement</th>
+                        <th>Impact</th>
+                        <th>Effort</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Context-Aware Projects</strong></td>
+                        <td>High — immediate productivity gain</td>
+                        <td>Low (projects.json + prompt update)</td>
+                        <td><span class="badge badge-danger">P0 — Start here</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Skill Discovery</strong></td>
+                        <td>Medium — reduces "I don't know how" friction</td>
+                        <td>Medium (skill-index.json + search tool)</td>
+                        <td><span class="badge badge-warning">P1 — Next sprint</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event-Driven Triggers</strong></td>
+                        <td>High — enables proactive autonomy</td>
+                        <td>High (watchers + trigger system + memory mgmt)</td>
+                        <td><span class="badge badge-info">P2 — Future roadmap</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-success">
+                <h4>Quick Win: Start with Context-Aware Projects</h4>
+                <p>Creating <code>projects.json</code> with 3-5 key projects and updating Chief's prompt to auto-load context files would deliver immediate value with minimal implementation effort. This can be done in ~1 hour and dramatically improve workflow smoothness.</p>
+            </div>
+
+        </div>
+        
+        <footer>
+            <strong>Blake Thomson</strong> — OpenClaw Workspace<br>
+            Generated: February 12, 2026, 8:30 AM PST<br>
+            System: Blake's MacBook Pro (M3 Max, 48GB RAM)<br>
+            Report: System Optimization & Agent Architecture Improvements
+        </footer>
+    </div>
+</body>
+</html>

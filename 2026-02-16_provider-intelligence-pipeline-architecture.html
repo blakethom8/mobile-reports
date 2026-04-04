@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provider Intelligence Pipeline — Architecture & Design Decisions</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 32px;
+    line-height: 1.7;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+h1 { 
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #f1f5f9;
+    border-bottom: 3px solid #38bdf8;
+    padding-bottom: 12px;
+}
+h2 { 
+    font-size: 24px;
+    font-weight: 600;
+    margin: 40px 0 16px;
+    color: #38bdf8;
+    border-left: 4px solid #38bdf8;
+    padding-left: 12px;
+}
+h3 { 
+    font-size: 20px;
+    font-weight: 600;
+    margin: 28px 0 12px;
+    color: #cbd5e1;
+}
+h4 { 
+    font-size: 16px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+    color: #94a3b8;
+}
+p { margin-bottom: 12px; color: #cbd5e1; }
+.subtitle { 
+    color: #94a3b8;
+    font-size: 16px;
+    margin-bottom: 32px;
+    font-style: italic;
+}
+.section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 28px;
+}
+.highlight {
+    background: #0c4a6e;
+    border-left: 4px solid #0ea5e9;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 6px;
+}
+.warning {
+    background: #422006;
+    border-left: 4px solid #fb923c;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 6px;
+}
+.code {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    color: #e0e7ff;
+    overflow-x: auto;
+    margin: 12px 0;
+}
+ul, ol { 
+    margin: 12px 0 12px 24px;
+    color: #cbd5e1;
+}
+li { margin-bottom: 8px; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #0f172a;
+    color: #94a3b8;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #38bdf8;
+}
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #334155;
+    font-size: 14px;
+    color: #cbd5e1;
+}
+tr:hover td { background: #1e293b; }
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-right: 6px;
+}
+.badge-phase { background: #3b82f6; }
+.badge-decision { background: #8b5cf6; }
+.badge-tradeoff { background: #f59e0b; }
+.badge-key { background: #22c55e; }
+.toc {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px 28px;
+    margin-bottom: 32px;
+}
+.toc h3 { margin-top: 0; color: #38bdf8; }
+.toc ul { list-style: none; margin-left: 0; }
+.toc li { margin-bottom: 8px; }
+.toc a { color: #38bdf8; text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+.meta {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 48px;
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid #334155;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🏗️ Provider Intelligence Pipeline</h1>
+<p class="subtitle">Architecture Documentation & Design Decisions — February 16, 2026</p>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<ul>
+    <li><a href="#overview">1. System Overview</a></li>
+    <li><a href="#phase1">2. Phase 1: Parallel Discovery</a></li>
+    <li><a href="#phase2">3. Phase 2: Web Harvesting</a></li>
+    <li><a href="#phase3">4. Phase 3: Reconciliation</a></li>
+    <li><a href="#phase4">5. Phase 4: Enrichment</a></li>
+    <li><a href="#phase5">6. Phase 5: LLM Synthesis</a></li>
+    <li><a href="#data-flow">7. Data Flow Architecture</a></li>
+    <li><a href="#decisions">8. Key Design Decisions</a></li>
+    <li><a href="#tradeoffs">9. Trade-Offs & Limitations</a></li>
+    <li><a href="#future">10. Future Improvements</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section">
+<h2>1. System Overview</h2>
+
+<h3>Purpose</h3>
+<p>The Provider Intelligence Pipeline is a 5-phase data fusion system that combines <strong>CMS Medicare claims</strong>, <strong>NPPES provider registry</strong>, <strong>Google Places</strong>, and <strong>web search</strong> into unified provider intelligence for physician liaisons.</p>
+
+<div class="highlight">
+<strong>Core Value Proposition:</strong> One search query → comprehensive intelligence on every provider in a market, including independents, concierge/DPC practices, and non-Medicare providers that traditional claims data misses.
+</div>
+
+<h3>High-Level Architecture</h3>
+<table>
+<tr>
+    <th>Phase</th>
+    <th>Purpose</th>
+    <th>Runtime</th>
+    <th>Key Output</th>
+</tr>
+<tr>
+    <td><span class="badge badge-phase">Phase 1</span> Discovery</td>
+    <td>Parallel queries to 4 data sources</td>
+    <td>~10-15s</td>
+    <td>Raw provider lists from each source</td>
+</tr>
+<tr>
+    <td><span class="badge badge-phase">Phase 2</span> Harvest</td>
+    <td>URL intelligence + web scraping</td>
+    <td>~15-25s</td>
+    <td>Extracted profiles, practice intelligence</td>
+</tr>
+<tr>
+    <td><span class="badge badge-phase">Phase 3</span> Reconciliation</td>
+    <td>Entity resolution + deduplication</td>
+    <td>~5s</td>
+    <td>Unified provider records</td>
+</tr>
+<tr>
+    <td><span class="badge badge-phase">Phase 4</span> Enrichment</td>
+    <td>Classification + scoring</td>
+    <td>~2s</td>
+    <td>Practice types, volume tiers, completeness</td>
+</tr>
+<tr>
+    <td><span class="badge badge-phase">Phase 5</span> Synthesis</td>
+    <td>LLM market analysis + provider cards</td>
+    <td>~15-25s</td>
+    <td>Intelligence briefings, outreach priorities</td>
+</tr>
+</table>
+
+<p><strong>Total Runtime:</strong> ~60-75 seconds for complete market analysis</p>
+
+<h3>Design Philosophy</h3>
+<ul>
+    <li><strong>Breadth over depth:</strong> Cast a wide net (100+ providers per source) then intelligently filter</li>
+    <li><strong>Multi-source validation:</strong> Confidence increases when multiple sources confirm the same provider</li>
+    <li><strong>Human-readable intelligence:</strong> Not just data dumps — synthesized insights for action</li>
+    <li><strong>Specialty-agnostic:</strong> Works for any specialty through taxonomy/pattern mapping</li>
+    <li><strong>Graceful degradation:</strong> Each phase is independent; failures don't cascade</li>
+</ul>
+</div>
+
+<div id="phase1" class="section">
+<h2>2. Phase 1: Parallel Discovery</h2>
+<p><span class="badge badge-key">Key Insight:</span> Run all four data sources simultaneously via ThreadPoolExecutor to minimize total latency.</p>
+
+<h3>2.1 CMS Medicare Discovery</h3>
+
+<h4>Query Strategy</h4>
+<ol>
+    <li><strong>Geography:</strong> Find all zip codes matching the city name in <code>core_providers</code></li>
+    <li><strong>Specialty filtering:</strong> Match <code>provider_type</code> against specialty patterns (e.g., "family" → "Family Practice")</li>
+    <li><strong>Joins:</strong> 
+        <ul>
+            <li><code>utilization_metrics</code> → Medicare volume/payment data</li>
+            <li><code>raw_reassignment</code> → Organization affiliations (PAC ID + name)</li>
+            <li><code>raw_dac_national</code> → Group size + assignment flag</li>
+        </ul>
+    </li>
+    <li><strong>Sort by:</strong> <code>tot_medicare_payment DESC</code> — prioritize high-volume providers</li>
+    <li><strong>Limit:</strong> Top 100 records</li>
+</ol>
+
+<div class="code">SELECT c.npi, c.first_name, c.last_org_name, c.provider_type,
+       u.tot_medicare_payment, u.tot_services, u.tot_unique_beneficiaries,
+       r."Group Legal Business Name" AS org_name,
+       r."Group PAC ID" AS org_pac_id,
+       d.num_org_mem AS org_member_count
+FROM core_providers c
+LEFT JOIN utilization_metrics u ON c.npi = u.npi
+LEFT JOIN raw_reassignment r ON CAST(c.npi AS BIGINT) = r."Individual NPI"
+WHERE c.zip5 IN (zip_list)
+  AND (LOWER(c.provider_type) LIKE '%family%' OR ...)
+ORDER BY u.tot_medicare_payment DESC NULLS LAST
+LIMIT 100</div>
+
+<div class="warning">
+<strong>Known Limitation:</strong> Specialty filtering happens BEFORE we see org affiliations. This means if you search "primary care," you won't see the 109 specialists at Torrance Memorial Medical Center — only the 1 internal medicine provider. This is <strong>provider-centric discovery</strong>, not <strong>org-centric discovery</strong>.
+</div>
+
+<h3>2.2 NPPES Discovery</h3>
+
+<h4>Why NPPES Matters</h4>
+<p>NPPES captures <strong>all active NPIs</strong> including:</p>
+<ul>
+    <li>Concierge/DPC practices (not in Medicare)</li>
+    <li>New providers who haven't filed claims yet</li>
+    <li>Cash-only practices</li>
+    <li>Subspecialists with PPO-heavy panels</li>
+</ul>
+
+<h4>Query Strategy</h4>
+<ol>
+    <li><strong>Geography:</strong> <code>practice_city</code> + <code>practice_state</code> exact match</li>
+    <li><strong>Entity filter:</strong> <code>entity_type = '1'</code> (individuals only, not orgs)</li>
+    <li><strong>Specialty:</strong> Match against <code>taxonomy_1/2/3</code> using NPPES taxonomy codes</li>
+    <li><strong>No volume sort:</strong> NPPES has no claims data, so order is arbitrary</li>
+    <li><strong>Limit:</strong> 100 records</li>
+</ol>
+
+<div class="highlight">
+<strong>Design Decision:</strong> NPPES queries use city name instead of zip codes. This is because NPPES <code>practice_city</code> is more reliable than extracting zips from city names (avoids edge cases where a city spans multiple zips).
+</div>
+
+<h3>2.3 Google Places Discovery</h3>
+
+<h4>Via SearchAPI.io</h4>
+<p>Uses Google Maps API proxy to search: <code>"{specialty} near {city}, {state}"</code></p>
+
+<h4>What We Get</h4>
+<ul>
+    <li>Practice names (often organizations, not individuals)</li>
+    <li>Addresses (for matching back to CMS/NPPES)</li>
+    <li>Phone, website, hours</li>
+    <li>Google ratings + review counts (consumer signal)</li>
+    <li>GPS coordinates</li>
+</ul>
+
+<div class="warning">
+<strong>Places Caveat:</strong> Most results are <strong>organizations</strong> (clinics, medical groups, hospitals), not individual providers. Phase 3 reconciliation must "unpack" orgs into rosters.
+</div>
+
+<h3>2.4 Web Search Discovery</h3>
+
+<h4>Query</h4>
+<p><code>"{specialty} in {city}, {state}"</code> → Returns top 20 organic Google results</p>
+
+<h4>Use Case</h4>
+<ul>
+    <li>Find practice websites not in Places</li>
+    <li>Directory listings (Healthgrades, Vitals, ZocDoc)</li>
+    <li>Health system provider directories</li>
+    <li>Blog posts / press mentions</li>
+</ul>
+
+<div class="highlight">
+<strong>Intelligence Value:</strong> Web results reveal <em>narrative context</em> — awards, specializations, reputation signals — that structured databases miss.
+</div>
+
+<h3>2.5 Parallelization Strategy</h3>
+
+<div class="code">with ThreadPoolExecutor(max_workers=4) as executor:
+    futures = {executor.submit(fn): name for name, fn in tasks.items()}
+    for future in as_completed(futures):
+        result = future.result()  # Process as each completes</div>
+
+<p><strong>Why This Works:</strong></p>
+<ul>
+    <li>CMS query (DB-bound) + SearchAPI (network-bound) run simultaneously</li>
+    <li>Total latency = max(individual_latencies), not sum(individual_latencies)</li>
+    <li>Each task is independent — no data dependencies between sources</li>
+</ul>
+</div>
+
+<div id="phase2" class="section">
+<h2>3. Phase 2: Web Harvesting & URL Intelligence</h2>
+<p><span class="badge badge-key">Key Insight:</span> Not all web scraping is equal. Intelligently classify URLs before deciding whether to crawl.</p>
+
+<h3>3.1 URL Classification</h3>
+
+<h4>Pre-Crawl Intelligence</h4>
+<p>Before fetching any URLs, we analyze them to extract signals:</p>
+
+<table>
+<tr>
+    <th>Signal</th>
+    <th>What It Tells Us</th>
+    <th>Action</th>
+</tr>
+<tr>
+    <td><strong>Health System Domain</strong></td>
+    <td>Provider affiliated with UCLA, Cedars, Kaiser, etc.</td>
+    <td>Tag provider with system affiliation</td>
+</tr>
+<tr>
+    <td><strong>Directory Site</strong></td>
+    <td>Healthgrades, ZocDoc, Vitals listing</td>
+    <td>Skip crawl (SPAs with poor extraction)</td>
+</tr>
+<tr>
+    <td><strong>SPA Domain</strong></td>
+    <td>React/Vue app (no server-side HTML)</td>
+    <td>Skip crawl (would need Playwright)</td>
+</tr>
+<tr>
+    <td><strong>Path Type</strong></td>
+    <td>/doctor/name → provider profile<br>/location/city → practice page</td>
+    <td>Prioritize provider profiles for harvesting</td>
+</tr>
+</table>
+
+<div class="code"># Example URL intelligence
+analyze_url("https://www.uclahealth.org/providers/john-smith")
+→ {
+    health_system: "UCLA Health",
+    is_spa: True,          # Skip crawl
+    path_type: "provider_profile"
+}</div>
+
+<h3>3.2 Web Scraping Strategy</h3>
+
+<h4>What Gets Scraped</h4>
+<ul>
+    <li><strong>Independent practice websites:</strong> Small clinic sites (non-SPA)</li>
+    <li><strong>Static provider profiles:</strong> Simple HTML pages</li>
+    <li><strong>Practice "About" pages:</strong> Care philosophy, services offered</li>
+</ul>
+
+<h4>What Gets Skipped</h4>
+<ul>
+    <li><strong>SPAs:</strong> Healthgrades, ZocDoc, large health systems (would return empty HTML)</li>
+    <li><strong>Directories:</strong> Low signal-to-noise ratio</li>
+    <li><strong>Anything after the first 10 harvestable URLs:</strong> Token budget constraint</li>
+</ul>
+
+<div class="highlight">
+<strong>Tool Choice:</strong> Uses <code>trafilatura</code> library for HTML → readable text extraction. Falls back to basic regex HTML stripping if trafilatura fails.
+</div>
+
+<h3>3.3 LLM Extraction</h3>
+
+<h4>Two Extraction Modes</h4>
+
+<p><strong>Provider Profile Extraction</strong> (when page is about a specific provider):</p>
+<div class="code">{
+  "name": "full name as displayed",
+  "credentials": "MD, DO, NP, PA, etc.",
+  "specialty": "as listed on page",
+  "phone": "direct line if shown",
+  "accepting_new_patients": true/false/null,
+  "board_certifications": [],
+  "education": [],
+  "languages": [],
+  "bio_summary": "2-3 sentence summary",
+  "conditions_treated": []
+}</div>
+
+<p><strong>Practice Intelligence Extraction</strong> (when page is about a clinic/practice):</p>
+<div class="code">{
+  "practice_name": "",
+  "clinical_services": [],
+  "care_philosophy": "how they describe their approach",
+  "patient_focus": "who they primarily serve",
+  "differentiators": [],
+  "talking_points": "briefing a liaison could use"
+}</div>
+
+<div class="warning">
+<strong>Token Economics:</strong> Each page extraction costs ~$0.01 (GPT-4o, ~2K input + 500 output tokens). At 10 URLs per search, Phase 2 costs ~$0.10 per query.
+</div>
+
+<h3>3.4 Why Not Playwright?</h3>
+
+<p>We considered using Playwright for full SPA rendering (Healthgrades, large health systems) but decided against it:</p>
+
+<ul>
+    <li><strong>Latency:</strong> +5-10 seconds per page vs. instant fetch</li>
+    <li><strong>Complexity:</strong> Browser orchestration, session management, proxies</li>
+    <li><strong>Diminishing returns:</strong> CMS + NPPES already cover most providers; SPAs add detail, not discovery</li>
+</ul>
+
+<div class="highlight">
+<strong>Strategic Decision:</strong> Use web harvest for <strong>discovery</strong> (new providers not in CMS/NPPES) and <strong>qualitative signals</strong> (care philosophy, patient focus). Save deep SPA crawling for Phase 2 feature expansion.
+</div>
+</div>
+
+<div id="phase3" class="section">
+<h2>4. Phase 3: Reconciliation & Entity Resolution</h2>
+<p><span class="badge badge-key">Key Insight:</span> Same provider appears in multiple sources with different identifiers. NPI is the Rosetta Stone.</p>
+
+<h3>4.1 The Entity Resolution Problem</h3>
+
+<p>After Phase 1-2, we have:</p>
+<ul>
+    <li>100 CMS records (NPI + Medicare data)</li>
+    <li>100 NPPES records (NPI + taxonomy)</li>
+    <li>20 Google Places (no NPI, address only)</li>
+    <li>10 harvested profiles (name only, no NPI)</li>
+</ul>
+
+<p><strong>Challenge:</strong> How many <em>unique providers</em> are in this set?</p>
+
+<h3>4.2 Six-Step Reconciliation Pipeline</h3>
+
+<h4>Step 1: CMS Deduplication</h4>
+<p><strong>Problem:</strong> Same NPI can appear multiple times in CMS if they have multiple org affiliations.</p>
+
+<div class="code"># Example: Dr. Philip Kim appears in 10 rows (one per org)
+{NPI: 1356781132, org: "Best Life Medical Group"}
+{NPI: 1356781132, org: "Affordable Urgent Care"}
+{NPI: 1356781132, org: "Singing River Health System"}
+...</div>
+
+<p><strong>Solution:</strong> Group by NPI, collapse org affiliations into array, keep highest-payment record for primary data.</p>
+
+<div class="code">npi_map[npi] = {
+    "provider": highest_payment_record,
+    "orgs": [list of unique orgs],
+    "max_payment": highest_payment_value
+}</div>
+
+<p><strong>Result:</strong> 100 CMS records → ~40 unique providers (typical dedup ratio)</p>
+
+<h4>Step 2: NPPES Merge by NPI</h4>
+<p><strong>Goal:</strong> Enrich CMS providers with NPPES data (taxonomy, credentials, enumeration date)</p>
+
+<table>
+<tr>
+    <th>Scenario</th>
+    <th>Action</th>
+</tr>
+<tr>
+    <td>NPI exists in both CMS and NPPES</td>
+    <td>Merge fields into CMS record (keep CMS as base, add NPPES taxonomy)</td>
+</tr>
+<tr>
+    <td>NPI only in NPPES (not in CMS)</td>
+    <td>Create new provider record tagged <code>["nppes"]</code> source</td>
+</tr>
+</table>
+
+<div class="highlight">
+<strong>This is where we find concierge/DPC providers:</strong> NPIs with no Medicare claims (non_medicare practice type in Phase 4).
+</div>
+
+<h4>Step 3: Web Harvested Merge (Fuzzy Name Matching)</h4>
+<p><strong>Problem:</strong> Harvested profiles have names like "Dr. Jennifer L. Chen" but no NPI.</p>
+
+<p><strong>Matching Strategy:</strong></p>
+<ol>
+    <li>Normalize names: strip titles, middle initials, credentials</li>
+    <li>Fuzzy match against existing providers using <code>names_match()</code> utility</li>
+    <li>Threshold: 75% confidence required for merge</li>
+    <li>If no match, create new <code>web-only</code> provider</li>
+</ol>
+
+<div class="code">def names_match(name1, name2):
+    # Strip Dr./MD/DO, normalize case
+    # Split into first/last
+    # Compare:
+    #   - Exact match → 1.0 confidence
+    #   - Last name match + first initial → 0.85
+    #   - Reversed order match → 0.80
+    #   - Fuzzy threshold (Levenshtein) → variable
+    return (is_match, confidence)</div>
+
+<h4>Step 4: URL Intelligence Integration</h4>
+<p>Apply URL signals to providers:</p>
+<ul>
+    <li>If org name contains "UCLA," tag <code>health_system = "UCLA Health"</code></li>
+    <li>If org name contains "Cedars," tag <code>health_system = "Cedars-Sinai"</code></li>
+    <li>Store URL signals as metadata for Phase 5 synthesis</li>
+</ul>
+
+<h4>Step 5: Provider-to-Place Linking</h4>
+<p><strong>Goal:</strong> Connect providers to their Google Places entries (for ratings, phone, website)</p>
+
+<p><strong>Matching Logic:</strong></p>
+<ol>
+    <li>Compare provider's <code>street_address</code> to each Place's <code>address</code></li>
+    <li>Normalize addresses (lowercase, strip punctuation, remove unit numbers)</li>
+    <li>Match if: street number + street name match (70%+ confidence)</li>
+    <li>Link: <code>provider.linked_place_ids.append(place.place_id)</code></li>
+    <li>Copy: rating, reviews, website from Place → Provider</li>
+</ol>
+
+<div class="warning">
+<strong>Current Limitation:</strong> Places often represent <em>organizations</em>, not individuals. We link providers to Places by address, but we don't yet "unpack" a Place like "Torrance Memorial Primary Care" into its 15 individual providers.
+<br><br>
+<strong>Future Enhancement:</strong> Use <code>raw_reassignment</code> to find all NPIs at a Place's address, then roster them under that Place.
+</div>
+
+<h4>Step 6: Organization Graph Construction</h4>
+<p><strong>Goal:</strong> Build the inverse view — what organizations exist, and how many providers are in each?</p>
+
+<div class="code">for each provider:
+    for each org in provider.organizations:
+        if org.pac_id not in org_map:
+            create Organization(org.pac_id, org.name)
+        org_map[org.pac_id].provider_count += 1
+        org_map[org.pac_id].total_beneficiaries += provider.beneficiaries</div>
+
+<p><strong>Output:</strong> List of <code>Organization</code> objects sorted by provider count, with totals for beneficiaries and member counts.</p>
+
+<h3>4.3 Reconciliation Output</h3>
+
+<p>By end of Phase 3, we have:</p>
+<ul>
+    <li><strong>Unified provider list:</strong> Each provider appears once with all available data</li>
+    <li><strong>Discovery source tracking:</strong> <code>["cms", "nppes", "web"]</code> tags show which sources confirmed this provider</li>
+    <li><strong>Match confidence:</strong> 1.0 (NPI match) down to 0.5 (fuzzy name match)</li>
+    <li><strong>Organization roster:</strong> Which orgs dominate the market</li>
+</ul>
+</div>
+
+<div id="phase4" class="section">
+<h2>5. Phase 4: Enrichment & Classification</h2>
+<p><span class="badge badge-key">Key Insight:</span> Raw data becomes intelligence through classification and scoring.</p>
+
+<h3>5.1 Volume Tier Classification</h3>
+
+<h4>Why Volume Matters</h4>
+<p>High-volume providers = more referrals = higher liaison outreach priority.</p>
+
+<h4>Percentile-Based Binning</h4>
+<ol>
+    <li>Filter providers with <code>tot_unique_beneficiaries</code> data</li>
+    <li>Sort descending by beneficiaries</li>
+    <li>Assign tiers by percentile:
+        <ul>
+            <li><strong>High:</strong> Top 25%</li>
+            <li><strong>Medium:</strong> 25-75%</li>
+            <li><strong>Low:</strong> Bottom 25%</li>
+        </ul>
+    </li>
+    <li>Providers without CMS data → <code>unknown</code> or <code>unknown_non_medicare</code></li>
+</ol>
+
+<div class="highlight">
+<strong>Design Choice:</strong> Percentiles are <em>within-search</em>, not absolute. A "high volume" provider in Beverly Hills (1,200 beneficiaries) may be "medium" in a rural area.
+</div>
+
+<h3>5.2 Practice Type Classification</h3>
+
+<h4>Six Practice Types</h4>
+<table>
+<tr>
+    <th>Type</th>
+    <th>Detection Logic</th>
+    <th>Strategic Value</th>
+</tr>
+<tr>
+    <td><strong>system_employed</strong></td>
+    <td><code>health_system</code> tag exists</td>
+    <td>Hard to convert, but high referral volume if you do</td>
+</tr>
+<tr>
+    <td><strong>large_group</strong></td>
+    <td><code>group_assigned = 'Y'</code> AND org <code>member_count > 50</code></td>
+    <td>Decision-makers are admins, not MDs</td>
+</tr>
+<tr>
+    <td><strong>small_group</strong></td>
+    <td><code>group_assigned = 'Y'</code> AND org <code>member_count 2-50</code></td>
+    <td>Partners have influence; approachable</td>
+</tr>
+<tr>
+    <td><strong>solo_independent</strong></td>
+    <td><code>group_assigned = 'M'</code> (solo Medicare)</td>
+    <td><strong>Prime targets:</strong> independent decision-making</td>
+</tr>
+<tr>
+    <td><strong>non_medicare</strong></td>
+    <td>NPPES-only, no CMS claims</td>
+    <td><strong>Hidden gold:</strong> concierge/DPC with affluent PPO panels</td>
+</tr>
+<tr>
+    <td><strong>group_affiliated</strong></td>
+    <td><code>group_assigned = 'Y'</code> but unclear size</td>
+    <td>Needs more research</td>
+</tr>
+</table>
+
+<div class="code"># Actual classification logic
+if p.health_system:
+    p.practice_type = "system_employed"
+elif p.group_assigned == "Y":
+    max_members = max(org.member_count for org in p.organizations)
+    if max_members > 50:
+        p.practice_type = "large_group"
+    elif max_members > 1:
+        p.practice_type = "small_group"
+    else:
+        p.practice_type = "group_affiliated"
+elif p.group_assigned == "M":
+    p.practice_type = "solo_independent"
+elif "cms" not in p.discovery_sources:
+    p.practice_type = "non_medicare"
+else:
+    p.practice_type = "unknown"</div>
+
+<h3>5.3 Newly Established Flag</h3>
+
+<p><strong>Definition:</strong> Providers enumerated (got their NPI) within last 2 years.</p>
+
+<p><strong>Why It Matters:</strong> New providers are actively building referral networks. They're <em>more receptive</em> to liaison outreach than established providers.</p>
+
+<div class="code">if p.enumeration_date >= datetime(2024, 1, 1):
+    p.newly_established = True</div>
+
+<h3>5.4 Completeness Scoring</h3>
+
+<p>Measures how much data we have about each provider (0-100%).</p>
+
+<h4>Scoring Rubric</h4>
+<table>
+<tr>
+    <th>Data Category</th>
+    <th>Weight</th>
+    <th>Components</th>
+</tr>
+<tr>
+    <td>Identity</td>
+    <td>20%</td>
+    <td>NPI, name, credentials</td>
+</tr>
+<tr>
+    <td>Location</td>
+    <td>15%</td>
+    <td>Address, zip</td>
+</tr>
+<tr>
+    <td>Specialty</td>
+    <td>10%</td>
+    <td>CMS type, NPPES taxonomy</td>
+</tr>
+<tr>
+    <td>Volume</td>
+    <td>15%</td>
+    <td>Payment, services, beneficiaries</td>
+</tr>
+<tr>
+    <td>Organization</td>
+    <td>10%</td>
+    <td>Org affiliations, health system</td>
+</tr>
+<tr>
+    <td>Web Presence</td>
+    <td>10%</td>
+    <td>Website exists, web-sourced data</td>
+</tr>
+<tr>
+    <td>Clinical Detail</td>
+    <td>10%</td>
+    <td>Bio, certifications, languages, education</td>
+</tr>
+<tr>
+    <td>Consumer Signal</td>
+    <td>5%</td>
+    <td>Google rating, review count</td>
+</tr>
+<tr>
+    <td>Contact</td>
+    <td>5%</td>
+    <td>Website URL</td>
+</tr>
+</table>
+
+<div class="highlight">
+<strong>Use Case:</strong> Low completeness score → provider needs more research before outreach. High completeness → ready to contact with intelligence in hand.
+</div>
+</div>
+
+<div id="phase5" class="section">
+<h2>6. Phase 5: LLM Synthesis & Intelligence Generation</h2>
+<p><span class="badge badge-key">Key Insight:</span> LLMs turn structured data into <em>narrative intelligence</em> that humans can act on.</p>
+
+<h3>6.1 Three Synthesis Outputs</h3>
+
+<h4>Market Landscape Summary</h4>
+<p><strong>Prompt Strategy:</strong> "You are a healthcare market analyst preparing a briefing for a physician liaison."</p>
+
+<p><strong>Input Data:</strong></p>
+<ul>
+    <li>Top 60 providers (sample to fit in context window)</li>
+    <li>Top 20 organizations</li>
+    <li>Aggregate stats (practice type breakdown, volume distribution)</li>
+</ul>
+
+<p><strong>Output Sections:</strong></p>
+<ol>
+    <li><strong>Market Overview:</strong> Total providers, practice mix, geography</li>
+    <li><strong>Health System Landscape:</strong> Which systems dominate, independent presence</li>
+    <li><strong>Volume Distribution:</strong> Where the patients are</li>
+    <li><strong>Opportunities & Gaps:</strong> Strategic insights (e.g., "15 non-Medicare providers suggest strong concierge market")</li>
+    <li><strong>Data Confidence:</strong> Completeness assessment</li>
+</ol>
+
+<h4>Provider Intelligence Cards</h4>
+<p><strong>Goal:</strong> Generate actionable briefings for liaison outreach.</p>
+
+<p><strong>Batch Processing Strategy:</strong></p>
+<ul>
+    <li>Sort providers by <strong>outreach score</strong> (volume + independence + completeness)</li>
+    <li>Process top 30 providers in batches of 5</li>
+    <li>5 providers per LLM call = better quality than 30 at once</li>
+</ul>
+
+<div class="code"># Outreach scoring logic
+score = 0
+if volume_tier == "high": score += 30
+if volume_tier == "medium": score += 20
+if practice_type in ["solo_independent", "small_group"]: score += 20
+if practice_type == "non_medicare": score += 15  # Concierge opportunity
+if newly_established: score += 10
+score += completeness_score * 10</div>
+
+<p><strong>Card Schema (per provider):</strong></p>
+<div class="code">{
+  "one_liner": "Positioning for liaison",
+  "outreach_priority": "high|medium|low",
+  "priority_rationale": "Why this priority (specific numbers)",
+  "approach_strategy": "How to approach outreach",
+  "talking_points": ["point 1", "point 2", "point 3"]
+}</div>
+
+<p><strong>Example Output:</strong></p>
+<div class="code">{
+  "one_liner": "High-volume independent primary care with 940 beneficiaries.",
+  "outreach_priority": "high",
+  "priority_rationale": "$900K Medicare, solo practice = full decision authority",
+  "approach_strategy": "Lead with specialty care coordination tools; mention volume capacity.",
+  "talking_points": [
+    "Large patient base with significant Medicare payments",
+    "Diverse affiliations offering broad care opportunities",
+    "Potential for integrated specialty care solutions"
+  ]
+}</div>
+
+<h4>Competitive Intelligence Summary</h4>
+<p><strong>Focus:</strong> Organization-level analysis.</p>
+<ul>
+    <li>Which groups/systems control the market</li>
+    <li>Independent vs. employed ratio</li>
+    <li>Best opportunities for penetration</li>
+</ul>
+
+<h3>6.2 LLM Cost Management</h3>
+
+<table>
+<tr>
+    <th>Task</th>
+    <th>Model</th>
+    <th>Input Tokens</th>
+    <th>Output Tokens</th>
+    <th>Cost</th>
+</tr>
+<tr>
+    <td>Market Landscape</td>
+    <td>GPT-4o</td>
+    <td>~4K</td>
+    <td>~1.5K</td>
+    <td>$0.03</td>
+</tr>
+<tr>
+    <td>Provider Cards (6 batches)</td>
+    <td>GPT-4o</td>
+    <td>~3K each</td>
+    <td>~2K each</td>
+    <td>$0.18</td>
+</tr>
+<tr>
+    <td>Competitive Intel</td>
+    <td>GPT-4o</td>
+    <td>~2K</td>
+    <td>~1K</td>
+    <td>$0.02</td>
+</tr>
+<tr>
+    <td><strong>Total Phase 5</strong></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><strong>$0.23</strong></td>
+</tr>
+</table>
+
+<div class="highlight">
+<strong>Total Pipeline Cost per Search:</strong>
+<ul>
+    <li>Phase 2 (web harvest): $0.10</li>
+    <li>Phase 5 (synthesis): $0.23</li>
+    <li><strong>Grand total: ~$0.33 per market search</strong></li>
+</ul>
+</div>
+</div>
+
+<div id="data-flow" class="section">
+<h2>7. Data Flow Architecture</h2>
+
+<h3>Visual Flow Diagram</h3>
+<div class="code" style="white-space: pre; line-height: 1.4; font-size: 12px;">
+┌─────────────────────────────────────────────────────────────────────┐
+│                         PHASE 1: DISCOVERY                         │
+│                         (10-15 seconds)                             │
+└─────────────────────────────────────────────────────────────────────┘
+          ║
+          ║ (Parallel ThreadPoolExecutor)
+          ║
+    ┌─────┴─────┬──────────┬──────────┬───────────┐
+    ▼           ▼          ▼          ▼           ▼
+┌───────┐  ┌────────┐  ┌────────┐  ┌─────────┐  ┌─────────┐
+│  CMS  │  │ NPPES  │  │ Places │  │   Web   │  │ (unused)│
+│  100  │  │  100   │  │   20   │  │   20    │  │         │
+└───┬───┘  └───┬────┘  └───┬────┘  └────┬────┘  └─────────┘
+    │          │            │            │
+    └──────────┴────────────┴────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      PHASE 2: HARVEST                               │
+│                      (15-25 seconds)                                │
+│                                                                     │
+│  • URL Intelligence (all URLs)                                      │
+│  • Simple Site Scraping (10 non-SPA URLs)                           │
+│  • LLM Extraction → HarvestedProfile[]                              │
+└─────────────────────────────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                   PHASE 3: RECONCILIATION                           │
+│                      (~5 seconds)                                   │
+│                                                                     │
+│  Step 1: CMS dedup (100 → ~40)                                      │
+│  Step 2: NPPES merge by NPI (~40 + 94 new = 134)                    │
+│  Step 3: Web harvest fuzzy match (~10 matched, 2 new)               │
+│  Step 4: URL intelligence → health_system tags                      │
+│  Step 5: Provider-Place linking (address match)                     │
+│  Step 6: Organization graph construction                            │
+│                                                                     │
+│  OUTPUT: 136 unified providers                                      │
+└─────────────────────────────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     PHASE 4: ENRICHMENT                             │
+│                      (~2 seconds)                                   │
+│                                                                     │
+│  • Volume tiers (percentile-based)                                  │
+│  • Practice type classification (6 types)                           │
+│  • Newly established flag (enumeration_date < 2 years)              │
+│  • Completeness scoring (weighted 0-1.0)                            │
+└─────────────────────────────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     PHASE 5: SYNTHESIS                              │
+│                      (15-25 seconds)                                │
+│                                                                     │
+│  • Market Landscape (GPT-4o summary)                                │
+│  • Provider Intelligence Cards (batch LLM processing)               │
+│  • Competitive Intelligence (org-level analysis)                    │
+│                                                                     │
+│  OUTPUT: HTML report + JSON export                                  │
+└─────────────────────────────────────────────────────────────────────┘
+</div>
+
+<h3>Key Data Transformations</h3>
+
+<table>
+<tr>
+    <th>Stage</th>
+    <th>Input Count</th>
+    <th>Transformation</th>
+    <th>Output Count</th>
+</tr>
+<tr>
+    <td>CMS Discovery</td>
+    <td>~200 rows</td>
+    <td>Dedup by NPI, collapse orgs</td>
+    <td>~40 providers</td>
+</tr>
+<tr>
+    <td>NPPES Merge</td>
+    <td>100 records</td>
+    <td>6 NPI matches, 94 new</td>
+    <td>+94 providers</td>
+</tr>
+<tr>
+    <td>Web Harvest</td>
+    <td>10 profiles</td>
+    <td>8 fuzzy matches, 2 new</td>
+    <td>+2 providers</td>
+</tr>
+<tr>
+    <td><strong>Total Unified</strong></td>
+    <td>~310 raw</td>
+    <td>Entity resolution</td>
+    <td><strong>~136 unique</strong></td>
+</tr>
+</table>
+</div>
+
+<div id="decisions" class="section">
+<h2>8. Key Design Decisions</h2>
+
+<h3>Decision 1: Provider-Centric vs. Org-Centric Discovery</h3>
+<div class="warning">
+<strong>Choice Made:</strong> Provider-centric (filter by specialty first)
+<br><br>
+<strong>Trade-Off:</strong> Misses specialists affiliated with orgs in the search results. Example: searching "primary care Torrance" returns 1 provider from Torrance Memorial (the internist), not the 109 specialists also affiliated.
+<br><br>
+<strong>Mitigation:</strong> Future enhancement — add org-mode flag that pulls ALL providers at matched orgs regardless of specialty.
+</div>
+
+<h3>Decision 2: Limit 100 per Source</h3>
+<div class="highlight">
+<strong>Rationale:</strong>
+<ul>
+    <li>Search quality degrades past ~100 results (less relevant providers)</li>
+    <li>Reconciliation complexity scales O(n²) for fuzzy matching</li>
+    <li>Phase 5 LLM synthesis can't meaningfully process 300+ providers</li>
+</ul>
+<strong>Effect:</strong> Focus on top providers (by volume, relevance) rather than exhaustive coverage.
+</div>
+
+<h3>Decision 3: Skip SPA Crawling in Phase 2</h3>
+<div class="highlight">
+<strong>Choice:</strong> Only scrape simple HTML sites; skip React/Vue apps and directories.
+<br><br>
+<strong>Why:</strong>
+<ul>
+    <li>SPAs require Playwright → +10s latency per site</li>
+    <li>Healthgrades/ZocDoc don't reveal info not already in CMS/NPPES</li>
+    <li>Large health systems (UCLA, Cedars) are detected via org affiliation in CMS</li>
+</ul>
+<strong>Outcome:</strong> Phase 2 targets <em>independent practices</em> (most likely to have simple sites) where we find new intelligence.
+</div>
+
+<h3>Decision 4: Percentile-Based Volume Tiers (Not Absolute)</h3>
+<div class="warning">
+<strong>Choice:</strong> "High volume" = top 25% <em>within this search</em>, not a fixed beneficiary threshold.
+<br><br>
+<strong>Why:</strong> Markets vary dramatically. 1,000 beneficiaries is high-volume in Beverly Hills, low-volume in rural areas.
+<br><br>
+<strong>Implication:</strong> Volume tiers are <strong>relative</strong> to the local competitive landscape, not national benchmarks.
+</div>
+
+<h3>Decision 5: Batch LLM Processing (5 providers at a time)</h3>
+<div class="highlight">
+<strong>Alternative Considered:</strong> Send all 30 providers in one giant prompt.
+<br><br>
+<strong>Why Batching Won:</strong>
+<ul>
+    <li>Quality: LLM reasoning degrades with long context</li>
+    <li>Token limits: 30 providers = ~10K input tokens + 6K output = risk of truncation</li>
+    <li>Error handling: If one LLM call fails, we lose only 5 providers, not 30</li>
+</ul>
+<strong>Cost:</strong> 6 LLM calls instead of 1 = slightly more expensive but much more reliable.
+</div>
+
+<h3>Decision 6: No Real-Time Place → Provider Roster Expansion</h3>
+<div class="warning">
+<strong>Missing Feature:</strong> When we find "Torrance Memorial Primary Care" in Places, we don't automatically query CMS for all providers at that address.
+<br><br>
+<strong>Why Not Built Yet:</strong>
+<ul>
+    <li>Address normalization is complex (suites, floors, abbreviations)</li>
+    <li>Would add 20+ DB queries per search (Places × CMS JOIN)</li>
+    <li>Most value comes from <em>new</em> providers, not expanding known orgs</li>
+</ul>
+<strong>Future Enhancement:</strong> Pre-compute address → NPI roster table in pipeline, query once per search.
+</div>
+</div>
+
+<div id="tradeoffs" class="section">
+<h2>9. Trade-Offs & Limitations</h2>
+
+<h3>Current Limitations</h3>
+
+<table>
+<tr>
+    <th>Limitation</th>
+    <th>Impact</th>
+    <th>Workaround</th>
+</tr>
+<tr>
+    <td><strong>Org-centric discovery gap</strong></td>
+    <td>Miss specialists at matched orgs</td>
+    <td>Manual follow-up: "Show me all Torrance Memorial providers"</td>
+</tr>
+<tr>
+    <td><strong>Address matching precision</strong></td>
+    <td>Some provider-Place links missed</td>
+    <td>Accept ~70% link rate; manual enrichment for VIPs</td>
+</tr>
+<tr>
+    <td><strong>No Playwright (SPA crawling)</strong></td>
+    <td>Can't extract from Healthgrades, large systems</td>
+    <td>Those providers already in CMS; web adds detail, not discovery</td>
+</tr>
+<tr>
+    <td><strong>LLM hallucination risk</strong></td>
+    <td>Synthesized intelligence may be wrong</td>
+    <td>Structured output format + grounding in data reduces risk</td>
+</tr>
+<tr>
+    <td><strong>Token budget in Phase 5</strong></td>
+    <td>Can't process 200+ providers</td>
+    <td>Sort by outreach score, process top 30</td>
+</tr>
+<tr>
+    <td><strong>SearchAPI rate limits</strong></td>
+    <td>Phase 1 may fail if key exhausted</td>
+    <td>Graceful degradation: continue with CMS/NPPES only</td>
+</tr>
+</table>
+
+<h3>Scaling Constraints</h3>
+
+<div class="warning">
+<strong>Single-Threaded Reconciliation:</strong> Phase 3 is CPU-bound on fuzzy name matching. For 100+ providers × 10 harvested profiles = 1,000 comparisons.
+<br><br>
+<strong>If This Becomes a Bottleneck:</strong> Pre-compute name embeddings (sentence transformers), use ANN search instead of pairwise comparison.
+</div>
+
+<div class="warning">
+<strong>LLM Latency:</strong> Phase 5 takes 15-25 seconds. If processing 100 searches/day, that's 25-40 minutes of LLM wait time.
+<br><br>
+<strong>Mitigation:</strong> Async batch processing (queue searches, process overnight) or parallel LLM calls (OpenAI allows 500 RPM).
+</div>
+
+<h3>Data Quality Issues</h3>
+
+<ul>
+    <li><strong>CMS data lag:</strong> Utilization metrics are 1-2 years old</li>
+    <li><strong>NPPES address drift:</strong> Providers move; NPPES updates slowly</li>
+    <li><strong>Google Places spam:</strong> Some listings are fake clinics (lead gen)</li>
+    <li><strong>Web harvest variability:</strong> Simple sites → good extraction; old sites → poor extraction</li>
+</ul>
+
+<div class="highlight">
+<strong>Confidence Management:</strong> The <code>match_confidence</code> and <code>completeness_score</code> fields help users assess data quality. Low scores = "use this as a lead, verify before outreach."
+</div>
+</div>
+
+<div id="future" class="section">
+<h2>10. Future Improvements</h2>
+
+<h3>Near-Term (Next 2 Weeks)</h3>
+
+<ol>
+    <li><strong>Org-mode flag:</strong> Add <code>--org-mode</code> to pull ALL providers at matched orgs</li>
+    <li><strong>Address → NPI roster table:</strong> Pre-compute in pipeline, enable Place roster expansion</li>
+    <li><strong>Better name normalization:</strong> Handle suffixes (Jr, Sr, III), compound last names</li>
+    <li><strong>Playwright integration:</strong> Add SPA crawling for top 5 health system URLs per search</li>
+</ol>
+
+<h3>Medium-Term (Next Month)</h3>
+
+<ol>
+    <li><strong>Claims data integration:</strong> When client provides their claims, join on NPI → add referral patterns, patient overlap</li>
+    <li><strong>Pre-seeded markets:</strong> Run pipeline for top 1,000 specialty×metro combos, cache results</li>
+    <li><strong>Provider profile pages:</strong> Generate individual landing pages (provider-intel.com/npi/1234567890)</li>
+    <li><strong>Change detection:</strong> Re-run pipeline monthly, alert when providers move or change affiliations</li>
+</ol>
+
+<h3>Long-Term (Next Quarter)</h3>
+
+<ol>
+    <li><strong>Multi-specialty queries:</strong> "Show me cardiologists AND endocrinologists in Santa Monica"</li>
+    <li><strong>Referral network mapping:</strong> Use CMS shared patient data to visualize referral flows</li>
+    <li><strong>Outreach workflow integration:</strong> Export to Salesforce/HubSpot with pre-populated intelligence</li>
+    <li><strong>Feedback loop:</strong> Liaison marks "successfully contacted" → retrain outreach priority model</li>
+</ol>
+
+<h3>Research Questions</h3>
+
+<ul>
+    <li>Can we detect provider "openness to outreach" from web signals? (Accepting new patients, recent website updates, job postings)</li>
+    <li>Does provider age (years since enumeration) correlate with referral conversion rates?</li>
+    <li>Can we predict which small groups are likely to merge into health systems?</li>
+    <li>What's the optimal balance between CMS volume data and web sentiment for prioritization?</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Conclusion</h2>
+
+<p>The Provider Intelligence Pipeline is a <strong>data fusion system</strong> that combines structured databases (CMS, NPPES) with unstructured web intelligence to create actionable market insights.</p>
+
+<p><strong>Core strengths:</strong></p>
+<ul>
+    <li>Fast (~60s end-to-end)</li>
+    <li>Comprehensive (finds independents + concierge providers CMS misses)</li>
+    <li>Actionable (not just data — intelligence cards with talking points)</li>
+    <li>Cost-effective (~$0.33 per market search)</li>
+</ul>
+
+<p><strong>Key innovation:</strong> Entity resolution across disparate sources (NPI-based + fuzzy name matching) produces a unified view that no single data source provides.</p>
+
+<p><strong>Strategic value:</strong> Transforms 4 hours of manual research into 60 seconds of automated intelligence gathering, freeing liaisons to focus on relationship-building instead of data collection.</p>
+</div>
+
+<p class="meta">
+Document generated February 16, 2026<br>
+Pipeline version: v0.1.0 (prototype)<br>
+Author: Chief AI (OpenClaw)<br>
+For: Blake Thomson
+</p>
+
+</div>
+</body>
+</html>

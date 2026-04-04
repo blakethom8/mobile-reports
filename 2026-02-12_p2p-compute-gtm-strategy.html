@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Compute Marketplace - GTM Strategy | Feb 12, 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+        }
+        
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        header .meta {
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #4a5568;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+        
+        h4 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        strong {
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .highlight-box {
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+        
+        .highlight-box.problem {
+            border-left-color: #f56565;
+            background: #fff5f5;
+        }
+        
+        .highlight-box.solution {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .highlight-box.opportunity {
+            border-left-color: #ed8936;
+            background: #fffaf0;
+        }
+        
+        .highlight-box h4 {
+            margin-top: 0;
+        }
+        
+        .metric {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #edf2f7;
+            border-radius: 6px;
+            margin: 5px 5px 5px 0;
+            font-weight: 600;
+        }
+        
+        .metric-large {
+            font-size: 1.4em;
+            color: #667eea;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .badge-high {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .badge-medium {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+        
+        .badge-low {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 40px 0;
+        }
+        
+        footer {
+            background: #f7fafc;
+            padding: 30px 40px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 0;
+            }
+            
+            header, .content, footer {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 1.6em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Peer-to-Peer Compute Marketplace</h1>
+            <div class="subtitle">Go-to-Market Strategy & Business Case</div>
+            <div class="meta">
+                Blake Thomson | February 12, 2026<br>
+                "Airbnb for RAM" - Rent compute from friends instead of AWS
+            </div>
+        </header>
+        
+        <div class="content">
+            <h2>Executive Summary</h2>
+            <p>The peer-to-peer compute marketplace enables individuals to rent unused compute resources (RAM, CPU, storage) from trusted peers instead of cloud providers. Target early adopters: AI/agent power users running OpenClaw, Claude Code, and similar tools who need bursty compute but hate AWS UX complexity.</p>
+            
+            <div class="highlight-box solution">
+                <h4>The Core Value Proposition</h4>
+                <p><strong>"Rent 16GB RAM from Dave's Mac Mini for $0.50/hour instead of wrestling with AWS for 15 minutes and paying $0.15/GB/hour with surprise charges."</strong></p>
+                <p>This isn't about being cheaper - it's about being <strong>easier</strong>, <strong>faster</strong>, and <strong>trusted</strong>.</p>
+            </div>
+
+            <h2>The Problem We're Solving</h2>
+
+            <h3>Problem #1: Bursty Agent Workloads Need Flexible Compute</h3>
+            <div class="highlight-box problem">
+                <h4>The Scenario</h4>
+                <p>Blake runs OpenClaw on his MacBook Pro (48GB RAM). Normal usage: 30-35GB. But when he spawns 5 agent sessions for a complex task, RAM usage spikes to 45GB+. His laptop becomes sluggish, and he can't do other work.</p>
+                <p><strong>Current options:</strong></p>
+                <ul>
+                    <li>Wait for agents to finish (productivity loss)</li>
+                    <li>Buy more RAM (expensive, can't upgrade M-series Macs)</li>
+                    <li>Spin up AWS EC2 (15-min setup, complex UX, monthly commitment)</li>
+                </ul>
+                <p><strong>What Blake actually wants:</strong> "Run these 5 agents on someone else's machine for 2 hours, then I'm done."</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Segment</th>
+                        <th>Compute Need</th>
+                        <th>Current Pain Point</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>OpenClaw/Agent Users</strong></td>
+                        <td>Spawn 3-10 agent sessions (8-32GB RAM)</td>
+                        <td>Laptop maxes out, can't multitask</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Scientists</strong></td>
+                        <td>Process large datasets (16-64GB RAM)</td>
+                        <td>Can't afford dedicated GPU rig, AWS too complex</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Video Editors</strong></td>
+                        <td>Render 4K video (32GB+ RAM, GPU)</td>
+                        <td>Rendering takes hours, blocks other work</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Small Dev Teams</strong></td>
+                        <td>Run test environments, CI/CD (8-16GB)</td>
+                        <td>AWS overkill for 2-3 person team</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Problem #2: AWS/Cloud UX Is Terrible for Individuals</h3>
+            <div class="highlight-box problem">
+                <h4>The 15-Minute AWS Nightmare</h4>
+                <ol>
+                    <li>Create AWS account (email verification, payment method)</li>
+                    <li>Navigate IAM roles (what's an IAM role?)</li>
+                    <li>Choose region (which region? does it matter?)</li>
+                    <li>Pick instance type (t3.medium vs t3.large vs c6i.xlarge?)</li>
+                    <li>Configure security groups (what ports do I open?)</li>
+                    <li>Launch instance, wait 2-3 minutes</li>
+                    <li>SSH in, install dependencies</li>
+                    <li>Finally run your workload</li>
+                </ol>
+                <p><strong>Total time: 15-30 minutes</strong> for a 2-hour job. That's 12-25% overhead just on setup.</p>
+            </div>
+
+            <p><strong>What went wrong:</strong> AWS optimized for enterprises running massive infrastructure, not individuals who need "just give me 16GB RAM for 2 hours."</p>
+
+            <h3>Problem #3: Idle Compute Is Wasted</h3>
+            <p>Millions of Mac Minis, gaming PCs, and workstations sit at <strong>10-30% utilization</strong> most of the time. This is wasted capacity that could be monetized.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Device Type</th>
+                        <th>Typical Configuration</th>
+                        <th>Avg. Utilization</th>
+                        <th>Wasted Capacity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mac Mini (M4)</strong></td>
+                        <td>24-64GB RAM, 10-core CPU</td>
+                        <td>15-20%</td>
+                        <td>48GB+ RAM sitting idle</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gaming PC</strong></td>
+                        <td>32-64GB RAM, RTX 4080</td>
+                        <td>10% (outside gaming hours)</td>
+                        <td>50GB+ RAM, GPU idle 20h/day</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dev Workstation</strong></td>
+                        <td>64-128GB RAM, Xeon CPU</td>
+                        <td>25-30%</td>
+                        <td>80GB+ RAM unused</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>The opportunity:</strong> If Dave's Mac Mini (32GB) is only using 8GB most of the time, he could rent out 16-24GB and make $20-50/month passively.</p>
+
+            <div class="section-divider"></div>
+
+            <h2>The Solution: Peer-to-Peer Compute Marketplace</h2>
+
+            <h3>How It Works (User Perspective)</h3>
+
+            <h4>For Renters (Blake)</h4>
+            <ol>
+                <li><strong>Discovery:</strong> Open marketplace app, search "16GB RAM available"</li>
+                <li><strong>Choose host:</strong> See Dave's Mac Mini (16GB free, $0.50/hour, 5-star rating)</li>
+                <li><strong>One-click rent:</strong> Click "Rent", payment held in escrow</li>
+                <li><strong>Deploy workload:</strong> App deploys Blake's agent swarm to Dave's machine</li>
+                <li><strong>Job completes:</strong> 2 hours later, results downloaded, $1.00 auto-paid to Dave</li>
+            </ol>
+
+            <p><strong>Total time from need → running workload: 60 seconds</strong></p>
+
+            <h4>For Hosts (Dave)</h4>
+            <ol>
+                <li><strong>Install app:</strong> Download marketplace daemon (5 minutes)</li>
+                <li><strong>Set availability:</strong> "Offer 50% unused RAM when idle" (1 minute)</li>
+                <li><strong>Approve trusted renters:</strong> Add Blake to whitelist (30 seconds)</li>
+                <li><strong>Earn passively:</strong> Dave's machine auto-accepts jobs, earns $20-50/month</li>
+            </ol>
+
+            <p><strong>Dave never notices:</strong> Workloads run in isolated containers, no performance impact on his daily work.</p>
+
+            <div class="highlight-box solution">
+                <h4>The Magic Moment</h4>
+                <p><strong>Blake:</strong> "I need 16GB RAM right now."<br>
+                <strong>Marketplace:</strong> "Dave has 20GB free. Rent for $0.50/hour?"<br>
+                <strong>Blake:</strong> "Yes."<br>
+                <strong>60 seconds later:</strong> Blake's agents are running on Dave's machine.</p>
+                <p><strong>No account creation. No region selection. No IAM roles. Just "yes" and it works.</strong></p>
+            </div>
+
+            <h3>Why Now?</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trend</th>
+                        <th>Why It Enables P2P Compute</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Agent Swarms Are Mainstream</strong></td>
+                        <td>OpenClaw, Claude Code, AutoGPT create bursty compute needs that didn't exist 2 years ago</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mac Mini Ecosystem Explodes</strong></td>
+                        <td>Apple Silicon performance → millions of over-spec'd machines (24-64GB RAM) sitting idle</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Remote Work Normalized</strong></td>
+                        <td>People comfortable with "someone else running code on my machine" (Cursor, GitHub Codespaces)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Micropayments Are Easy</strong></td>
+                        <td>Stripe, Venmo, crypto make instant settlement trivial (no monthly invoicing)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Containerization Is Mature</strong></td>
+                        <td>Docker, Firecracker VMs make workload isolation secure and lightweight</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-divider"></div>
+
+            <h2>Target Market & Customer Segments</h2>
+
+            <h3>Phase 1: Early Adopters (Months 1-6)</h3>
+
+            <h4>Primary: AI/Agent Power Users</h4>
+            <div class="highlight-box">
+                <p><strong>Profile:</strong> Tech-savvy individuals running OpenClaw, Claude Code, or similar agent tools</p>
+                <p><strong>Pain point:</strong> Laptop maxes out when spawning multiple agents</p>
+                <p><strong>Current behavior:</strong> Either wait (productivity loss) or struggle with AWS</p>
+                <p><strong>Willingness to pay:</strong> $1-5/session to avoid 15-min AWS setup</p>
+                <p><strong>Market size:</strong> 10K-50K active users globally (OpenClaw Discord: 5K+ members)</p>
+            </div>
+
+            <h4>Secondary: Mac Mini Owners (Hosts)</h4>
+            <div class="highlight-box">
+                <p><strong>Profile:</strong> Enthusiasts who bought high-spec Mac Minis ($2K-$4K) for home labs, media servers, or dev work</p>
+                <p><strong>Motivation:</strong> Recoup costs by monetizing idle capacity ($20-50/month)</p>
+                <p><strong>Technical comfort:</strong> Comfortable with Docker, SSH, command-line tools</p>
+                <p><strong>Trust network:</strong> Friends, colleagues, online communities (Discord, Reddit)</p>
+                <p><strong>Market size:</strong> 50K-200K globally (Mac Mini sales ~500K/year, 10-40% are enthusiasts)</p>
+            </div>
+
+            <h3>Phase 2: Growth Users (Months 7-18)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Segment</th>
+                        <th>Use Case</th>
+                        <th>Monthly Spend</th>
+                        <th>Market Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Scientists</strong></td>
+                        <td>Train ML models, process datasets</td>
+                        <td>$50-200</td>
+                        <td>500K+ globally</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Small Dev Teams</strong></td>
+                        <td>Test environments, CI/CD pipelines</td>
+                        <td>$100-500</td>
+                        <td>1M+ teams</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Content Creators</strong></td>
+                        <td>Video rendering, editing workloads</td>
+                        <td>$30-150</td>
+                        <td>2M+ YouTubers/streamers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gaming Servers</strong></td>
+                        <td>Minecraft, private game servers</td>
+                        <td>$20-100</td>
+                        <td>5M+ gamers</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Total Addressable Market (TAM)</h3>
+            <div class="highlight-box opportunity">
+                <p><strong>Conservative estimate:</strong></p>
+                <ul>
+                    <li><strong>Cloud compute market:</strong> $200B/year (2026)</li>
+                    <li><strong>Individual/SMB segment:</strong> ~$20B/year (10% of total)</li>
+                    <li><strong>Bursty workload subset:</strong> ~$5B/year (25% of individual segment)</li>
+                    <li><strong>Addressable by P2P marketplace:</strong> $500M-1B/year (10-20% share)</li>
+                </ul>
+                <p class="metric metric-large">TAM: $500M-1B/year</p>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <h2>Competitive Positioning</h2>
+
+            <h3>We're NOT Competing with AWS/Azure/Hetzner</h3>
+            <p>Those solve "I need a server running 24/7." We solve "I need 16GB RAM for 2 hours."</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Competitor</th>
+                        <th>Use Case</th>
+                        <th>Why We're Different</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>AWS EC2</strong></td>
+                        <td>Long-running infrastructure</td>
+                        <td>We're 60 seconds vs 15 minutes, zero commitment, social trust</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hetzner VPS</strong></td>
+                        <td>Monthly VPS hosting</td>
+                        <td>We're pay-per-minute, no subscription, peer-to-peer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lambda/Fargate</strong></td>
+                        <td>Serverless functions</td>
+                        <td>We're full compute (not just functions), simpler pricing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Golem/Akash</strong></td>
+                        <td>Decentralized compute (crypto)</td>
+                        <td>We're fiat-first, better UX, social trust vs anonymous nodes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vast.ai</strong></td>
+                        <td>GPU rental for ML</td>
+                        <td>We're RAM/CPU (not just GPU), broader use cases</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Our Moat: Social Trust Layer</h3>
+            <div class="highlight-box solution">
+                <h4>Why Social Trust Matters</h4>
+                <p>When you rent from AWS, you're customer #472583. When you rent from Dave:</p>
+                <ul>
+                    <li><strong>Support:</strong> "Hey Dave, my job failed, can you check?" → Dave responds in 5 min</li>
+                    <li><strong>Flexibility:</strong> "Can I get 4 more GB?" → Dave adjusts on the fly</li>
+                    <li><strong>Trust:</strong> You know Dave won't snoop (reputation, social accountability)</li>
+                    <li><strong>Pricing:</strong> Dave gives you a discount because you're friends</li>
+                </ul>
+                <p><strong>This is our defensible advantage.</strong> AWS can't replicate "your friend Dave" at scale.</p>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <h2>Go-to-Market Strategy</h2>
+
+            <h3>Phase 1: Proof of Concept (Months 1-3)</h3>
+
+            <h4>Goal: Validate Demand with 10 Active Users</h4>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Timeline</th>
+                        <th>Success Metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Build MVP</strong> (macOS daemon + CLI)</td>
+                        <td>Weeks 1-4</td>
+                        <td>Working prototype on 2 machines</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alpha test with friends</strong></td>
+                        <td>Weeks 5-8</td>
+                        <td>50 rental transactions, zero security issues</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Iterate on feedback</strong></td>
+                        <td>Weeks 9-12</td>
+                        <td>3-4 feature improvements, NPS >8</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Investment:</strong> $0 (build yourself) or $10K (contract developer)</p>
+
+            <h3>Phase 2: Community Launch (Months 4-6)</h3>
+
+            <h4>Goal: 100 Active Hosts, 1,000 Rentals/Month</h4>
+
+            <p><strong>Launch channels:</strong></p>
+            <ol>
+                <li><strong>OpenClaw Discord</strong> - 5K+ members, perfect early adopters</li>
+                <li><strong>Hacker News post</strong> - "Show HN: Rent compute from friends instead of AWS"</li>
+                <li><strong>Product Hunt</strong> - Target tech community launch</li>
+                <li><strong>Twitter/X</strong> - @levelsio, @simonw, @paul_irish (developer influencers)</li>
+            </ol>
+
+            <p><strong>Messaging:</strong></p>
+            <ul>
+                <li><strong>Hook:</strong> "AWS takes 15 minutes. We take 60 seconds."</li>
+                <li><strong>Social proof:</strong> "100 OpenClaw users already renting from friends"</li>
+                <li><strong>Trust:</strong> "Start with people you know. Expand to trusted networks."</li>
+            </ul>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Channel</th>
+                        <th>Expected Reach</th>
+                        <th>Conversion</th>
+                        <th>New Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>OpenClaw Discord</td>
+                        <td>5,000</td>
+                        <td>5%</td>
+                        <td>250</td>
+                    </tr>
+                    <tr>
+                        <td>Hacker News</td>
+                        <td>50,000</td>
+                        <td>1%</td>
+                        <td>500</td>
+                    </tr>
+                    <tr>
+                        <td>Product Hunt</td>
+                        <td>20,000</td>
+                        <td>2%</td>
+                        <td>400</td>
+                    </tr>
+                    <tr>
+                        <td>Twitter/X</td>
+                        <td>10,000</td>
+                        <td>3%</td>
+                        <td>300</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><strong>Total Projected Users</strong></td>
+                        <td><strong>1,450</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Investment:</strong> $5K (hosting, payment processing, support)</p>
+
+            <h3>Phase 3: Platform Growth (Months 7-18)</h3>
+
+            <h4>Goal: 1,000 Active Hosts, $50K Monthly GMV</h4>
+
+            <p><strong>Growth levers:</strong></p>
+            <ul>
+                <li><strong>Referral program:</strong> Host invites 3 friends → $10 credit</li>
+                <li><strong>Enterprise tier:</strong> Teams can share compute internally ($100-500/month)</li>
+                <li><strong>API for platforms:</strong> OpenClaw, Langchain integrate directly</li>
+                <li><strong>GPU support:</strong> Add GPU sharing for ML workloads (higher value)</li>
+                <li><strong>Windows support:</strong> Expand beyond macOS</li>
+            </ul>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Quarter</th>
+                        <th>Active Hosts</th>
+                        <th>Monthly Rentals</th>
+                        <th>GMV</th>
+                        <th>Revenue (10%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Q1 (Months 1-3)</td>
+                        <td>10</td>
+                        <td>50</td>
+                        <td>$100</td>
+                        <td>$10</td>
+                    </tr>
+                    <tr>
+                        <td>Q2 (Months 4-6)</td>
+                        <td>100</td>
+                        <td>1,000</td>
+                        <td>$5,000</td>
+                        <td>$500</td>
+                    </tr>
+                    <tr>
+                        <td>Q3 (Months 7-9)</td>
+                        <td>300</td>
+                        <td>5,000</td>
+                        <td>$25,000</td>
+                        <td>$2,500</td>
+                    </tr>
+                    <tr>
+                        <td>Q4 (Months 10-12)</td>
+                        <td>600</td>
+                        <td>10,000</td>
+                        <td>$50,000</td>
+                        <td>$5,000</td>
+                    </tr>
+                    <tr>
+                        <td>Q5 (Months 13-15)</td>
+                        <td>1,000</td>
+                        <td>20,000</td>
+                        <td>$100,000</td>
+                        <td>$10,000</td>
+                    </tr>
+                    <tr>
+                        <td>Q6 (Months 16-18)</td>
+                        <td>1,500</td>
+                        <td>30,000</td>
+                        <td>$150,000</td>
+                        <td>$15,000</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-divider"></div>
+
+            <h2>Revenue Model</h2>
+
+            <h3>Transaction Fee (Primary Revenue)</h3>
+            <p><strong>Take rate: 10%</strong> of every rental</p>
+            
+            <p><strong>Example:</strong></p>
+            <ul>
+                <li>Blake rents 16GB from Dave for 2 hours at $0.50/hour = $1.00 total</li>
+                <li>Marketplace takes $0.10</li>
+                <li>Dave receives $0.90</li>
+            </ul>
+
+            <p><strong>Why 10%?</strong></p>
+            <ul>
+                <li>Airbnb: 12-15% (we're slightly lower)</li>
+                <li>Stripe: 2.9% + $0.30 (payment processing cost)</li>
+                <li>Net margin: ~7% after payment fees</li>
+            </ul>
+
+            <h3>Premium Features (Secondary Revenue)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Price</th>
+                        <th>Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Host Pro</strong></td>
+                        <td>$5/month</td>
+                        <td>Analytics dashboard, priority listing, higher trust score, custom pricing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Renter Pro</strong></td>
+                        <td>$10/month</td>
+                        <td>Faster matching, dedicated support, batch job scheduling, API access</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Team</strong></td>
+                        <td>$50/month</td>
+                        <td>Private marketplace for team, centralized billing, admin dashboard</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enterprise</strong></td>
+                        <td>Custom</td>
+                        <td>SSO, SLA guarantees, compliance reports, dedicated support</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Revenue Projections (Year 1)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th>Monthly (Month 12)</th>
+                        <th>Annual (Year 1)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Transaction fees</strong> (10% of GMV)</td>
+                        <td>$5,000</td>
+                        <td>$30,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Host Pro</strong> (100 hosts × $5)</td>
+                        <td>$500</td>
+                        <td>$3,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Renter Pro</strong> (50 renters × $10)</td>
+                        <td>$500</td>
+                        <td>$3,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Team tier</strong> (5 teams × $50)</td>
+                        <td>$250</td>
+                        <td>$1,500</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>Total Monthly Revenue (Month 12)</strong></td>
+                        <td><strong>$6,250</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>Total Annual Revenue (Year 1)</strong></td>
+                        <td><strong>$37,500</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Year 2 projection:</strong> $150K-250K annual revenue (4-6x growth)</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Key Risks & Mitigation</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk</th>
+                        <th>Impact</th>
+                        <th>Likelihood</th>
+                        <th>Mitigation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Security breach</strong> (host hacked)</td>
+                        <td><span class="badge badge-high">High</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td>Strong containerization (Firecracker VMs), insurance fund, reputation system</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payment fraud</strong></td>
+                        <td><span class="badge badge-medium">Medium</span></td>
+                        <td><span class="badge badge-medium">Medium</span></td>
+                        <td>Escrow system, reputation score, dispute resolution</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Network effects fail</strong> (no hosts)</td>
+                        <td><span class="badge badge-high">High</span></td>
+                        <td><span class="badge badge-medium">Medium</span></td>
+                        <td>Guarantee min earnings for early hosts, tight-knit community launch</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AWS drops prices</strong></td>
+                        <td><span class="badge badge-medium">Medium</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td>We compete on UX + trust, not just price</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal/compliance issues</strong></td>
+                        <td><span class="badge badge-medium">Medium</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td>Platform model (not responsible for host actions), clear ToS</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-divider"></div>
+
+            <h2>Success Metrics</h2>
+
+            <h3>North Star Metric: Monthly Active Rentals</h3>
+            <p>This measures actual value delivery (not vanity metrics like signups).</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Milestone</th>
+                        <th>Timeline</th>
+                        <th>Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Proof of concept</td>
+                        <td>Month 3</td>
+                        <td>50 rentals</td>
+                    </tr>
+                    <tr>
+                        <td>Community launch</td>
+                        <td>Month 6</td>
+                        <td>1,000 rentals/month</td>
+                    </tr>
+                    <tr>
+                        <td>Product-market fit</td>
+                        <td>Month 12</td>
+                        <td>10,000 rentals/month</td>
+                    </tr>
+                    <tr>
+                        <td>Scale milestone</td>
+                        <td>Month 18</td>
+                        <td>30,000 rentals/month</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Supporting Metrics</h3>
+            <ul>
+                <li><strong>Host retention:</strong> % of hosts active month-over-month (target: >70%)</li>
+                <li><strong>Renter NPS:</strong> Net Promoter Score (target: >50)</li>
+                <li><strong>Avg transaction size:</strong> $ per rental (target: $2-5)</li>
+                <li><strong>Trust score:</strong> % transactions with zero disputes (target: >95%)</li>
+                <li><strong>Time to first rental:</strong> Minutes from signup to first successful rental (target: <5 min)</li>
+            </ul>
+
+            <div class="highlight-box opportunity">
+                <h4>The "Aha!" Moment</h4>
+                <p>Users realize value when they <strong>complete their first rental in under 60 seconds</strong> and think "holy shit, that was easier than AWS."</p>
+                <p><strong>Our job:</strong> Get users to that moment as fast as possible.</p>
+            </div>
+
+        </div>
+        
+        <footer>
+            <strong>Blake Thomson</strong> — OpenClaw Workspace<br>
+            Generated: February 12, 2026, 9:01 AM PST<br>
+            Report: P2P Compute Marketplace - Go-to-Market Strategy<br>
+            Next: See technical implementation report for architecture options
+        </footer>
+    </div>
+</body>
+</html>

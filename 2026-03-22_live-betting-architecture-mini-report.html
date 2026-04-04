@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Betting Architecture Mini Report</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #f6f8fb; color: #1f2937; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 32px 20px 56px; }
+    .header { background: #0f172a; color: white; padding: 28px 32px; border-radius: 18px; margin-bottom: 24px; }
+    h1 { margin: 0 0 8px; font-size: 30px; }
+    h2 { margin-top: 32px; font-size: 22px; color: #0f172a; }
+    p, li { line-height: 1.6; font-size: 16px; }
+    .card { background: white; border-radius: 16px; padding: 24px; margin-top: 18px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); }
+    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 13px; font-weight: 600; margin-right: 8px; margin-bottom: 8px; }
+    .note { border-left: 4px solid #f59e0b; background: #fff7ed; padding: 14px 16px; border-radius: 8px; }
+    code { background: #eef2ff; padding: 2px 6px; border-radius: 6px; }
+    ul { padding-left: 22px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>Live Betting Architecture — Mini Report</h1>
+      <p>Prediction Market Weather · March 22, 2026</p>
+    </div>
+
+    <div class="card">
+      <h2>What changed</h2>
+      <p>
+        The project focus has shifted from primarily building historical research plumbing to building a
+        <strong>point-in-time betting architecture</strong> for live-style paper trading.
+      </p>
+      <p>
+        The new goal is to behave as if we are operating the strategy in real time:
+      </p>
+      <ul>
+        <li>see the available bets for the day</li>
+        <li>compare them across cities</li>
+        <li>decide the day’s strategy before picking any one bet</li>
+        <li>record rationale and forecast context</li>
+        <li>settle outcomes and review results</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Core operating loop</h2>
+      <p><span class="pill">1. Strategy session</span><span class="pill">2. Market board</span><span class="pill">3. Paper bet</span><span class="pill">4. Outcome review</span></p>
+      <ul>
+        <li><strong>Strategy session:</strong> define the day, focus cities, and thesis.</li>
+        <li><strong>Market board:</strong> gather the candidate markets and compare their edge side by side.</li>
+        <li><strong>Paper bet:</strong> simulate the trade only after the board-level strategy is clear.</li>
+        <li><strong>Outcome review:</strong> log realized P&amp;L, result, and lessons learned.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>New architecture now in the repo</h2>
+      <ul>
+        <li><code>ops.strategy_sessions</code> — one record for the day’s strategy context</li>
+        <li><code>ops.strategy_market_board</code> — captured candidate markets for that strategy session</li>
+        <li><code>ops.paper_bets</code> — simulated bets with rationale and later outcome</li>
+        <li><code>features.v_latest_market_training_rows</code> — latest row per market</li>
+        <li><code>features.v_daily_market_board</code> — candidate ranking / bucketing view</li>
+        <li><code>weatherlab.ops.strategy</code> — create strategy sessions and populate the board</li>
+        <li><code>weatherlab.ops.paper_bets</code> — create and settle paper bets</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Why this matters</h2>
+      <p>
+        This structure lets us improve the system even before the full ML layer is mature.
+        We can learn from:
+      </p>
+      <ul>
+        <li>which bets we chose</li>
+        <li>which bets we passed on</li>
+        <li>how the forecast compared to the market</li>
+        <li>whether our edge selection process is producing small, repeatable gains</li>
+      </ul>
+      <div class="note">
+        The important shift is: <strong>we are no longer evaluating bets one-by-one in isolation.</strong>
+        We are building toward a daily cross-market selection process that looks for relative alpha.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>How ML fits later</h2>
+      <p>
+        ML is still part of the long-term architecture, but now it becomes a component inside the decision framework,
+        not the whole framework itself.
+      </p>
+      <ul>
+        <li>today: use forecasts, board comparison, and disciplined rationale capture</li>
+        <li>later: add ML fair probabilities / confidence estimates into the same board</li>
+        <li>eventually: let an LLM decision layer read the board, compare opportunities, and recommend or simulate bets</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Recommended next steps</h2>
+      <ul>
+        <li>build a day-of workflow to populate the board for tomorrow’s live markets</li>
+        <li>capture abstentions, not just bets</li>
+        <li>add a simple daily strategy summary artifact</li>
+        <li>add cross-city ranking rules and exposure constraints</li>
+        <li>only then deepen the ML layer into the same operating system</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Current status</h2>
+      <ul>
+        <li>Repo commit pushed: <code>b1062b7</code></li>
+        <li>Test suite: <strong>42 passing</strong></li>
+        <li>Focus cities remain: <strong>NYC + Chicago</strong></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

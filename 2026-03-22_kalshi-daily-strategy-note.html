@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kalshi Daily Strategy Note — March 22, 2026</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #f6f8fb; color: #172033; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 52px; }
+  .header { background: linear-gradient(135deg, #16263d, #27466f); color: white; padding: 28px; border-radius: 18px; box-shadow: 0 16px 32px rgba(22,38,61,0.18); }
+  .header h1 { margin: 0 0 8px; font-size: 30px; }
+  .header p { margin: 0; color: #d6e5ff; }
+  .card { background: white; border: 1px solid #dbe4ee; border-radius: 16px; padding: 22px; margin-top: 16px; box-shadow: 0 8px 22px rgba(16,24,40,0.06); }
+  h2 { margin-top: 0; color: #16263d; }
+  ul { padding-left: 22px; }
+  li, p { line-height: 1.6; }
+  .pill { display: inline-block; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+  .green { background: #e8f8ee; color: #0b7a43; }
+  .amber { background: #fff5e8; color: #b76a00; }
+  .red { background: #fdecec; color: #b42318; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #e7edf5; vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #526071; background: #f3f7fc; }
+  .small { color: #667085; font-size: 14px; }
+  .note { border-left: 4px solid #f59e0b; background: #fff8ec; padding: 14px 16px; border-radius: 8px; }
+  code { background: #eef2ff; padding: 2px 6px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Kalshi Daily Strategy Note</h1>
+    <p>Prepared March 22, 2026 · Focus: tomorrow’s weather board · mode: paper trading</p>
+  </div>
+
+  <div class="card">
+    <h2>Executive take</h2>
+    <p><span class="pill green">Primary idea</span><span class="pill amber">One live candidate</span><span class="pill red">No board spray</span></p>
+    <p><strong>Suggested strategy:</strong> keep the board tight and avoid overtrading. The cleanest setup is still the colder side of the NYC board. Chicago is interesting, but more ambiguous; I would keep it on watch rather than forcing a bet right now.</p>
+  </div>
+
+  <div class="card">
+    <h2>Current read of tomorrow’s board</h2>
+    <table>
+      <thead>
+        <tr><th>City</th><th>Forecast</th><th>Observed market shape</th><th>Read</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>NYC</strong></td>
+          <td>NWS Monday high near <strong>49°F</strong></td>
+          <td>Board was heavily centered on <strong>53° or below</strong>, with small probability mass in upper buckets</td>
+          <td>Market and forecast are aligned directionally. The cold side still looks like the cleanest expression.</td>
+        </tr>
+        <tr>
+          <td><strong>Chicago</strong></td>
+          <td>NWS Monday high near <strong>39°F</strong></td>
+          <td>Board appeared centered closer to the low-40s, with a visible 42–43 bucket and a meaningful 39-or-below tail</td>
+          <td>Interesting disagreement. Could be real edge, but also easier to overstate. Best treated as watchlist / conditional.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="small">Forecast basis: current NWS pages reviewed today. Market basis: latest captured Kalshi ladder review from today’s workflow.</p>
+  </div>
+
+  <div class="card">
+    <h2>Suggested bets for today’s paper-trading cycle</h2>
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Market idea</th><th>Action</th><th>Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Proposed</strong></td>
+          <td>NYC cold-side bucket (53° or below)</td>
+          <td>Paper <strong>BUY YES</strong> if the price remains reasonable versus the current forecast</td>
+          <td>The forecast high near 49 keeps the center of gravity on the cold side. This is the cleanest board expression right now.</td>
+        </tr>
+        <tr>
+          <td><strong>Watch</strong></td>
+          <td>Chicago 39° or below</td>
+          <td>Do <strong>not</strong> force it yet; keep on watch</td>
+          <td>Interesting if the market remains warmer than forecast, but I want more price discipline before endorsing it as the main play.</td>
+        </tr>
+        <tr>
+          <td><strong>Pass</strong></td>
+          <td>NYC warm-tail buckets</td>
+          <td>Pass</td>
+          <td>No strong forecast support. Cheap prices are not enough on their own.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Day strategy</h2>
+    <ul>
+      <li><strong>Bias:</strong> one clean bet is better than three noisy ones.</li>
+      <li><strong>Portfolio posture:</strong> low exposure, high clarity.</li>
+      <li><strong>Review rule:</strong> compare all candidate bets before confirming any single paper bet.</li>
+      <li><strong>Abstention rule:</strong> if pricing moves away from the forecast edge, we should be comfortable doing nothing.</li>
+    </ul>
+    <div class="note"><strong>Important:</strong> this is exactly the kind of day where process matters more than action count. The goal is not to prove we can trade every city — it is to prove we can choose well.</div>
+  </div>
+
+  <div class="card">
+    <h2>What to store now in the database</h2>
+    <p>We already have the right basic spine:</p>
+    <ul>
+      <li><code>ops.strategy_sessions</code> — the day-level strategy container</li>
+      <li><code>ops.strategy_market_board</code> — the captured board snapshot</li>
+      <li><code>ops.paper_bets</code> — proposed / approved paper bets and later outcomes</li>
+    </ul>
+    <p>For today’s workflow, we should make sure we capture these concrete items:</p>
+    <ul>
+      <li>strategy thesis for the day</li>
+      <li>which markets were considered</li>
+      <li>which markets were proposed vs watch vs pass</li>
+      <li>the forecast reference used at decision time</li>
+      <li>approval / adjustment notes from Blake</li>
+      <li>the actual proposed paper bet details (side, price, size, rationale)</li>
+      <li>later: Kalshi resolution / outcome and realized paper P&amp;L</li>
+    </ul>
+    <p>The only thing I’d want to strengthen next is explicit storage of <strong>strategy variant</strong> / <strong>scenario label</strong> so we can compare different approaches later without ambiguity.</p>
+  </div>
+</div>
+</body>
+</html>

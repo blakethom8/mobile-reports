@@ -1,0 +1,2813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDocList Agent Architecture Manual - February 14, 2026</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .header .date {
+      font-size: 1.3rem;
+      opacity: 0.95;
+      margin-bottom: 1rem;
+    }
+    .header .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .content {
+      padding: 3rem 2.5rem;
+    }
+    .toc {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+    .toc h2 {
+      font-size: 1.5rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+    }
+    .toc ol {
+      list-style-position: inside;
+      color: #475569;
+      font-weight: 500;
+    }
+    .toc li {
+      margin: 0.5rem 0;
+      padding-left: 1rem;
+    }
+    .section {
+      margin-bottom: 4rem;
+      scroll-margin-top: 2rem;
+    }
+    .section h2 {
+      font-size: 2.2rem;
+      color: #1e293b;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 3px solid #667eea;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section h3 {
+      font-size: 1.6rem;
+      color: #334155;
+      margin: 2.5rem 0 1rem;
+      padding-left: 0.5rem;
+      border-left: 4px solid #667eea;
+    }
+    .section h4 {
+      font-size: 1.3rem;
+      color: #475569;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p, ul, ol {
+      color: #475569;
+      margin-bottom: 1rem;
+    }
+    ul, ol {
+      margin-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    .diagram {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.4;
+      color: #334155;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+    .card {
+      background: #f8fafc;
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .card h4 {
+      color: #667eea;
+      margin-top: 0;
+    }
+    .highlight {
+      background: #fef3c7;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    .code {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .badge-recommended {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .badge-caution {
+      background: #fed7aa;
+      color: #92400e;
+    }
+    .badge-critical {
+      background: #fecaca;
+      color: #991b1b;
+    }
+    .badge-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      .section h2 {
+        font-size: 1.6rem;
+      }
+      .content {
+        padding: 1.5rem;
+      }
+      .diagram {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🤖 MyDocList Agent Architecture Manual</h1>
+      <div class="date">February 14, 2026</div>
+      <div class="subtitle">Comprehensive Architecture for AI-Powered Customer Service & Sales Automation</div>
+    </div>
+    
+    <div class="content">
+      
+      <div class="toc">
+        <h2>📋 Table of Contents</h2>
+        <ol>
+          <li><a href="#section1">Agent Architecture Design</a></li>
+          <li><a href="#section2">Customer Engagement Engine</a></li>
+          <li><a href="#section3">Data Model Design (CRITICAL)</a></li>
+          <li><a href="#section4">Customer Transparency & Data Portability</a></li>
+          <li><a href="#section5">Infrastructure & Deployment</a></li>
+          <li><a href="#section6">OpenClaw-Specific Architecture</a></li>
+          <li><a href="#section7">Implementation Roadmap</a></li>
+          <li><a href="#section8">Trade-offs & Decision Matrix</a></li>
+          <li><a href="#section9">Batch Processing Architecture</a></li>
+          <li><a href="#section10">Antfarm Orchestration (Multi-Agent Workflows)</a></li>
+          <li><a href="#section11">Agent-to-Agent Communication Patterns</a></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h4>🎯 Executive Summary</h4>
+        <p>This manual provides a complete architectural blueprint for deploying AI agents to automate customer service and sales for MyDocList. The recommended approach is a <strong>multi-agent system</strong> with specialized roles, deployed on a <strong>dedicated Mac Mini/Studio</strong>, leveraging <strong>OpenClaw's orchestration capabilities</strong> and a <strong>customer-centric data model</strong> in Supabase. Implementation follows a phased rollout starting with reactive support, then proactive engagement, and finally advanced analytics.</p>
+      </div>
+
+      <!-- SECTION 1: AGENT ARCHITECTURE DESIGN -->
+      <div id="section1" class="section">
+        <h2>1️⃣ Agent Architecture Design</h2>
+        
+        <h3>Single Agent vs Multi-Agent: Analysis</h3>
+        
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Single Agent</th>
+                <th>Multi-Agent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Simplicity</strong></td>
+                <td>✅ Single context, easier to reason about</td>
+                <td>⚠️ More complex orchestration needed</td>
+              </tr>
+              <tr>
+                <td><strong>Specialization</strong></td>
+                <td>❌ Generic prompts, harder to optimize</td>
+                <td>✅ Role-specific prompts & tools per agent</td>
+              </tr>
+              <tr>
+                <td><strong>Scaling</strong></td>
+                <td>❌ Bottleneck under load</td>
+                <td>✅ Parallel execution, independent scaling</td>
+              </tr>
+              <tr>
+                <td><strong>Permissions</strong></td>
+                <td>⚠️ All-or-nothing access</td>
+                <td>✅ Fine-grained per-agent permissions</td>
+              </tr>
+              <tr>
+                <td><strong>Cost</strong></td>
+                <td>✅ Lower LLM costs (fewer calls)</td>
+                <td>⚠️ Higher costs with more parallel agents</td>
+              </tr>
+              <tr>
+                <td><strong>Debugging</strong></td>
+                <td>✅ Single log stream</td>
+                <td>⚠️ Distributed traces needed</td>
+              </tr>
+              <tr>
+                <td><strong>Solo Founder Overhead</strong></td>
+                <td>✅ Less setup/maintenance</td>
+                <td>⚠️ More infrastructure to manage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Recommendation:</strong> <span class="badge badge-recommended">MULTI-AGENT</span></p>
+        <p>While single agent is simpler initially, a multi-agent architecture provides critical advantages for a SaaS platform: better specialization, independent scaling, and security through capability isolation. The added complexity is manageable with OpenClaw's orchestration layer, and the benefits compound as you grow.</p>
+
+        <h3>Recommended Agent Roles</h3>
+
+        <h4>🎧 Customer Success Agent (CSA)</h4>
+        <div class="card">
+          <p><strong>Primary Role:</strong> Proactive engagement, user success, retention</p>
+          <p><strong>Capabilities:</strong></p>
+          <ul>
+            <li>Monitor user activity patterns (search frequency, feature usage)</li>
+            <li>Send personalized engagement emails (e.g., "We noticed you searched for pediatricians...")</li>
+            <li>Generate curated provider reports based on user search history</li>
+            <li>Track onboarding progress and send tips</li>
+            <li>Detect churn signals (inactivity, declining usage) and re-engage</li>
+            <li>Trigger in-app notifications for relevant features</li>
+          </ul>
+          <p><strong>Data Access:</strong> Read-only to user_profiles, user_activity_log, search_history. Write to engagement_history, agent_actions_log.</p>
+          <p><strong>External Integrations:</strong> Email sending (via MyDocList backend API), analytics tracking</p>
+        </div>
+
+        <h4>💬 Support Agent (SA)</h4>
+        <div class="card">
+          <p><strong>Primary Role:</strong> Reactive customer support, bug triage, feature requests</p>
+          <p><strong>Capabilities:</strong></p>
+          <ul>
+            <li>Monitor support inbox (support@mydoclist.com)</li>
+            <li>Classify incoming emails (bug, feature request, question, complaint)</li>
+            <li>Draft responses for common questions (password resets, data questions)</li>
+            <li>Auto-respond to simple queries; escalate complex issues to Blake with context</li>
+            <li>Log bugs to bug_reports table with severity classification</li>
+            <li>Log feature requests to feature_requests with user context</li>
+            <li>Track support thread history for context-aware responses</li>
+          </ul>
+          <p><strong>Data Access:</strong> Read user_profiles, email_interactions, bug_reports, feature_requests. Write to all support tables + agent_actions_log.</p>
+          <p><strong>External Integrations:</strong> Email (IMAP/SMTP), potentially Slack for escalations</p>
+        </div>
+
+        <h4>📈 Sales & Engagement Agent (SEA)</h4>
+        <div class="card">
+          <p><strong>Primary Role:</strong> Lead nurturing, trial-to-paid conversion, upsells</p>
+          <p><strong>Capabilities:</strong></p>
+          <ul>
+            <li>Track trial user behavior and engagement levels</li>
+            <li>Send upgrade prompts at optimal moments (power user signals, feature limit hits)</li>
+            <li>Generate personalized demo/case study content</li>
+            <li>Schedule follow-up sequences for inactive trial users</li>
+            <li>Track pipeline stages (trial → qualified → paid)</li>
+            <li>Generate weekly sales reports for Blake</li>
+          </ul>
+          <p><strong>Data Access:</strong> Read user_profiles, user_activity_log, engagement_history, billing_status. Write to engagement_history, agent_actions_log.</p>
+          <p><strong>External Integrations:</strong> Email, billing API (read-only)</p>
+        </div>
+
+        <h4>📊 Analytics Agent (AA)</h4>
+        <div class="card">
+          <p><strong>Primary Role:</strong> Data insights, reporting, trend detection</p>
+          <p><strong>Capabilities:</strong></p>
+          <ul>
+            <li>Generate weekly/monthly analytics reports</li>
+            <li>Detect anomalies (sudden drop in searches, spike in errors)</li>
+            <li>Identify top-performing features and underused features</li>
+            <li>Track cohort behavior and retention metrics</li>
+            <li>Generate insights for product roadmap decisions</li>
+            <li>Export custom reports for Blake (CSV, formatted emails)</li>
+          </ul>
+          <p><strong>Data Access:</strong> Read-only across all tables. Write to agent_actions_log only.</p>
+          <p><strong>External Integrations:</strong> None (internal reporting only)</p>
+        </div>
+
+        <h4>🤝 In-App Chat Agent (ICA)</h4>
+        <div class="card">
+          <p><strong>Primary Role:</strong> Real-time user assistance within the application</p>
+          <p><strong>Capabilities:</strong></p>
+          <ul>
+            <li>Answer product questions in real-time</li>
+            <li>Guide users through features ("How do I save a provider?")</li>
+            <li>Provide context-aware help based on current page/action</li>
+            <li>Escalate to Support Agent if unable to resolve</li>
+            <li>Different from backend agents—this runs client-side or via websocket</li>
+          </ul>
+          <p><strong>Data Access:</strong> Session-scoped user data only (current user's profile, current search context). Limited permissions.</p>
+          <p><strong>External Integrations:</strong> WebSocket to backend, chat history DB</p>
+        </div>
+
+        <h3>Permission Levels & Capability Delineation</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>User Data (Read)</th>
+                <th>User Data (Write)</th>
+                <th>Email Sending</th>
+                <th>API Calls</th>
+                <th>External Systems</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Customer Success</td>
+                <td>✅ Activity, Profiles</td>
+                <td>✅ Engagement log</td>
+                <td>✅ Marketing emails</td>
+                <td>✅ MyDocList API</td>
+                <td>❌</td>
+              </tr>
+              <tr>
+                <td>Support</td>
+                <td>✅ All user tables</td>
+                <td>✅ Support tables</td>
+                <td>✅ Support responses</td>
+                <td>✅ MyDocList API</td>
+                <td>⚠️ Slack (escalation)</td>
+              </tr>
+              <tr>
+                <td>Sales & Engagement</td>
+                <td>✅ Activity, Billing</td>
+                <td>✅ Engagement log</td>
+                <td>✅ Sales emails</td>
+                <td>✅ Read billing</td>
+                <td>❌</td>
+              </tr>
+              <tr>
+                <td>Analytics</td>
+                <td>✅ All (read-only)</td>
+                <td>✅ Action log only</td>
+                <td>✅ Reports to Blake</td>
+                <td>❌</td>
+                <td>❌</td>
+              </tr>
+              <tr>
+                <td>In-App Chat</td>
+                <td>⚠️ Session scope only</td>
+                <td>⚠️ Chat history only</td>
+                <td>❌</td>
+                <td>⚠️ Limited API</td>
+                <td>❌</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Security Best Practice:</strong> Each agent runs with its own Supabase service role key with row-level security (RLS) policies limiting access scope. Never use a single admin key across all agents.</p>
+
+        <h3>Agent Coordination & Hand-offs</h3>
+
+        <div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                     Orchestration Layer                      │
+│              (OpenClaw Main Agent / Coordinator)             │
+└───────┬──────────────────┬─────────────────┬────────────────┘
+        │                  │                 │
+        ▼                  ▼                 ▼
+┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+│   Customer   │   │   Support    │   │  Sales &     │
+│   Success    │◄─►│   Agent      │◄─►│  Engagement  │
+│   Agent      │   │              │   │   Agent      │
+└──────┬───────┘   └──────┬───────┘   └──────┬───────┘
+       │                  │                  │
+       └──────────────────┼──────────────────┘
+                          │
+                          ▼
+                  ┌──────────────┐
+                  │  Analytics   │
+                  │   Agent      │
+                  │  (Observer)  │
+                  └──────────────┘
+        </div>
+
+        <h4>Hand-off Scenarios</h4>
+
+        <ol>
+          <li><strong>CSA → SA:</strong> User replies to engagement email with a question/complaint → CSA forwards to SA with full context</li>
+          <li><strong>SA → Blake:</strong> Complex bug or angry customer → SA drafts response, flags for Blake's review before sending</li>
+          <li><strong>SEA → SA:</strong> Trial user reports issue during sales sequence → SEA hands off to SA for support resolution</li>
+          <li><strong>ICA → SA:</strong> In-app chat can't resolve issue → escalates to SA email support with chat transcript</li>
+          <li><strong>AA → All:</strong> Analytics detects anomaly → notifies relevant agents (e.g., drop in engagement → CSA investigates)</li>
+        </ol>
+
+        <div class="card">
+          <h4>🔑 Hand-off Implementation Pattern</h4>
+          <p>Use a shared <code>agent_handoffs</code> table in Supabase:</p>
+          <div class="code">
+CREATE TABLE agent_handoffs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  from_agent TEXT NOT NULL,
+  to_agent TEXT NOT NULL,
+  user_id UUID REFERENCES auth.users(id),
+  context JSONB,  -- Full context data
+  status TEXT DEFAULT 'pending',  -- pending, accepted, resolved
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  resolved_at TIMESTAMPTZ
+);
+          </div>
+          <p>Agents poll this table (or receive webhook notifications) for pending hand-offs. Context includes conversation history, user data snapshot, and specific request.</p>
+        </div>
+
+      </div>
+
+      <!-- SECTION 2: CUSTOMER ENGAGEMENT ENGINE -->
+      <div id="section2" class="section">
+        <h2>2️⃣ Customer Engagement Engine</h2>
+
+        <h3>Proactive Engagement Strategies</h3>
+
+        <h4>Use Case 1: Search-Based Engagement</h4>
+        <div class="card">
+          <p><strong>Trigger:</strong> User performs 3+ searches in a session for same specialty (e.g., pediatricians)</p>
+          <p><strong>Action:</strong> CSA sends email 24h later: "We noticed you're researching pediatricians in [City]. Here's a curated list of the top-rated providers we found, plus insights on referral patterns."</p>
+          <p><strong>Value Add:</strong> Attachments or inline report with LLM-generated summaries, contact info, practice sizes</p>
+          <p><strong>Timing:</strong> 24-hour delay to avoid being pushy; send during business hours (9am-5pm user's timezone)</p>
+        </div>
+
+        <h4>Use Case 2: Feature Discovery</h4>
+        <div class="card">
+          <p><strong>Trigger:</strong> User is active (5+ sessions) but hasn't used saved lists feature</p>
+          <p><strong>Action:</strong> CSA sends tip: "Quick tip: You can save providers to lists for easy access later. Here's how..."</p>
+          <p><strong>Measurement:</strong> Track feature adoption post-email</p>
+        </div>
+
+        <h4>Use Case 3: Inactivity Re-engagement</h4>
+        <div class="card">
+          <p><strong>Trigger:</strong> Paid user inactive for 14 days (no logins)</p>
+          <p><strong>Action:</strong> SEA sends: "We miss you! Here's what's new in MyDocList + a quick reminder of how we can help your team hit your referral goals."</p>
+          <p><strong>Follow-up:</strong> If still inactive after 7 days, escalate to Blake for personal outreach</p>
+        </div>
+
+        <h4>Use Case 4: Power User Recognition</h4>
+        <div class="card">
+          <p><strong>Trigger:</strong> User performs 50+ searches in a month</p>
+          <p><strong>Action:</strong> CSA sends personalized recognition: "You're one of our top users! We'd love to hear your feedback. Want to schedule a quick 15-min call?" (Link to Blake's Calendly)</p>
+          <p><strong>Goal:</strong> Gather testimonials, case studies, feature requests from engaged users</p>
+        </div>
+
+        <h3>Reactive Support Model</h3>
+
+        <div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                      support@mydoclist.com                   │
+│                         (Monitored by SA)                    │
+└───────┬─────────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────┐
+│  1. Email Classification (LLM)                             │
+│     - Bug Report → Severity, Steps to Reproduce           │
+│     - Feature Request → Category, Urgency                  │
+│     - Question → Topic (billing, usage, technical)         │
+│     - Complaint → Sentiment Analysis                       │
+└───────┬───────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────┐
+│  2. Response Decision Tree                                 │
+│     • Simple Question (password, account) → Auto-respond   │
+│     • Bug (low severity) → Log + acknowledge + ETA         │
+│     • Bug (high severity) → Log + escalate to Blake        │
+│     • Feature Request → Log + thank + add to roadmap       │
+│     • Complaint → Draft empathetic response → Blake review │
+└───────┬───────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────┐
+│  3. Database Logging                                       │
+│     • email_interactions (full thread)                     │
+│     • bug_reports or feature_requests                      │
+│     • agent_actions_log (what SA decided & did)            │
+└───────┬───────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────┐
+│  4. Follow-up Tracking                                     │
+│     • Set reminder for Blake if escalated                  │
+│     • Auto-follow-up if bug marked "fixed" (5 days later)  │
+│     • Track response time SLA (< 24h for initial reply)    │
+└───────────────────────────────────────────────────────────┘
+        </div>
+
+        <h3>In-App Chat Agent Design</h3>
+
+        <p><strong>Architecture:</strong> Separate from backend agents. Runs as a service behind MyDocList's API.</p>
+
+        <div class="card">
+          <h4>Implementation Options</h4>
+          <ol>
+            <li><strong>WebSocket Service:</strong> Dedicated chat service (FastAPI + WebSockets) that connects users to ICA
+              <ul>
+                <li>User opens chat widget → establishes WS connection</li>
+                <li>Messages flow through backend to ICA (OpenClaw agent on Mac Mini)</li>
+                <li>ICA uses LLM to respond, with access to user session context</li>
+              </ul>
+            </li>
+            <li><strong>Client-Side LLM (Future):</strong> Embed lightweight LLM in browser for instant responses
+              <ul>
+                <li>Privacy benefit: no data leaves user's machine for simple queries</li>
+                <li>Falls back to server for complex questions</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h4>ICA Capabilities</h4>
+          <ul>
+            <li><strong>Contextual Help:</strong> "How do I save a provider?" → ICA knows user is on search results page, provides tailored answer</li>
+            <li><strong>Feature Walkthroughs:</strong> Interactive tutorials triggered by user questions</li>
+            <li><strong>Data Questions:</strong> "Where does this data come from?" → Explains NPI, Google Places sources</li>
+            <li><strong>Escalation:</strong> "I found a bug" → Collects details, logs to bug_reports, notifies SA</li>
+          </ul>
+        </div>
+
+        <h3>Email-Based Interaction Model</h3>
+
+        <h4>Inbound Email Flow</h4>
+        <div class="code">
+1. User sends email to support@mydoclist.com
+2. SA polls IMAP inbox every 5 minutes (or webhook if provider supports)
+3. SA reads email + extracts:
+   - Sender email (match to user_id in DB)
+   - Subject + body
+   - Thread history (via In-Reply-To header)
+4. SA classifies intent using LLM
+5. SA checks if auto-responder should handle or escalate
+6. SA logs full interaction to email_interactions table
+7. SA sends response or drafts for Blake's review
+        </div>
+
+        <h4>Outbound Email Best Practices</h4>
+        <ul>
+          <li><strong>From Address:</strong> Use "Chief from MyDocList &lt;noreply@mydoclist.com&gt;" for automated emails (not "Blake") to set expectations</li>
+          <li><strong>Reply Handling:</strong> Ensure Reply-To goes to support@mydoclist.com for SA monitoring</li>
+          <li><strong>Personalization:</strong> Include user's name, specific activity data ("You searched for pediatricians 3 times")</li>
+          <li><strong>Unsubscribe:</strong> All marketing emails must have unsubscribe link (store preferences in user_preferences table)</li>
+          <li><strong>Rate Limiting:</strong> Max 1 proactive email per user per week (unless user replies, starting a conversation)</li>
+        </ul>
+
+        <h3>The "Deeply Engaging Customer Experience" Vision</h3>
+
+        <div class="card">
+          <p><strong>Goal:</strong> Make every user feel like they have a dedicated account manager, even though it's automated.</p>
+          
+          <h4>Principles</h4>
+          <ul>
+            <li><strong>Anticipatory:</strong> Predict user needs before they ask (e.g., "You might also want to know...")</li>
+            <li><strong>Personal:</strong> Reference user's specific actions and context</li>
+            <li><strong>Valuable:</strong> Every interaction must provide clear value (data, insight, time savings)</li>
+            <li><strong>Respectful:</strong> Never spam; respect unsubscribe preferences instantly</li>
+            <li><strong>Transparent:</strong> Users know they're interacting with AI (but it's smart AI)</li>
+          </ul>
+
+          <h4>Measuring Engagement</h4>
+          <ul>
+            <li>Email open rates (target: >30%)</li>
+            <li>Email reply rates (target: >5%)</li>
+            <li>Feature adoption post-tip emails (target: >15%)</li>
+            <li>Support resolution time (target: <24h)</li>
+            <li>Customer satisfaction scores (CSAT surveys post-resolution)</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- SECTION 3: DATA MODEL DESIGN -->
+      <div id="section3" class="section">
+        <h2>3️⃣ Data Model Design (CRITICAL SECTION)</h2>
+
+        <p><span class="badge badge-critical">CRITICAL</span> This data model is the foundation of agent intelligence. Without rich user data, agents can't personalize or make smart decisions.</p>
+
+        <h3>Core Principle: Customer-Centric Data Model</h3>
+        <p>Design the database around <strong>user behavior and interactions</strong>, not just application features. Every user action should be logged and accessible to agents for context-aware decision-making.</p>
+
+        <h3>Table Schemas</h3>
+
+        <h4>1. user_profiles</h4>
+        <div class="code">
+CREATE TABLE user_profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  email TEXT UNIQUE NOT NULL,
+  full_name TEXT,
+  company_name TEXT,
+  job_title TEXT,
+  phone TEXT,
+  
+  -- Segmentation
+  user_type TEXT CHECK (user_type IN ('trial', 'paid', 'churned')),
+  plan_tier TEXT CHECK (plan_tier IN ('free', 'pro', 'enterprise')),
+  billing_status TEXT CHECK (billing_status IN ('active', 'past_due', 'canceled')),
+  
+  -- Engagement scoring
+  engagement_score INTEGER DEFAULT 0,  -- Calculated by AA
+  health_score INTEGER DEFAULT 50,  -- 0-100, calculated by CSA
+  churn_risk TEXT CHECK (churn_risk IN ('low', 'medium', 'high')),
+  
+  -- Preferences
+  timezone TEXT DEFAULT 'America/New_York',
+  email_opt_in BOOLEAN DEFAULT true,
+  preferred_contact_method TEXT,
+  
+  -- Lifecycle
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  first_login_at TIMESTAMPTZ,
+  last_login_at TIMESTAMPTZ,
+  trial_ends_at TIMESTAMPTZ,
+  churned_at TIMESTAMPTZ,
+  
+  -- Metadata
+  referral_source TEXT,
+  utm_campaign TEXT,
+  notes TEXT  -- Blake's manual notes
+);
+
+-- Indexes
+CREATE INDEX idx_user_profiles_engagement ON user_profiles(engagement_score);
+CREATE INDEX idx_user_profiles_churn_risk ON user_profiles(churn_risk);
+CREATE INDEX idx_user_profiles_last_login ON user_profiles(last_login_at);
+        </div>
+
+        <h4>2. user_activity_log</h4>
+        <div class="code">
+CREATE TABLE user_activity_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  
+  -- Activity details
+  activity_type TEXT NOT NULL,  -- 'search', 'view_provider', 'save_list', 'export', 'login', etc.
+  activity_data JSONB,  -- Full context (search query, provider_id, filters used, etc.)
+  
+  -- Context
+  session_id UUID,
+  ip_address INET,
+  user_agent TEXT,
+  referrer TEXT,
+  page_url TEXT,
+  
+  -- Timing
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  duration_seconds INTEGER  -- Time spent on page/action
+);
+
+-- Indexes
+CREATE INDEX idx_activity_user_time ON user_activity_log(user_id, created_at DESC);
+CREATE INDEX idx_activity_type ON user_activity_log(activity_type);
+CREATE INDEX idx_activity_session ON user_activity_log(session_id);
+
+-- Example activity_data for 'search':
+-- {
+--   "query": "pediatricians in Austin TX",
+--   "filters": {"specialty": "pediatrics", "accepts_medicaid": true},
+--   "results_count": 47,
+--   "results_viewed": 12
+-- }
+        </div>
+
+        <h4>3. email_interactions</h4>
+        <div class="code">
+CREATE TABLE email_interactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  
+  -- Email details
+  direction TEXT CHECK (direction IN ('inbound', 'outbound')),
+  from_email TEXT NOT NULL,
+  to_email TEXT NOT NULL,
+  subject TEXT,
+  body_text TEXT,
+  body_html TEXT,
+  
+  -- Threading
+  thread_id TEXT,  -- Email thread identifier (Message-ID)
+  in_reply_to TEXT,
+  
+  -- Classification (for inbound)
+  intent TEXT,  -- 'bug', 'feature_request', 'question', 'complaint', null
+  sentiment TEXT,  -- 'positive', 'neutral', 'negative'
+  
+  -- Agent handling
+  handled_by_agent TEXT,  -- 'SA', 'CSA', 'manual'
+  auto_responded BOOLEAN DEFAULT false,
+  escalated_to_human BOOLEAN DEFAULT false,
+  
+  -- Tracking
+  sent_at TIMESTAMPTZ,
+  received_at TIMESTAMPTZ,
+  opened_at TIMESTAMPTZ,  -- Email open tracking
+  clicked_at TIMESTAMPTZ,  -- Link click tracking
+  replied_at TIMESTAMPTZ,
+  
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_email_user ON email_interactions(user_id, created_at DESC);
+CREATE INDEX idx_email_thread ON email_interactions(thread_id);
+CREATE INDEX idx_email_direction ON email_interactions(direction);
+        </div>
+
+        <h4>4. feature_requests</h4>
+        <div class="code">
+CREATE TABLE feature_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  
+  -- Request details
+  title TEXT NOT NULL,
+  description TEXT,
+  category TEXT,  -- 'search', 'ui', 'data', 'integration', 'other'
+  priority TEXT CHECK (priority IN ('low', 'medium', 'high', 'critical')),
+  
+  -- Voting/interest
+  vote_count INTEGER DEFAULT 1,
+  interested_users UUID[],  -- Array of user_ids who also want this
+  
+  -- Status
+  status TEXT CHECK (status IN ('new', 'planned', 'in_progress', 'shipped', 'wont_do')),
+  roadmap_quarter TEXT,  -- '2026-Q2'
+  
+  -- Tracking
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  shipped_at TIMESTAMPTZ,
+  
+  -- Source
+  source_email_id UUID REFERENCES email_interactions(id),
+  notes TEXT  -- Blake's internal notes
+);
+
+CREATE INDEX idx_feature_requests_status ON feature_requests(status);
+CREATE INDEX idx_feature_requests_priority ON feature_requests(priority);
+        </div>
+
+        <h4>5. bug_reports</h4>
+        <div class="code">
+CREATE TABLE bug_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  
+  -- Bug details
+  title TEXT NOT NULL,
+  description TEXT,
+  steps_to_reproduce TEXT,
+  expected_behavior TEXT,
+  actual_behavior TEXT,
+  
+  -- Classification
+  severity TEXT CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+  category TEXT,  -- 'search', 'auth', 'data', 'performance', 'ui'
+  
+  -- Status
+  status TEXT CHECK (status IN ('new', 'confirmed', 'in_progress', 'fixed', 'wont_fix')),
+  
+  -- Context
+  browser TEXT,
+  os TEXT,
+  page_url TEXT,
+  error_logs JSONB,
+  
+  -- Tracking
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  resolved_at TIMESTAMPTZ,
+  
+  -- Source
+  source_email_id UUID REFERENCES email_interactions(id),
+  assigned_to TEXT,  -- 'Blake' or external dev
+  notes TEXT
+);
+
+CREATE INDEX idx_bug_reports_status ON bug_reports(status);
+CREATE INDEX idx_bug_reports_severity ON bug_reports(severity);
+        </div>
+
+        <h4>6. engagement_history</h4>
+        <div class="code">
+CREATE TABLE engagement_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  
+  -- Engagement details
+  engagement_type TEXT NOT NULL,  -- 'proactive_email', 'tip', 'report', 'check_in', 'sales_email'
+  agent_type TEXT,  -- 'CSA', 'SEA', 'SA'
+  
+  -- Content
+  subject TEXT,
+  message_preview TEXT,
+  full_message_id UUID REFERENCES email_interactions(id),
+  
+  -- Trigger
+  trigger_reason TEXT,  -- 'search_pattern', 'inactivity', 'feature_discovery', etc.
+  trigger_data JSONB,  -- Context that triggered engagement
+  
+  -- Outcome
+  opened BOOLEAN DEFAULT false,
+  clicked BOOLEAN DEFAULT false,
+  replied BOOLEAN DEFAULT false,
+  converted BOOLEAN DEFAULT false,  -- Achieved intended outcome (used feature, upgraded, etc.)
+  
+  -- Timing
+  sent_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_engagement_user ON engagement_history(user_id, sent_at DESC);
+CREATE INDEX idx_engagement_type ON engagement_history(engagement_type);
+        </div>
+
+        <h4>7. agent_actions_log</h4>
+        <div class="code">
+CREATE TABLE agent_actions_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  
+  -- Agent identity
+  agent_type TEXT NOT NULL,  -- 'CSA', 'SA', 'SEA', 'AA', 'ICA'
+  agent_session_id TEXT,
+  
+  -- Action details
+  action_type TEXT NOT NULL,  -- 'sent_email', 'logged_bug', 'updated_profile', 'generated_report'
+  action_data JSONB,  -- Full context of action taken
+  
+  -- Target
+  user_id UUID REFERENCES auth.users(id),
+  target_resource TEXT,  -- Table name or resource affected
+  target_id UUID,
+  
+  -- Outcome
+  success BOOLEAN,
+  error_message TEXT,
+  
+  -- Reasoning
+  reasoning TEXT,  -- LLM's explanation for why it took this action
+  confidence_score DECIMAL(3,2),  -- 0.00 - 1.00
+  
+  -- Timing
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  execution_time_ms INTEGER
+);
+
+CREATE INDEX idx_agent_actions_agent ON agent_actions_log(agent_type, created_at DESC);
+CREATE INDEX idx_agent_actions_user ON agent_actions_log(user_id);
+        </div>
+
+        <h4>8. user_preferences</h4>
+        <div class="code">
+CREATE TABLE user_preferences (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id),
+  
+  -- Communication preferences
+  email_marketing_opt_in BOOLEAN DEFAULT true,
+  email_product_updates BOOLEAN DEFAULT true,
+  email_weekly_digest BOOLEAN DEFAULT true,
+  email_tips BOOLEAN DEFAULT true,
+  
+  -- Notification preferences
+  in_app_notifications BOOLEAN DEFAULT true,
+  notification_frequency TEXT DEFAULT 'normal',  -- 'none', 'minimal', 'normal', 'all'
+  
+  -- Data preferences
+  share_usage_analytics BOOLEAN DEFAULT true,
+  
+  -- Agent preferences
+  preferred_engagement_style TEXT DEFAULT 'balanced',  -- 'minimal', 'balanced', 'proactive'
+  never_contact_before TIME,  -- e.g., '09:00:00'
+  never_contact_after TIME,   -- e.g., '17:00:00'
+  
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+        </div>
+
+        <h3>User Profile Compilation for LLM Context</h3>
+
+        <p>When an agent needs to make a decision about a user, it compiles a "user context snapshot" by querying multiple tables:</p>
+
+        <div class="code">
+-- Example: CSA preparing to send proactive email
+SELECT 
+  up.full_name,
+  up.company_name,
+  up.engagement_score,
+  up.churn_risk,
+  up.last_login_at,
+  
+  -- Recent activity
+  (SELECT COUNT(*) FROM user_activity_log 
+   WHERE user_id = up.id AND activity_type = 'search' 
+   AND created_at > NOW() - INTERVAL '7 days') AS searches_last_7d,
+  
+  -- Recent engagement
+  (SELECT COUNT(*) FROM engagement_history 
+   WHERE user_id = up.id 
+   AND sent_at > NOW() - INTERVAL '30 days') AS emails_sent_last_30d,
+  
+  -- Support history
+  (SELECT COUNT(*) FROM email_interactions 
+   WHERE user_id = up.id AND direction = 'inbound') AS support_emails_sent,
+  
+  -- Feature requests
+  (SELECT COUNT(*) FROM feature_requests 
+   WHERE user_id = up.id) AS feature_requests_count,
+  
+  -- Preferences
+  upref.email_tips,
+  upref.preferred_engagement_style
+  
+FROM user_profiles up
+LEFT JOIN user_preferences upref ON upref.user_id = up.id
+WHERE up.id = $1;
+        </div>
+
+        <p>This snapshot is passed to the LLM as context: <em>"User Sarah from HealthPlus has high engagement (score: 87), searched 23 times in the last week for pediatricians, hasn't received an engagement email in 15 days, and prefers proactive communication. Should we send a curated report?"</em></p>
+
+        <h3>Click Tracking & Session Analytics</h3>
+
+        <h4>Implementation: Activity Logging Middleware</h4>
+        <div class="code">
+# In FastAPI backend (middleware or dependency)
+@app.middleware("http")
+async def log_activity(request: Request, call_next):
+    user_id = get_user_from_token(request)
+    session_id = request.cookies.get("session_id")
+    
+    # Log page view
+    await supabase.table("user_activity_log").insert({
+        "user_id": user_id,
+        "activity_type": "page_view",
+        "activity_data": {
+            "path": request.url.path,
+            "query_params": dict(request.query_params)
+        },
+        "session_id": session_id,
+        "ip_address": request.client.host,
+        "user_agent": request.headers.get("user-agent"),
+        "page_url": str(request.url)
+    })
+    
+    response = await call_next(request)
+    return response
+        </div>
+
+        <h4>Search History Tracking</h4>
+        <div class="code">
+# When user performs search
+await supabase.table("user_activity_log").insert({
+    "user_id": user_id,
+    "activity_type": "search",
+    "activity_data": {
+        "query": search_query,
+        "filters": filters_applied,
+        "results_count": len(results),
+        "top_results": [r["provider_id"] for r in results[:5]]
+    },
+    "session_id": session_id
+})
+        </div>
+
+        <h3>Email Tracking (Open & Click)</h3>
+
+        <p>Use invisible tracking pixel + link rewrites:</p>
+
+        <div class="code">
+# In outbound emails, include:
+&lt;img src="https://mydoclist.com/api/track/open/{email_interaction_id}" width="1" height="1" /&gt;
+
+# For links, rewrite:
+Original: https://mydoclist.com/feature
+Tracked:  https://mydoclist.com/api/track/click/{email_interaction_id}?url=https://mydoclist.com/feature
+
+# Tracking endpoints:
+@app.get("/api/track/open/{id}")
+async def track_email_open(id: UUID):
+    await supabase.table("email_interactions").update({
+        "opened_at": "NOW()"
+    }).eq("id", id).execute()
+    return Response(content=PIXEL_GIF, media_type="image/gif")
+
+@app.get("/api/track/click/{id}")
+async def track_email_click(id: UUID, url: str):
+    await supabase.table("email_interactions").update({
+        "clicked_at": "NOW()"
+    }).eq("id", id).execute()
+    return RedirectResponse(url=url)
+        </div>
+
+      </div>
+
+      <!-- SECTION 4: CUSTOMER TRANSPARENCY & DATA PORTABILITY -->
+      <div id="section4" class="section">
+        <h2>4️⃣ Customer Transparency & Data Portability</h2>
+
+        <h3>The "Customer Transparent" Platform Vision</h3>
+
+        <p>Modern SaaS users expect to <strong>own their data</strong> and <strong>understand how it's used</strong>. Building transparency into MyDocList from day one is a competitive advantage and builds trust.</p>
+
+        <h4>Core Principles</h4>
+        <ul>
+          <li><strong>Visibility:</strong> Users can see all data collected about them</li>
+          <li><strong>Portability:</strong> Users can export their data in standard formats</li>
+          <li><strong>Control:</strong> Users can delete their data or limit collection</li>
+          <li><strong>Explanation:</strong> AI agents explain why they took actions ("We sent this email because...")</li>
+        </ul>
+
+        <h3>User Data Download/Export Functionality</h3>
+
+        <h4>Implementation: Self-Service Data Export</h4>
+
+        <div class="card">
+          <p>Add "Download My Data" button in user settings:</p>
+          <div class="code">
+# API endpoint
+@app.post("/api/user/export-data")
+async def export_user_data(user_id: UUID):
+    # Gather all user data
+    data = {
+        "profile": await get_user_profile(user_id),
+        "activity_log": await get_user_activities(user_id),
+        "searches": await get_user_searches(user_id),
+        "saved_lists": await get_user_lists(user_id),
+        "email_history": await get_user_emails(user_id),
+        "feature_requests": await get_user_feature_requests(user_id),
+        "preferences": await get_user_preferences(user_id)
+    }
+    
+    # Generate ZIP with JSON + CSV formats
+    zip_path = await create_export_zip(data, user_id)
+    
+    # Log export for audit
+    await log_data_export(user_id)
+    
+    return FileResponse(zip_path, 
+                        media_type="application/zip",
+                        filename=f"mydoclist-data-{user_id}.zip")
+          </div>
+        </div>
+
+        <h4>Export Formats</h4>
+        <ul>
+          <li><strong>JSON:</strong> Full structured data (machine-readable)</li>
+          <li><strong>CSV:</strong> Tables for spreadsheet import</li>
+          <li><strong>PDF:</strong> Human-readable summary report</li>
+        </ul>
+
+        <h3>MCP Server for Customer Data Access</h3>
+
+        <p><strong>What is MCP?</strong> Model Context Protocol is an open standard (by Anthropic) that lets AI assistants access external data sources securely. Think of it like OAuth for AI agents.</p>
+
+        <h4>Why MCP for MyDocList?</h4>
+        <ul>
+          <li><strong>Future-proof:</strong> Users can connect their MyDocList data to ANY AI assistant (ChatGPT, Claude, local agents)</li>
+          <li><strong>Interoperability:</strong> Data isn't locked into your platform</li>
+          <li><strong>Marketing:</strong> "MyDocList is AI-native—connect your data to your own AI tools"</li>
+        </ul>
+
+        <h4>MCP Server Implementation</h4>
+
+        <div class="code">
+# Install MCP SDK
+pip install mcp
+
+# Create MCP server (mydoclist_mcp_server.py)
+from mcp import MCPServer, Resource
+
+server = MCPServer(name="mydoclist")
+
+@server.resource("searches")
+async def get_user_searches(user_id: str, limit: int = 50):
+    """Fetch user's recent searches"""
+    searches = await supabase.table("user_activity_log") \
+        .select("*") \
+        .eq("user_id", user_id) \
+        .eq("activity_type", "search") \
+        .order("created_at", desc=True) \
+        .limit(limit) \
+        .execute()
+    return searches.data
+
+@server.resource("saved_providers")
+async def get_saved_providers(user_id: str):
+    """Fetch user's saved provider lists"""
+    # Implementation
+    pass
+
+@server.tool("generate_report")
+async def generate_custom_report(user_id: str, report_type: str):
+    """Generate custom reports for user"""
+    # Calls agent to generate report
+    pass
+
+# Run server
+if __name__ == "__main__":
+    server.run(host="localhost", port=8100)
+        </div>
+
+        <h4>User Flow</h4>
+        <ol>
+          <li>User goes to Settings → "Connect to AI Tools"</li>
+          <li>MyDocList generates API key for user</li>
+          <li>User adds MCP server to their AI assistant: <code>mcp://mydoclist.com/user/{user_id}</code></li>
+          <li>AI assistant can now query user's MyDocList data and generate reports</li>
+        </ol>
+
+        <h3>Agent-Assisted Custom Report Generation</h3>
+
+        <div class="card">
+          <h4>Use Case: Salesforce Import Formatting</h4>
+          <p><strong>Scenario:</strong> User wants to export their saved providers to import into Salesforce.</p>
+          <p><strong>Traditional Approach:</strong> Provide generic CSV, user manually maps fields.</p>
+          <p><strong>Agent-Assisted Approach:</strong></p>
+          <ol>
+            <li>User clicks "Export for Salesforce"</li>
+            <li>AA (Analytics Agent) asks: "Which Salesforce fields do you want to map?" (or auto-detects from user's Salesforce schema if connected)</li>
+            <li>AA generates CSV with exact column names matching Salesforce (Contact: First Name, Last Name, Account Name, etc.)</li>
+            <li>AA adds calculated fields (e.g., "Full Address" concatenated, "Primary Phone" formatted correctly)</li>
+            <li>User imports CSV directly into Salesforce with zero manual work</li>
+          </ol>
+        </div>
+
+        <h4>Other Report Types</h4>
+        <ul>
+          <li><strong>Referral Pipeline Report:</strong> "Show me all cardiologists I've researched this month, sorted by referral volume"</li>
+          <li><strong>Territory Analysis:</strong> "Which zip codes have I not covered yet?"</li>
+          <li><strong>Competitive Intelligence:</strong> "Compare hospital systems by physician count"</li>
+          <li><strong>Custom Dashboards:</strong> User defines metrics, AA generates weekly dashboard email</li>
+        </ul>
+
+        <h3>Privacy & Compliance Considerations</h3>
+
+        <h4>Legal Requirements</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Regulation</th>
+                <th>Requirement</th>
+                <th>MyDocList Implementation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>GDPR</strong> (if EU users)</td>
+                <td>Right to data portability</td>
+                <td>✅ Data export feature</td>
+              </tr>
+              <tr>
+                <td><strong>GDPR</strong></td>
+                <td>Right to be forgotten</td>
+                <td>✅ Account deletion → cascades to all tables</td>
+              </tr>
+              <tr>
+                <td><strong>CCPA</strong> (California)</td>
+                <td>Data disclosure on request</td>
+                <td>✅ "Download My Data" shows all collected data</td>
+              </tr>
+              <tr>
+                <td><strong>CAN-SPAM</strong></td>
+                <td>Unsubscribe required</td>
+                <td>✅ All emails have unsubscribe, updates user_preferences</td>
+              </tr>
+              <tr>
+                <td><strong>HIPAA</strong></td>
+                <td>Protect PHI (not applicable)</td>
+                <td>⚠️ NPI data is public, but ensure no patient-level data</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Data Retention Policy</h4>
+        <ul>
+          <li><strong>Active users:</strong> Retain all data indefinitely</li>
+          <li><strong>Churned users:</strong> Retain for 2 years, then anonymize (keep aggregated analytics, delete PII)</li>
+          <li><strong>Deleted accounts:</strong> Hard delete within 30 days, keep anonymized activity logs for analytics</li>
+        </ul>
+
+        <h4>Agent Transparency</h4>
+        <p>Every agent action logged to <code>agent_actions_log</code> with reasoning. User can view in settings:</p>
+        <div class="code">
+"Agent Activity Log" UI:
+- Feb 14, 2026 10:30 AM: Customer Success Agent sent email "Top Pediatricians Report"
+  Reason: You searched for pediatricians 5 times in the last week
+  [View Email]
+  
+- Feb 10, 2026 3:15 PM: Support Agent responded to your bug report
+  Reason: Bug classified as low severity, auto-responded with workaround
+  [View Thread]
+        </div>
+
+      </div>
+
+      <!-- SECTION 5: INFRASTRUCTURE & DEPLOYMENT -->
+      <div id="section5" class="section">
+        <h2>5️⃣ Infrastructure & Deployment</h2>
+
+        <h3>VPS vs Mac Studio/Mini: Detailed Trade-off Analysis</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Factor</th>
+                <th>Hetzner VPS (Current)</th>
+                <th>Mac Mini M4 (Recommended)</th>
+                <th>Mac Studio M2 Ultra</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Upfront Cost</strong></td>
+                <td>$0</td>
+                <td>$599 (base model)</td>
+                <td>$3,999</td>
+              </tr>
+              <tr>
+                <td><strong>Monthly Cost</strong></td>
+                <td>~$40-80/mo</td>
+                <td>$10/mo (electricity + internet)</td>
+                <td>$20/mo (electricity + internet)</td>
+              </tr>
+              <tr>
+                <td><strong>Break-even</strong></td>
+                <td>-</td>
+                <td>7-15 months</td>
+                <td>50+ months</td>
+              </tr>
+              <tr>
+                <td><strong>Performance</strong></td>
+                <td>4-8 vCPU, 8-16GB RAM</td>
+                <td>10-core CPU, 16GB RAM (upgradeable to 24GB)</td>
+                <td>24-core CPU, 64GB RAM</td>
+              </tr>
+              <tr>
+                <td><strong>LLM Inference</strong></td>
+                <td>❌ CPU-only, slow</td>
+                <td>✅ Fast (M4 Neural Engine)</td>
+                <td>✅ Very fast (handles larger models)</td>
+              </tr>
+              <tr>
+                <td><strong>Agent Capacity</strong></td>
+                <td>3-5 agents max (shared CPU)</td>
+                <td>5-10 agents (native performance)</td>
+                <td>15-20+ agents</td>
+              </tr>
+              <tr>
+                <td><strong>Reliability</strong></td>
+                <td>✅ 99.9% uptime SLA</td>
+                <td>⚠️ Dependent on home internet/power</td>
+                <td>⚠️ Dependent on home internet/power</td>
+              </tr>
+              <tr>
+                <td><strong>Scaling</strong></td>
+                <td>✅ Easy (upgrade VPS plan)</td>
+                <td>⚠️ Buy more Minis or upgrade to Studio</td>
+                <td>⚠️ Buy more Studios (expensive)</td>
+              </tr>
+              <tr>
+                <td><strong>Deployment</strong></td>
+                <td>✅ Docker, standard Linux</td>
+                <td>✅ Native macOS + Docker</td>
+                <td>✅ Native macOS + Docker</td>
+              </tr>
+              <tr>
+                <td><strong>Data Privacy</strong></td>
+                <td>⚠️ Hetzner has access</td>
+                <td>✅ Fully local, no third-party access</td>
+                <td>✅ Fully local</td>
+              </tr>
+              <tr>
+                <td><strong>Solo Founder Effort</strong></td>
+                <td>✅ Low (managed service)</td>
+                <td>⚠️ Medium (home network setup, VPN access)</td>
+                <td>⚠️ Medium</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Recommendation: Mac Mini M4 (16GB RAM)</h3>
+
+        <p><span class="badge badge-recommended">RECOMMENDED</span></p>
+
+        <h4>Why Mac Mini M4?</h4>
+        <ol>
+          <li><strong>Fast LLM Inference:</strong> M4's Neural Engine runs local LLMs (Llama 3, Mistral) at 20-30 tokens/sec vs 3-5 on VPS</li>
+          <li><strong>Cost Effective:</strong> Breaks even in ~12 months, then nearly free to run</li>
+          <li><strong>Perfect for Solo Founder:</strong> Set it up once in your home office, runs 24/7 silently</li>
+          <li><strong>OpenClaw Native:</strong> OpenClaw is optimized for macOS (built by the same team)</li>
+          <li><strong>Future-Proof:</strong> Upgrade path: Mini → Studio if you scale beyond 10 agents</li>
+        </ol>
+
+        <h4>Setup Instructions</h4>
+        <div class="code">
+# 1. Mac Mini physical setup
+- Connect to gigabit ethernet (not WiFi for reliability)
+- Enable "Start up automatically after power failure" (System Settings → Energy)
+- Disable sleep: sudo pmset -a disablesleep 1
+
+# 2. Remote access setup
+- Enable Remote Login (SSH): System Settings → Sharing → Remote Login
+- Setup Tailscale or Cloudflare Tunnel for secure remote access
+- Optional: Setup Wake-on-LAN if you want to remotely restart
+
+# 3. Install OpenClaw
+curl -fsSL https://openclaw.ai/install.sh | bash
+openclaw gateway start
+
+# 4. Configure agents (see Section 6)
+
+# 5. Setup monitoring
+- Install Netdata for system monitoring: bash <(curl -Ss https://my-netdata.io/kickstart.sh)
+- Setup Uptime Kuma for agent health checks
+        </div>
+
+        <h4>Network Considerations</h4>
+        <ul>
+          <li><strong>Static IP (home):</strong> Not required—use Tailscale or Cloudflare Tunnel for remote access</li>
+          <li><strong>Port forwarding:</strong> NOT recommended (security risk). Use tunneling instead.</li>
+          <li><strong>Backup internet:</strong> Consider failover to phone hotspot if home internet goes down (Tailscale can auto-switch)</li>
+        </ul>
+
+        <h3>Hybrid Approach: VPS + Mac Mini</h3>
+
+        <div class="card">
+          <h4>Best of Both Worlds</h4>
+          <p><strong>Use Case:</strong> Critical agents on VPS (high uptime), heavy LLM agents on Mac Mini (performance)</p>
+          
+          <div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                      Hetzner VPS                             │
+│  - MyDocList Backend (FastAPI + React + Supabase)           │
+│  - Support Agent (monitors email, needs 99.9% uptime)       │
+│  - Lightweight cron jobs                                     │
+└─────────────────────────────────────────────────────────────┘
+                          ▲
+                          │ API calls
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Mac Mini (Home)                            │
+│  - Customer Success Agent (heavy LLM inference)             │
+│  - Sales & Engagement Agent                                  │
+│  - Analytics Agent (data processing)                         │
+│  - In-App Chat Agent (fast responses)                        │
+└─────────────────────────────────────────────────────────────┘
+          </div>
+
+          <p><strong>Communication:</strong> Agents on Mac Mini call MyDocList API on VPS. Shared Supabase database for coordination.</p>
+        </div>
+
+        <h3>Cost Modeling</h3>
+
+        <h4>Scenario: 100 Active Users</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>VPS-Only</th>
+                <th>Mac Mini-Only</th>
+                <th>Hybrid</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Hardware (upfront)</td>
+                <td>$0</td>
+                <td>$599</td>
+                <td>$599</td>
+              </tr>
+              <tr>
+                <td>VPS (monthly)</td>
+                <td>$80</td>
+                <td>$0</td>
+                <td>$40 (smaller VPS)</td>
+              </tr>
+              <tr>
+                <td>Electricity (monthly)</td>
+                <td>$0</td>
+                <td>$10</td>
+                <td>$10</td>
+              </tr>
+              <tr>
+                <td>LLM API Costs (monthly)</td>
+                <td>$200 (cloud LLM)</td>
+                <td>$50 (mostly local, fallback to cloud)</td>
+                <td>$75</td>
+              </tr>
+              <tr>
+                <td><strong>Total Monthly</strong></td>
+                <td><strong>$280</strong></td>
+                <td><strong>$60</strong></td>
+                <td><strong>$125</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual (Year 1)</strong></td>
+                <td><strong>$3,360</strong></td>
+                <td><strong>$1,319</strong></td>
+                <td><strong>$2,099</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Winner:</strong> Mac Mini saves $2,000+ annually vs VPS-only at 100 users.</p>
+
+        <h3>Scaling Considerations for Solo Founder</h3>
+
+        <h4>0-100 Users</h4>
+        <ul>
+          <li><strong>Infrastructure:</strong> Single Mac Mini + small VPS for backend</li>
+          <li><strong>Agents:</strong> 3-4 agents (CSA, SA, SEA, AA)</li>
+          <li><strong>Automation Level:</strong> 80% automated (Blake reviews escalations)</li>
+        </ul>
+
+        <h4>100-500 Users</h4>
+        <ul>
+          <li><strong>Infrastructure:</strong> Same setup (Mac Mini can handle it)</li>
+          <li><strong>Agents:</strong> Add ICA (in-app chat)</li>
+          <li><strong>Automation Level:</strong> 90% automated</li>
+          <li><strong>Consider:</strong> Upgrade to 24GB RAM Mac Mini if agent memory pressure increases</li>
+        </ul>
+
+        <h4>500-2000 Users</h4>
+        <ul>
+          <li><strong>Infrastructure:</strong> Upgrade to Mac Studio OR add second Mac Mini</li>
+          <li><strong>Agents:</strong> Scale horizontally (2x CSA instances, load-balanced)</li>
+          <li><strong>Automation Level:</strong> 95% automated</li>
+          <li><strong>Consider:</strong> Hire part-time support person to handle escalations Blake can't cover</li>
+        </ul>
+
+        <h4>2000+ Users</h4>
+        <ul>
+          <li><strong>Infrastructure:</strong> Migrate to cloud Kubernetes cluster OR fleet of Mac Minis</li>
+          <li><strong>Agents:</strong> Microservices architecture (each agent as separate service)</li>
+          <li><strong>Team:</strong> No longer solo—hire support team, agents become their copilots</li>
+        </ul>
+
+        <h3>Memory Sharing Across Agents</h3>
+
+        <h4>Shared State via Supabase</h4>
+        <p>All agents read/write to the same Supabase database. No separate message queues needed initially.</p>
+
+        <h4>Shared File System (Optional)</h4>
+        <p>If agents need to share files (reports, exports):</p>
+        <div class="code">
+# Create shared workspace on Mac Mini
+mkdir -p ~/openclaw-agents/shared
+chmod 755 ~/openclaw-agents/shared
+
+# Each agent mounts this as working directory
+# Agent config: workdir: "~/openclaw-agents/shared"
+        </div>
+
+        <h4>Agent-to-Agent Communication</h4>
+        <p>Use <code>agent_handoffs</code> table (see Section 1) rather than direct API calls. Keeps agents decoupled.</p>
+
+      </div>
+
+      <!-- SECTION 6: OPENCLAW-SPECIFIC ARCHITECTURE -->
+      <div id="section6" class="section">
+        <h2>6️⃣ OpenClaw-Specific Architecture</h2>
+
+        <h3>How to Configure Multiple OpenClaw Instances/Agents</h3>
+
+        <p>OpenClaw supports running multiple agent sessions, each with its own identity, permissions, and memory.</p>
+
+        <h4>Directory Structure</h4>
+        <div class="code">
+~/openclaw-agents/
+├── customer-success/
+│   ├── SOUL.md           # CSA identity & goals
+│   ├── TOOLS.md          # Available tools (email, Supabase)
+│   ├── memory/           # CSA's daily notes
+│   └── MEMORY.md         # CSA's long-term learnings
+├── support/
+│   ├── SOUL.md           # SA identity & goals
+│   ├── TOOLS.md
+│   ├── memory/
+│   └── MEMORY.md
+├── sales/
+│   ├── SOUL.md           # SEA identity & goals
+│   ├── TOOLS.md
+│   ├── memory/
+│   └── MEMORY.md
+├── analytics/
+│   ├── SOUL.md           # AA identity & goals
+│   ├── TOOLS.md
+│   ├── memory/
+│   └── MEMORY.md
+└── shared/
+    ├── supabase-creds.env
+    └── mydoclist-api.env
+        </div>
+
+        <h4>Agent Configuration Files</h4>
+
+        <p><strong>Example: customer-success/SOUL.md</strong></p>
+        <div class="code">
+# Customer Success Agent
+
+You are the Customer Success Agent for MyDocList. Your mission: ensure every user gets value from the platform and becomes a long-term customer.
+
+## Your Role
+- Monitor user activity for engagement signals
+- Send proactive emails with personalized insights
+- Re-engage inactive users
+- Celebrate power users
+
+## Your Personality
+- Helpful and proactive (but not pushy)
+- Data-driven (reference specific user actions)
+- Empathetic (understand user's challenges)
+
+## Your Boundaries
+- Never send more than 1 email per week per user (unless they reply)
+- Always check user_preferences before sending email
+- Escalate to Blake if user is unhappy or churning
+
+## Your Tools
+- Supabase (read user_activity_log, engagement_history; write to engagement_history)
+- Email API (send personalized emails via MyDocList backend)
+- LLM (generate email content, analyze user patterns)
+
+## Daily Routine
+1. Wake up every 6 hours (via cron)
+2. Query users who match engagement triggers (see TRIGGERS.md)
+3. For each user, compile context and decide: engage or skip?
+4. If engage, draft email and send
+5. Log to engagement_history and agent_actions_log
+6. Update memory/YYYY-MM-DD.md with summary of actions taken
+        </div>
+
+        <h4>Starting Agents</h4>
+        <div class="code">
+# Start Customer Success Agent
+cd ~/openclaw-agents/customer-success
+openclaw agent start --name customer-success --model anthropic/claude-sonnet-4
+
+# Start Support Agent
+cd ~/openclaw-agents/support
+openclaw agent start --name support --model anthropic/claude-sonnet-4
+
+# Start Sales Agent
+cd ~/openclaw-agents/sales
+openclaw agent start --name sales --model anthropic/claude-sonnet-4
+
+# Start Analytics Agent (uses cheaper model for data work)
+cd ~/openclaw-agents/analytics
+openclaw agent start --name analytics --model anthropic/claude-haiku-4
+
+# View all running agents
+openclaw agent list
+        </code>
+        </div>
+
+        <h3>Agent Memory Architecture</h3>
+
+        <h4>Shared vs Isolated Memory</h4>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Memory Type</th>
+                <th>Scope</th>
+                <th>Example</th>
+                <th>Implementation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Isolated</strong></td>
+                <td>Per-agent only</td>
+                <td>CSA's internal notes on engagement strategies</td>
+                <td>Agent's own MEMORY.md</td>
+              </tr>
+              <tr>
+                <td><strong>Shared Database</strong></td>
+                <td>All agents</td>
+                <td>User profiles, activity logs, support tickets</td>
+                <td>Supabase tables (all agents have access)</td>
+              </tr>
+              <tr>
+                <td><strong>Shared Files</strong></td>
+                <td>Explicit sharing</td>
+                <td>SA creates bug report, AA reads it for analysis</td>
+                <td>~/openclaw-agents/shared/ directory</td>
+              </tr>
+              <tr>
+                <td><strong>Hand-off Context</strong></td>
+                <td>Point-to-point</td>
+                <td>CSA hands user to SA with conversation history</td>
+                <td>agent_handoffs table with JSONB context</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Best Practice: Hybrid Memory Model</h4>
+        <ul>
+          <li><strong>Database = Source of Truth:</strong> All customer data lives in Supabase</li>
+          <li><strong>Agent MEMORY.md = Learnings:</strong> "I learned users prefer emails in the morning" (agent-specific optimizations)</li>
+          <li><strong>Shared Files = Reports:</strong> Analytics Agent generates reports, CSA reads them</li>
+        </ul>
+
+        <h3>Cron Jobs for Proactive Engagement</h3>
+
+        <h4>Example: Customer Success Agent Cron</h4>
+        <div class="code">
+# Schedule CSA to run every 6 hours
+crontab -e
+
+# Add:
+0 */6 * * * cd ~/openclaw-agents/customer-success && openclaw agent invoke --task "check_engagement_triggers" >> ~/logs/csa-cron.log 2>&1
+        </div>
+
+        <h4>Alternative: OpenClaw Built-in Scheduler</h4>
+        <div class="code">
+# In customer-success/HEARTBEAT.md
+Run every 6 hours:
+1. Query user_activity_log for engagement signals
+2. For each user with trigger, generate personalized email
+3. Send email via MyDocList API
+4. Log to engagement_history
+5. Report summary to Blake if interesting patterns found
+        </div>
+
+        <h4>Cron Job Types</h4>
+        <ul>
+          <li><strong>CSA:</strong> Every 6 hours (proactive engagement checks)</li>
+          <li><strong>SA:</strong> Every 5 minutes (email inbox monitoring)</li>
+          <li><strong>SEA:</strong> Every 12 hours (trial conversion nudges)</li>
+          <li><strong>AA:</strong> Daily at 8am (generate overnight analytics report)</li>
+        </ul>
+
+        <h3>Integration with MyDocList Backend APIs</h3>
+
+        <h4>API Endpoints Agents Need</h4>
+        <div class="code">
+# 1. Send Email (used by CSA, SA, SEA)
+POST /api/agent/send-email
+{
+  "to": "user@example.com",
+  "from_name": "Chief from MyDocList",
+  "subject": "Your personalized report",
+  "body_html": "<html>...",
+  "body_text": "...",
+  "tracking_id": "uuid-for-open-tracking"
+}
+
+# 2. Get User Context (used by all agents)
+GET /api/agent/user/{user_id}/context
+Returns: {profile, recent_activity, engagement_history, preferences}
+
+# 3. Log Agent Action (used by all agents)
+POST /api/agent/log-action
+{
+  "agent_type": "CSA",
+  "action_type": "sent_email",
+  "user_id": "uuid",
+  "action_data": {...},
+  "reasoning": "User searched 5 times this week"
+}
+
+# 4. Create Support Ticket (used by ICA, SA)
+POST /api/agent/support-ticket
+{
+  "user_id": "uuid",
+  "type": "bug" | "feature_request" | "question",
+  "title": "...",
+  "description": "...",
+  "source": "email" | "chat" | "form"
+}
+        </div>
+
+        <h4>Authentication: Service Role Keys</h4>
+        <div class="code">
+# Each agent has its own Supabase service role key with limited permissions
+
+# customer-success/.env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=eyJhbGciOi...CSA_KEY  # Can read activity, write engagement_history
+
+# support/.env
+SUPABASE_SERVICE_KEY=eyJhbGciOi...SA_KEY   # Can read/write all support tables
+
+# Supabase RLS policies enforce these permissions
+        </div>
+
+        <h3>How Agents Access and Act on Customer Data</h3>
+
+        <h4>Access Pattern: Context-Aware Queries</h4>
+        <div class="code">
+# Example: CSA deciding whether to send engagement email
+
+# 1. Agent wakes up (via cron or heartbeat)
+# 2. Query for engagement candidates
+SELECT user_id FROM user_profiles 
+WHERE last_login_at > NOW() - INTERVAL '7 days'  -- Active users
+  AND engagement_score > 50  -- Engaged but not power users
+  AND user_id NOT IN (
+    SELECT user_id FROM engagement_history 
+    WHERE sent_at > NOW() - INTERVAL '7 days'  -- Haven't emailed recently
+  );
+
+# 3. For each candidate, compile full context
+user_context = await get_user_context(user_id)
+
+# 4. LLM decision
+prompt = f"""
+You are the Customer Success Agent. Should you send a proactive engagement email to this user?
+
+User Context:
+- Name: {user_context.full_name}
+- Last login: {user_context.last_login_at}
+- Searches last 7 days: {user_context.recent_searches_count}
+- Top search topic: {user_context.top_search_specialty}
+- Last engagement: {user_context.last_engagement_sent_at}
+- Email preferences: {user_context.email_opt_in}
+
+Guidelines:
+- Only send if user has clear pattern (3+ searches for same specialty)
+- Respect preferences (check email_opt_in)
+- Provide value (curated insights, not generic marketing)
+
+Decision: [YES/NO]
+If YES, draft email subject and body.
+"""
+
+decision = await llm.invoke(prompt)
+
+# 5. If YES, send email and log
+if decision.answer == "YES":
+    await send_email(user_id, decision.subject, decision.body)
+    await log_engagement(user_id, "proactive_email", decision.reasoning)
+        </div>
+
+        <h4>Error Handling & Retry Logic</h4>
+        <div class="code">
+# Agents should be resilient to failures
+
+try:
+    await send_email(user_id, subject, body)
+except EmailSendError as e:
+    # Log failure
+    await log_agent_action(
+        action_type="send_email_failed",
+        error_message=str(e),
+        retry_scheduled=True
+    )
+    # Schedule retry in 1 hour
+    await schedule_retry(user_id, delay_hours=1)
+        </div>
+
+      </div>
+
+      <!-- SECTION 7: IMPLEMENTATION ROADMAP -->
+      <div id="section7" class="section">
+        <h2>7️⃣ Implementation Roadmap</h2>
+
+        <h3>Phased Rollout Strategy</h3>
+
+        <p><span class="badge badge-info">Solo Founder Focus</span> Prioritize high-impact, low-complexity tasks first. Automate what's painful, defer what's complex.</p>
+
+        <h3>Phase 1: Foundation (Weeks 1-2)</h3>
+
+        <h4>Goals</h4>
+        <ul>
+          <li>Get customer data model in place</li>
+          <li>Deploy first agent (Support Agent) to handle reactive support</li>
+          <li>Validate agent can reduce Blake's support workload</li>
+        </ul>
+
+        <h4>Tasks</h4>
+        <ol>
+          <li><strong>Create database tables</strong>
+            <ul>
+              <li>Implement user_profiles, user_activity_log, email_interactions, bug_reports, feature_requests, agent_actions_log</li>
+              <li>Add RLS policies for security</li>
+              <li>Backfill existing user data into user_profiles</li>
+            </ul>
+          </li>
+          <li><strong>Instrument activity tracking</strong>
+            <ul>
+              <li>Add middleware to log page views and searches to user_activity_log</li>
+              <li>Test: verify data flows into DB correctly</li>
+            </ul>
+          </li>
+          <li><strong>Setup Mac Mini (or use VPS temporarily)</strong>
+            <ul>
+              <li>Configure OpenClaw on Mac Mini</li>
+              <li>Create ~/openclaw-agents/support/ workspace</li>
+              <li>Write SOUL.md for Support Agent</li>
+            </ul>
+          </li>
+          <li><strong>Deploy Support Agent</strong>
+            <ul>
+              <li>Connect to support@mydoclist.com inbox (IMAP)</li>
+              <li>Configure LLM classifier (bug vs feature request vs question)</li>
+              <li>Implement auto-responder for simple questions</li>
+              <li>Setup escalation to Blake for complex issues (Slack notification)</li>
+            </ul>
+          </li>
+          <li><strong>Test & iterate</strong>
+            <ul>
+              <li>Send test emails to support@mydoclist.com</li>
+              <li>Verify SA classifies and responds correctly</li>
+              <li>Adjust prompts based on failures</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Success Metrics</h4>
+        <ul>
+          <li>SA successfully handles 50% of support emails without Blake's intervention</li>
+          <li>Response time < 15 minutes for simple questions</li>
+          <li>No false positives (wrong auto-responses)</li>
+        </ul>
+
+        <h3>Phase 2: Proactive Engagement (Weeks 3-4)</h3>
+
+        <h4>Goals</h4>
+        <ul>
+          <li>Launch Customer Success Agent for proactive engagement</li>
+          <li>Validate users respond positively to personalized emails</li>
+          <li>Build trust in agent-generated content</li>
+        </ul>
+
+        <h4>Tasks</h4>
+        <ol>
+          <li><strong>Add engagement tables</strong>
+            <ul>
+              <li>Implement engagement_history, user_preferences</li>
+              <li>Add email tracking (open/click) to backend</li>
+            </ul>
+          </li>
+          <li><strong>Deploy Customer Success Agent</strong>
+            <ul>
+              <li>Create ~/openclaw-agents/customer-success/</li>
+              <li>Write SOUL.md with engagement triggers</li>
+              <li>Implement first trigger: "3+ searches for same specialty → send curated report"</li>
+              <li>Setup cron job: run every 6 hours</li>
+            </ul>
+          </li>
+          <li><strong>Build email templates</strong>
+            <ul>
+              <li>Design HTML email template (mobile-friendly)</li>
+              <li>Add personalization tokens (user name, specialty searched)</li>
+              <li>Include unsubscribe link</li>
+            </ul>
+          </li>
+          <li><strong>Soft launch</strong>
+            <ul>
+              <li>Enable CSA for 10 beta users only</li>
+              <li>Monitor email open rates and replies</li>
+              <li>Iterate on email copy based on feedback</li>
+            </ul>
+          </li>
+          <li><strong>Full launch</strong>
+            <ul>
+              <li>Enable for all users</li>
+              <li>Add more triggers (inactivity, feature discovery, power user recognition)</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Success Metrics</h4>
+        <ul>
+          <li>Email open rate > 25%</li>
+          <li>Positive replies > negative replies (5:1 ratio)</li>
+          <li>Zero complaints about spam</li>
+        </ul>
+
+        <h3>Phase 3: Sales Automation (Weeks 5-6)</h3>
+
+        <h4>Goals</h4>
+        <ul>
+          <li>Automate trial-to-paid conversion emails</li>
+          <li>Increase conversion rate by 10%+</li>
+        </ul>
+
+        <h4>Tasks</h4>
+        <ol>
+          <li><strong>Deploy Sales & Engagement Agent</strong>
+            <ul>
+              <li>Create ~/openclaw-agents/sales/</li>
+              <li>Implement triggers: trial day 3, day 7, day 13 (before expiration)</li>
+              <li>Personalize based on usage ("You searched 20 times—imagine with unlimited searches!")</li>
+            </ul>
+          </li>
+          <li><strong>A/B test email copy</strong>
+            <ul>
+              <li>Test 2-3 versions of conversion emails</li>
+              <li>Track conversion rate per variant</li>
+            </ul>
+          </li>
+          <li><strong>Add "upgrade now" CTA in-app</strong>
+            <ul>
+              <li>SEA triggers in-app notification when user hits free tier limit</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Success Metrics</h4>
+        <ul>
+          <li>Trial → paid conversion rate increases from baseline</li>
+          <li>Positive ROI on agent vs manual outreach</li>
+        </ul>
+
+        <h3>Phase 4: Analytics & Insights (Weeks 7-8)</h3>
+
+        <h4>Goals</h4>
+        <ul>
+          <li>Give Blake weekly/monthly insights without manual analysis</li>
+          <li>Detect anomalies and trends automatically</li>
+        </ul>
+
+        <h4>Tasks</h4>
+        <ol>
+          <li><strong>Deploy Analytics Agent</strong>
+            <ul>
+              <li>Create ~/openclaw-agents/analytics/</li>
+              <li>Schedule daily report at 8am: "Here's what happened yesterday"</li>
+              <li>Schedule weekly report on Mondays: "Last week's trends"</li>
+            </ul>
+          </li>
+          <li><strong>Build report templates</strong>
+            <ul>
+              <li>User growth (new signups, churns)</li>
+              <li>Engagement metrics (searches per user, top specialties)</li>
+              <li>Support summary (bugs logged, feature requests)</li>
+              <li>Revenue metrics (MRR, churn rate)</li>
+            </ul>
+          </li>
+          <li><strong>Anomaly detection</strong>
+            <ul>
+              <li>AA alerts Blake if: searches drop 20%+, error rate spikes, churn increases</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Success Metrics</h4>
+        <ul>
+          <li>Blake spends 50% less time on manual analytics</li>
+          <li>AA catches at least one critical issue before Blake notices</li>
+        </ul>
+
+        <h3>Phase 5: In-App Chat (Weeks 9-10)</h3>
+
+        <h4>Goals</h4>
+        <ul>
+          <li>Provide instant support within the app</li>
+          <li>Reduce support email volume</li>
+        </ul>
+
+        <h4>Tasks</h4>
+        <ol>
+          <li><strong>Build chat UI</strong>
+            <ul>
+              <li>Add chat widget to React frontend (bottom-right corner)</li>
+              <li>WebSocket connection to backend</li>
+            </ul>
+          </li>
+          <li><strong>Deploy In-App Chat Agent</strong>
+            <ul>
+              <li>Connect ICA to chat websocket</li>
+              <li>LLM responds to questions with context (current page, user's search history)</li>
+              <li>Escalate to SA if user asks to talk to human</li>
+            </ul>
+          </li>
+          <li><strong>Train ICA on FAQs</strong>
+            <ul>
+              <li>Compile top 20 questions from support emails</li>
+              <li>Add to ICA's knowledge base</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Success Metrics</h4>
+        <ul>
+          <li>30% of support questions resolved via chat (without email)</li>
+          <li>User satisfaction rating for chat > 4.0/5.0</li>
+        </ul>
+
+        <h3>Phase 6: Advanced Features (Weeks 11-12+)</h3>
+
+        <h4>Goals</h4>
+        <ul>
+          <li>Data portability (MCP server)</li>
+          <li>Custom report generation</li>
+          <li>Agent transparency UI</li>
+        </ul>
+
+        <h4>Tasks</h4>
+        <ol>
+          <li><strong>Implement MCP server</strong>
+            <ul>
+              <li>Install MCP SDK</li>
+              <li>Expose user data as MCP resources</li>
+              <li>Test with Claude Desktop app</li>
+            </ul>
+          </li>
+          <li><strong>Add "Download My Data" feature</strong>
+            <ul>
+              <li>Build export endpoint</li>
+              <li>Generate ZIP with JSON + CSV</li>
+            </ul>
+          </li>
+          <li><strong>Build agent transparency dashboard</strong>
+            <ul>
+              <li>UI showing agent_actions_log for each user</li>
+              <li>"Why did I get this email?" explanations</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h3>Quick Wins vs Long-Term Investments</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Impact</th>
+                <th>Effort</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Support Agent (reactive)</td>
+                <td>High</td>
+                <td>Low</td>
+                <td>✅ Quick Win</td>
+              </tr>
+              <tr>
+                <td>Activity tracking</td>
+                <td>High (enables all agents)</td>
+                <td>Medium</td>
+                <td>🔧 Foundation</td>
+              </tr>
+              <tr>
+                <td>Customer Success Agent</td>
+                <td>High</td>
+                <td>Medium</td>
+                <td>✅ Quick Win</td>
+              </tr>
+              <tr>
+                <td>Sales Agent</td>
+                <td>Medium</td>
+                <td>Low</td>
+                <td>✅ Quick Win</td>
+              </tr>
+              <tr>
+                <td>Analytics Agent</td>
+                <td>Medium</td>
+                <td>Low</td>
+                <td>✅ Quick Win</td>
+              </tr>
+              <tr>
+                <td>In-App Chat</td>
+                <td>Medium</td>
+                <td>High</td>
+                <td>⏳ Long-term</td>
+              </tr>
+              <tr>
+                <td>MCP Server</td>
+                <td>Low (differentiation)</td>
+                <td>Medium</td>
+                <td>⏳ Long-term</td>
+              </tr>
+              <tr>
+                <td>Agent transparency UI</td>
+                <td>Low (trust-building)</td>
+                <td>Medium</td>
+                <td>⏳ Long-term</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Solo Founder Prioritization Framework</h3>
+
+        <p>For each feature, ask:</p>
+        <ol>
+          <li><strong>Does this save me time?</strong> (Support Agent: YES, MCP Server: NO)</li>
+          <li><strong>Does this directly increase revenue?</strong> (Sales Agent: YES, Agent UI: NO)</li>
+          <li><strong>Can I build it in &lt; 1 week?</strong> (Activity tracking: YES, In-app chat: NO)</li>
+          <li><strong>Is it a blocker for other features?</strong> (Data model: YES, MCP: NO)</li>
+        </ol>
+
+        <p><strong>Rule:</strong> Prioritize YES answers. Defer anything that's 3+ weeks of work unless it's a clear revenue driver.</p>
+
+      </div>
+
+      <!-- SECTION 8: TRADE-OFFS & DECISION MATRIX -->
+      <div id="section8" class="section">
+        <h2>8️⃣ Trade-offs & Decision Matrix</h2>
+
+        <h3>Summary of All Major Decisions</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Decision</th>
+                <th>Option A</th>
+                <th>Option B</th>
+                <th>Pros (A)</th>
+                <th>Cons (A)</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Agent Architecture</strong></td>
+                <td>Single Agent</td>
+                <td>Multi-Agent</td>
+                <td>Simpler, lower cost</td>
+                <td>No specialization, bottleneck</td>
+                <td><span class="badge badge-recommended">Multi-Agent</span></td>
+              </tr>
+              <tr>
+                <td><strong>2. Deployment Location</strong></td>
+                <td>VPS Only</td>
+                <td>Mac Mini</td>
+                <td>High uptime, managed</td>
+                <td>Slower LLM, higher cost</td>
+                <td><span class="badge badge-recommended">Mac Mini (Hybrid)</span></td>
+              </tr>
+              <tr>
+                <td><strong>3. LLM Strategy</strong></td>
+                <td>Cloud API (Claude)</td>
+                <td>Local (Llama)</td>
+                <td>Best quality, no setup</td>
+                <td>$200+/mo, latency</td>
+                <td><span class="badge badge-recommended">Hybrid (local + cloud fallback)</span></td>
+              </tr>
+              <tr>
+                <td><strong>4. Email Automation</strong></td>
+                <td>Manual (Blake)</td>
+                <td>Agent-Generated</td>
+                <td>Personal touch</td>
+                <td>Doesn't scale</td>
+                <td><span class="badge badge-recommended">Agent w/ Blake review</span></td>
+              </tr>
+              <tr>
+                <td><strong>5. Support Model</strong></td>
+                <td>Human-First</td>
+                <td>Agent-First</td>
+                <td>Users feel heard</td>
+                <td>Expensive, slow</td>
+                <td><span class="badge badge-recommended">Agent-first w/ escalation</span></td>
+              </tr>
+              <tr>
+                <td><strong>6. Data Model</strong></td>
+                <td>Minimal (just users)</td>
+                <td>Rich (activity logs)</td>
+                <td>Simple, fast to build</td>
+                <td>Agents are blind</td>
+                <td><span class="badge badge-recommended">Rich customer-centric model</span></td>
+              </tr>
+              <tr>
+                <td><strong>7. In-App Chat</strong></td>
+                <td>Build Now</td>
+                <td>Defer</td>
+                <td>Great UX</td>
+                <td>High effort, low ROI early</td>
+                <td><span class="badge badge-recommended">Defer to Phase 5</span></td>
+              </tr>
+              <tr>
+                <td><strong>8. Agent Transparency</strong></td>
+                <td>Full Transparency</td>
+                <td>Hidden</td>
+                <td>Builds trust</td>
+                <td>Extra UI work</td>
+                <td><span class="badge badge-recommended">Phase 6 (transparency UI)</span></td>
+              </tr>
+              <tr>
+                <td><strong>9. Memory Sharing</strong></td>
+                <td>Shared DB</td>
+                <td>Message Queue</td>
+                <td>Simple, real-time</td>
+                <td>Less decoupled</td>
+                <td><span class="badge badge-recommended">Shared DB (Supabase)</span></td>
+              </tr>
+              <tr>
+                <td><strong>10. Proactive Engagement</strong></td>
+                <td>Aggressive (daily)</td>
+                <td>Conservative (weekly)</td>
+                <td>High engagement</td>
+                <td>Risk of spam</td>
+                <td><span class="badge badge-recommended">Conservative + user pref</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Decision Tree: When to Scale Each Component</h3>
+
+        <div class="diagram">
+User Growth Milestones:
+
+0-50 Users
+├─ Infrastructure: Single Mac Mini + small VPS
+├─ Agents: SA (support) only
+└─ Automation: 50% (Blake handles escalations)
+
+50-100 Users
+├─ Infrastructure: Same (Mac Mini sufficient)
+├─ Agents: SA + CSA (add proactive engagement)
+└─ Automation: 70%
+
+100-500 Users
+├─ Infrastructure: Same
+├─ Agents: SA + CSA + SEA (add sales automation)
+└─ Automation: 80%
+
+500-1000 Users
+├─ Infrastructure: Upgrade to Mac Mini 24GB RAM OR add 2nd Mini
+├─ Agents: SA + CSA + SEA + AA + ICA (full stack)
+└─ Automation: 90%
+
+1000-2000 Users
+├─ Infrastructure: Mac Studio OR 2-3 Mac Minis (load balanced)
+├─ Agents: Scale horizontally (2x CSA, 2x SA)
+└─ Automation: 95% (Blake handles VIP customers only)
+
+2000+ Users
+├─ Infrastructure: Cloud Kubernetes OR Mac Mini fleet
+├─ Agents: Microservices, auto-scaling
+└─ Automation: 95% (hire support team, agents as copilots)
+        </div>
+
+        <h3>Risk Mitigation Strategies</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Risk</th>
+                <th>Impact</th>
+                <th>Likelihood</th>
+                <th>Mitigation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Agent sends inappropriate email</td>
+                <td>High</td>
+                <td>Medium</td>
+                <td>Blake reviews first 50 emails per agent; add content moderation layer</td>
+              </tr>
+              <tr>
+                <td>Mac Mini hardware failure</td>
+                <td>Medium</td>
+                <td>Low</td>
+                <td>Keep SA on VPS for critical support; backup Mac Mini</td>
+              </tr>
+              <tr>
+                <td>LLM API outage (Claude)</td>
+                <td>High</td>
+                <td>Low</td>
+                <td>Fallback to local Llama or OpenAI</td>
+              </tr>
+              <tr>
+                <td>User complains about spam</td>
+                <td>Medium</td>
+                <td>Medium</td>
+                <td>Instant unsubscribe; review engagement strategy</td>
+              </tr>
+              <tr>
+                <td>Supabase database leak</td>
+                <td>Critical</td>
+                <td>Low</td>
+                <td>RLS policies; regular security audits; per-agent service keys</td>
+              </tr>
+              <tr>
+                <td>Agent gets stuck in loop</td>
+                <td>Low</td>
+                <td>Medium</td>
+                <td>Rate limiting (max 1 email/user/day); circuit breakers</td>
+              </tr>
+              <tr>
+                <td>Blake overwhelmed by escalations</td>
+                <td>Medium</td>
+                <td>Medium</td>
+                <td>Refine agent prompts; hire part-time support at 500 users</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Technology Choices Summary</h3>
+
+        <h4>Recommended Stack</h4>
+        <ul>
+          <li><strong>Agent Platform:</strong> OpenClaw (native macOS, multi-agent orchestration)</li>
+          <li><strong>LLM (Primary):</strong> Claude Sonnet 4 (via API for quality tasks)</li>
+          <li><strong>LLM (Secondary):</strong> Llama 3.1 8B (local on Mac Mini for high-volume, low-stakes tasks)</li>
+          <li><strong>Database:</strong> Supabase (PostgreSQL + real-time + RLS)</li>
+          <li><strong>Backend API:</strong> FastAPI (existing, extend with agent endpoints)</li>
+          <li><strong>Email:</strong> SMTP/IMAP (via MyDocList domain), SendGrid for delivery</li>
+          <li><strong>Monitoring:</strong> Netdata (system metrics), Sentry (error tracking), custom dashboard (agent health)</li>
+          <li><strong>Deployment:</strong> Mac Mini M4 (agents) + Hetzner VPS (web backend)</li>
+        </ul>
+
+        <h3>Configuration Examples</h3>
+
+        <h4>Example: Support Agent Config</h4>
+        <div class="code">
+# ~/openclaw-agents/support/.openclaw/config.yaml
+agent:
+  name: support-agent
+  model: anthropic/claude-sonnet-4
+  thinking_level: high
+  session_id: support-main
+  
+workspace:
+  path: ~/openclaw-agents/support
+  
+tools:
+  - email  # IMAP/SMTP access
+  - supabase  # Database access
+  - slack  # Escalation notifications
+  
+environment:
+  SUPABASE_URL: ${SUPABASE_URL}
+  SUPABASE_SERVICE_KEY: ${SA_SERVICE_KEY}
+  SLACK_WEBHOOK: ${SLACK_SUPPORT_WEBHOOK}
+  
+cron:
+  inbox_check:
+    schedule: "*/5 * * * *"  # Every 5 minutes
+    task: "check_support_inbox"
+        </div>
+
+        <h3>Next Steps (Immediate Actions for Blake)</h3>
+
+        <ol>
+          <li><strong>Week 1:</strong>
+            <ul>
+              <li>Review this report, highlight questions/concerns</li>
+              <li>Order Mac Mini M4 (16GB RAM model) — <em>$599 + tax</em></li>
+              <li>Create Supabase tables (use SQL from Section 3)</li>
+              <li>Add activity tracking middleware to FastAPI backend</li>
+            </ul>
+          </li>
+          <li><strong>Week 2:</strong>
+            <ul>
+              <li>Setup Mac Mini (when it arrives)</li>
+              <li>Install OpenClaw, configure first agent (Support Agent)</li>
+              <li>Test Support Agent with 10 test emails</li>
+              <li>Deploy to production, monitor for 1 week</li>
+            </ul>
+          </li>
+          <li><strong>Week 3:</strong>
+            <ul>
+              <li>If SA successful (50%+ auto-resolution), proceed to Phase 2</li>
+              <li>Deploy Customer Success Agent</li>
+              <li>Send first proactive engagement emails to 10 beta users</li>
+            </ul>
+          </li>
+          <li><strong>Week 4+:</strong>
+            <ul>
+              <li>Follow phased roadmap (Section 7)</li>
+              <li>Review this document monthly, update based on learnings</li>
+            </ul>
+          </li>
+        </ol>
+
+      </div>
+
+      <!-- SECTION 9: BATCH PROCESSING -->
+      <div id="section9" class="section">
+        <h2>9️⃣ Batch Processing Architecture</h2>
+        
+        <h3>The Problem: 1,000 Emails, 1,000 LLM Calls</h3>
+        <p>When you have 1,000 user emails sitting in a queue — each needing its own LLM call to classify, draft a response, or generate a personalized report — you need a purpose-built batch processing pipeline. Naive sequential processing would take hours and one failure could stall everything.</p>
+
+        <h3>Architecture: Queue-Based Batch Processor</h3>
+        <pre style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;">
+┌──────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
+│   Email Ingest   │────▶│   Supabase Queue      │────▶│   Worker Pool   │
+│  (Webhook/IMAP)  │     │   batch_jobs table     │     │  (N concurrent)  │
+└──────────────────┘     │                        │     │                  │
+                         │  id, type, payload,    │     │  Worker 1 ──▶ LLM│
+                         │  status, priority,     │     │  Worker 2 ──▶ LLM│
+                         │  attempts, result,     │     │  Worker 3 ──▶ LLM│
+                         │  created_at, locked_by │     │  Worker 4 ──▶ LLM│
+                         └──────────────────────┘     └─────────────────┘
+                                    │                          │
+                                    │    ┌─────────────────┐   │
+                                    └───▶│  Dead Letter Q   │◀──┘
+                                         │  (3 retries max) │
+                                         └─────────────────┘
+        </pre>
+
+        <h3>Supabase Queue Table: <code>batch_jobs</code></h3>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Column</th><th>Type</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>id</code></td><td>UUID</td><td>Primary key</td></tr>
+              <tr><td><code>batch_id</code></td><td>UUID</td><td>Groups related jobs (e.g., "morning email run")</td></tr>
+              <tr><td><code>job_type</code></td><td>ENUM</td><td>email_classify, email_respond, report_generate, engagement_send</td></tr>
+              <tr><td><code>payload</code></td><td>JSONB</td><td>Input data (email content, user_id, context)</td></tr>
+              <tr><td><code>status</code></td><td>ENUM</td><td>queued → processing → completed → failed → dead</td></tr>
+              <tr><td><code>priority</code></td><td>INT</td><td>1 (urgent) to 5 (batch). Paying users = higher priority</td></tr>
+              <tr><td><code>attempts</code></td><td>INT</td><td>Current retry count (max 3)</td></tr>
+              <tr><td><code>locked_by</code></td><td>TEXT</td><td>Worker ID that claimed this job</td></tr>
+              <tr><td><code>locked_at</code></td><td>TIMESTAMP</td><td>Lock timeout (stale locks auto-release after 5 min)</td></tr>
+              <tr><td><code>result</code></td><td>JSONB</td><td>LLM output, classification, generated content</td></tr>
+              <tr><td><code>error</code></td><td>TEXT</td><td>Last error message if failed</td></tr>
+              <tr><td><code>cost_tokens</code></td><td>INT</td><td>Tokens consumed (for cost tracking)</td></tr>
+              <tr><td><code>cost_usd</code></td><td>DECIMAL</td><td>Estimated cost of this job</td></tr>
+              <tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>When queued</td></tr>
+              <tr><td><code>completed_at</code></td><td>TIMESTAMP</td><td>When finished</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Worker Implementation Strategy</h3>
+        <p>Two viable approaches for the worker pool:</p>
+
+        <div class="card">
+          <h4>Option A: Python Workers (FastAPI Background Tasks)</h4>
+          <p>Add a <code>/api/batch/process</code> endpoint or use FastAPI's background task system. Workers poll the <code>batch_jobs</code> table, claim jobs with <code>SELECT ... FOR UPDATE SKIP LOCKED</code>, process via LLM API, write results back.</p>
+          <ul>
+            <li><strong>Concurrency:</strong> 4-8 concurrent workers via asyncio</li>
+            <li><strong>Rate limiting:</strong> Token bucket per LLM provider (e.g., 60K TPM for Claude)</li>
+            <li><strong>Backpressure:</strong> If queue depth > 500, reduce concurrency to avoid API rate limits</li>
+            <li><strong>Pro:</strong> Lives in your existing FastAPI app, simple deployment</li>
+            <li><strong>Con:</strong> Shares resources with your web API</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h4>Option B: OpenClaw Agent as Batch Worker</h4>
+          <p>Dedicated OpenClaw agent with a cron job that polls the queue every 5 minutes. The agent claims N jobs, processes each as a separate LLM call within a single session, writes results back to Supabase.</p>
+          <ul>
+            <li><strong>Concurrency:</strong> Sequential within session, but can spawn sub-agents for parallelism</li>
+            <li><strong>Pro:</strong> Agent can use judgment — escalate edge cases, flag unusual patterns</li>
+            <li><strong>Pro:</strong> Natural integration with other agents (hand off complex cases to Support Agent)</li>
+            <li><strong>Con:</strong> Slower for pure throughput; best for <500 jobs/batch</li>
+          </ul>
+        </div>
+
+        <h3>Recommendation: Hybrid</h3>
+        <p><strong>Use Python workers for high-throughput batch processing</strong> (email classification, bulk sends) and <strong>OpenClaw agents for judgment-heavy tasks</strong> (drafting personalized responses, generating custom reports). The Python worker handles the 80% that's formulaic; the agent handles the 20% that needs intelligence.</p>
+
+        <h3>Cost Tracking & Budgeting</h3>
+        <p>Every batch job logs <code>cost_tokens</code> and <code>cost_usd</code>. Create a <code>batch_cost_summary</code> view:</p>
+        <ul>
+          <li>Daily/weekly/monthly cost aggregates by job_type</li>
+          <li>Per-user cost tracking (some users generate more work than others)</li>
+          <li>Alert threshold: if daily batch cost exceeds $X, pause non-critical jobs</li>
+          <li>Budget allocation per agent role (Support: $50/day, Sales: $30/day, etc.)</li>
+        </ul>
+
+        <h3>Failure Handling</h3>
+        <ul>
+          <li><strong>Retry policy:</strong> 3 attempts with exponential backoff (30s, 2min, 10min)</li>
+          <li><strong>Dead letter queue:</strong> After 3 failures, move to <code>status = 'dead'</code> with error details</li>
+          <li><strong>Stale lock recovery:</strong> Cron job checks for locks older than 5 minutes and releases them</li>
+          <li><strong>Poison pill detection:</strong> If same job fails 3x, flag for human review</li>
+          <li><strong>Batch monitoring:</strong> Dashboard showing queue depth, processing rate, error rate, avg latency</li>
+        </ul>
+
+        <h3>Throughput Estimates (1,000 emails)</h3>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Approach</th><th>Concurrency</th><th>Avg per job</th><th>Total time</th><th>Est. cost</th></tr></thead>
+            <tbody>
+              <tr><td>Sequential (naive)</td><td>1</td><td>3s</td><td>~50 min</td><td>~$5-15</td></tr>
+              <tr><td>Python workers (4x)</td><td>4</td><td>3s</td><td>~13 min</td><td>~$5-15</td></tr>
+              <tr><td>Python workers (8x)</td><td>8</td><td>3s</td><td>~7 min</td><td>~$5-15</td></tr>
+              <tr><td>OpenClaw agent</td><td>1-2</td><td>5s</td><td>~40 min</td><td>~$8-20</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><em>Cost assumes Sonnet-class model, ~1K tokens/email. Actual costs depend on email length and response complexity.</em></p>
+      </div>
+
+      <!-- SECTION 10: ANTFARM ORCHESTRATION -->
+      <div id="section10" class="section">
+        <h2>🐜 Antfarm Orchestration (Multi-Agent Workflows)</h2>
+
+        <h3>What is Antfarm?</h3>
+        <p><a href="https://github.com/snarktank/antfarm">Antfarm</a> is an open-source multi-agent orchestration layer built specifically for OpenClaw by Ryan Carson (creator of Ralph, 9.8K stars). It enables teams of specialized AI agents to execute <strong>deterministic, repeatable workflows</strong> with zero external infrastructure.</p>
+
+        <div class="card">
+          <h4>Key Properties</h4>
+          <ul>
+            <li><strong>Deterministic:</strong> Same workflow, same steps, same order, every time</li>
+            <li><strong>Verification built-in:</strong> Agents check each other's work (developer doesn't grade themselves)</li>
+            <li><strong>Fresh context per step:</strong> Each agent runs in a clean session — no context bloat</li>
+            <li><strong>Zero infrastructure:</strong> YAML + SQLite + cron. No Redis, no Kafka, no containers</li>
+            <li><strong>Automatic retry:</strong> Failed steps retry; exhausted retries escalate to human</li>
+            <li><strong>MIT licensed, OpenClaw-native</strong></li>
+          </ul>
+        </div>
+
+        <h3>How Antfarm Works</h3>
+        <pre style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;">
+Workflow Definition (YAML)          Runtime (SQLite + Cron)
+┌─────────────────────────┐        ┌──────────────────────────┐
+│ agents:                 │        │ Agent 1: Polls for work  │
+│   - planner             │───────▶│ Agent 2: Claims next step│
+│   - developer           │        │ Agent 3: Verifies output │
+│   - verifier            │        │ Agent 4: Tests results   │
+│   - tester              │        │ Each agent = fresh       │
+│   - reviewer            │        │   OpenClaw session       │
+│                         │        └──────────────────────────┘
+│ steps:                  │
+│   plan → implement →    │
+│   verify → test → PR    │
+└─────────────────────────┘
+        </pre>
+
+        <h3>Relevance to MyDocList</h3>
+        <p>Antfarm's bundled workflows are dev-focused (feature-dev, security-audit, bug-fix), but the <strong>custom workflow system</strong> is what matters for us. We can define business process workflows:</p>
+
+        <div class="card">
+          <h4>Custom Workflow: User Onboarding Engagement</h4>
+          <pre style="background: #f8fafc; padding: 1rem; border-radius: 6px; font-size: 0.85rem;">
+id: user-onboarding
+name: New User Engagement Pipeline
+agents:
+  - id: profiler
+    name: User Profiler
+    # Analyzes signup data, first searches, builds initial profile
+  - id: content-creator  
+    name: Content Creator
+    # Generates personalized welcome content based on profile
+  - id: outreach
+    name: Outreach Agent
+    # Drafts and sends personalized email
+  - id: verifier
+    name: Quality Checker
+    # Reviews email for tone, accuracy, personalization quality
+
+steps:
+  - id: profile
+    agent: profiler
+    input: "Analyze new user {{user_id}}: signup data, first searches, org type"
+  - id: create-content
+    agent: content-creator
+    input: "Create personalized welcome package based on profile: {{profile}}"
+  - id: send-outreach
+    agent: outreach
+    input: "Draft welcome email using content. Verify tone is professional."
+  - id: verify
+    agent: verifier
+    input: "Review outreach email for quality, personalization, accuracy."
+          </pre>
+        </div>
+
+        <div class="card">
+          <h4>Custom Workflow: Batch Email Processing</h4>
+          <pre style="background: #f8fafc; padding: 1rem; border-radius: 6px; font-size: 0.85rem;">
+id: email-batch
+name: Inbound Email Batch Processor
+agents:
+  - id: classifier
+    name: Email Classifier
+  - id: responder
+    name: Response Drafter
+  - id: reviewer
+    name: Response Reviewer
+
+steps:
+  - id: classify
+    agent: classifier
+    input: "Classify all unprocessed emails in batch {{batch_id}}"
+  - id: draft
+    agent: responder
+    input: "Draft responses for classified emails. Use user profiles for context."
+  - id: review
+    agent: reviewer
+    input: "Review all drafted responses for accuracy and tone before sending."
+          </pre>
+        </div>
+
+        <h3>Antfarm vs Custom OpenClaw Multi-Agent</h3>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Factor</th><th>Antfarm</th><th>Custom OpenClaw Setup</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Setup time</strong></td><td>Minutes (one command install)</td><td>Hours (manual config per agent)</td></tr>
+              <tr><td><strong>Workflow definition</strong></td><td>YAML (declarative, versioned)</td><td>Cron jobs + AGENTS.md (imperative)</td></tr>
+              <tr><td><strong>Verification</strong></td><td>Built-in (agents check each other)</td><td>Manual (you design the checks)</td></tr>
+              <tr><td><strong>State tracking</strong></td><td>SQLite (automatic)</td><td>Custom (Supabase tables)</td></tr>
+              <tr><td><strong>Retry/escalation</strong></td><td>Automatic</td><td>Manual implementation</td></tr>
+              <tr><td><strong>Dashboard</strong></td><td>Built-in web UI</td><td>Build your own</td></tr>
+              <tr><td><strong>Flexibility</strong></td><td>Linear pipelines</td><td>Any pattern (branching, parallel)</td></tr>
+              <tr><td><strong>Business logic</strong></td><td>Generic (needs customization)</td><td>Purpose-built for your needs</td></tr>
+              <tr><td><strong>Maturity</strong></td><td>New (Feb 2026)</td><td>Proven (OpenClaw core)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Recommendation</h3>
+        <p><strong>Use Antfarm for structured, repeatable workflows</strong> (onboarding pipelines, batch email processing, periodic reports) and <strong>custom OpenClaw agents for flexible, judgment-heavy tasks</strong> (real-time customer support, ad-hoc engagement decisions). They complement each other — Antfarm handles the "assembly line" work, custom agents handle the "concierge" work.</p>
+
+        <h3>Getting Started with Antfarm</h3>
+        <ol>
+          <li>Install: <code>curl -fsSL https://raw.githubusercontent.com/snarktank/antfarm/v0.4.1/scripts/install.sh | bash</code></li>
+          <li>Define custom workflows in YAML for your business processes</li>
+          <li>Start with one workflow (e.g., email batch processing) and validate</li>
+          <li>Add verification agents to ensure quality before any customer-facing output</li>
+          <li>Monitor via <code>antfarm dashboard</code></li>
+        </ol>
+      </div>
+
+      <!-- SECTION 11: AGENT-TO-AGENT COMMUNICATION -->
+      <div id="section11" class="section">
+        <h2>1️⃣1️⃣ Agent-to-Agent Communication Patterns</h2>
+
+        <p>When multiple agents need to coordinate, the communication layer matters. There are three primary patterns, each with distinct trade-offs.</p>
+
+        <h3>Pattern 1: Shared Database (Supabase)</h3>
+        <pre style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;">
+Agent A ──write──▶ Supabase (agent_actions_log) ◀──poll── Agent B
+                          │
+                          ├── task_handoffs table
+                          ├── agent_messages table  
+                          └── shared_context table
+        </pre>
+        <ul>
+          <li><strong>How:</strong> Agents write to shared tables; other agents poll or use Supabase Realtime subscriptions</li>
+          <li><strong>Pro:</strong> Simple, persistent, auditable, already in your stack</li>
+          <li><strong>Pro:</strong> Full history of all agent interactions stored permanently</li>
+          <li><strong>Con:</strong> Polling adds latency (5-30s); not true real-time</li>
+          <li><strong>Best for:</strong> Async handoffs, batch coordination, audit trails</li>
+        </ul>
+
+        <h3>Pattern 2: Slack/Teams Channel as Message Bus</h3>
+        <pre style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;">
+┌──────────────┐     ┌─────────────────────┐     ┌──────────────┐
+│  Support Agent│────▶│  #agent-ops (Slack) │◀────│  Sales Agent │
+└──────────────┘     │                     │     └──────────────┘
+                     │  "User #1234 asked  │
+┌──────────────┐     │   about enterprise  │     ┌──────────────┐
+│ Analytics    │────▶│   pricing. Handing  │◀────│  CSA Agent   │
+│   Agent      │     │   off to Sales."    │     └──────────────┘
+└──────────────┘     └─────────────────────┘
+                              │
+                              ▼
+                     ┌─────────────────────┐
+                     │  Blake (human)      │
+                     │  sees everything    │
+                     └─────────────────────┘
+        </pre>
+        <ul>
+          <li><strong>How:</strong> Each agent has a Slack/Teams bot identity. Agents post to shared channels for coordination, DM each other for direct handoffs. Blake can observe all agent communication in real-time.</li>
+          <li><strong>Pro:</strong> <strong>Human-in-the-loop visibility</strong> — Blake can see all agent decisions, intervene, redirect</li>
+          <li><strong>Pro:</strong> Natural language coordination (agents explain their reasoning)</li>
+          <li><strong>Pro:</strong> Easy to add human overrides ("@sales-agent, don't email this user yet")</li>
+          <li><strong>Pro:</strong> OpenClaw already has Slack/Discord/Telegram channel support built in</li>
+          <li><strong>Con:</strong> Depends on external service (Slack/Teams uptime)</li>
+          <li><strong>Con:</strong> Rate limits on messaging APIs</li>
+          <li><strong>Con:</strong> More expensive in tokens (agents reading channel history)</li>
+          <li><strong>Best for:</strong> Human oversight, debugging agent behavior, complex handoffs requiring explanation</li>
+        </ul>
+
+        <div class="card">
+          <h4>Example Slack Channel Structure</h4>
+          <ul>
+            <li><code>#agent-ops</code> — All agent coordination messages (agent-to-agent handoffs)</li>
+            <li><code>#agent-alerts</code> — Escalations requiring Blake's attention</li>
+            <li><code>#agent-logs</code> — Verbose activity log (muted, for debugging)</li>
+            <li><code>#customer-insights</code> — Agents share interesting findings about user behavior</li>
+          </ul>
+        </div>
+
+        <h3>Pattern 3: Direct API (OpenClaw Sessions)</h3>
+        <pre style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;">
+Agent A ──sessions_send──▶ Agent B (direct message to session)
+        </pre>
+        <ul>
+          <li><strong>How:</strong> OpenClaw's <code>sessions_send</code> lets one agent message another directly</li>
+          <li><strong>Pro:</strong> Fast, direct, no external dependencies</li>
+          <li><strong>Pro:</strong> Built into OpenClaw natively</li>
+          <li><strong>Con:</strong> No visibility for Blake unless agents also log actions</li>
+          <li><strong>Con:</strong> Point-to-point (no broadcast)</li>
+          <li><strong>Best for:</strong> Fast handoffs between two specific agents</li>
+        </ul>
+
+        <h3>Recommendation: Layered Approach</h3>
+        <div class="card">
+          <h4>Use all three, for different purposes:</h4>
+          <ol>
+            <li><strong>Supabase (primary):</strong> All agent actions logged to database. Source of truth. Async coordination.</li>
+            <li><strong>Slack (visibility):</strong> Important decisions and handoffs posted to <code>#agent-ops</code> so Blake can monitor. Escalations go to <code>#agent-alerts</code>. This is your "control room."</li>
+            <li><strong>Direct sessions (speed):</strong> Time-sensitive handoffs between specific agents (e.g., Support → Sales for a hot lead).</li>
+          </ol>
+          <p style="margin-top: 1rem;"><strong>Start with Supabase + Slack.</strong> The Slack channel gives you immediate visibility into what your agents are doing — critical as a solo founder. You need to trust but verify. Once you're confident in agent behavior, you can reduce Slack verbosity and rely more on database logs.</p>
+        </div>
+
+        <h3>Anti-Pattern: Over-Communication</h3>
+        <p>Agents chatting excessively burns tokens and adds latency. Design communication to be <strong>event-driven</strong> (only communicate on state changes) not <strong>polling-based</strong> (constantly asking "anything new?"). Each inter-agent message should carry actionable context, not just status updates.</p>
+      </div>
+
+      <!-- FOOTER -->
+      <div style="margin-top: 4rem; padding: 2rem; background: #f8fafc; border-radius: 12px; text-align: center; color: #64748b;">
+        <p><strong>MyDocList Agent Architecture Manual</strong></p>
+        <p>Prepared: February 14, 2026 | For: Blake (Solo Founder) | By: Chief (AI)</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">This document is a living manual. Update it as you learn and iterate.</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

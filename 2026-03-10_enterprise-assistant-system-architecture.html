@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Georgia, serif; max-width: 880px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  pre { background: #1e1e2e; color: #cdd6f4; padding: 16px 18px; border-radius: 6px; font-size: 12px; overflow-x: auto; line-height: 1.6; font-family: 'Courier New', monospace; margin: 16px 0; }
+  code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 6px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  .tier { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+  .tier-label { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Enterprise AI Assistant — Full System Architecture</h1>
+  <p><strong>Version:</strong> 1.0 — March 10, 2026</p>
+  <p><strong>Scope:</strong> Multi-user team architecture, context repository, codebase structure, channels (Teams + Web + Email), and business model</p>
+  <p><strong>Audience:</strong> Blake Thomson + IT teams reviewing for deployment</p>
+</div>
+
+<div class="finding-box">
+  <h3>Core Design Principle</h3>
+  <p>One deployment per client organization. Every user in that org shares the same agent infrastructure but has their own isolated context, memory, and data access. Their data never leaves their Azure tenant. You manage the template; they own the instance.</p>
+</div>
+
+<hr class="section-divider">
+
+<h2>Part 1 — Deployment Model: Per-Org, Not Per-User</h2>
+
+<p>The instinct from the March 8 architecture session was "one server per person." The refined model is <strong>one deployment per client organization</strong> — with user isolation handled inside the application, not at the infrastructure level. This is cleaner, cheaper, and easier to manage.</p>
+
+<table>
+  <tr><th></th><th>One Container Per User</th><th>One Container Per Org ✅</th></tr>
+  <tr><td>Infrastructure cost</td><td>N × container costs</td><td>1 container per client</td></tr>
+  <tr><td>Data isolation</td><td>Physical (separate containers)</td><td>Logical (userId scoping in DB)</td></tr>
+  <tr><td>Shared org context</td><td>Requires sync across containers</td><td>Native (one shared store)</td></tr>
+  <tr><td>Your management burden</td><td>N containers to monitor per client</td><td>1 container per client</td></tr>
+  <tr><td>Deployment time</td><td>N × setup per client</td><td>1 setup per client</td></tr>
+  <tr><td>Security posture</td><td>Both are strong — single tenant Azure</td><td>Both are strong</td></tr>
+</table>
+
+<pre>
+Blake's Infrastructure (your control plane)
+├── Container Registry (your template images)
+├── Provisioning API (spin up new client envs)
+└── Monitoring Dashboard (all client health)
+
+Client A: ASH (Dave's org) — Azure Tenant A
+└── Container App: chief-assistant-ash
+    ├── Serves: Dave Devries, his team leads, ops staff
+    ├── Shared: ASH org context, report templates, data connections
+    └── Isolated per user: email access, personal memory, preferences
+
+Client B: [Next Health System] — Azure Tenant B
+└── Container App: chief-assistant-[name]
+    ├── Completely separate from Client A
+    └── Same architecture, different configuration
+</pre>
+
+<hr class="section-divider">
+
+<h2>Part 2 — The Context Repository (The Brain)</h2>
+
+<p>This is the most important architectural decision. Every user in the org shares one agent, but the agent has two tiers of context: what it knows about the <em>organization</em>, and what it knows about <em>you personally</em>.</p>
+
+<h3>Tier 1 — Org Context (Shared Across All Users)</h3>
+
+<div class="tier">
+  <div class="tier-label">Managed by: Admin / IT / You during onboarding</div>
+  <p>The "Agent Data Catalog" — the shared brain for the whole organization. Think of it as the org's institutional knowledge, structured for AI consumption.</p>
+  <ul>
+    <li><strong>Org Catalog</strong> — business rules, KPIs, data source descriptions, reporting standards, acronyms</li>
+    <li><strong>People directory</strong> — org chart, roles, email addresses, who owns what (synced from Graph API)</li>
+    <li><strong>Report templates</strong> — the formats, styles, and structures for standard deliverables (monthly board report, market share pull, physician liaison update)</li>
+    <li><strong>Data connections</strong> — what databases/APIs are available, how to query them, what the fields mean</li>
+    <li><strong>Workflow definitions</strong> — standard processes (how to escalate an issue, what approval flows exist)</li>
+    <li><strong>Access control rules</strong> — which users can trigger which tools (not everyone gets SQL access)</li>
+  </ul>
+</div>
+
+<h3>Tier 2 — User Context (Personal, Per-User)</h3>
+
+<div class="tier">
+  <div class="tier-label">Managed by: The individual user (private)</div>
+  <p>Each user's private context — their memory, their patterns, their preferences. Completely isolated from other users.</p>
+  <ul>
+    <li><strong>Long-term memory</strong> — significant decisions, preferences, recurring requests, relationships they care about</li>
+    <li><strong>Email patterns</strong> — who they care about, how they communicate, common response styles, people to filter out</li>
+    <li><strong>Report history</strong> — past reports generated, what they liked/changed, their data preferences</li>
+    <li><strong>Calendar preferences</strong> — scheduling rules, meeting habits, focus time blocks</li>
+    <li><strong>Active projects</strong> — what they're currently tracking, open loops</li>
+  </ul>
+</div>
+
+<h3>Context Repository Storage Design</h3>
+
+<pre>
+PostgreSQL (in Azure, within client's tenant)
+├── org_context table
+│   ├── id, org_id, category, key, value, updated_at, updated_by
+│   └── (catalog entries, templates, data source configs, people)
+│
+├── user_context table
+│   ├── id, org_id, user_id (AAD object ID), key, value, updated_at
+│   └── (preferences, active projects, flags)
+│
+├── user_memory table
+│   ├── id, org_id, user_id, content (text), embedding (vector), importance, created_at
+│   └── (long-term memory entries, semantically searchable)
+│
+├── sessions table
+│   ├── id, org_id, user_id, conversation_id, channel, messages (jsonb), updated_at
+│   └── (conversation history per channel/thread)
+│
+└── audit_log table
+    ├── id, org_id, user_id, action, resource, metadata, timestamp
+    └── (IT compliance: every agent action logged)
+</pre>
+
+<h3>Context Management Interface</h3>
+
+<p>Users and admins manage context through the Web App dashboard (not by editing raw database rows). The agent also updates context automatically as it learns:</p>
+
+<table>
+  <tr><th>Who</th><th>Can Do</th><th>Interface</th></tr>
+  <tr><td>Org Admin</td><td>Add/edit/remove Org Context entries; manage data connections; set access control; view audit logs</td><td>Web App Admin Panel</td></tr>
+  <tr><td>Individual User</td><td>Edit their own User Context; view/delete memory entries; set preferences; review what agent knows about them</td><td>Web App Personal Settings</td></tr>
+  <tr><td>Agent (auto)</td><td>Append to user memory when something notable happens; update "active projects"; learn email preferences from feedback</td><td>Internal (DB writes on events)</td></tr>
+  <tr><td>Via Teams/Chat</td><td>"Remember that…", "Forget about…", "Update my preferences for…"</td><td>Conversational</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h2>Part 3 — System Architecture: All Components</h2>
+
+<pre>
+┌────────────────────────────────────────────────────────────────────┐
+│                    CLIENT'S AZURE TENANT                           │
+│                                                                    │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │                  CHIEF ASSISTANT PLATFORM                    │  │
+│  │                                                              │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌────────────────────┐  │  │
+│  │  │ GATEWAY APP │  │   WEB APP   │  │   WORKER SERVICE   │  │  │
+│  │  │             │  │  (Next.js)  │  │ (scheduled tasks)  │  │  │
+│  │  │ Teams bot   │  │             │  │                    │  │  │
+│  │  │ Email ingest│  │ Dashboard   │  │ Morning briefs     │  │  │
+│  │  │ REST API    │  │ Reports     │  │ Scheduled reports  │  │  │
+│  │  │ Agent loop  │  │ Context mgr │  │ Email monitoring   │  │  │
+│  │  │             │  │ Admin panel │  │ Proactive alerts   │  │  │
+│  │  └──────┬──────┘  └──────┬──────┘  └─────────┬──────────┘  │  │
+│  │         │                │                    │             │  │
+│  │         └────────────────┴────────────────────┘             │  │
+│  │                          │                                   │  │
+│  │              ┌───────────▼────────────┐                      │  │
+│  │              │   SHARED SERVICES      │                      │  │
+│  │              │                        │                      │  │
+│  │              │  Agent Core (LLM loop) │                      │  │
+│  │              │  Claw Library (tools)  │                      │  │
+│  │              │  Context Repository    │                      │  │
+│  │              │  Graph API Client      │                      │  │
+│  │              └───────────┬────────────┘                      │  │
+│  │                          │                                   │  │
+│  │              ┌───────────▼────────────┐                      │  │
+│  │              │    DATA STORES         │                      │  │
+│  │              │  PostgreSQL (context,  │                      │  │
+│  │              │   sessions, audit)     │                      │  │
+│  │              │  Blob Storage (reports,│                      │  │
+│  │              │   documents)           │                      │  │
+│  │              └────────────────────────┘                      │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                                                                    │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │              MICROSOFT 365 (Client's tenant)                 │  │
+│  │  Exchange Online (email)  │  Teams  │  SharePoint  │  Entra  │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                                                                    │
+│  ┌────────────────────────────────────────────────────────────┐    │
+│  │              AZURE BOT SERVICE                             │    │
+│  │  (Routes Teams messages → Gateway App /api/messages)       │    │
+│  └────────────────────────────────────────────────────────────┘    │
+└────────────────────────────────────────────────────────────────────┘
+
+External connections (client data, outbound only):
+  ├── Anthropic API (Claude) — or Azure OpenAI (stays in region)
+  ├── Client's internal databases (read-only via configured connectors)
+  └── Blake's Data Intelligence Layer (optional subscription)
+        └── CMS pipelines, provider data, market intelligence
+</pre>
+
+<hr class="section-divider">
+
+<h2>Part 4 — The Three Channels</h2>
+
+<h3>Channel 1: Microsoft Teams Bot (Primary)</h3>
+<ul>
+  <li><strong>Use:</strong> Conversational — quick requests, inbox triage, alerts, ad-hoc queries</li>
+  <li><strong>Auth:</strong> Azure Bot Service JWT → user identified by AAD object ID → loads their User Context</li>
+  <li><strong>Scope:</strong> Personal DMs (the core use case) + channel mentions (team-level queries)</li>
+  <li><strong>Proactive:</strong> Agent can push morning briefs, meeting alerts, report readiness notifications</li>
+  <li><strong>Implementation:</strong> Adapted from OpenClaw Teams plugin (the 6-file extraction discussed earlier)</li>
+</ul>
+
+<h3>Channel 2: Web App Dashboard</h3>
+<ul>
+  <li><strong>Use:</strong> Rich interface — view reports, manage context, admin panel, report history, settings</li>
+  <li><strong>Auth:</strong> Azure AD OAuth2 (same credentials as Teams/M365 — SSO, no new password)</li>
+  <li><strong>Key views:</strong>
+    <ul>
+      <li><strong>Home</strong> — daily brief, active tasks, recent reports</li>
+      <li><strong>Reports</strong> — generated report library, request new report, schedule recurring</li>
+      <li><strong>Inbox</strong> — email triage view (what agent surfaced, approve/edit drafts)</li>
+      <li><strong>Context</strong> — view/edit your personal context + org catalog (admin only)</li>
+      <li><strong>Admin</strong> — user management, audit logs, data connections, access control</li>
+    </ul>
+  </li>
+  <li><strong>Tech:</strong> Next.js + Azure Static Web Apps (or Container App) + Tailwind</li>
+  <li><strong>Also has a chat widget</strong> — full conversational access from the web, same agent as Teams</li>
+</ul>
+
+<h3>Channel 3: Email</h3>
+<ul>
+  <li><strong>Use:</strong> "Send an email to your assistant" — for users who prefer email or are on mobile without Teams</li>
+  <li><strong>How it works:</strong> Agent monitors a dedicated mailbox (e.g., <code>chief@[clientdomain].com</code>) via Graph API webhooks. Inbound email → agent processes → replies from same mailbox.</li>
+  <li><strong>Use cases:</strong> "Forward this email and tell me how to respond." / "Generate the monthly report and email it to me."</li>
+  <li><strong>Auth:</strong> Graph API delegated auth — only emails from whitelisted users in the org are processed</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>Part 5 — Codebase Structure (Full Monorepo)</h2>
+
+<p>This is what IT teams will see when they review the code. The structure needs to convey: <em>professional, secure, well-documented, deployable.</em></p>
+
+<pre>
+chief-platform/                          ← Your product codebase
+│
+├── README.md                            ← Overview + quickstart
+├── ARCHITECTURE.md                      ← This document in MD form
+├── SECURITY.md                          ← Auth, data handling, compliance notes
+├── CONTRIBUTING.md                      ← For future team members
+├── package.json                         ← Monorepo root (pnpm workspaces)
+├── turbo.json                           ← Turborepo build pipeline
+│
+├── apps/
+│   ├── gateway/                         ← Core: Teams webhook + agent loop
+│   │   ├── src/
+│   │   │   ├── index.ts                 ← Entry point, starts Express
+│   │   │   ├── config.ts                ← Env var loading + validation (Zod)
+│   │   │   ├── channels/
+│   │   │   │   ├── teams/               ← Teams Bot Framework handler
+│   │   │   │   │   ├── webhook.ts       ← POST /api/messages
+│   │   │   │   │   ├── sdk.ts           ← CloudAdapter (from OpenClaw)
+│   │   │   │   │   ├── inbound.ts       ← Message parsing (from OpenClaw)
+│   │   │   │   │   ├── send.ts          ← Response sending
+│   │   │   │   │   └── conversation-store.ts  ← Proactive messaging refs
+│   │   │   │   └── email/               ← Email channel (Graph webhooks)
+│   │   │   │       ├── monitor.ts       ← Graph subscription for mailbox
+│   │   │   │       └── handler.ts       ← Process inbound emails
+│   │   │   └── api/                     ← Internal REST API (for web app)
+│   │   │       ├── context.ts           ← CRUD for context repo
+│   │   │       ├── sessions.ts          ← Conversation history
+│   │   │       └── reports.ts           ← Report status/download
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   │
+│   ├── web/                             ← Dashboard (Next.js)
+│   │   ├── src/
+│   │   │   ├── app/                     ← Next.js App Router
+│   │   │   │   ├── (auth)/              ← Azure AD SSO login flow
+│   │   │   │   ├── dashboard/           ← Home / daily brief
+│   │   │   │   ├── reports/             ← Report library + generator
+│   │   │   │   ├── inbox/               ← Email triage view
+│   │   │   │   ├── context/             ← Context repo viewer/editor
+│   │   │   │   └── admin/               ← Admin panel
+│   │   │   └── components/              ← UI components
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   │
+│   └── worker/                          ← Background jobs
+│       ├── src/
+│       │   ├── jobs/
+│       │   │   ├── morning-brief.ts     ← Daily email/calendar summary
+│       │   │   ├── scheduled-report.ts  ← Recurring report generation
+│       │   │   └── email-monitor.ts     ← Priority inbox scanning
+│       │   └── scheduler.ts             ← Cron-based job runner
+│       ├── Dockerfile
+│       └── package.json
+│
+├── packages/
+│   ├── agent-core/                      ← LLM loop + tool dispatch
+│   │   ├── src/
+│   │   │   ├── agent.ts                 ← Main agent loop (Claude API)
+│   │   │   ├── tools.ts                 ← Tool registry + dispatch
+│   │   │   ├── context-loader.ts        ← Loads org + user context into prompt
+│   │   │   ├── session-manager.ts       ← Conversation history management
+│   │   │   └── memory-writer.ts         ← Auto-updates user memory
+│   │   └── package.json
+│   │
+│   ├── claws/                           ← The tool library
+│   │   ├── email/
+│   │   │   ├── read-inbox.ts            ← List + search user's email
+│   │   │   ├── send-email.ts            ← Draft + send (with approval gate)
+│   │   │   ├── triage.ts                ← Priority scoring + categorization
+│   │   │   └── index.ts
+│   │   ├── calendar/
+│   │   │   ├── read-events.ts           ← Get calendar for date range
+│   │   │   ├── create-event.ts          ← Schedule meeting
+│   │   │   └── index.ts
+│   │   ├── reports/
+│   │   │   ├── generate.ts              ← LLM-driven report generation
+│   │   │   ├── templates.ts             ← Load org report templates
+│   │   │   ├── render.ts                ← HTML → PDF output
+│   │   │   └── index.ts
+│   │   ├── data/
+│   │   │   ├── query.ts                 ← Execute configured data queries
+│   │   │   ├── connectors/              ← Per-data-source adapters
+│   │   │   │   ├── postgres.ts
+│   │   │   │   ├── duckdb.ts            ← Your CMS data layer
+│   │   │   │   └── rest-api.ts
+│   │   │   └── index.ts
+│   │   ├── search/
+│   │   │   ├── web-search.ts            ← Brave/Bing API
+│   │   │   ├── org-search.ts            ← Search org context
+│   │   │   └── index.ts
+│   │   └── people/
+│   │       ├── lookup.ts                ← Look up colleague info (Graph)
+│   │       └── index.ts
+│   │
+│   ├── graph/                           ← Microsoft Graph API client
+│   │   ├── src/
+│   │   │   ├── client.ts                ← Authenticated Graph client factory
+│   │   │   ├── mail.ts                  ← Mail API operations
+│   │   │   ├── calendar.ts              ← Calendar API operations
+│   │   │   ├── users.ts                 ← User/directory operations
+│   │   │   ├── files.ts                 ← SharePoint/OneDrive operations
+│   │   │   └── subscriptions.ts         ← Graph change notifications (webhooks)
+│   │   └── package.json
+│   │
+│   ├── context/                         ← Context repository
+│   │   ├── src/
+│   │   │   ├── org-context.ts           ← Read/write org-level context
+│   │   │   ├── user-context.ts          ← Read/write user-level context
+│   │   │   ├── memory.ts                ← Semantic memory (embeddings)
+│   │   │   └── loader.ts                ← Assembles full context for agent prompt
+│   │   └── package.json
+│   │
+│   ├── db/                              ← Database access layer
+│   │   ├── src/
+│   │   │   ├── client.ts                ← PostgreSQL connection
+│   │   │   ├── migrations/              ← SQL migrations
+│   │   │   └── queries/                 ← Typed query functions
+│   │   └── package.json
+│   │
+│   └── types/                           ← Shared TypeScript types
+│       ├── src/
+│       │   ├── agent.ts                 ← AgentRequest, AgentResponse, Tool types
+│       │   ├── context.ts               ← OrgContext, UserContext, Memory types
+│       │   ├── channels.ts              ← Channel-agnostic message types
+│       │   └── config.ts                ← Config schema (Zod)
+│       └── package.json
+│
+├── infra/
+│   ├── azure/
+│   │   ├── main.bicep                   ← IaC: Container Apps, PostgreSQL, Storage
+│   │   ├── modules/
+│   │   │   ├── container-app.bicep
+│   │   │   ├── postgres.bicep
+│   │   │   └── bot-registration.bicep
+│   │   └── parameters/
+│   │       ├── dev.bicepparam
+│   │       └── prod.bicepparam
+│   └── docker/
+│       └── docker-compose.yml           ← Local dev (all services)
+│
+└── docs/
+    ├── README.md                        ← High-level overview
+    ├── ARCHITECTURE.md                  ← System design (this doc)
+    ├── DEPLOYMENT.md                    ← Step-by-step deployment guide
+    ├── IT-SECURITY-REVIEW.md            ← For client IT/security teams
+    ├── DATA-FLOWS.md                    ← What data goes where (HIPAA ref)
+    └── ONBOARDING.md                    ← Client onboarding playbook
+</pre>
+
+<div class="alert alert-blue">
+  <strong>IT team credibility signals:</strong> Clean monorepo structure, Bicep IaC (they can see exactly what's being deployed), SECURITY.md and DATA-FLOWS.md (answers their compliance questions before they ask), no hardcoded secrets (env vars only, shown in docs), audit logging table in DB schema. This is what gets you past the IT review stage without a 6-week security questionnaire.
+</div>
+
+<hr class="section-divider">
+
+<h2>Part 6 — The Agent Loop (How It All Connects)</h2>
+
+<pre>
+User sends message (Teams / Web / Email)
+         │
+         ▼
+Channel Handler (teams/webhook.ts or email/handler.ts)
+  → Extract: userId (AAD), conversationId, text, channel
+  → Authenticate: verify this user is in allowlist
+         │
+         ▼
+Session Manager
+  → Load conversation history (last N messages)
+  → Load user's active context (what are they working on?)
+         │
+         ▼
+Context Loader
+  → Fetch Org Context (catalog, templates, relevant sections)
+  → Fetch User Context (preferences, memory, current projects)
+  → Assemble system prompt: [org knowledge] + [user memory] + [available tools]
+         │
+         ▼
+Agent Core (LLM Loop)
+  → Call Claude with: system prompt + conversation history + user message + tool definitions
+  → If tool use: execute Claw, feed result back, continue loop
+  → If done: return final text response
+         │
+         ▼
+Memory Writer (async, after response)
+  → Check if anything notable happened → write to user_memory if yes
+  → Update user_context (e.g., "active project" tracking)
+         │
+         ▼
+Channel Responder (send back to originating channel)
+  + Audit Logger (log action to audit_log table)
+</pre>
+
+<hr class="section-divider">
+
+<h2>Part 7 — Multi-User Session Management</h2>
+
+<p>Multiple users in the same org hitting the same container — here's how they stay isolated:</p>
+
+<table>
+  <tr><th>Layer</th><th>Key</th><th>Isolation</th></tr>
+  <tr><td>Teams session</td><td>AAD Object ID (from JWT)</td><td>Each user's conversation is their own thread in the DB</td></tr>
+  <tr><td>Email session</td><td>Sender email address → resolved to AAD userId</td><td>Same user ID system</td></tr>
+  <tr><td>Web session</td><td>Azure AD OAuth2 token → userId</td><td>SSO, same identity as Teams</td></tr>
+  <tr><td>User context</td><td><code>org_id + user_id</code> composite key</td><td>All DB queries scoped to both</td></tr>
+  <tr><td>Email access</td><td>Delegated Graph token per user</td><td>Agent can only read <em>that user's</em> email — not org-wide</td></tr>
+  <tr><td>Audit log</td><td><code>user_id</code> on every row</td><td>Admin can filter by person</td></tr>
+</table>
+
+<div class="alert">
+  <strong>Key security point for IT reviews:</strong> The agent accesses each user's email and calendar using <em>delegated permissions</em> tied to that user's AAD identity — not application-wide access. This means the agent can only read what that user has access to. Admins can revoke an individual user's access without affecting others.
+</div>
+
+<hr class="section-divider">
+
+<h2>Part 8 — Business Model</h2>
+
+<h3>Services Model (Right for Now)</h3>
+
+<p>This is a high-touch, embedded relationship business. You're not selling a subscription to SaaS software — you're deploying a managed AI brain for an executive team and maintaining it. That's a fundamentally different product.</p>
+
+<table>
+  <tr><th>Revenue Stream</th><th>What It Is</th><th>Pricing</th></tr>
+  <tr><td><strong>Setup &amp; Deployment</strong></td><td>Agent Data Catalog workshop + deployment + configuration + training</td><td>$25–50K per client</td></tr>
+  <tr><td><strong>Monthly Management</strong></td><td>Maintenance, model updates, new Claws, performance tuning, user support</td><td>$3–6K/mo per client</td></tr>
+  <tr><td><strong>Data Intelligence Add-on</strong></td><td>Your CMS pipelines, market intelligence, provider data enrichment — the external data layer</td><td>$1.5–3K/mo per client</td></tr>
+  <tr><td><strong>Additional Users</strong></td><td>Expand from 1 VP to their leadership team (5-10 users)</td><td>$500–1K/mo per additional user tier</td></tr>
+  <tr><td><strong>Additional Claws</strong></td><td>Custom integrations (CRM, specific data source, internal system)</td><td>$5–15K one-time per integration</td></tr>
+</table>
+
+<p><strong>Year 1 target (3 clients):</strong> ~$225K setup + ~$200K ARR = ~$425K total year one. Each additional client adds ~$75K ARR. Margin is high after the first deployment because you're reusing the same template.</p>
+
+<h3>The Compounding Dynamic</h3>
+
+<p>Every client deployment strengthens the product:</p>
+<ul>
+  <li>Better report templates (add to your library)</li>
+  <li>More Claw patterns (reusable across clients)</li>
+  <li>Faster onboarding (tighter playbook each time)</li>
+  <li>Better Org Catalog methodology (you know the right questions to ask)</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>Part 9 — Open Source Strategy</h2>
+
+<div class="finding-box">
+  <h3>The Answer: Open the Shell, Keep the Brain</h3>
+  <p>Don't open source the whole platform initially. Open source the Teams channel connector layer only — then keep the Claw library, context system, and healthcare intelligence proprietary. This is the same model OpenClaw uses: open platform, monetize on expertise and services.</p>
+</div>
+
+<table>
+  <tr><th>Component</th><th>Open Source?</th><th>Why</th></tr>
+  <tr><td>Teams channel connector (<code>packages/channels/teams/</code>)</td><td><span class="tag tag-green">Yes — eventually</span></td><td>Drives discovery, IT team trust, community. Doesn't expose your moat.</td></tr>
+  <tr><td>Core agent loop (<code>packages/agent-core/</code>)</td><td><span class="tag tag-red">No</span></td><td>Your LLM orchestration patterns are IP</td></tr>
+  <tr><td>Claw library (<code>packages/claws/</code>)</td><td><span class="tag tag-red">No</span></td><td>The tool implementations are the product</td></tr>
+  <tr><td>Context repository design (<code>packages/context/</code>)</td><td><span class="tag tag-red">No</span></td><td>The Agent Data Catalog methodology is the moat</td></tr>
+  <tr><td>Healthcare data intelligence</td><td><span class="tag tag-red">No</span></td><td>The CMS pipelines + entity resolution are your secret sauce</td></tr>
+  <tr><td>IaC templates (<code>infra/azure/</code>)</td><td><span class="tag tag-yellow">Docs only</span></td><td>Show clients what's being deployed, but don't hand competitors a turnkey rival</td></tr>
+  <tr><td>SECURITY.md, IT-SECURITY-REVIEW.md</td><td><span class="tag tag-green">Yes — always</span></td><td>This accelerates client IT approvals dramatically</td></tr>
+</table>
+
+<p><strong>Timeline:</strong> Keep everything private until 3 clients are deployed and the architecture is proven. Then open source the Teams connector as a community play. By then you have case studies, domain expertise, and a Claw library that competitors can't replicate by reading your code.</p>
+
+<hr class="section-divider">
+
+<h2>Part 10 — What to Build First (Ordered)</h2>
+
+<table>
+  <tr><th>#</th><th>Milestone</th><th>Deliverable</th><th>Target</th></tr>
+  <tr><td>1</td><td><strong>Azure Setup</strong></td><td>M365 tenant + Azure Bot + Graph permissions + Teams plugin working</td><td>Today</td></tr>
+  <tr><td>2</td><td><strong>MVP Gateway</strong></td><td>Teams bot responding to DMs; basic LLM loop; user identified by AAD ID</td><td>This week</td></tr>
+  <tr><td>3</td><td><strong>Context Repository</strong></td><td>PostgreSQL schema; org + user context tables; context loaded into agent prompt</td><td>Week 2</td></tr>
+  <tr><td>4</td><td><strong>Email Claw</strong></td><td>Read inbox, triage, draft replies — this is Dave's #1 use case</td><td>Week 2-3</td></tr>
+  <tr><td>5</td><td><strong>Calendar Claw</strong></td><td>Read events, meeting prep briefs, schedule awareness</td><td>Week 3</td></tr>
+  <tr><td>6</td><td><strong>Report Claw</strong></td><td>Generate styled HTML reports, store in Blob, send link via Teams</td><td>Week 3-4</td></tr>
+  <tr><td>7</td><td><strong>Web App (basic)</strong></td><td>Azure AD SSO login; report viewer; personal context editor</td><td>Week 4-5</td></tr>
+  <tr><td>8</td><td><strong>Worker Service</strong></td><td>Morning brief cron; proactive Teams notifications</td><td>Week 5</td></tr>
+  <tr><td>9</td><td><strong>Dave/ASH Pilot</strong></td><td>First client deployment; real user; real email</td><td>Week 6-8</td></tr>
+  <tr><td>10</td><td><strong>Email Channel</strong></td><td>Dedicated mailbox monitored via Graph webhooks</td><td>Post-pilot</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h2>Part 11 — Repo Name &amp; Identity</h2>
+
+<p>The codebase name matters when IT teams Google it and when you pitch it. A few considerations:</p>
+<ul>
+  <li><strong>Not "Chief"</strong> — that's your personal assistant name. The product needs its own identity.</li>
+  <li><strong>Not your name</strong> — it should feel like a platform, not a solo developer project.</li>
+  <li>Should convey: intelligent, enterprise, action-oriented, M365 native.</li>
+</ul>
+
+<p>Candidates worth considering: <strong>Echelon</strong> (executive tier), <strong>Meridian</strong> (navigates your day), <strong>Apex</strong> (executive intelligence), <strong>Vantage</strong> (elevated view of your work), <strong>Cortex</strong> (the org brain).</p>
+
+<p>The GitHub org can be separate from your personal account — e.g., <code>github.com/meridian-ai</code> — which signals a real company, not a side project.</p>
+
+<hr class="section-divider">
+
+<p class="citation">
+  Sources: Prior architecture sessions (March 5, March 8, 2026) · OpenClaw msteams plugin analysis (this session) · Brad Groux Teams deployment research (this session) · Blake's bespoke AI business framework (February 25, 2026)
+</p>
+
+</body>
+</html>

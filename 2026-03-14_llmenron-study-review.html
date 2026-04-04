@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLMEnron Study Review — Rohit Krishnan / strangeloopcanon</title>
+  <style>
+    :root {
+      --navy: #1a365d;
+      --red: #c53030;
+      --green: #276749;
+      --blue: #2b6cb0;
+      --yellow: #d69e2e;
+      --gray: #4a5568;
+      --light-gray: #e2e8f0;
+      --bg: #f7fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.7;
+      color: #2d3748;
+      background: var(--bg);
+    }
+    .header {
+      background: var(--navy);
+      color: white;
+      padding: 2.2rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .header h1 {
+      margin: 0 0 0.35rem 0;
+      font-size: 2rem;
+    }
+    .header .subtitle {
+      opacity: 0.88;
+      font-style: italic;
+      font-size: 1rem;
+    }
+    .header .meta {
+      margin-top: 0.8rem;
+      font-size: 0.82rem;
+      opacity: 0.78;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    h2 {
+      color: var(--navy);
+      font-size: 1.35rem;
+      margin: 2.4rem 0 1rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--red);
+    }
+    h3 {
+      color: var(--gray);
+      font-size: 1.06rem;
+      margin: 1.4rem 0 0.6rem;
+    }
+    p { margin: 0 0 1rem 0; }
+    ul, ol { margin: 0.75rem 0 1rem 1.4rem; }
+    li { margin: 0.38rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.9rem;
+      background: white;
+    }
+    th {
+      background: var(--navy);
+      color: white;
+      text-align: left;
+      padding: 0.7rem 0.75rem;
+      font-weight: 600;
+    }
+    td {
+      padding: 0.7rem 0.75rem;
+      border-bottom: 1px solid var(--light-gray);
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fbff; }
+    .alert {
+      padding: 1rem 1.2rem;
+      border-left: 4px solid;
+      border-radius: 6px;
+      margin: 1.2rem 0;
+      background: white;
+    }
+    .alert-blue { border-color: var(--blue); background: #ebf8ff; }
+    .alert-green { border-color: var(--green); background: #f0fff4; }
+    .alert-yellow { border-color: var(--yellow); background: #fffff0; }
+    .finding-box {
+      background: white;
+      border: 1px solid var(--light-gray);
+      border-left: 4px solid var(--navy);
+      padding: 1rem 1.2rem;
+      border-radius: 0 6px 6px 0;
+      margin: 1.2rem 0;
+    }
+    .finding-box strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 0.35rem;
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.12rem 0.48rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tag-blue { background: #bee3f8; color: var(--blue); }
+    .tag-green { background: #c6f6d5; color: var(--green); }
+    .tag-yellow { background: #fefcbf; color: #975a16; }
+    .tag-red { background: #fed7d7; color: var(--red); }
+    .toc {
+      background: white;
+      border: 1px solid var(--light-gray);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .toc h3 { margin-top: 0; }
+    code {
+      background: #edf2f7;
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.84em;
+    }
+    .citation {
+      color: var(--gray);
+      font-size: 0.82rem;
+      margin-top: 1rem;
+    }
+    a { color: var(--blue); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>LLMEnron Study Review</h1>
+    <div class="subtitle">A technical review of Rohit Krishnan's inbox-agent evaluation structure, system comparisons, and Enron-based workload design</div>
+    <div class="meta">Prepared March 14, 2026 · Based on Rohit Krishnan's X post, the <code>llmenron</code> GitHub repo, and the CMU Enron corpus documentation</div>
+  </div>
+
+  <div class="container">
+    <div class="alert alert-blue">
+      <strong>Executive summary</strong>
+      The most interesting part of this study is not just the conclusion that “better state beats bigger prompts.” It is the <strong>test structure</strong>: a sequence of controlled comparisons across memory substrate, model strength, worker topology, coordination substrate, and actor identity. In other words, this is more useful as an <strong>architectural ablation study</strong> than as a simple model benchmark.
+    </div>
+
+    <div class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#what-is-this">What this study is actually doing</a></li>
+        <li><a href="#test-structure">The test structure and comparison logic</a></li>
+        <li><a href="#experiment-review">Review of the four experiment families</a></li>
+        <li><a href="#why-good">Why this evaluation design is strong</a></li>
+        <li><a href="#enron">Why the Enron corpus matters</a></li>
+        <li><a href="#for-us">What feels relevant for us</a></li>
+        <li><a href="#github">GitHub account / repo location</a></li>
+      </ol>
+    </div>
+
+    <h2 id="what-is-this">1. What this study is actually doing</h2>
+    <p>This repo asks a practical question: <em>what breaks first when an AI agent has to manage a human-sized inbox?</em></p>
+    <p>Instead of inventing arbitrary stress levels, the author uses <strong>Enron email metadata</strong> to estimate realistic inbox load. The repo says the median worker is around <strong>50 active threads</strong> in a 14-day window and a common stress level is around <strong>105</strong>. That gives the later agent tests a more believable operating range.</p>
+    <p>The key shift is that the study is not framed as “which model wins?” It is framed as “which <strong>system structure</strong> causes the model to succeed or fail?” That makes it much more useful for product design.</p>
+
+    <div class="finding-box">
+      <strong>The core thesis</strong>
+      The headline result is that models often fail less because of raw comprehension limits and more because the surrounding system makes them repeatedly reconstruct task identity, coordination state, and role identity from a giant blob of memory. The first unlock appears to be <strong>better state</strong>, not simply larger prompts or more agents.
+    </div>
+
+    <h2 id="test-structure">2. The test structure and comparison logic</h2>
+    <p>This is the piece that matters most technically. The repo appears to manipulate a handful of system dimensions in controlled ways:</p>
+    <ul>
+      <li><strong>Memory substrate</strong> — scratchpad blob vs explicit thread state</li>
+      <li><strong>Model strength</strong> — stronger model vs smaller / weaker model</li>
+      <li><strong>Worker topology</strong> — single agent vs multiple agents</li>
+      <li><strong>Coordination substrate</strong> — no shared board vs shared board</li>
+      <li><strong>Identity structure</strong> — task state only vs task state plus actor identity</li>
+    </ul>
+
+    <table>
+      <tr>
+        <th>Experiment</th>
+        <th>Main comparison</th>
+        <th>What stays roughly constant</th>
+        <th>What changes</th>
+        <th>What it isolates</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Scratchpad vs thread state</td>
+        <td>Same scenario, same model family, same judge</td>
+        <td>Memory / state representation</td>
+        <td>Whether failures mainly come from weak memory organization</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Stronger model vs smaller model with improved structure</td>
+        <td>Similar task structure and evaluation setup</td>
+        <td>Model capability / control reliability</td>
+        <td>Whether architecture can compensate for weaker model quality</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Single vs multi-agent, with and without shared board</td>
+        <td>Same org-simulation setting</td>
+        <td>Agent count + coordination substrate</td>
+        <td>Whether scaling comes from more workers or shared state</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Board without actor identity vs board with actor identity</td>
+        <td>Same coordination setup</td>
+        <td>Role / actor fields</td>
+        <td>Whether tasks alone are enough, or identity must also be explicit</td>
+      </tr>
+    </table>
+
+    <div class="alert alert-green">
+      <strong>Why this is better than a generic benchmark</strong>
+      The study is not just producing a leaderboard. It is asking <em>what changed?</em> When one condition wins, the result is more interpretable because the benchmark is structured like a set of architectural ablations.
+    </div>
+
+    <h2 id="experiment-review">3. Review of the four experiment families</h2>
+
+    <h3>Experiment 1 — Explicit thread state beats a giant scratchpad</h3>
+    <p>This looks like the strongest result in the repo. Same stress scenario, same model / judge family, but different memory substrate:</p>
+    <ul>
+      <li><strong>Condition A:</strong> giant scratchpad / running notes blob</li>
+      <li><strong>Condition B:</strong> explicit per-thread state</li>
+    </ul>
+    <p>According to the repo summary, thread state reduced wrong-target actions, improved quality, and lowered token use. The implication is that the model is not mainly failing at reading emails — it is failing because the system forces it to keep reconstructing which task belongs to which thread.</p>
+    <p><span class="tag tag-green">Takeaway</span> The first thing to fix is the <strong>task object</strong>, not the prompt length.</p>
+
+    <h3>Experiment 2 — Better structure does not fully rescue a weak control model</h3>
+    <p>This is the clearest <strong>model-configuration comparison</strong> in the repo. Once explicit state looked useful, the next question became: can a smaller / cheaper model become production-credible if the state architecture is good enough?</p>
+    <p>The answer, at least in this setup, appears to be <strong>no</strong>. The smaller model still failed the structured output contract too often to be a reliable substitute.</p>
+    <p><span class="tag tag-yellow">Takeaway</span> Better architecture is a multiplier, but it does not magically turn a flaky model into a good agent.</p>
+
+    <h3>Experiment 3 — Shared board matters more than more agents</h3>
+    <p>This is the systems-comparison portion of the study. The interesting design here is not merely “we tried multiple agents.” It appears to compare combinations such as:</p>
+    <ul>
+      <li>single agent, no board</li>
+      <li>multi-agent, no board</li>
+      <li>single agent, shared board</li>
+      <li>multi-agent, shared board</li>
+    </ul>
+    <p>That lets the study separate the effect of <strong>parallelism</strong> from the effect of <strong>shared coordination state</strong>. The repo summary says the board helped both single-agent and multi-agent setups, while multiple agents without a board were slightly worse than a single agent without one.</p>
+    <p><span class="tag tag-blue">Takeaway</span> Do not build a swarm before you build a board.</p>
+
+    <h3>Experiment 4 — The board needs actor identity too</h3>
+    <p>Once shared state looked important, the next question was what that state should contain. The answer here is not just task identity, but also <strong>actor identity</strong>:</p>
+    <ul>
+      <li>who owns the task internally</li>
+      <li>who should respond externally</li>
+      <li>whose voice / role the reply should represent</li>
+    </ul>
+    <p>The repo summary suggests task targeting was already decent, but role consistency drifted until actor identity became explicit.</p>
+    <p><span class="tag tag-red">Takeaway</span> In real workflows, “who should say this?” is not a cosmetic detail. It is part of the state model.</p>
+
+    <h2 id="why-good">4. Why this evaluation design is strong</h2>
+    <p>A lot of model evals are weak because they are too toy-like, too benchmark-y, too entangled, or too dependent on qualitative impressions. This one is stronger for four reasons:</p>
+    <ol>
+      <li><strong>Realistic workload anchor</strong> — Enron-derived thread counts make the stress scenarios believable.</li>
+      <li><strong>Controlled structural comparisons</strong> — memory substrate, model strength, coordination substrate, and role fields are varied in a more interpretable way.</li>
+      <li><strong>Architecture-first framing</strong> — the product lesson is about how the system around the model shapes performance.</li>
+      <li><strong>Usable design rules</strong> — task objects, shared state, role identity, and anti-swarm caution are all concrete takeaways.</li>
+    </ol>
+
+    <div class="finding-box">
+      <strong>My read on the strongest contribution</strong>
+      The strongest contribution is not “LLMs are bad at email” or “LLMs are good at email.” It is that the repo gives a plausible methodology for separating <strong>model limitations</strong> from <strong>system design limitations</strong>. That is much more useful for anyone trying to build agentic products.
+    </div>
+
+    <h2 id="enron">5. Why the Enron corpus matters</h2>
+    <p>The CMU Enron dataset is still one of the only substantial public collections of real organizational email. The CMU page describes it as roughly <strong>0.5 million messages</strong> from about <strong>150 users</strong>, mostly senior management, with the standard version missing attachments and including some deletions/redactions.</p>
+    <p>What makes Enron useful here is not that it is perfect. It is that it provides a <strong>real-ish public organizational benchmark</strong> that can ground questions about thread volume, handoffs, delegation, communication patterns, and inbox stress levels.</p>
+
+    <h3>How Enron could be useful for us</h3>
+    <ul>
+      <li><strong>Inbox-agent sample data</strong> — much better than toy fake inbox examples</li>
+      <li><strong>Canonical email-state schema</strong> — people, threads, messages, participants, inferred tasks, ownership</li>
+      <li><strong>Benchmark scenarios</strong> — 50-thread, 100-thread, handoff, ambiguous ownership, multi-party coordination</li>
+      <li><strong>General workflow substrate</strong> — useful even outside literal email agents</li>
+    </ul>
+
+    <div class="alert alert-yellow">
+      <strong>Cautions</strong>
+      Enron is old, partial, and culturally specific. Missing attachments and redactions reduce realism. I would not treat it as universal truth. I would treat it as a very useful public benchmark corpus for organizational communication and coordination experiments.
+    </div>
+
+    <h2 id="for-us">6. What feels relevant for us</h2>
+    <p>The biggest lesson is that <strong>state architecture may be a product advantage</strong>. A lot of people still think in terms of “model + prompt + tools,” but the actual leverage may sit in:</p>
+    <ul>
+      <li>state model</li>
+      <li>object structure</li>
+      <li>coordination primitives</li>
+      <li>memory design</li>
+    </ul>
+    <p>That feels applicable to inbox tools, workflow systems, healthcare investigation tools, internal ops copilots, and even the social-feed project. If we ever add AI interpretation to feed comparison, we probably do not want one giant timeline scratchpad. We likely want explicit objects: account, post, topic cluster, source, significance, viewpoint bucket, and friend-specific feed slice.</p>
+
+    <h2 id="github">7. GitHub account / repo location</h2>
+    <p>I checked the repo identity directly.</p>
+
+    <table>
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td>Repo</td><td><a href="https://github.com/strangeloopcanon/llmenron">strangeloopcanon/llmenron</a></td></tr>
+      <tr><td>Owner account</td><td><a href="https://github.com/strangeloopcanon">strangeloopcanon</a></td></tr>
+      <tr><td>Repo created</td><td>2026-02-10T07:24:19Z</td></tr>
+      <tr><td>Last updated (at lookup)</td><td>2026-03-14T16:51:30Z</td></tr>
+      <tr><td>Repo description</td><td>No GitHub description set at the time of lookup</td></tr>
+    </table>
+
+    <p>So the code appears to be stored under the GitHub account <strong>strangeloopcanon</strong>, in the repo <strong>llmenron</strong>. I did not find evidence from the repo metadata alone that the GitHub account name itself is “Rohit Krishnan”; it may be a separate handle / project identity. But the X post directly linked to this repo, so this is the correct code location.</p>
+
+    <div class="alert alert-green">
+      <strong>Bottom line</strong>
+      The best thing about this work is the experimental design. It compares different <strong>system configurations</strong> in a way that makes the outcomes interpretable. The conclusion is not just “better state helps.” It is that realistic agent performance depends heavily on how explicitly the system represents thread state, shared coordination, and role identity — and that these are separable from raw model quality.
+    </div>
+
+    <p class="citation">
+      Sources used: Rohit Krishnan X post linking to the repo, GitHub repo <code>strangeloopcanon/llmenron</code>, and the CMU Enron dataset page.<br />
+      Local report path: <code>~/.openclaw/workspace/reports/2026-03-14_llmenron-study-review.html</code>
+    </p>
+  </div>
+</body>
+</html>

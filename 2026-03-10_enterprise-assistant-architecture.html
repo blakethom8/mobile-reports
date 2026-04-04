@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Georgia, serif; max-width: 860px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 22px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  .code { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  pre { background: #1a1a2e; color: #e0e0e0; padding: 18px 20px; border-radius: 6px; font-size: 12px; overflow-x: auto; line-height: 1.5; }
+  pre .comment { color: #7a8fa8; }
+  pre .highlight { color: #f9ca24; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Enterprise Assistant — Architecture & Build Plan</h1>
+  <p>Prepared by Chief | March 10, 2026</p>
+  <p>Project: Enterprise Assistant &nbsp;|&nbsp; Status: Pre-Build &nbsp;|&nbsp; Azure Tenant: mydoclist</p>
+</div>
+
+<div class="alert alert-green">
+  <strong>✅ Foundation Complete:</strong> Azure infrastructure provisioned, App Registration configured, Graph API permissions granted, synthetic M365 data generated. Ready to build.
+</div>
+
+<h1>SECTION A — Vision & Core Architecture</h1>
+
+<h2>1. What We're Building</h2>
+
+<p>A personal AI assistant for executive-level users that lives entirely inside their Microsoft 365 environment. Think of it as OpenClaw — Chief — but deployed per user, per org, in Microsoft's cloud.</p>
+
+<div class="finding-box">
+  <h3>The One-Sentence Pitch</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">"A personal Chief of Staff who lives in your Microsoft 365, knows your inbox, calendar, and files — works 24/7 — and never lets your data leave your environment."</p>
+</div>
+
+<h2>2. Design Principles</h2>
+
+<table>
+  <tr><th>Principle</th><th>What It Means</th><th>Why It Matters</th></tr>
+  <tr>
+    <td><strong>One agent per user</strong></td>
+    <td>Each person gets their own isolated agent instance</td>
+    <td>Tight personal context; no cross-user data risk</td>
+  </tr>
+  <tr>
+    <td><strong>OneDrive as workspace</strong></td>
+    <td>Agent reads/writes to user's OneDrive folder</td>
+    <td>Files appear on their laptop automatically via sync</td>
+  </tr>
+  <tr>
+    <td><strong>Client's Azure tenant</strong></td>
+    <td>Code runs in their cloud, not yours</td>
+    <td>Eliminates compliance/security gatekeeping</td>
+  </tr>
+  <tr>
+    <td><strong>SKILL.md-driven tools</strong></td>
+    <td>Tools described in markdown, like OpenClaw skills</td>
+    <td>LLM knows what tools exist and when to use them</td>
+  </tr>
+  <tr>
+    <td><strong>Explicit permissions</strong></td>
+    <td>Every Graph API scope listed, admin-consented</td>
+    <td>IT teams can audit, restrict, and revoke cleanly</td>
+  </tr>
+  <tr>
+    <td><strong>Controlled web access</strong></td>
+    <td>Web-fetch sandboxed with injection protections</td>
+    <td>Prevents prompt injection from external content</td>
+  </tr>
+</table>
+
+<h2>3. OpenClaw → Enterprise Assistant Mapping</h2>
+
+<p>This is essentially OpenClaw productized for enterprise deployment inside Microsoft 365. The pattern is identical — only the hosting and auth layer changes.</p>
+
+<table>
+  <tr><th>OpenClaw (Chief)</th><th>Enterprise Assistant</th><th>Role</th></tr>
+  <tr><td><span class="code">~/.openclaw/workspace/</span></td><td><span class="code">~/OneDrive/Assistant/</span></td><td>Agent's home directory</td></tr>
+  <tr><td><span class="code">SOUL.md</span></td><td><span class="code">AGENT.md</span></td><td>Who the agent is</td></tr>
+  <tr><td><span class="code">USER.md</span></td><td><span class="code">USER.md</span></td><td>Who the user is</td></tr>
+  <tr><td><span class="code">MEMORY.md</span></td><td><span class="code">MEMORY.md</span></td><td>Long-term memory</td></tr>
+  <tr><td><span class="code">memory/YYYY-MM-DD.md</span></td><td><span class="code">memory/YYYY-MM-DD.md</span></td><td>Daily logs</td></tr>
+  <tr><td><span class="code">WORK.md / TOOLS.md</span></td><td><span class="code">WORK.md / TOOLS.md</span></td><td>Context files</td></tr>
+  <tr><td><span class="code">HEARTBEAT.md</span></td><td><span class="code">HEARTBEAT.md</span></td><td>Periodic check tasks</td></tr>
+  <tr><td><span class="code">skills/*/SKILL.md</span></td><td><span class="code">skills/*/SKILL.md</span></td><td>Tool instructions for LLM</td></tr>
+  <tr><td><span class="code">reports/</span></td><td><span class="code">reports/</span></td><td>Generated output</td></tr>
+  <tr><td>Local machine (Mac)</td><td>Azure Container App</td><td>Where agent runs</td></tr>
+  <tr><td>Local filesystem</td><td>OneDrive via Graph API</td><td>File storage</td></tr>
+  <tr><td>OpenClaw skills</td><td>Claws (Python classes)</td><td>Tool implementations</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h1>SECTION B — OneDrive Workspace Structure</h1>
+
+<h2>4. The User's OneDrive Folder</h2>
+
+<p>The agent's entire workspace lives in one folder in the user's OneDrive. They can see it, edit it, and interact with it from their laptop — no special software needed. Microsoft's sync handles the rest.</p>
+
+<pre>
+~/OneDrive/
+└── Assistant/
+    │
+    ├── <span class="highlight">AGENT.md</span>          ← Who the agent is, its personality, rules
+    ├── <span class="highlight">USER.md</span>           ← Who the user is, their preferences, role
+    ├── <span class="highlight">MEMORY.md</span>         ← Long-term curated memory (agent maintains this)
+    ├── <span class="highlight">WORK.md</span>           ← Professional context, workflows, org knowledge
+    ├── <span class="highlight">TOOLS.md</span>          ← Tool-specific notes (contacts, aliases, shortcuts)
+    ├── <span class="highlight">HEARTBEAT.md</span>      ← Periodic check tasks (what to monitor proactively)
+    ├── <span class="highlight">TODO.md</span>           ← Task list (agent + user collaborate here)
+    │
+    ├── memory/           ← Daily logs (agent writes, user can read)
+    │   └── YYYY-MM-DD.md
+    │
+    ├── skills/           ← SKILL.md files — tell agent what tools exist
+    │   ├── email/SKILL.md
+    │   ├── calendar/SKILL.md
+    │   ├── files/SKILL.md
+    │   ├── reports/SKILL.md
+    │   ├── data/SKILL.md
+    │   └── web/SKILL.md      ← allowlist-controlled web access
+    │
+    ├── reports/          ← Agent-generated reports (HTML, PDF)
+    ├── drafts/           ← Email/doc drafts for user review before send
+    └── context/          ← Reference files agent can read when needed
+        ├── key-contacts.md
+        ├── org-chart.md
+        └── ongoing-projects.md
+</pre>
+
+<div class="alert alert-blue">
+  <strong>ℹ️ How files appear on the user's laptop:</strong> Microsoft OneDrive syncs automatically. When the agent writes a report to <span class="code">/Assistant/reports/</span> via Graph API, it appears in the user's local <span class="code">~/OneDrive/Assistant/reports/</span> folder within seconds — no download needed.
+</div>
+
+<hr class="section-divider">
+
+<h1>SECTION C — Codebase Structure</h1>
+
+<h2>5. Repository Layout</h2>
+
+<pre>
+~/Repo/enterprise-assistant/
+│
+├── apps/
+│   ├── <span class="highlight">gateway/</span>                  ← The brain. FastAPI app + agent loop.
+│   │   ├── api/              ← HTTP endpoints (/chat, /emails, /events, /health)
+│   │   ├── agent/            ← Agent loop, LLM dispatch, tool routing
+│   │   └── config/           ← App settings, environment config
+│   │
+│   ├── web/                  ← Next.js web dashboard (Phase 2)
+│   └── worker/               ← Background jobs — heartbeat, scheduled tasks (Phase 3)
+│
+├── packages/
+│   ├── <span class="highlight">graph/</span>                    ← Microsoft Graph API client
+│   │   ├── auth.py           ← Token management (client credentials + delegated)
+│   │   ├── email.py          ← Read, send, draft, search email
+│   │   ├── calendar.py       ← Events, availability, create/update
+│   │   ├── files.py          ← OneDrive read, write, list, search
+│   │   └── contacts.py       ← People lookup, contact details
+│   │
+│   ├── <span class="highlight">claws/</span>                    ← Tool implementations (what the agent can DO)
+│   │   ├── email/claw.py     ← Summarize, draft, send, search email
+│   │   ├── calendar/claw.py  ← Check schedule, create events, find slots
+│   │   ├── files/claw.py     ← Read/write OneDrive, create reports
+│   │   ├── reports/claw.py   ← Generate styled HTML reports
+│   │   ├── data/claw.py      ← Query databases, run analytics
+│   │   └── web/claw.py       ← Controlled web fetch (allowlisted)
+│   │
+│   ├── <span class="highlight">agent-core/</span>               ← The LLM loop
+│   │   ├── loop.py           ← while loop: message → tool → response
+│   │   ├── skills.py         ← Read SKILL.md files from OneDrive
+│   │   ├── context.py        ← Load AGENT.md, USER.md, MEMORY.md at session start
+│   │   └── memory.py         ← Write daily logs, update MEMORY.md
+│   │
+│   ├── context/              ← Session state, user registry
+│   ├── db/                   ← PostgreSQL schema + queries
+│   └── types/                ← Shared Pydantic models (Email, Event, DriveFile)
+│
+├── <span class="highlight">onedrive-template/</span>            ← Template workspace for new users
+│   ├── AGENT.md              ← Default agent personality (customized per client)
+│   ├── USER.md               ← Blank template for user to fill in
+│   ├── MEMORY.md             ← Empty, agent populates over time
+│   ├── WORK.md               ← Template with prompts
+│   ├── HEARTBEAT.md          ← Default periodic checks
+│   ├── TODO.md               ← Empty task list
+│   └── skills/               ← All SKILL.md files (pre-written)
+│
+├── infra/azure/              ← Bicep IaC — deploy a full client stack in one command
+├── scripts/                  ← Dev utilities, synthetic data gen, deploy helpers
+└── docs/                     ← Architecture, client pitch, IT security docs
+</pre>
+
+<h2>6. Tech Stack</h2>
+
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+  <tr>
+    <td>Agent backend</td>
+    <td>Python 3.12 + FastAPI</td>
+    <td>Best AI/ML ecosystem; Anthropic SDK; matches CMS pipeline</td>
+  </tr>
+  <tr>
+    <td>LLM</td>
+    <td>Anthropic Claude (claude-sonnet-4)</td>
+    <td>Best tool-use and instruction-following; same as OpenClaw</td>
+  </tr>
+  <tr>
+    <td>Graph API client</td>
+    <td>Python requests + msgraph-sdk</td>
+    <td>Microsoft's official Python SDK</td>
+  </tr>
+  <tr>
+    <td>Database</td>
+    <td>PostgreSQL + SQLAlchemy</td>
+    <td>Conversation history, user registry, session state</td>
+  </tr>
+  <tr>
+    <td>Web dashboard</td>
+    <td>Next.js + TypeScript (Phase 2)</td>
+    <td>React ecosystem, easy Teams embedding</td>
+  </tr>
+  <tr>
+    <td>Container</td>
+    <td>Docker → Azure Container Apps</td>
+    <td>Per-user isolation, auto-scale, managed SSL</td>
+  </tr>
+  <tr>
+    <td>Secrets</td>
+    <td>Azure Key Vault</td>
+    <td>No hardcoded credentials; IT-auditable</td>
+  </tr>
+  <tr>
+    <td>File storage</td>
+    <td>OneDrive via Graph API</td>
+    <td>Already in client's environment; syncs to laptop</td>
+  </tr>
+  <tr>
+    <td>Identity</td>
+    <td>Azure Entra ID + MSAL</td>
+    <td>Enterprise SSO, admin consent model</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<h1>SECTION D — Azure Infrastructure</h1>
+
+<h2>7. What's Already Provisioned</h2>
+
+<table>
+  <tr><th>Resource</th><th>Name</th><th>Purpose</th><th>Status</th></tr>
+  <tr>
+    <td>Resource Group</td>
+    <td><span class="code">rg-enterprise-assistant-dev</span></td>
+    <td>Container for all dev resources</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+  <tr>
+    <td>Container Registry</td>
+    <td><span class="code">entasstregistry.azurecr.io</span></td>
+    <td>Stores Docker images of the gateway app</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+  <tr>
+    <td>Key Vault</td>
+    <td><span class="code">kv-entasst-dev</span></td>
+    <td>Graph credentials, API keys, secrets</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+  <tr>
+    <td>Blob Storage</td>
+    <td><span class="code">stentasstdev</span></td>
+    <td>Report backup, file exports</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+  <tr>
+    <td>Container Apps Env</td>
+    <td><span class="code">cae-entasst-dev</span></td>
+    <td>Hosting environment for gateway app</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+  <tr>
+    <td>PostgreSQL</td>
+    <td><span class="code">pg-entasst-test-centralus</span></td>
+    <td>Conversation history, session state</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+  <tr>
+    <td>App Registration</td>
+    <td><span class="code">Enterprise Assistant Dev</span></td>
+    <td>Agent identity + Graph API access</td>
+    <td><span class="tag tag-green">✅ Live</span></td>
+  </tr>
+</table>
+
+<h2>8. Graph API Permissions</h2>
+
+<table>
+  <tr><th>Permission</th><th>Type</th><th>What the Agent Can Do</th></tr>
+  <tr><td>Mail.ReadWrite</td><td>Delegated + App</td><td>Read, search, organize inbox</td></tr>
+  <tr><td>Mail.Send</td><td>Delegated</td><td>Send emails on user's behalf (with confirmation)</td></tr>
+  <tr><td>Calendars.ReadWrite</td><td>Delegated + App</td><td>Read schedule, create/modify events</td></tr>
+  <tr><td>Contacts.Read</td><td>Delegated</td><td>Look up people, enrich email context</td></tr>
+  <tr><td>User.Read</td><td>Delegated</td><td>Identify logged-in user</td></tr>
+  <tr><td>Files.ReadWrite <span class="tag tag-yellow">To Add</span></td><td>Delegated</td><td>Read/write user's OneDrive workspace</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h1>SECTION E — Build Plan</h1>
+
+<h2>9. Phased Build Order</h2>
+
+<table>
+  <tr><th>Phase</th><th>What We Build</th><th>Milestone</th></tr>
+  <tr>
+    <td><strong>Phase 1</strong><br>Proof of Life</td>
+    <td>
+      <ul style="margin:0; padding-left:16px;">
+        <li><span class="code">packages/types/</span> — Email, Event, DriveFile models</li>
+        <li><span class="code">packages/graph/</span> — auth, email, calendar, files client</li>
+        <li><span class="code">apps/gateway/</span> — FastAPI with /chat, /emails, /events</li>
+        <li><span class="code">onedrive-template/</span> — AGENT.md, SKILL.md files</li>
+      </ul>
+    </td>
+    <td>Ask "what's in my inbox?" → agent reads email → writes summary to OneDrive → file appears on laptop</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 2</strong><br>Full Agent Loop</td>
+    <td>
+      <ul style="margin:0; padding-left:16px;">
+        <li><span class="code">packages/agent-core/</span> — LLM loop + skill loader</li>
+        <li><span class="code">packages/claws/</span> — all claw implementations</li>
+        <li><span class="code">packages/context/</span> — memory read/write</li>
+        <li>Heartbeat scheduler</li>
+      </ul>
+    </td>
+    <td>Natural conversation with full tool use; agent remembers context across sessions; proactive check-ins</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 3</strong><br>Deploy & Web UI</td>
+    <td>
+      <ul style="margin:0; padding-left:16px;">
+        <li>Dockerize gateway app</li>
+        <li>Deploy to Container Apps</li>
+        <li><span class="code">apps/web/</span> — Next.js chat dashboard</li>
+        <li><span class="code">infra/azure/</span> — Bicep one-command deploy</li>
+      </ul>
+    </td>
+    <td>Live HTTPS endpoint; web chat interface; one-command client onboarding</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 4</strong><br>Teams + Scale</td>
+    <td>Teams bot integration; multi-user per org; client admin dashboard</td>
+    <td>Sell to second client without touching code</td>
+  </tr>
+</table>
+
+<h2>10. Security Model for IT Stakeholders</h2>
+
+<div class="finding-box">
+  <h3>The Three Questions IT Always Asks</h3>
+  <p style="font-family: Arial, sans-serif; font-size: 14px;">
+    <strong>Where does our data live?</strong> In your Azure tenant. We deploy inside your subscription. We never see it.<br><br>
+    <strong>What can the app access?</strong> Exactly what your admin approves in Entra ID. Listed explicitly. Revocable instantly.<br><br>
+    <strong>How do we audit it?</strong> Microsoft logs every Graph API call. Our app logs every agent action. Full visibility, always.
+  </p>
+</div>
+
+<div class="alert alert-blue">
+  <strong>ℹ️ HIPAA note:</strong> Because everything runs in the client's Azure tenant, they inherit their existing Azure compliance certifications — HIPAA BAA, SOC 2, ISO 27001. We're not a new vendor in their data chain. We're code running in their already-certified environment.
+</div>
+
+<hr class="section-divider">
+
+<p style="font-family: Arial, sans-serif; font-size: 12px; color: #888; text-align: center;">
+  Report prepared by Chief | Enterprise Assistant Project | March 10, 2026<br>
+  Azure Subscription: 073eb007 | Tenant: mydoclist (113ab53c) | Repo: ~/Repo/enterprise-assistant<br><br>
+  <em>Internal architecture document. Not for client distribution in current form.</em>
+</p>
+
+</body>
+</html>

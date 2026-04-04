@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Georgia, serif; max-width: 860px; margin: 40px auto; color: #222; line-height: 1.7; padding: 0 20px; }
+  h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
+  h2 { font-size: 17px; color: #1a1a2e; border-left: 4px solid #c0392b; padding-left: 12px; margin-top: 36px; }
+  h3 { font-size: 15px; color: #333; margin-top: 24px; }
+  .header { background: #1a1a2e; color: white; padding: 28px 32px; border-radius: 6px; margin-bottom: 32px; }
+  .header h1 { color: white; border-bottom: 2px solid rgba(255,255,255,0.3); font-size: 20px; }
+  .header p { color: #aab4cc; margin: 4px 0; font-size: 13px; font-family: Arial, sans-serif; }
+  .alert { background: #fff3cd; border-left: 4px solid #e6a817; padding: 14px 18px; border-radius: 4px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 14px; }
+  .alert-red    { background: #fde8e8; border-left: 4px solid #c0392b; }
+  .alert-green  { background: #e8f8e8; border-left: 4px solid #27ae60; }
+  .alert-blue   { background: #e8f0fe; border-left: 4px solid #2980b9; }
+  blockquote { background: #f5f5f5; border-left: 4px solid #888; margin: 16px 0; padding: 12px 18px; font-style: italic; font-size: 14px; color: #444; border-radius: 0 4px 4px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: Arial, sans-serif; margin: 16px 0; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+  pre { background: #1e1e2e; color: #cdd6f4; padding: 16px 18px; border-radius: 6px; font-size: 12.5px; overflow-x: auto; line-height: 1.6; font-family: 'Courier New', monospace; }
+  code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  .citation { font-size: 12px; color: #666; font-family: Arial, sans-serif; font-style: italic; }
+  .section-divider { border: none; border-top: 2px solid #e0e0e0; margin: 40px 0; }
+  ul li, ol li { margin-bottom: 6px; }
+  .finding-box { border: 2px solid #1a1a2e; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+  .finding-box h3 { margin-top: 0; color: #1a1a2e; }
+  .tag { display: inline-block; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .tag-red    { background: #fde8e8; color: #c0392b; }
+  .tag-green  { background: #e8f8e8; color: #27ae60; }
+  .tag-blue   { background: #e8f0fe; color: #2980b9; }
+  .tag-yellow { background: #fff3cd; color: #b7770d; }
+  .file-card { background: #f8f9fa; border: 1px solid #dee2e6; border-left: 4px solid #2980b9; border-radius: 4px; padding: 12px 16px; margin: 8px 0; font-family: Arial, sans-serif; font-size: 13px; }
+  .file-card strong { font-family: 'Courier New', monospace; color: #1a1a2e; }
+  .verdict-box { background: #1a1a2e; color: white; border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+  .verdict-box h3 { color: #aab4cc; margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+  .verdict-box p { margin: 0; font-size: 16px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>OpenClaw Teams Plugin — Codebase Analysis &amp; Build Strategy</h1>
+  <p><strong>Date:</strong> March 10, 2026</p>
+  <p><strong>Question:</strong> Fork OpenClaw, strip it down for Teams — or extract the good parts and build our own?</p>
+  <p><strong>Source:</strong> OpenClaw v2026.3.8 installed locally at <code>/opt/homebrew/lib/node_modules/openclaw/</code></p>
+</div>
+
+<div class="verdict-box">
+  <h3>Verdict</h3>
+  <p>Don't fork OpenClaw core. Extract 6 files from the Teams plugin and build your own lightweight stack on top of <code>@microsoft/agents-hosting</code> — the same underlying SDK OpenClaw uses. You'll have a working Teams bot in ~500 lines of TypeScript with zero OpenClaw baggage.</p>
+</div>
+
+<h2>1. What OpenClaw Actually Is Under the Hood</h2>
+
+<p>OpenClaw is a monolithic TypeScript monorepo — a personal assistant gateway with 60+ npm dependencies covering 20+ messaging channels (Telegram, WhatsApp, Discord, iMessage, LINE, IRC, Feishu, etc.). The Teams support is one plugin among many.</p>
+
+<table>
+  <tr><th>Component</th><th>What It Is</th></tr>
+  <tr><td>Core runtime</td><td>Gateway daemon (<code>dist/index.js</code>) — session management, LLM routing, tool dispatch, heartbeats, cron, canvas, TTS</td></tr>
+  <tr><td>Plugin SDK (<code>openclaw/plugin-sdk/msteams</code>)</td><td>Shared types, config schema, utilities the Teams plugin imports. Tightly coupled to core.</td></tr>
+  <tr><td>Teams plugin (<code>extensions/msteams/</code>)</td><td>Self-contained TypeScript module; only runtime dep is <code>@microsoft/agents-hosting</code> + <code>express</code></td></tr>
+  <tr><td>60+ other extensions</td><td>discord, telegram, slack, whatsapp, signal, matrix, feishu, lark, line, voice, pairing, memory, TTS, etc.</td></tr>
+</table>
+
+<div class="alert alert-red">
+  <strong>Why NOT to fork OpenClaw core:</strong> The core gateway is architected for a personal single-user assistant. It has session management, heartbeat polling, cron, canvas rendering, TTS, voice calling, 20+ channel plugins, and a complex config system — none of which you need. Forking it means inheriting all that weight and ongoing merge conflicts with upstream. The core is also tightly coupled to <code>@mariozechner/pi-agent-core</code> (the Pi agent runtime) which is a separate opinionated system.
+</div>
+
+<hr class="section-divider">
+
+<h2>2. The Teams Plugin — What's Actually in It</h2>
+
+<p>The plugin lives at <code>extensions/msteams/src/</code> — <strong>~9,500 lines of TypeScript total</strong> (including tests). The production code (minus tests) is roughly 4,500 lines across these files:</p>
+
+<table>
+  <tr><th>File</th><th>Lines</th><th>What It Does</th><th>Keep?</th></tr>
+  <tr><td><code>sdk.ts</code></td><td>~30</td><td>Wraps <code>@microsoft/agents-hosting</code> CloudAdapter — handles JWT auth with Azure Bot Service</td><td><span class="tag tag-green">✅ Copy</span></td></tr>
+  <tr><td><code>token.ts</code></td><td>~50</td><td>Credential resolution (config file → env vars → MSTeamsCredentials object)</td><td><span class="tag tag-green">✅ Copy</span></td></tr>
+  <tr><td><code>inbound.ts</code></td><td>~60</td><td>Message parsing: conversation ID normalization, mention detection, timestamp parsing, strip Teams @mention HTML tags</td><td><span class="tag tag-green">✅ Copy</span></td></tr>
+  <tr><td><code>graph.ts</code></td><td>~80</td><td>Graph API client: token acquisition via MSAL, user/team/channel lookup, generic fetchGraphJson helper</td><td><span class="tag tag-green">✅ Copy</span></td></tr>
+  <tr><td><code>conversation-store-fs.ts</code></td><td>~100</td><td>Persists conversation references to JSON file — required for proactive messaging (bot sending first)</td><td><span class="tag tag-green">✅ Copy</span></td></tr>
+  <tr><td><code>monitor.ts</code></td><td>345</td><td>Starts Express server, wires CloudAdapter, dispatches to activity handler. The main loop.</td><td><span class="tag tag-yellow">Adapt</span></td></tr>
+  <tr><td><code>monitor-handler.ts</code></td><td>190</td><td>Activity routing: message vs. file-consent vs. member-added events</td><td><span class="tag tag-yellow">Adapt</span></td></tr>
+  <tr><td><code>send.ts</code></td><td>529</td><td>Sends messages/files/cards; file consent flow for DMs; SharePoint upload for group chats</td><td><span class="tag tag-yellow">Partial</span></td></tr>
+  <tr><td><code>messenger.ts</code></td><td>524</td><td>Low-level message sending via CloudAdapter; conversation reference management; proactive messaging</td><td><span class="tag tag-yellow">Partial</span></td></tr>
+  <tr><td><code>graph-upload.ts</code></td><td>452</td><td>SharePoint + OneDrive file upload; sharing links</td><td><span class="tag tag-blue">Later</span></td></tr>
+  <tr><td><code>mentions.ts</code></td><td>~100</td><td>@mention entity building for Teams messages</td><td><span class="tag tag-blue">Later</span></td></tr>
+  <tr><td><code>polls.ts</code></td><td>315</td><td>Adaptive Card poll builder + vote store</td><td><span class="tag tag-blue">Later</span></td></tr>
+  <tr><td><code>policy.ts</code></td><td>258</td><td>Per-team/channel tool allowlist enforcement</td><td><span class="tag tag-blue">Later</span></td></tr>
+  <tr><td><code>channel.ts</code></td><td>454</td><td>OpenClaw plugin interface implementation — heavily coupled to OpenClaw SDK</td><td><span class="tag tag-red">❌ Skip</span></td></tr>
+  <tr><td><code>onboarding.ts</code></td><td>381</td><td>OpenClaw CLI wizard integration</td><td><span class="tag tag-red">❌ Skip</span></td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h2>3. The Core Dependency — What Actually Does the Work</h2>
+
+<p>The single most important discovery: OpenClaw's Teams plugin has <strong>only two runtime dependencies</strong>:</p>
+
+<pre>// extensions/msteams/package.json
+{
+  "dependencies": {
+    "@microsoft/agents-hosting": "^1.3.1",
+    "express": "^5.2.1"
+  }
+}</pre>
+
+<p><code>@microsoft/agents-hosting</code> is Microsoft's official Bot Framework SDK (the next-gen successor to <code>botbuilder</code>). It handles:</p>
+<ul>
+  <li>JWT signature verification for all incoming Bot Framework webhooks</li>
+  <li><code>CloudAdapter</code> — the main adapter that processes activities (messages, events) from Teams</li>
+  <li><code>MsalTokenProvider</code> — acquires Graph API access tokens via client credentials flow</li>
+  <li>Conversation references — the objects you store to enable proactive messaging</li>
+</ul>
+
+<p>Everything else in the Teams plugin is application code layered on top of these two packages. <strong>You can use the exact same SDK directly without OpenClaw.</strong></p>
+
+<hr class="section-divider">
+
+<h2>4. How the Pipeline Works (Traced Through the Code)</h2>
+
+<p>Here's the actual flow through the OpenClaw Teams plugin — no abstraction, just the code path:</p>
+
+<pre>// 1. Express server starts on port 3978
+//    monitor.ts → loadMSTeamsSdkWithAuth() → CloudAdapter
+app.post('/api/messages', async (req, res) => {
+  await adapter.process(req, res, async (turnContext) => {
+    await activityHandler.run(turnContext);
+  });
+});
+
+// 2. CloudAdapter verifies the JWT from Microsoft's servers
+//    If invalid → 401. If valid → calls your handler.
+
+// 3. Activity handler routes by type
+//    monitor-handler.ts
+if (activity.type === 'message') → onMessage handler
+if (activity.type === 'invoke')  → file consent handler
+
+// 4. Message handler (your agent logic goes here)
+//    monitor-handler/message-handler.ts
+const text = stripMSTeamsMentionTags(activity.text);  // remove @Chief tags
+const wasMentioned = wasMSTeamsBotMentioned(activity); // check RSC mention
+
+// 5. Store conversation reference (enables proactive replies)
+//    conversation-store-fs.ts
+await store.save(conversationId, conversationReference);
+
+// 6. Pass to LLM / agent logic (OpenClaw's runtime)
+//    → your agent loop goes here instead
+
+// 7. Send response
+//    send.ts → messenger.ts → adapter.continueConversation()
+await sendMessageMSTeams({ cfg, to: conversationId, text: response });</pre>
+
+<div class="finding-box">
+  <h3>The Key Insight</h3>
+  <p>Steps 1-3 and 7 are pure Bot Framework boilerplate — less than 50 lines. Steps 4-5 are OpenClaw's utilities (easily portable). Step 6 is where OpenClaw plugs in its LLM runtime. <strong>That's where your enterprise assistant logic goes instead.</strong></p>
+</div>
+
+<hr class="section-divider">
+
+<h2>5. Build Strategy — Your Own Stack</h2>
+
+<p>The right approach: <strong>new repo, clean stack</strong>. Extract the 6 useful files from OpenClaw's Teams plugin, strip the <code>openclaw/plugin-sdk/msteams</code> imports (they're just types + config utilities), replace with your own, and wire in your LLM/tool layer.</p>
+
+<h3>Your Dependency List (Minimal)</h3>
+
+<pre>// package.json — your enterprise-assistant
+{
+  "dependencies": {
+    "@microsoft/agents-hosting": "^1.3.1",   // Bot Framework (same as OpenClaw)
+    "@azure/identity": "^4.x",               // Azure AD client credentials
+    "@microsoft/microsoft-graph-client": "^3.x", // Graph API (email, calendar, files)
+    "express": "^5.2.1",                     // Webhook server
+    "zod": "^4.x",                           // Config validation
+    "dotenv": "^17.x"                        // Env var loading
+  }
+}</pre>
+
+<p>That's <strong>6 dependencies</strong> instead of 60+. Everything you need, nothing you don't.</p>
+
+<h3>Your File Structure</h3>
+
+<pre>enterprise-assistant/
+├── src/
+│   ├── teams/
+│   │   ├── sdk.ts          ← adapt from openclaw/extensions/msteams/src/sdk.ts (~30 lines)
+│   │   ├── token.ts        ← adapt from openclaw/extensions/msteams/src/token.ts (~50 lines)
+│   │   ├── inbound.ts      ← copy openclaw/extensions/msteams/src/inbound.ts (~60 lines)
+│   │   ├── graph.ts        ← adapt from openclaw/extensions/msteams/src/graph.ts (~80 lines)
+│   │   ├── conversation-store.ts  ← adapt from openclaw conversation-store-fs.ts (~100 lines)
+│   │   └── webhook.ts      ← your monitor.ts (Express + CloudAdapter wiring)
+│   ├── agent/
+│   │   ├── index.ts        ← your LLM loop (calls Claude/GPT via API)
+│   │   └── tools/          ← your Claws (email, calendar, data, reports)
+│   │       ├── email.ts    ← Graph Mail API
+│   │       ├── calendar.ts ← Graph Calendar API
+│   │       ├── reports.ts  ← your report generation
+│   │       └── data.ts     ← your CMS data queries
+│   └── index.ts            ← entry point, wires everything together
+├── .env
+└── package.json</pre>
+
+<h3>Your webhook.ts (Core Wiring — ~60 lines)</h3>
+
+<pre>import express from "express";
+import { loadMSTeamsSdkWithAuth, createMSTeamsAdapter } from "./sdk.js";
+import { resolveMSTeamsCredentials } from "./token.js";
+import { stripMSTeamsMentionTags, wasMSTeamsBotMentioned } from "./inbound.js";
+import { saveConversation } from "./conversation-store.js";
+import { runAgent } from "../agent/index.js";
+
+const app = express();
+app.use(express.json());
+
+const creds = resolveMSTeamsCredentials();
+const { sdk, authConfig } = await loadMSTeamsSdkWithAuth(creds);
+const adapter = createMSTeamsAdapter(authConfig, sdk);
+
+app.post("/api/messages", async (req, res) => {
+  await adapter.process(req, res, async (turnContext) => {
+    const activity = turnContext.activity;
+
+    if (activity.type !== "message") return;
+
+    // Store conversation reference for proactive messaging
+    const ref = sdk.TurnContext.getConversationReference(activity);
+    await saveConversation(activity.conversation.id, ref);
+
+    // Strip @mention tags, get clean user text
+    const text = stripMSTeamsMentionTags(activity.text ?? "");
+    if (!text) return;
+
+    // Run your agent
+    const response = await runAgent({
+      text,
+      userId: activity.from.id,
+      conversationId: activity.conversation.id,
+      tenantId: activity.channelData?.tenant?.id,
+    });
+
+    // Reply
+    await turnContext.sendActivity(response);
+  });
+});
+
+app.listen(3978, () => console.log("Teams webhook ready on :3978"));</pre>
+
+<h3>Your graph.ts (Graph API Client — adapt from OpenClaw)</h3>
+
+<pre>// Adapted from openclaw/extensions/msteams/src/graph.ts
+// OpenClaw uses @microsoft/agents-hosting MsalTokenProvider for token acquisition
+// You can use the same pattern or @azure/identity ClientCredentialTokenCredential
+
+import { ClientSecretCredential } from "@azure/identity";
+import { Client } from "@microsoft/microsoft-graph-client";
+import { TokenCredentialAuthenticationProvider } from
+  "@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials/index.js";
+
+export function buildGraphClient(tenantId: string, clientId: string, clientSecret: string) {
+  const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+  const authProvider = new TokenCredentialAuthenticationProvider(credential, {
+    scopes: ["https://graph.microsoft.com/.default"],
+  });
+  return Client.initWithMiddleware({ authProvider });
+}
+
+// Then your tools use it:
+// const mail = await graphClient.api("/users/{userId}/messages").get();
+// const events = await graphClient.api("/users/{userId}/events").get();
+// const channels = await graphClient.api("/teams/{teamId}/channels").get();</pre>
+
+<hr class="section-divider">
+
+<h2>6. What You're NOT Copying (and Why)</h2>
+
+<table>
+  <tr><th>OpenClaw Feature</th><th>Why Skip It</th><th>Your Alternative</th></tr>
+  <tr><td>Plugin SDK / config schema</td><td>Tightly coupled to OpenClaw's config system (JSON5 + complex validators)</td><td>Simple <code>.env</code> file + Zod schema</td></tr>
+  <tr><td>Session management / routing</td><td>Built for personal assistant multi-channel routing (Telegram + WhatsApp + Teams all at once)</td><td>Route by Teams conversation ID directly</td></tr>
+  <tr><td>Pairing / dmPolicy</td><td>Public bot security feature (unknown strangers messaging your bot)</td><td>Azure AD + Tenant ID restriction is your access control — all users already in the org</td></tr>
+  <tr><td>Onboarding wizard (onboarding.ts)</td><td>OpenClaw CLI UX</td><td>README + your own deployment script</td></tr>
+  <tr><td>Pi agent runtime</td><td>OpenClaw's embedded agentic loop</td><td>Your own agent loop calling Anthropic/OpenAI API directly</td></tr>
+  <tr><td>Heartbeat / cron</td><td>Personal assistant feature</td><td>Azure Container Apps scheduled triggers or Logic Apps</td></tr>
+  <tr><td>File consent (large files in DMs)</td><td>Useful but complex (~200 lines)</td><td>Add in Phase 2 — not needed for MVP</td></tr>
+  <tr><td>SharePoint upload</td><td>Useful for group file sharing, 452 lines</td><td>Add in Phase 2</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<h2>7. What You Keep (and What to Watch For)</h2>
+
+<div class="alert alert-green">
+  <strong>The OpenClaw Teams plugin is MIT licensed.</strong> You can copy, adapt, and use this code commercially without restriction. Just preserve attribution comments where you've directly copied non-trivial logic.
+</div>
+
+<p><strong>6 files to extract and adapt:</strong></p>
+
+<div class="file-card"><strong>sdk.ts</strong> — ~30 lines. Load <code>@microsoft/agents-hosting</code>, build auth config, create CloudAdapter. Zero OpenClaw SDK imports. Copy as-is, just update import paths.</div>
+
+<div class="file-card"><strong>token.ts</strong> — ~50 lines. Reads appId/appPassword/tenantId from config or env vars. Has one import from <code>openclaw/plugin-sdk/msteams</code> (the <code>normalizeSecretInputString</code> utility) — replace that with a simple <code>?.trim() || undefined</code> inline. Done.</div>
+
+<div class="file-card"><strong>inbound.ts</strong> — ~60 lines. Pure utility functions: strip <code>&lt;at&gt;</code> tags, detect bot mention, parse conversation IDs, normalize timestamps. <strong>Zero OpenClaw imports.</strong> Copy verbatim.</div>
+
+<div class="file-card"><strong>graph.ts</strong> — ~80 lines. Token acquisition + Graph API fetch helper. Uses <code>MsalTokenProvider</code> from agents-hosting for tokens. You can keep this pattern or swap to <code>@azure/identity</code> + the official Graph client (more ergonomic). Either works.</div>
+
+<div class="file-card"><strong>conversation-store-fs.ts</strong> — ~100 lines. Reads/writes <code>msteams-conversations.json</code>. Has some OpenClaw imports (file lock, JSON utilities) — replace those with simple <code>fs.promises.readFile/writeFile</code> + a JSON parse. Straightforward.</div>
+
+<div class="file-card"><strong>errors.ts</strong> — ~205 lines. Error classification for Teams send failures, user-friendly error messages. Minor OpenClaw type imports — easy to strip. Worth keeping for good UX on failures.</div>
+
+<p><strong>What to watch for when adapting:</strong></p>
+<ul>
+  <li><code>openclaw/plugin-sdk/msteams</code> imports — all of these are type definitions or simple utility functions. For each one, either inline the logic (~3 lines) or define your own matching type. Nothing complex.</li>
+  <li><code>getMSTeamsRuntime()</code> calls in monitor.ts — this is OpenClaw's runtime injection (logger, config reloader). Replace with a simple console logger and your own config object.</li>
+  <li><code>OpenClawConfig</code> type throughout — replace with your own config type: <code>{ appId, appPassword, tenantId }</code>.</li>
+</ul>
+
+<hr class="section-divider">
+
+<h2>8. Your Agent Loop (What Goes Where OpenClaw's Pi Runtime Was)</h2>
+
+<p>OpenClaw's Teams plugin hands off to its Pi agent runtime at the message handler level. That's your extension point. Here's the shape:</p>
+
+<pre>// src/agent/index.ts
+import Anthropic from "@anthropic-ai/sdk";
+import { buildGraphClient } from "../teams/graph.js";
+import { readInbox, sendEmail } from "./tools/email.js";
+import { getCalendar, createEvent } from "./tools/calendar.js";
+import { generateReport } from "./tools/reports.js";
+
+const claude = new Anthropic();
+
+export async function runAgent(params: {
+  text: string;
+  userId: string;
+  conversationId: string;
+  tenantId: string;
+}) {
+  // Build Graph client for this user/tenant
+  const graph = buildGraphClient(
+    params.tenantId,
+    process.env.MSTEAMS_APP_ID!,
+    process.env.MSTEAMS_APP_PASSWORD!
+  );
+
+  // Your tools (the "Claws")
+  const tools = [
+    readInbox(graph, params.userId),
+    sendEmail(graph, params.userId),
+    getCalendar(graph, params.userId),
+    createEvent(graph, params.userId),
+    generateReport(),
+  ];
+
+  // LLM loop (tool use pattern)
+  const response = await claude.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 4096,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: "user", content: params.text }],
+    tools,
+  });
+
+  return extractTextFromResponse(response);
+}</pre>
+
+<hr class="section-divider">
+
+<h2>9. Build Phases</h2>
+
+<table>
+  <tr><th>Phase</th><th>What to Build</th><th>Time Est.</th><th>Enables</th></tr>
+  <tr><td><strong>MVP</strong></td><td>webhook.ts + sdk.ts + token.ts + inbound.ts + graph.ts + basic agent loop</td><td>1-2 days</td><td>Teams DMs working, basic LLM responses</td></tr>
+  <tr><td><strong>Email Claw</strong></td><td>Graph Mail API tool — inbox triage, draft, send</td><td>1 day</td><td>"What's in my inbox?" — Dave's #1 use case</td></tr>
+  <tr><td><strong>Calendar Claw</strong></td><td>Graph Calendar API tool — read events, create meetings</td><td>1 day</td><td>"What's on my calendar this week?"</td></tr>
+  <tr><td><strong>Report Claw</strong></td><td>Generate styled HTML reports from data + send as file/link</td><td>2-3 days</td><td>Weekly reports pushed to Teams</td></tr>
+  <tr><td><strong>Memory</strong></td><td>Simple PostgreSQL user context store (preferences, past requests)</td><td>1 day</td><td>Remembers what Dave cares about</td></tr>
+  <tr><td><strong>Channel support</strong></td><td>RSC permissions, group/channel routing, mention handling</td><td>1 day</td><td>Works in Teams channels, not just DMs</td></tr>
+  <tr><td><strong>Production</strong></td><td>Dockerize → Azure Container Apps → Caddy/nginx reverse proxy</td><td>1 day</td><td>Deploy into client tenant</td></tr>
+</table>
+
+<div class="alert alert-blue">
+  <strong>Total MVP to Production:</strong> ~8-10 days of focused build time. The first version (DMs + email + calendar) is achievable in a weekend once Azure is stood up.
+</div>
+
+<hr class="section-divider">
+
+<h2>10. Decision Summary</h2>
+
+<table>
+  <tr><th>Option</th><th>Pros</th><th>Cons</th><th>Verdict</th></tr>
+  <tr>
+    <td><strong>A) Fork full OpenClaw</strong></td>
+    <td>Everything included; actively maintained</td>
+    <td>60+ deps, personal assistant architecture, tightly coupled to Pi runtime, constant upstream drift, not designed for enterprise multi-user</td>
+    <td><span class="tag tag-red">❌ Don't</span></td>
+  </tr>
+  <tr>
+    <td><strong>B) Use OpenClaw as-is (just configure it)</strong></td>
+    <td>Zero build effort; already running on your machine</td>
+    <td>Can't white-label; can't deploy into client Azure tenant as your product; not your IP; personal assistant UX not enterprise UX</td>
+    <td><span class="tag tag-yellow">Dev only</span></td>
+  </tr>
+  <tr>
+    <td><strong>C) Extract Teams plugin files + build your own stack</strong></td>
+    <td>6 deps not 60; your IP; deploy into any client tenant; enterprise multi-user architecture; clean codebase you understand fully</td>
+    <td>2-3 days of extraction/adaptation work upfront</td>
+    <td><span class="tag tag-green">✅ Do this</span></td>
+  </tr>
+</table>
+
+<p>Option B (use OpenClaw for your own dev environment) is actually fine — keep using it for your personal setup on this Mac Mini. But for the enterprise product you're building for clients, that's Option C: your own stack, built on the same foundation (<code>@microsoft/agents-hosting</code>), with the battle-tested utility code extracted from OpenClaw's Teams plugin as your starting point.</p>
+
+<hr class="section-divider">
+
+<p class="citation">
+  Source: OpenClaw v2026.3.8 source at /opt/homebrew/lib/node_modules/openclaw/extensions/msteams/src/ (MIT License) · @microsoft/agents-hosting npm package · github.com/openclaw/openclaw
+</p>
+
+</body>
+</html>

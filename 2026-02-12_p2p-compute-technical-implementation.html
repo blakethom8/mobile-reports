@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Compute - Technical Implementation | Feb 12, 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 40px;
+        }
+        
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        header .meta {
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4a5568;
+        }
+        
+        h3 {
+            color: #4a5568;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+        
+        h4 {
+            color: #2d3748;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        strong {
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tech-box {
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4a5568;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+        
+        .tech-box.pro {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .tech-box.con {
+            border-left-color: #f56565;
+            background: #fff5f5;
+        }
+        
+        .tech-box h4 {
+            margin-top: 0;
+        }
+        
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .rating {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .rating-5 {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .rating-4 {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        
+        .rating-3 {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+        
+        .rating-2 {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4a5568, transparent);
+            margin: 40px 0;
+        }
+        
+        footer {
+            background: #f7fafc;
+            padding: 30px 40px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 0;
+            }
+            
+            header, .content, footer {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 1.6em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ P2P Compute Marketplace</h1>
+            <div class="subtitle">Technical Implementation Analysis</div>
+            <div class="meta">
+                Blake Thomson | February 12, 2026<br>
+                Comparing approaches: SSH, Tailscale, Docker Swarm, Nomad, Custom Platform
+            </div>
+        </header>
+        
+        <div class="content">
+            <h2>Overview</h2>
+            <p>This document analyzes five technical approaches for enabling peer-to-peer compute sharing, from simple (works today) to complex (full marketplace platform). Each approach is evaluated on implementation effort, security, scalability, and user experience.</p>
+
+            <div class="tech-box">
+                <h4>Key Question</h4>
+                <p><strong>Blake wants to run OpenClaw agent workloads on Dave's Mac Mini when his laptop is maxed out. What's the best way to make this happen?</strong></p>
+            </div>
+
+            <h2>Approach Comparison Matrix</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Approach</th>
+                        <th>Setup Time</th>
+                        <th>Complexity</th>
+                        <th>Security</th>
+                        <th>UX</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. SSH + Docker Remote</strong></td>
+                        <td>30 minutes</td>
+                        <td><span class="rating rating-5">Very Low</span></td>
+                        <td><span class="rating rating-5">Excellent</span></td>
+                        <td><span class="rating rating-3">Manual</span></td>
+                        <td>2-3 friends, quick test</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Tailscale + Docker</strong></td>
+                        <td>1 hour</td>
+                        <td><span class="rating rating-5">Low</span></td>
+                        <td><span class="rating rating-5">Excellent</span></td>
+                        <td><span class="rating rating-4">Good</span></td>
+                        <td>Friends network, MVP</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Docker Swarm</strong></td>
+                        <td>2-3 hours</td>
+                        <td><span class="rating rating-4">Medium</span></td>
+                        <td><span class="rating rating-4">Good</span></td>
+                        <td><span class="rating rating-4">Good</span></td>
+                        <td>Small team (3-5 people)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Nomad</strong></td>
+                        <td>1-2 days</td>
+                        <td><span class="rating rating-3">High</span></td>
+                        <td><span class="rating rating-5">Excellent</span></td>
+                        <td><span class="rating rating-4">Good</span></td>
+                        <td>Multi-cloud orchestration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Custom Marketplace</strong></td>
+                        <td>1-3 months</td>
+                        <td><span class="rating rating-2">Very High</span></td>
+                        <td><span class="rating rating-4">Configurable</span></td>
+                        <td><span class="rating rating-5">Excellent</span></td>
+                        <td>Full product launch</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-divider"></div>
+
+            <h2>Approach 1: SSH + Docker Remote Context</h2>
+
+            <h3>How It Works</h3>
+            <p>Docker natively supports running containers on remote hosts over SSH. You configure a "context" pointing to Dave's machine, and all <code>docker</code> commands execute there instead of locally.</p>
+
+            <pre><code># Dave's side (one-time setup)
+# 1. Enable SSH with key-based auth
+ssh-keygen -t ed25519  # Generate SSH key
+cat ~/.ssh/id_ed25519.pub  # Share public key with Blake
+
+# 2. Blake adds Dave's key to authorized_keys
+echo "ssh-ed25519 AAAA...dave@dave-mac" >> ~/.ssh/authorized_keys
+
+# 3. Verify Docker is installed and running
+docker ps
+
+# Blake's side (every time)
+# Create remote context
+docker context create dave-mac \\
+  --description "Dave's Mac Mini" \\
+  --docker "host=ssh://blake@192.168.1.100"
+
+# Switch to remote context
+docker context use dave-mac
+
+# Now all docker commands run on Dave's machine
+docker run -m 16g --rm my-agent-workload
+docker ps  # Shows containers running on Dave's machine
+
+# Switch back to local
+docker context use default</code></pre>
+
+            <h3>Pros & Cons</h3>
+
+            <div class="tech-box pro">
+                <h4>✅ Pros</h4>
+                <ul>
+                    <li><strong>Works today:</strong> Zero new software, uses existing Docker + SSH</li>
+                    <li><strong>Secure:</strong> SSH encryption, key-based auth, proven security model</li>
+                    <li><strong>Simple:</strong> Minimal setup, easy to understand</li>
+                    <li><strong>Full control:</strong> Dave can see exactly what's running (<code>docker ps</code>)</li>
+                    <li><strong>No cloud dependency:</strong> Works on local network or over internet</li>
+                </ul>
+            </div>
+
+            <div class="tech-box con">
+                <h4>❌ Cons</h4>
+                <ul>
+                    <li><strong>Manual IP management:</strong> Need Dave's IP address (changes if on DHCP)</li>
+                    <li><strong>No discovery:</strong> Blake has to know Dave's machine exists and is available</li>
+                    <li><strong>No payment system:</strong> Settlement is manual (Venmo, PayPal)</li>
+                    <li><strong>Network dependency:</strong> If Dave's machine is behind firewall, needs port forwarding</li>
+                    <li><strong>Single point of failure:</strong> If Dave's machine goes down, job fails</li>
+                </ul>
+            </div>
+
+            <h3>Technical Details</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Transport</strong></td>
+                        <td>SSH (encrypted, authenticated)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Isolation</strong></td>
+                        <td>Docker containers (cgroups, namespaces)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resource limits</strong></td>
+                        <td><code>docker run -m 16g --cpus 4</code> (enforced by kernel)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Networking</strong></td>
+                        <td>Bridge network (containers can't access host network by default)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage</strong></td>
+                        <td>Container filesystem (ephemeral unless volumes mounted)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monitoring</strong></td>
+                        <td><code>docker stats</code> (CPU, RAM, network usage)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Security Considerations</h3>
+
+            <p><strong>What Blake CAN do:</strong></p>
+            <ul>
+                <li>Run any Docker image on Dave's machine</li>
+                <li>Execute commands inside containers</li>
+                <li>Read container logs</li>
+                <li>Copy files in/out of containers</li>
+            </ul>
+
+            <p><strong>What Blake CANNOT do (without explicit permission):</strong></p>
+            <ul>
+                <li>Access Dave's filesystem outside containers</li>
+                <li>See Dave's other processes</li>
+                <li>Access Dave's home network</li>
+                <li>Modify Dave's system configuration</li>
+            </ul>
+
+            <p><strong>Risk: Blake runs a malicious container</strong></p>
+            <pre><code># Malicious example (DON'T DO THIS)
+docker run -v /:/host-root alpine cat /host-root/Users/dave/.ssh/id_rsa</code></pre>
+            <p><strong>Mitigation:</strong> Dave should restrict what Blake can mount. Use <code>docker-compose</code> with pre-approved volumes only.</p>
+
+            <h3>When to Use This</h3>
+            <ul>
+                <li>✅ You trust the person (friend, colleague)</li>
+                <li>✅ You only have 2-3 hosts</li>
+                <li>✅ You want to test the concept quickly</li>
+                <li>✅ You don't need automated discovery or payment</li>
+            </ul>
+
+            <p><strong>Recommendation for Blake:</strong> Start here to validate demand with 2-3 friends this week.</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Approach 2: Tailscale + Docker Remote</h2>
+
+            <h3>How It Works</h3>
+            <p>Tailscale creates a private VPN (mesh network) between your devices. Each machine gets a persistent IP (100.x.x.x) that's accessible from anywhere. You then use Docker remote context over Tailscale IPs.</p>
+
+            <pre><code># Both Blake and Dave install Tailscale
+brew install tailscale
+sudo tailscale up
+
+# Tailscale assigns persistent IPs:
+# Blake's laptop: 100.64.0.10
+# Dave's Mac Mini: 100.64.0.5
+
+# Blake creates Docker context using Tailscale IP
+docker context create dave-mac \\
+  --docker "host=ssh://blake@100.64.0.5"
+
+# Now works from anywhere (not just home network)
+docker context use dave-mac
+docker run my-workload</code></pre>
+
+            <h3>Pros & Cons</h3>
+
+            <div class="tech-box pro">
+                <h4>✅ Pros</h4>
+                <ul>
+                    <li><strong>Works from anywhere:</strong> Not tied to local network, can access Dave's machine from coffee shop</li>
+                    <li><strong>Persistent IPs:</strong> Tailscale IPs don't change (100.x.x.x)</li>
+                    <li><strong>Encrypted:</strong> WireGuard encryption (fast, modern)</li>
+                    <li><strong>Easy setup:</strong> Install app, sign in, done (5 minutes)</li>
+                    <li><strong>Free for personal use:</strong> Up to 100 devices, no cost</li>
+                    <li><strong>NAT traversal:</strong> Works even if Dave is behind router/firewall</li>
+                </ul>
+            </div>
+
+            <div class="tech-box con">
+                <h4>❌ Cons</h4>
+                <ul>
+                    <li><strong>Still no discovery:</strong> Blake has to know Dave's Tailscale IP</li>
+                    <li><strong>Still no payment:</strong> Manual settlement</li>
+                    <li><strong>Trust required:</strong> Tailscale gives full network access (not just Docker)</li>
+                    <li><strong>Dependency on Tailscale:</strong> If Tailscale goes down, connectivity breaks</li>
+                    <li><strong>Account required:</strong> Both need Tailscale accounts</li>
+                </ul>
+            </div>
+
+            <h3>Technical Details</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Transport</strong></td>
+                        <td>WireGuard VPN (Tailscale mesh network)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IP allocation</strong></td>
+                        <td>100.x.x.x CGNAT range (persistent)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Firewall traversal</strong></td>
+                        <td>DERP relay servers (works behind NAT)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Encryption</strong></td>
+                        <td>WireGuard (Noise protocol framework)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Isolation</strong></td>
+                        <td>Docker containers (same as Approach 1)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Access control</strong></td>
+                        <td>Tailscale ACLs (can restrict which machines talk to each other)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Advanced: Tailscale ACLs for Security</h3>
+            <pre><code>// Tailscale ACL policy (JSON)
+{
+  "acls": [
+    {
+      "action": "accept",
+      "src": ["blake@example.com"],
+      "dst": ["dave-mac:22", "dave-mac:2375"],  // SSH + Docker
+    },
+    {
+      "action": "accept",
+      "src": ["dave@example.com"],
+      "dst": ["blake-laptop:*"],
+    }
+  ]
+}</code></pre>
+            <p>This restricts Blake to only SSH and Docker access on Dave's machine (not full network access).</p>
+
+            <h3>When to Use This</h3>
+            <ul>
+                <li>✅ You want to access Dave's machine from anywhere (not just home network)</li>
+                <li>✅ You have 3-10 hosts in your network</li>
+                <li>✅ You want persistent IPs (no dynamic DNS headaches)</li>
+                <li>✅ You're comfortable with a third-party VPN service</li>
+            </ul>
+
+            <p><strong>Recommendation for Blake:</strong> Best MVP approach for a small friends network. Use this to build initial product.</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Approach 3: Docker Swarm</h2>
+
+            <h3>How It Works</h3>
+            <p>Docker Swarm is Docker's native orchestration mode. You create a "swarm" (cluster) of machines, designate managers and workers, and deploy services that automatically distribute across hosts.</p>
+
+            <pre><code># Dave's machine - initialize swarm
+docker swarm init --advertise-addr 192.168.1.100
+
+# Output: join token for workers
+# To add a worker: docker swarm join --token SWMTKN-1-...
+
+# Blake's laptop - join as worker (optional, or just manager)
+docker swarm join --token SWMTKN-1-... 192.168.1.100:2377
+
+# Now deploy a service (runs on any available node)
+docker service create \\
+  --name blake-agents \\
+  --replicas 5 \\
+  --constraint 'node.hostname==dave-mac' \\
+  --reserve-memory 16g \\
+  my-agent-image
+
+# Check where containers are running
+docker service ps blake-agents
+
+# Scale up/down
+docker service scale blake-agents=10</code></pre>
+
+            <h3>Pros & Cons</h3>
+
+            <div class="tech-box pro">
+                <h4>✅ Pros</h4>
+                <ul>
+                    <li><strong>Built into Docker:</strong> No additional software, native orchestration</li>
+                    <li><strong>Service discovery:</strong> Containers can find each other by name</li>
+                    <li><strong>Load balancing:</strong> Distribute workloads across multiple hosts</li>
+                    <li><strong>Health checks:</strong> Restart failed containers automatically</li>
+                    <li><strong>Rolling updates:</strong> Deploy new versions without downtime</li>
+                    <li><strong>Secrets management:</strong> Securely pass credentials to containers</li>
+                </ul>
+            </div>
+
+            <div class="tech-box con">
+                <h4>❌ Cons</h4>
+                <ul>
+                    <li><strong>More complex setup:</strong> Need to understand manager/worker roles</li>
+                    <li><strong>Port management:</strong> Opens ports 2377, 7946, 4789 (security concern)</li>
+                    <li><strong>Still no payment:</strong> Manual settlement</li>
+                    <li><strong>Fixed cluster:</strong> Hosts join permanently, not ephemeral rentals</li>
+                    <li><strong>Declining adoption:</strong> Docker Inc deprioritized Swarm in favor of Kubernetes</li>
+                </ul>
+            </div>
+
+            <h3>Technical Details</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Purpose</th>
+                        <th>Port</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Manager node</strong></td>
+                        <td>Orchestrates cluster, schedules tasks</td>
+                        <td>2377/tcp</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Worker node</strong></td>
+                        <td>Runs containers assigned by manager</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gossip network</strong></td>
+                        <td>Service discovery, health checks</td>
+                        <td>7946/tcp+udp</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Overlay network</strong></td>
+                        <td>Encrypted container-to-container traffic</td>
+                        <td>4789/udp</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Resource Constraints</h3>
+            <pre><code># Service with resource limits
+docker service create \\
+  --name data-processing \\
+  --replicas 3 \\
+  --reserve-memory 4g \\
+  --limit-memory 8g \\
+  --reserve-cpu 2 \\
+  --limit-cpu 4 \\
+  my-heavy-workload</code></pre>
+
+            <h3>When to Use This</h3>
+            <ul>
+                <li>✅ You have a small team (3-5 people) pooling resources</li>
+                <li>✅ Hosts are semi-permanent (not ephemeral rentals)</li>
+                <li>✅ You want automatic failover and health monitoring</li>
+                <li>✅ You're already familiar with Docker and don't want to learn Kubernetes</li>
+            </ul>
+
+            <p><strong>Recommendation for Blake:</strong> Overkill for peer-to-peer rentals. Better for a small team with dedicated infrastructure.</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Approach 4: HashiCorp Nomad</h2>
+
+            <h3>How It Works</h3>
+            <p>Nomad is a lightweight alternative to Kubernetes for scheduling jobs across multiple machines. It's simpler than Kubernetes but more powerful than Docker Swarm.</p>
+
+            <pre><code># Install Nomad on all machines
+brew install nomad
+
+# Dave's machine - start Nomad server
+nomad agent -server -bootstrap-expect=1 -data-dir=/tmp/nomad
+
+# Blake's laptop - start Nomad client (connects to Dave's server)
+nomad agent -client -servers=192.168.1.100:4647 -data-dir=/tmp/nomad
+
+# Define a job (job.hcl)
+job "blake-agents" {
+  datacenters = ["dc1"]
+  
+  group "agents" {
+    count = 5
+    
+    task "agent" {
+      driver = "docker"
+      
+      config {
+        image = "my-agent-image"
+        memory_hard_limit = 3200  # 3.2GB per agent
+      }
+      
+      resources {
+        cpu    = 500  # MHz
+        memory = 2048 # MB
+      }
+    }
+  }
+}
+
+# Submit job to cluster
+nomad job run job.hcl
+
+# Check status
+nomad status blake-agents</code></pre>
+
+            <h3>Pros & Cons</h3>
+
+            <div class="tech-box pro">
+                <h4>✅ Pros</h4>
+                <ul>
+                    <li><strong>Multi-cloud:</strong> Can mix AWS, Dave's Mac, and your laptop in one cluster</li>
+                    <li><strong>Multiple workload types:</strong> Docker, Java, binaries, VMs</li>
+                    <li><strong>Better scheduling:</strong> Smarter placement than Docker Swarm</li>
+                    <li><strong>Good for batch jobs:</strong> Designed for ephemeral workloads</li>
+                    <li><strong>Integrates with Consul, Vault:</strong> Service discovery, secrets management</li>
+                    <li><strong>Active development:</strong> HashiCorp maintains it (unlike Docker Swarm)</li>
+                </ul>
+            </div>
+
+            <div class="tech-box con">
+                <h4>❌ Cons</h4>
+                <ul>
+                    <li><strong>Learning curve:</strong> More concepts to learn (jobs, task groups, allocations)</li>
+                    <li><strong>Overkill for small setups:</strong> Complex for 2-3 machines</li>
+                    <li><strong>Still no payment:</strong> Manual settlement</li>
+                    <li><strong>Requires dedicated server:</strong> Nomad server needs to run 24/7</li>
+                </ul>
+            </div>
+
+            <h3>Technical Details</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nomad Server</strong></td>
+                        <td>Cluster orchestration, job scheduling, leader election</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nomad Client</strong></td>
+                        <td>Runs on worker machines, executes tasks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Job</strong></td>
+                        <td>Declarative spec for what to run (like Kubernetes Deployment)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task Group</strong></td>
+                        <td>Set of tasks that run together on same machine</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Allocation</strong></td>
+                        <td>Instance of a task group running on a client</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>When to Use This</h3>
+            <ul>
+                <li>✅ You need to orchestrate workloads across AWS + local machines</li>
+                <li>✅ You want better scheduling than Docker Swarm</li>
+                <li>✅ You're already using HashiCorp tools (Consul, Vault, Terraform)</li>
+                <li>✅ You have experience with cluster orchestration</li>
+            </ul>
+
+            <p><strong>Recommendation for Blake:</strong> Only if you need multi-cloud orchestration. Too complex for a simple peer-to-peer marketplace MVP.</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Approach 5: Custom Marketplace Platform</h2>
+
+            <h3>Architecture Overview</h3>
+            <p>Build a purpose-built platform with host daemon, central registry, renter CLI, and automated payment/discovery.</p>
+
+            <h3>Components</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Host Daemon</strong></td>
+                        <td>Go (or Rust)</td>
+                        <td>Monitors resources, accepts jobs, reports usage</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Central Registry</strong></td>
+                        <td>FastAPI (Python)</td>
+                        <td>Lists available hosts, matches renters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Renter CLI</strong></td>
+                        <td>Python or Go</td>
+                        <td>Search, rent, deploy workloads</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payment Service</strong></td>
+                        <td>Stripe API</td>
+                        <td>Escrow, settlement, payouts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>Hosts, users, transactions, ratings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Workload Transport</strong></td>
+                        <td>Docker over SSH</td>
+                        <td>Deploy containers to remote hosts</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Data Flow</h3>
+            <pre><code>1. Host (Dave) starts daemon
+   └─> Registers with central registry
+   └─> Publishes availability (16GB RAM, $0.50/hour)
+
+2. Renter (Blake) searches marketplace
+   └─> Queries central registry
+   └─> Sees Dave's machine available
+
+3. Blake rents Dave's machine
+   └─> Payment held in escrow (Stripe)
+   └─> Registry returns Dave's connection details
+
+4. Blake deploys workload
+   └─> CLI uploads Docker image to Dave's daemon
+   └─> Daemon runs container, reports usage
+
+5. Job completes
+   └─> Daemon notifies registry
+   └─> Registry triggers payment release to Dave
+   └─> Blake downloads results</code></pre>
+
+            <h3>Host Daemon (Pseudocode)</h3>
+            <pre><code>// host_daemon.go
+package main
+
+func main() {
+    // Load config
+    config := loadConfig()  // RAM limit, price, trust list
+    
+    // Register with central registry
+    registerHost(config)
+    
+    // Start API server
+    http.HandleFunc("/api/run", handleRunJob)
+    http.HandleFunc("/api/status", handleStatus)
+    http.ListenAndServe(":9000", nil)
+    
+    // Background: monitor resources
+    go monitorResources()
+    
+    // Background: heartbeat to registry
+    go heartbeat()
+}
+
+func handleRunJob(w http.ResponseWriter, r *http.Request) {
+    // 1. Verify renter is authorized
+    if !isAuthorized(r.Header.Get("X-Renter-ID")) {
+        http.Error(w, "Unauthorized", 401)
+        return
+    }
+    
+    // 2. Check resources available
+    if !hasCapacity(r.RAM, r.CPU) {
+        http.Error(w, "Insufficient resources", 503)
+        return
+    }
+    
+    // 3. Pull Docker image
+    docker.Pull(r.Image)
+    
+    // 4. Run container with limits
+    containerID := docker.Run(
+        image: r.Image,
+        memory: r.RAM,
+        cpus: r.CPU,
+        networkMode: "none",  // Isolated
+    )
+    
+    // 5. Monitor and report usage
+    go reportUsage(containerID)
+    
+    w.Write(containerID)
+}</code></pre>
+
+            <h3>Central Registry API</h3>
+            <pre><code># registry_api.py (FastAPI)
+from fastapi import FastAPI
+from typing import List
+
+app = FastAPI()
+
+@app.get("/hosts/search")
+def search_hosts(ram_gb: int, location: str = None) -> List[Host]:
+    """Find available hosts matching requirements"""
+    query = db.query(Host).filter(
+        Host.available_ram >= ram_gb,
+        Host.status == "online"
+    )
+    
+    if location:
+        query = query.filter(Host.location == location)
+    
+    return query.order_by(Host.price_per_hour).all()
+
+@app.post("/rentals")
+def create_rental(renter_id: str, host_id: str, specs: dict):
+    """Create rental, hold payment in escrow"""
+    # 1. Verify host has capacity
+    host = db.query(Host).get(host_id)
+    if host.available_ram < specs['ram']:
+        raise HTTPException(400, "Insufficient capacity")
+    
+    # 2. Hold payment in escrow
+    payment = stripe.PaymentIntent.create(
+        amount=calculate_cost(host, specs),
+        currency="usd",
+        customer=renter_id,
+        capture_method="manual"  # Escrow
+    )
+    
+    # 3. Create rental record
+    rental = Rental(
+        renter_id=renter_id,
+        host_id=host_id,
+        specs=specs,
+        payment_intent=payment.id,
+        status="active"
+    )
+    db.add(rental)
+    db.commit()
+    
+    # 4. Return connection details
+    return {
+        "rental_id": rental.id,
+        "host_ip": host.tailscale_ip,
+        "ssh_key": host.public_key
+    }</code></pre>
+
+            <h3>Pros & Cons</h3>
+
+            <div class="tech-box pro">
+                <h4>✅ Pros</h4>
+                <ul>
+                    <li><strong>Full control:</strong> Custom UX, features, pricing</li>
+                    <li><strong>Discovery built-in:</strong> Central registry, search/filter</li>
+                    <li><strong>Automated payment:</strong> Stripe integration, escrow, settlement</li>
+                    <li><strong>Trust layer:</strong> Ratings, reputation, reviews</li>
+                    <li><strong>Scalable:</strong> Can support thousands of hosts</li>
+                    <li><strong>Monetizable:</strong> Transaction fees, premium tiers</li>
+                </ul>
+            </div>
+
+            <div class="tech-box con">
+                <h4>❌ Cons</h4>
+                <ul>
+                    <li><strong>High complexity:</strong> Multiple services to build and maintain</li>
+                    <li><strong>Long development time:</strong> 1-3 months for MVP</li>
+                    <li><strong>Operational overhead:</strong> Need to run registry 24/7, handle support</li>
+                    <li><strong>Security responsibility:</strong> You own the platform, you own the breaches</li>
+                    <li><strong>Chicken-egg problem:</strong> Need both hosts and renters to launch</li>
+                </ul>
+            </div>
+
+            <h3>When to Use This</h3>
+            <ul>
+                <li>✅ You've validated demand with simpler approaches (Tailscale)</li>
+                <li>✅ You want to build a real business (not just personal tool)</li>
+                <li>✅ You have 3-6 months to dedicate to development</li>
+                <li>✅ You're comfortable running production infrastructure</li>
+            </ul>
+
+            <p><strong>Recommendation for Blake:</strong> This is the end goal after proving product-market fit with Approach 2 (Tailscale).</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Recommended Implementation Path</h2>
+
+            <h3>Phase 1: Validate Demand (Week 1-4)</h3>
+            <p><strong>Use Approach 1: SSH + Docker Remote</strong></p>
+            <ol>
+                <li>Blake sets up SSH access to 2-3 friends' Mac Minis</li>
+                <li>Tests running OpenClaw agents on remote machines</li>
+                <li>Measures: Does it actually save time? Is UX acceptable? Do friends mind?</li>
+                <li>Payment: Venmo friends $5-10/month manually</li>
+            </ol>
+            <p><strong>Success metric:</strong> Blake uses remote compute 10+ times in a month.</p>
+
+            <h3>Phase 2: Build MVP (Month 2-3)</h3>
+            <p><strong>Use Approach 2: Tailscale + Docker Remote</strong></p>
+            <ol>
+                <li>All friends install Tailscale (5 min setup)</li>
+                <li>Blake builds simple CLI tool:
+                    <pre><code>compute search --ram 16     # Shows available hosts
+compute rent dave-mac       # Starts rental
+compute deploy my-image     # Deploys workload
+compute stop                # Ends rental, pays Dave</code></pre>
+                </li>
+                <li>Payment: Still manual (Stripe invoice after each rental)</li>
+                <li>Discovery: Maintained manually (JSON file of friends' Tailscale IPs)</li>
+            </ol>
+            <p><strong>Success metric:</strong> 10 friends using it, 100 rentals/month.</p>
+
+            <h3>Phase 3: Add Automation (Month 4-6)</h3>
+            <p><strong>Start building Approach 5 components incrementally</strong></p>
+            <ol>
+                <li><strong>Host daemon:</strong> Auto-publishes availability</li>
+                <li><strong>Central registry:</strong> Simple REST API listing hosts</li>
+                <li><strong>Automated payment:</strong> Stripe Connect for auto-settlement</li>
+                <li><strong>Basic rating system:</strong> Upvote/downvote after each rental</li>
+            </ol>
+            <p><strong>Success metric:</strong> 50 users, $1K monthly GMV, zero manual intervention.</p>
+
+            <h3>Phase 4: Scale (Month 7-12)</h3>
+            <p><strong>Full custom marketplace platform</strong></p>
+            <ol>
+                <li>Public launch (Hacker News, Product Hunt)</li>
+                <li>Windows support (expand beyond macOS)</li>
+                <li>GPU sharing (for ML workloads)</li>
+                <li>Enterprise tier (teams sharing internally)</li>
+            </ol>
+            <p><strong>Success metric:</strong> 1,000 users, $50K monthly GMV, profitable.</p>
+
+            <div class="section-divider"></div>
+
+            <h2>Technology Stack Recommendations</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Why</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Host Daemon</strong></td>
+                        <td>Go</td>
+                        <td>Small binary, cross-platform, good concurrency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Registry API</strong></td>
+                        <td>FastAPI (Python)</td>
+                        <td>Fast development, good for MVPs, Blake knows Python</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>Reliable, good JSON support, full-featured</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payments</strong></td>
+                        <td>Stripe Connect</td>
+                        <td>Escrow, payouts, fraud detection built-in</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Networking</strong></td>
+                        <td>Tailscale</td>
+                        <td>Zero-config VPN, NAT traversal, persistent IPs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Workload Isolation</strong></td>
+                        <td>Docker</td>
+                        <td>Mature, widely adopted, good security</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Frontend (later)</strong></td>
+                        <td>React</td>
+                        <td>Blake's current stack (provider-search)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hosting</strong></td>
+                        <td>Hetzner VPS</td>
+                        <td>Cheap ($5-20/month), good for EU + US users</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Cost Estimation</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Infrastructure</th>
+                        <th>Development</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phase 1 (Validate)</strong></td>
+                        <td>$0 (use existing machines)</td>
+                        <td>$0 (build yourself)</td>
+                        <td>$0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 2 (MVP)</strong></td>
+                        <td>$5/month (Hetzner VPS for registry)</td>
+                        <td>$0 (build yourself) or $5K (hire dev)</td>
+                        <td>$60 - $5K</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 3 (Automate)</strong></td>
+                        <td>$20/month (registry + DB + Stripe fees)</td>
+                        <td>$10K (contract dev for daemon + payment)</td>
+                        <td>$10K - $15K</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 4 (Scale)</strong></td>
+                        <td>$100/month (hosting + Stripe + support)</td>
+                        <td>$20K (full platform build)</td>
+                        <td>$20K - $30K</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        
+        <footer>
+            <strong>Blake Thomson</strong> — OpenClaw Workspace<br>
+            Generated: February 12, 2026, 9:01 AM PST<br>
+            Report: P2P Compute Marketplace - Technical Implementation<br>
+            Companion to: Go-to-Market Strategy Report
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enterprise Assistant — Codebase Overview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      line-height: 1.7;
+      padding: 0 0 60px;
+    }
+    .header {
+      background: #0f2744;
+      color: #fff;
+      padding: 36px 40px 28px;
+    }
+    .header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+    .header .sub { font-size: 0.95rem; color: #a8c4e0; margin-top: 6px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .header .meta { font-size: 0.82rem; color: #6a9bca; margin-top: 4px; font-family: monospace; }
+    .content { max-width: 900px; margin: 0 auto; padding: 40px 20px 0; }
+    h2 {
+      font-size: 1.25rem;
+      color: #0f2744;
+      border-left: 4px solid #c0392b;
+      padding-left: 12px;
+      margin: 40px 0 14px;
+    }
+    h3 {
+      font-size: 1.05rem;
+      color: #1a2a40;
+      margin: 24px 0 10px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    h4 {
+      font-size: 0.95rem;
+      color: #333;
+      margin: 18px 0 8px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 600;
+    }
+    p { margin-bottom: 12px; }
+    ul, ol { margin: 0 0 14px 24px; }
+    li { margin-bottom: 5px; }
+    code {
+      background: #eaeae6;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 0.87em;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      color: #c0392b;
+    }
+    pre {
+      background: #1a1a2e;
+      color: #cdd6f4;
+      padding: 18px 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      margin: 12px 0 18px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+    }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+    .alert {
+      border-radius: 5px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.92rem;
+    }
+    .alert-blue { background: #dbeafe; border-left: 4px solid #2563eb; color: #1e3a5f; }
+    .alert-yellow { background: #fef9c3; border-left: 4px solid #d97706; color: #4d3000; }
+    .alert-green { background: #dcfce7; border-left: 4px solid #16a34a; color: #14532d; }
+    .alert-red { background: #fee2e2; border-left: 4px solid #dc2626; color: #450a0a; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.88rem;
+    }
+    thead { background: #0f2744; color: #fff; }
+    thead th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #eae9e4; }
+    tbody tr:nth-child(odd) { background: #f5f4f0; }
+    tbody td { padding: 9px 14px; border-bottom: 1px solid #ddd; vertical-align: top; }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-green { background: #dcfce7; color: #14532d; }
+    .tag-blue { background: #dbeafe; color: #1e3a5f; }
+    .tag-yellow { background: #fef9c3; color: #713f12; }
+    .tag-red { background: #fee2e2; color: #7f1d1d; }
+    .tag-gray { background: #e5e7eb; color: #374151; }
+    .finding-box {
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid #0f2744;
+      background: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin: 14px 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.91rem;
+    }
+    .finding-box strong { display: block; margin-bottom: 4px; color: #0f2744; }
+    .dir-tree {
+      background: #1a1a2e;
+      color: #89b4fa;
+      padding: 20px 22px;
+      border-radius: 6px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+    }
+    .dir-tree .comment { color: #6c7086; }
+    .dir-tree .highlight { color: #f9e2af; }
+    hr.section-divider { border: none; border-top: 2px solid #ddd; margin: 40px 0 0; }
+    .toc { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px 24px; margin-bottom: 30px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.9rem; }
+    .toc h3 { margin-top: 0; color: #0f2744; font-size: 1rem; }
+    .toc ol { margin-left: 18px; }
+    .toc li { margin-bottom: 4px; }
+    .toc a { color: #2563eb; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .phase-badge {
+      display: inline-block;
+      background: #0f2744;
+      color: #a8c4e0;
+      font-size: 0.72rem;
+      font-family: monospace;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-right: 6px;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+      margin: 12px 0 18px;
+    }
+    .tool-chip {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #0f2744;
+    }
+    .tool-chip .cat { font-size: 0.7rem; color: #888; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Enterprise Assistant — Codebase & Architecture Overview</h1>
+  <div class="sub">Agentic Harness · Microsoft 365 · Azure Container Apps · Dev vs Production Guide</div>
+  <div class="meta">Generated: 2026-03-13 · Repo: ~/Repo/enterprise-assistant · Branch: dev</div>
+</div>
+
+<div class="content">
+
+  <div class="toc">
+    <h3>📋 Contents</h3>
+    <ol>
+      <li><a href="#what">What We're Building</a></li>
+      <li><a href="#structure">Repository Structure</a></li>
+      <li><a href="#agent-core">Agent Core — The Brain</a></li>
+      <li><a href="#tools">The 28 Tools (Claws)</a></li>
+      <li><a href="#workspace">The Workspace — "OpenClaw in Azure"</a></li>
+      <li><a href="#api">Gateway API (FastAPI)</a></li>
+      <li><a href="#frontend">Frontend (React + Tambo)</a></li>
+      <li><a href="#environments">Dev vs Production Environments</a></li>
+      <li><a href="#tests">Tests & Eval Framework</a></li>
+      <li><a href="#version-history">Version History</a></li>
+      <li><a href="#next">What's Next</a></li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="what">1. What We're Building</h2>
+
+  <p>The enterprise assistant is a <strong>personal AI assistant for executive/VP-level users</strong> in Microsoft 365 environments. Think of it as "Chief — but for our clients." It lives inside the client's Azure tenant, connects to their Microsoft 365, and can take real actions: reading and drafting emails, managing calendar, querying data files, generating reports, and managing project pipelines.</p>
+
+  <div class="alert alert-blue">
+    <strong>🏗️ Deployment model:</strong> One Azure Container App <em>per user</em> — not per org. Each deployment is a configured instance of the same codebase. The client's data never leaves their Azure environment, which eliminates healthcare's biggest objection (security/compliance review). No BAA needed for data transit. No vendor risk assessment for hosting.
+  </div>
+
+  <p><strong>First client:</strong> Dave Devries at ASH — personal email assistant as the initial engagement, proving the model before scaling to more users.</p>
+
+  <div class="finding-box">
+    <strong>The "OpenClaw in Azure" Pattern</strong>
+    This system deliberately mirrors the same SOUL.md / USER.md / MEMORY.md / skills/ pattern that powers Chief locally. The agent reads <code>AGENT.md</code>, <code>USER.md</code>, and <code>skills/*/SKILL.md</code> from the user's OneDrive <code>/Assistant/</code> folder — just like Chief reads workspace files on disk. Users can edit these files directly in their file explorer to customize the agent with zero redeploy.
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="structure">2. Repository Structure</h2>
+
+  <div class="dir-tree">
+enterprise-assistant/
+├── <span class="highlight">apps/</span>
+│   └── gateway/                <span class="comment"># FastAPI backend — the brain</span>
+│       ├── main.py             <span class="comment"># App init, routes, CORS, startup hook</span>
+│       ├── deps.py             <span class="comment"># Singleton clients, middleware, startup logic</span>
+│       ├── api/                <span class="comment"># Route handlers</span>
+│       │   ├── chat.py         <span class="comment"># Sync /api/chat</span>
+│       │   ├── chat_stream.py  <span class="comment"># SSE /api/chat/stream</span>
+│       │   ├── emails.py       <span class="comment"># /api/emails/*</span>
+│       │   ├── calendar.py     <span class="comment"># /api/calendar/*</span>
+│       │   ├── files.py        <span class="comment"># /api/files/*</span>
+│       │   ├── projects.py     <span class="comment"># /api/projects/*, kanban boards</span>
+│       │   ├── evals.py        <span class="comment"># /api/evals/* + dashboard</span>
+│       │   └── health.py       <span class="comment"># /api/health (no auth)</span>
+│       ├── agent/              <span class="comment"># Agent-specific config/helpers</span>
+│       ├── config/             <span class="comment"># Pydantic settings (env vars)</span>
+│       └── static/             <span class="comment"># Legacy vanilla UI + evals dashboard HTML</span>
+│
+├── <span class="highlight">frontend/</span>                       <span class="comment"># React + Vite + Tambo generative UI</span>
+│   └── src/
+│       ├── App.tsx
+│       ├── components/
+│       │   ├── ui/             <span class="comment"># Header, ContextPanel, ThemeToggle</span>
+│       │   ├── chat/           <span class="comment"># ChatArea, MessageBubble, InputBar, Sidebar</span>
+│       │   └── generative/     <span class="comment"># KanbanBoard, DataTable, Charts, EmailCard…</span>
+│       ├── hooks/useChat.ts    <span class="comment"># SSE consumer, conversation state</span>
+│       └── lib/                <span class="comment"># api.ts, tambo.ts</span>
+│
+├── <span class="highlight">packages/</span>                       <span class="comment"># Shared Python packages</span>
+│   ├── agent_core/             <span class="comment"># LLM loop, tool dispatch, streaming, session store</span>
+│   ├── context/                <span class="comment"># Workspace reader (OneDrive), conversation memory, config</span>
+│   ├── graph/                  <span class="comment"># Microsoft Graph API clients (email, calendar, files, auth)</span>
+│   ├── db/                     <span class="comment"># PostgreSQL schema + queries (conversation history, projects)</span>
+│   ├── types/                  <span class="comment"># Pydantic models (Email, CalendarEvent, DriveFile…)</span>
+│   └── web/                    <span class="comment"># Web client — Brave Search + Cloudflare Markdown</span>
+│
+├── <span class="highlight">infra/azure/</span>                    <span class="comment"># Bicep IaC templates</span>
+├── <span class="highlight">tests/</span>
+│   ├── test_api_contract.py    <span class="comment"># API shape + field validation</span>
+│   ├── test_streaming.py       <span class="comment"># SSE endpoint tests</span>
+│   ├── test_agent_data.py      <span class="comment"># CSV load + SQLite query tests</span>
+│   └── evals/
+│       ├── tasks.json          <span class="comment"># 20 golden test tasks</span>
+│       ├── run_evals.py        <span class="comment"># Eval runner (DuckDB results)</span>
+│       ├── compare.py          <span class="comment"># Compare eval runs</span>
+│       └── results.duckdb      <span class="comment"># Historical eval storage</span>
+│
+├── <span class="highlight">onedrive-template/</span>             <span class="comment"># Deployed to each user's OneDrive /Assistant/</span>
+│   ├── AGENT.md                <span class="comment"># Agent persona (user-editable!)</span>
+│   ├── USER.md                 <span class="comment"># User context</span>
+│   └── skills/                 <span class="comment"># email, calendar, files, data, reports, projects, web</span>
+│
+├── <span class="highlight">prompts/</span>                        <span class="comment"># Build prompts used with coding agents</span>
+├── <span class="highlight">docs/</span>                           <span class="comment"># Architecture + vision docs</span>
+└── <span class="highlight">scripts/</span>
+    ├── deploy-dev.sh            <span class="comment"># Deploy to dev Container App</span>
+    └── deploy.sh               <span class="comment"># Deploy to prod Container App (main only)</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="agent-core">3. Agent Core — The Brain</h2>
+
+  <h3>AgentLoop (<code>packages/agent_core/loop.py</code>)</h3>
+  <p>The core loop is a standard "ReAct" pattern: send message to Claude → if tool calls come back, execute them → append results → repeat until Claude gives a text-only response or we hit 20 iterations.</p>
+
+  <div class="finding-box">
+    <strong>Two modes: sync + streaming</strong>
+    <ul style="margin-top:8px;">
+      <li><code>run()</code> — synchronous, returns <code>AgentResponse</code> when done. Used by <code>/api/chat</code>.</li>
+      <li><code>run_streaming()</code> — async generator, yields SSE events as the agent works. Used by <code>/api/chat/stream</code>. This is the primary path the frontend uses.</li>
+    </ul>
+  </div>
+
+  <p><strong>SSE event types emitted during streaming:</strong></p>
+  <table>
+    <thead><tr><th>Event Type</th><th>When</th><th>Key Fields</th></tr></thead>
+    <tbody>
+      <tr><td><code>thinking</code></td><td>Start of every iteration</td><td><code>message</code></td></tr>
+      <tr><td><code>tool_start</code></td><td>Before executing each tool</td><td><code>tool</code>, <code>label</code>, <code>input_summary</code></td></tr>
+      <tr><td><code>tool_end</code></td><td>After successful tool execution</td><td><code>tool</code>, <code>label</code>, <code>duration_ms</code></td></tr>
+      <tr><td><code>tool_error</code></td><td>After failed tool execution</td><td><code>tool</code>, <code>error</code>, <code>duration_ms</code></td></tr>
+      <tr><td><code>text_delta</code></td><td>When Claude returns text content</td><td><code>delta</code> (the text chunk)</td></tr>
+      <tr><td><code>done</code></td><td>Completion</td><td><code>conversation_id</code>, <code>tokens</code>, <code>tool_calls_made</code>, <code>structured_data</code></td></tr>
+      <tr><td><code>error</code></td><td>Max iterations or fatal error</td><td><code>message</code>, <code>code</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>ClaudeClient (<code>packages/agent_core/llm.py</code>)</h3>
+  <p>Thin wrapper around the Anthropic SDK. Default model: <code>claude-sonnet-4-20250514</code>. Max tokens: 8192. Model can be overridden via environment var or workspace <code>config.json</code> (haiku / sonnet / opus tiers).</p>
+
+  <h3>ConversationMemory (<code>packages/context/memory.py</code>)</h3>
+  <p>Persists full conversation history to PostgreSQL. Stores both user messages and assistant responses (including tool call/result pairs). Formats history back into the Claude messages format for each new request — giving the agent true multi-turn memory.</p>
+
+  <h3>SessionStore (<code>packages/agent_core/session_store.py</code>)</h3>
+  <p>In-memory SQLite per conversation. Allows the agent to load CSV files from OneDrive into a local in-memory database within a conversation session, then query them with SQL. This is how data analysis works — load once, query many times, no context window overflow.</p>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="tools">4. The 28 Tools (Claws)</h2>
+
+  <p>All tools are registered in <code>ToolRegistry</code> (<code>packages/agent_core/tools.py</code>). Each tool has a JSON schema definition (sent to Claude as tool definitions) and a corresponding <code>_execute</code> method. All results are JSON-serialized.</p>
+
+  <div class="tool-grid">
+    <div class="tool-chip"><span class="cat">Email</span>list_emails</div>
+    <div class="tool-chip"><span class="cat">Email</span>get_email</div>
+    <div class="tool-chip"><span class="cat">Email</span>search_emails</div>
+    <div class="tool-chip"><span class="cat">Email</span>draft_email</div>
+    <div class="tool-chip"><span class="cat">Calendar</span>list_events</div>
+    <div class="tool-chip"><span class="cat">Calendar</span>create_event</div>
+    <div class="tool-chip"><span class="cat">Calendar</span>find_available_slots</div>
+    <div class="tool-chip"><span class="cat">Files</span>read_file</div>
+    <div class="tool-chip"><span class="cat">Files</span>write_file</div>
+    <div class="tool-chip"><span class="cat">Files</span>list_files</div>
+    <div class="tool-chip"><span class="cat">Files</span>search_files</div>
+    <div class="tool-chip"><span class="cat">Data</span>load_data_file</div>
+    <div class="tool-chip"><span class="cat">Data</span>query_sqlite</div>
+    <div class="tool-chip"><span class="cat">Data</span>list_loaded_tables</div>
+    <div class="tool-chip"><span class="cat">Projects</span>create_project</div>
+    <div class="tool-chip"><span class="cat">Projects</span>list_projects</div>
+    <div class="tool-chip"><span class="cat">Projects</span>get_kanban_board</div>
+    <div class="tool-chip"><span class="cat">Projects</span>create_kanban_card</div>
+    <div class="tool-chip"><span class="cat">Projects</span>move_card</div>
+    <div class="tool-chip"><span class="cat">Projects</span>link_email_to_project</div>
+    <div class="tool-chip"><span class="cat">Web</span>web_search</div>
+    <div class="tool-chip"><span class="cat">Web</span>web_fetch</div>
+    <div class="tool-chip"><span class="cat">System</span>bash</div>
+  </div>
+
+  <h3>Notable Design Decisions</h3>
+
+  <div class="finding-box">
+    <strong>Large file safety guard (<code>read_file</code>)</strong>
+    If a file is a CSV/TSV/XLSX and over ~15KB, <code>read_file</code> blocks it and returns an error instructing Claude to use <code>load_data_file</code> instead. Prevents context window overflow on large data files.
+  </div>
+
+  <div class="finding-box">
+    <strong>Bash tool</strong>
+    Executes in <code>/workspace</code> (ephemeral within the container). 30s default timeout, 120s max. The agent uses this for data processing, generating HTML reports, pip installs, and calculations. Files in <code>/workspace</code> don't persist across container restarts — the agent must <code>write_file</code> to OneDrive to save anything permanently.
+  </div>
+
+  <div class="finding-box">
+    <strong>Draft-only email safety</strong>
+    <code>draft_email</code> creates a draft in the user's mailbox but <strong>never sends</strong>. The user must review and send manually. This is by design — guards against the agent accidentally sending emails.
+  </div>
+
+  <div class="finding-box">
+    <strong>OneDrive path enforcement</strong>
+    All file tools enforce that paths start with <code>/Assistant/</code>. This scopes the agent to its designated workspace and prevents accidental reads/writes anywhere else in the user's OneDrive.
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="workspace">5. The Workspace — "OpenClaw in Azure"</h2>
+
+  <p>The <strong>workspace</strong> is a folder in the user's OneDrive at <code>/Assistant/</code>. It's the agent's "home directory" — just like Chief has <code>~/.openclaw/workspace/</code>. The files are synced to the user's laptop automatically via Microsoft OneDrive sync.</p>
+
+  <table>
+    <thead><tr><th>File</th><th>Purpose</th><th>Editable?</th></tr></thead>
+    <tbody>
+      <tr><td><code>/Assistant/AGENT.md</code></td><td>Agent persona, behavioral instructions, what the agent knows about itself</td><td><span class="tag tag-green">Yes — user-editable</span></td></tr>
+      <tr><td><code>/Assistant/USER.md</code></td><td>User context (role, preferences, team, communication style)</td><td><span class="tag tag-green">Yes — user-editable</span></td></tr>
+      <tr><td><code>/Assistant/config.json</code></td><td>Behavioral config: model tier (haiku/sonnet/opus), web settings, allowed domains</td><td><span class="tag tag-green">Yes — user-editable</span></td></tr>
+      <tr><td><code>/Assistant/skills/*/SKILL.md</code></td><td>Instructions for email, calendar, files, data, reports, projects, web tools</td><td><span class="tag tag-yellow">Advanced users only</span></td></tr>
+      <tr><td><code>/Assistant/reports/</code></td><td>Generated HTML reports the agent writes here for the user to view</td><td><span class="tag tag-blue">Agent-written</span></td></tr>
+      <tr><td><code>/Assistant/context/</code></td><td>Data files the user uploads (CSVs, etc.) for the agent to analyze</td><td><span class="tag tag-green">User-uploaded</span></td></tr>
+      <tr><td><code>/Assistant/MEMORY.md</code></td><td>Agent's long-term memory (future feature)</td><td><span class="tag tag-gray">Planned</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>WorkspaceReader (<code>packages/context/workspace.py</code>)</h3>
+  <p>Reads <code>AGENT.md</code>, <code>USER.md</code>, <code>config.json</code>, and all <code>skills/*/SKILL.md</code> files from OneDrive via Graph API. These are injected into the system prompt on every request. Uses a <strong>5-minute in-memory cache</strong> (process-level singleton) so OneDrive isn't hit on every message — only on first request or after the TTL expires.</p>
+
+  <p><strong>Startup pre-warm:</strong> On container startup, the workspace is loaded once to populate the cache. This means the first user request doesn't pay the OneDrive fetch latency penalty.</p>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="api">6. Gateway API (FastAPI)</h2>
+
+  <h3>Routes</h3>
+  <table>
+    <thead><tr><th>Route</th><th>Purpose</th><th>Auth?</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET /api/health</code></td><td>Health check — always returns 200</td><td>No</td></tr>
+      <tr><td><code>POST /api/chat</code></td><td>Sync chat — waits for full response</td><td>API key</td></tr>
+      <tr><td><code>POST /api/chat/stream</code></td><td>SSE streaming chat — primary path</td><td>API key</td></tr>
+      <tr><td><code>GET/POST /api/emails/*</code></td><td>Email CRUD via Graph API</td><td>API key</td></tr>
+      <tr><td><code>GET/POST /api/calendar/*</code></td><td>Calendar via Graph API</td><td>API key</td></tr>
+      <tr><td><code>GET/POST /api/files/*</code></td><td>OneDrive files via Graph API</td><td>API key</td></tr>
+      <tr><td><code>GET/POST /api/projects/*</code></td><td>Kanban project management</td><td>API key</td></tr>
+      <tr><td><code>GET/POST /api/evals/*</code></td><td>Eval runner API</td><td>API key</td></tr>
+      <tr><td><code>GET /evals</code></td><td>Eval dashboard (static HTML)</td><td>API key</td></tr>
+      <tr><td><code>GET /*</code></td><td>React frontend SPA (catch-all)</td><td>API key</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Authentication</h3>
+  <p>If <code>API_KEY</code> is set in the environment, all routes (except <code>/api/health</code>, <code>/docs</code>, <code>/openapi.json</code>) require an <code>x-api-key</code> header or <code>api_key</code> query param. If not set, the server warns and runs unauthenticated.</p>
+
+  <h3>Startup Sequence (<code>deps.py</code> → <code>init_clients()</code>)</h3>
+  <ol>
+    <li>Load settings from environment</li>
+    <li>Initialize Graph auth + email/calendar/files clients</li>
+    <li>Connect to PostgreSQL, run schema migrations</li>
+    <li>Initialize web client (Brave Search + Cloudflare Markdown)</li>
+    <li>Initialize Claude client, workspace reader, conversation memory, session store</li>
+    <li>Build <code>AgentLoop</code> with a <code>tools_factory</code> closure</li>
+    <li>Pre-warm workspace cache (fetch OneDrive files on startup)</li>
+    <li>Apply workspace <code>config.json</code> overrides (model tier, web settings)</li>
+    <li>Register API key middleware (if <code>API_KEY</code> set)</li>
+  </ol>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="frontend">7. Frontend (React + Tambo)</h2>
+
+  <p>Built with React + Vite + TypeScript. Deployed as static files in <code>frontend/dist/</code>, served by the FastAPI app as the catch-all SPA route.</p>
+
+  <h3>Component Breakdown</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>Sidebar</code></td><td>Conversation history list, new conversation button</td></tr>
+      <tr><td><code>ChatArea</code></td><td>Message thread display</td></tr>
+      <tr><td><code>MessageBubble</code></td><td>Individual message with tool progress indicators</td></tr>
+      <tr><td><code>InputBar</code></td><td>Typing input + send</td></tr>
+      <tr><td><code>ContextPanel</code></td><td>Right sidebar showing active data (loaded tables, session state)</td></tr>
+      <tr><td><code>KanbanBoard</code></td><td>Generative UI — renders kanban boards inline in chat</td></tr>
+      <tr><td><code>DataTable</code></td><td>Generative UI — renders SQL query results as tables</td></tr>
+      <tr><td><code>BarChart / PieChart</code></td><td>Generative UI — charts from data</td></tr>
+      <tr><td><code>EmailSummaryCard</code></td><td>Generative UI — rich email previews</td></tr>
+      <tr><td><code>CalendarView</code></td><td>Generative UI — calendar event display</td></tr>
+      <tr><td><code>MetricCard</code></td><td>Generative UI — KPI / number highlights</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Streaming (<code>hooks/useChat.ts</code>)</h3>
+  <p>The frontend consumes the SSE stream from <code>/api/chat/stream</code>. It parses each event type and updates state accordingly — showing tool progress spinners on <code>tool_start</code>, updating them on <code>tool_end</code>, appending text on <code>text_delta</code>, and finalizing on <code>done</code>.</p>
+
+  <h3>Tambo (<code>lib/tambo.ts</code>)</h3>
+  <p>Tambo is the generative UI library — it allows the agent to return structured data (kanban boards, tables, charts) via the <code>structured_data</code> field in the <code>done</code> event, and the frontend renders the appropriate React component automatically. This is the "generative UI" approach — the UI is driven by data, not hardcoded screens.</p>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="environments">8. Dev vs Production Environments</h2>
+
+  <div class="alert alert-yellow">
+    <strong>⚠️ Rule:</strong> Never push directly to <code>main</code>. Code flows: <code>feature/*</code> → <code>dev</code> → evals pass → <code>main</code> → prod deploy.
+  </div>
+
+  <table>
+    <thead><tr><th></th><th>Local (MacBook)</th><th>Dev Container App</th><th>Prod Container App</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Branch</strong></td><td>any</td><td><code>dev</code> / <code>feature/*</code></td><td><code>main</code></td></tr>
+      <tr><td><strong>Container App</strong></td><td>—</td><td><code>ca-entasst-gateway-dev</code></td><td><code>ca-entasst-gateway</code></td></tr>
+      <tr><td><strong>Resource Group</strong></td><td>—</td><td><code>rg-enterprise-assistant-dev</code></td><td><code>rg-enterprise-assistant-prod</code></td></tr>
+      <tr><td><strong>URL</strong></td><td><code>localhost:8000</code></td><td><code>ca-entasst-gateway-dev.calmhill-d9f0bfc3.eastus.azurecontainerapps.io</code></td><td><code>ca-entasst-gateway.calmhill-d9f0bfc3.eastus.azurecontainerapps.io</code></td></tr>
+      <tr><td><strong>Azure / Graph</strong></td><td>Optional (mock OK)</td><td>Real Azure, real Graph API</td><td>Real Azure</td></tr>
+      <tr><td><strong>Deploy command</strong></td><td>uvicorn (local)</td><td><code>./scripts/deploy-dev.sh</code></td><td><code>./scripts/deploy.sh</code></td></tr>
+      <tr><td><strong>Gate</strong></td><td>—</td><td>—</td><td>Evals must pass on dev first</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Deploy Flow</h3>
+  <pre><code># 1. Make changes on dev branch
+git checkout dev && git pull origin dev
+
+# 2. Do your work
+# ... edit code ...
+git add -A && git commit -m "feat: your change"
+git push origin dev
+
+# 3. Deploy to dev Container App for real Azure testing
+./scripts/deploy-dev.sh
+# → Builds Docker image tagged dev-&lt;sha&gt;
+# → Pushes to entasstregistry.azurecr.io
+# → Updates ca-entasst-gateway-dev
+
+# 4. Run evals against dev
+python tests/evals/run_evals.py \
+  --url https://ca-entasst-gateway-dev.calmhill-d9f0bfc3.eastus.azurecontainerapps.io \
+  --label "dev-$(git rev-parse --short HEAD)" \
+  --stream
+
+# 5. If evals pass → merge to main → deploy prod
+git checkout main && git merge dev && git push origin main
+./scripts/deploy.sh</code></pre>
+
+  <h3>Azure Resources</h3>
+  <table>
+    <thead><tr><th>Resource</th><th>Name</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Subscription</td><td><code>073eb007-dda8-47fa-bd3b-9675d5359deb</code></td><td>Azure subscription 1</td></tr>
+      <tr><td>Tenant</td><td><code>113ab53c-3df5-41e6-90ab-031206e61f54</code></td><td>mydoclist tenant</td></tr>
+      <tr><td>Container Registry</td><td><code>entasstregistry.azurecr.io</code></td><td>Shared across dev + prod</td></tr>
+      <tr><td>Dev RG</td><td><code>rg-enterprise-assistant-dev</code></td><td>East US</td></tr>
+      <tr><td>Prod RG</td><td><code>rg-enterprise-assistant-prod</code></td><td>East US</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="tests">9. Tests & Eval Framework</h2>
+
+  <h3>Unit / Integration Tests (<code>tests/</code>)</h3>
+
+  <table>
+    <thead><tr><th>File</th><th>What It Tests</th><th>Run Against</th></tr></thead>
+    <tbody>
+      <tr><td><code>test_api_contract.py</code></td><td>API response shapes: required fields, types, UUID validation, empty message rejection</td><td>Live endpoint</td></tr>
+      <tr><td><code>test_streaming.py</code></td><td>SSE stream correctness: event types, text deltas, tool events, token counts, edge cases (empty message, bad conversation_id)</td><td>Live endpoint</td></tr>
+      <tr><td><code>test_agent_data.py</code></td><td>CSV load → SQLite query pipeline: load file, list tables, run SQL queries, verify results</td><td>Live endpoint</td></tr>
+    </tbody>
+  </table>
+
+  <pre><code># Run tests against local
+BASE_URL=http://localhost:8000 pytest tests/ -v
+
+# Run tests against dev Container App
+BASE_URL=https://ca-entasst-gateway-dev.... pytest tests/ -v</code></pre>
+
+  <h3>Eval Framework (<code>tests/evals/</code>)</h3>
+
+  <p>The eval system is a <strong>golden test harness</strong> — it sends real messages to the live endpoint, measures latency and token usage, checks that the right tools were called, and optionally scores response quality via Claude.</p>
+
+  <div class="finding-box">
+    <strong>20 golden tasks across 5 categories:</strong>
+    <ul style="margin-top:8px;">
+      <li><strong>simple (5)</strong> — math, greetings, capability questions. Expected: no tool calls.</li>
+      <li><strong>email (4)</strong> — list emails, summarize, search, unread check. Expected: <code>list_emails</code> / <code>search_emails</code>.</li>
+      <li><strong>calendar (4)</strong> — today's meetings, free/busy, week view, create event. Expected: <code>list_events</code> / <code>create_event</code>.</li>
+      <li><strong>tool_chain (4)</strong> — multi-step tasks (email + calendar, read file + summarize). Tests sequenced tool use.</li>
+      <li><strong>edge_cases (3)</strong> — empty message, destructive request (should refuse), multi-part interleaved request.</li>
+    </ul>
+  </div>
+
+  <p><strong>Results are stored in DuckDB</strong> (<code>tests/evals/results.duckdb</code>) so you can compare runs over time — great for catching regressions.</p>
+
+  <pre><code># Basic eval run (sync)
+python tests/evals/run_evals.py \
+  --url http://localhost:8000 \
+  --label "local-test"
+
+# Streaming eval (measures TTFT — time to first token)
+python tests/evals/run_evals.py \
+  --url https://ca-entasst-gateway-dev.... \
+  --label "dev-streaming" \
+  --stream
+
+# With Claude quality scoring (needs ANTHROPIC_API_KEY)
+python tests/evals/run_evals.py \
+  --url https://... \
+  --label "dev-quality" \
+  --stream --score-quality
+
+# Run only specific tasks
+python tests/evals/run_evals.py \
+  --url http://localhost:8000 \
+  --label "email-only" \
+  --tasks email_001,email_002,email_003</code></pre>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="version-history">10. Version History (Key Phases)</h2>
+
+  <table>
+    <thead><tr><th>Phase / Version</th><th>What Was Built</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="phase-badge">Phase 1</span></td>
+        <td>Graph API gateway (email, calendar, files), Azure Container Apps infrastructure, OneDrive workspace template, Bicep IaC</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Phase 2</span></td>
+        <td>Agent core: LLM loop, full tool registry, conversation memory (PostgreSQL), bash execution tool</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Phase 3</span></td>
+        <td>Embedded web chat UI (vanilla JS/HTML, static served by FastAPI)</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Phase 3.5</span></td>
+        <td>React + Vite + Tambo generative UI frontend (streaming, component library, dark/light theme)</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">v0.5.0</span></td>
+        <td>SQLite session store (load CSV → query with SQL), context panel showing active data</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">v0.6.0</span></td>
+        <td>SSE streaming (run_streaming async generator), tool progress UI (tool_start/tool_end events), streaming test suite</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Projects</span></td>
+        <td>Kanban project management (create project, boards, cards, move cards, link emails to boards)</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Web Tools</span></td>
+        <td>Brave Search integration + Cloudflare Markdown for Agents (web_search + web_fetch tools)</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Config</span></td>
+        <td>User-editable <code>config.json</code> in OneDrive — controls model tier, web settings, allowed domains with zero redeploy</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">Current (Mar 2026)</span></td>
+        <td>Dev Container App live, eval framework operational, full dev→prod pipeline in place</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2 id="next">11. What's Next</h2>
+
+  <div class="alert alert-green">
+    <strong>✅ Dev Container App:</strong> Live and confirmed as of 2026-03-12. Full pipeline (local → dev → evals → prod) is operational.
+  </div>
+
+  <p>Based on the codebase state and MEMORY.md context, the natural next steps are:</p>
+
+  <ul>
+    <li><strong>Activate for Dave Devries (ASH)</strong> — first real client deployment. Provision his Azure tenant, deploy the Container App, populate his OneDrive workspace template, and test the email assistant flow end-to-end.</li>
+    <li><strong>Conversation memory for Dave</strong> — the memory system is built (PostgreSQL) but the OneDrive <code>MEMORY.md</code> file sync (long-term memory across sessions) is still planned.</li>
+    <li><strong>More eval tasks</strong> — the current 20 tasks are a good baseline. Add data analysis tasks (load CSV → query → chart), project management tasks, and web research tasks.</li>
+    <li><strong>EHI Ignite Challenge tie-in</strong> — the architecture here maps cleanly to the challenge's "turn EHR data into actionable insights" goal. Phase 1 deadline is May 13.</li>
+    <li><strong>Frontend polish</strong> — the generative UI components are built but could be wired more tightly to specific agent outputs (e.g., auto-render kanban after <code>get_kanban_board</code>).</li>
+  </ul>
+
+  <hr class="section-divider" />
+  <p style="font-size:0.82rem;color:#888;font-family:monospace;margin-top:20px;">Generated by Chief · 2026-03-13 · enterprise-assistant repo · Branch: dev · 30 commits deep</p>
+
+</div>
+</body>
+</html>

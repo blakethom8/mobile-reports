@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mac Mini OpenClaw Architecture - System Design & Migration Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            border-bottom: 3px solid #007aff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            color: #007aff;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            color: #333;
+            margin: 30px 0 15px 0;
+        }
+        
+        h4 {
+            font-size: 1.1em;
+            color: #555;
+            margin: 20px 0 10px 0;
+        }
+        
+        p {
+            margin: 15px 0;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #1a1a1a;
+            color: #f5f5f7;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        
+        .architecture-diagram {
+            background: #f9f9f9;
+            border: 2px solid #007aff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .callout {
+            background: #e8f4ff;
+            border-left: 4px solid #007aff;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .callout.warning {
+            background: #fff3cd;
+            border-left-color: #ff9500;
+        }
+        
+        .callout.success {
+            background: #d4edda;
+            border-left-color: #34c759;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: #f5f5f7;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .toc {
+            background: #f5f5f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .toc li {
+            margin: 8px 0;
+        }
+        
+        .toc a {
+            color: #007aff;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .step {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #007aff;
+            margin: 15px 0;
+        }
+        
+        .step-number {
+            font-weight: bold;
+            color: #007aff;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            pre {
+                font-size: 0.75em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Mac Mini OpenClaw Architecture</h1>
+            <div class="meta">
+                <strong>System Design & Migration Guide</strong><br>
+                Created: March 4, 2026<br>
+                Author: Chief (OpenClaw Agent)<br>
+                Purpose: Complete architecture for running OpenClaw on Mac Mini M4
+            </div>
+        </header>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#executive-summary">1. Executive Summary</a></li>
+                <li><a href="#why-mac-mini">2. Why a Mac Mini?</a></li>
+                <li><a href="#system-architecture">3. System Architecture</a></li>
+                <li><a href="#tailscale-networking">4. Tailscale Networking Layer</a></li>
+                <li><a href="#configuration">5. Configuration Details</a></li>
+                <li><a href="#migration-guide">6. Migration Guide</a></li>
+                <li><a href="#access-patterns">7. Access Patterns Across Machines</a></li>
+                <li><a href="#security">8. Security Architecture</a></li>
+                <li><a href="#maintenance">9. Maintenance & Operations</a></li>
+                <li><a href="#cost-analysis">10. Cost Analysis</a></li>
+                <li><a href="#blog-outline">11. Blog Post Outline</a></li>
+            </ul>
+        </div>
+
+        <h2 id="executive-summary">1. Executive Summary</h2>
+
+        <div class="callout">
+            <strong>The Goal:</strong> Transform a Mac Mini M4 into a dedicated, always-on AI agent server running OpenClaw, connected to your MacBook Pro via Tailscale, accessible from anywhere.
+        </div>
+
+        <h3>What This Achieves</h3>
+        <ul>
+            <li><strong>Always-On Assistant:</strong> OpenClaw runs 24/7, handling Telegram messages, cron heartbeats, and background tasks even when your laptop is closed</li>
+            <li><strong>Resource Separation:</strong> Heavy agent workloads (transcription, data analysis, multi-agent sessions) run on the Mini, keeping your MacBook fast and battery-efficient</li>
+            <li><strong>Anywhere Access:</strong> Reach your agent server from coffee shops, hotels, or anywhere via Tailscale's encrypted mesh VPN</li>
+            <li><strong>Local Intelligence:</strong> Unlike cloud VPS, the Mini sits on your home network with <1ms latency to local files and devices</li>
+        </ul>
+
+        <h3>Time & Cost</h3>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Investment</th>
+            </tr>
+            <tr>
+                <td>Setup Time</td>
+                <td>2-3 hours (one-time)</td>
+            </tr>
+            <tr>
+                <td>Hardware</td>
+                <td>$599-809 (Mac Mini M4, 16-24GB RAM)</td>
+            </tr>
+            <tr>
+                <td>Monthly Cost</td>
+                <td>~$1.50 (electricity only, Tailscale free)</td>
+            </tr>
+            <tr>
+                <td>ROI vs Cloud VPS</td>
+                <td>Pays for itself in 10-14 months</td>
+            </tr>
+        </table>
+
+        <h2 id="why-mac-mini">2. Why a Mac Mini?</h2>
+
+        <h3>The Problem with Running OpenClaw on a MacBook</h3>
+
+        <div class="callout warning">
+            <strong>Resource Contention:</strong> On Blake's MacBook Pro M3 Max (48GB RAM), system profiling showed 43GB in use — Docker alone consumes 9.2GB, OpenClaw gateway 2.3GB. Running 4+ concurrent agents hits swap and slows everything down.
+        </div>
+
+        <p><strong>Key friction points:</strong></p>
+        <ul>
+            <li><strong>Always-on vs daily-driver conflict:</strong> OpenClaw is most useful running 24/7 (Telegram at 3AM, heartbeats every 30 min), but you need to close your laptop and go places</li>
+            <li><strong>Battery drain:</strong> Agent workloads (web research, transcription, multi-step analysis) peg the CPU and kill battery life</li>
+            <li><strong>Thermal throttling:</strong> Whisper transcription of a 40-min podcast while working = noticeable performance hit</li>
+            <li><strong>The uncomfortable truth:</strong> Your AI assistant is competing with Spotify for RAM. That's not good architecture.</li>
+        </ul>
+
+        <h3>Mac Mini vs Alternatives</h3>
+
+        <table>
+            <tr>
+                <th>Factor</th>
+                <th>MacBook Pro</th>
+                <th>Mac Mini</th>
+                <th>Cloud VPS</th>
+            </tr>
+            <tr>
+                <td><strong>Role</strong></td>
+                <td>Interactive work</td>
+                <td>Background agents</td>
+                <td>Web services</td>
+            </tr>
+            <tr>
+                <td><strong>Availability</strong></td>
+                <td>Mobile, sleeps</td>
+                <td>Always on, stationary</td>
+                <td>Always on, remote</td>
+            </tr>
+            <tr>
+                <td><strong>Latency to local files</strong></td>
+                <td>Native</td>
+                <td><1ms (Tailscale LAN)</td>
+                <td>50-200ms</td>
+            </tr>
+            <tr>
+                <td><strong>Monthly cost</strong></td>
+                <td>$0 (owned)</td>
+                <td>~$1.50 electricity</td>
+                <td>$30-80/month</td>
+            </tr>
+            <tr>
+                <td><strong>ML inference</strong></td>
+                <td>Apple Neural Engine</td>
+                <td>Apple Neural Engine</td>
+                <td>CPU only (no GPU)</td>
+            </tr>
+            <tr>
+                <td><strong>Data residency</strong></td>
+                <td>Your possession</td>
+                <td>Your possession</td>
+                <td>Data center</td>
+            </tr>
+        </table>
+
+        <div class="callout success">
+            <strong>Key Insight:</strong> A personal AI agent needs to be close to your personal data. Cloud instances work for serving web apps. Local machines work for running agents that interact with your files, messaging apps, and local tools.
+        </div>
+
+        <h2 id="system-architecture">3. System Architecture</h2>
+
+        <div class="architecture-diagram">
+┌──────────────────────────┐     Tailscale Mesh VPN     ┌──────────────────────────┐
+│   MacBook Pro M3 Max     │◄══════════════════════════►│      Mac Mini M4         │
+│   (Daily Driver)         │    Encrypted WireGuard     │   (Agent Server)         │
+│   100.64.x.1             │    Persistent IPs          │   100.64.x.2             │
+│                          │                            │                          │
+│ ┌──────────────────────┐ │                            │ ┌──────────────────────┐ │
+│ │ Interactive Work      │ │                            │ │ OpenClaw (primary)   │ │
+│ │ - Cursor/VS Code     │ │                            │ │ - Gateway :18789     │ │
+│ │ - Chrome/Safari      │ │    SSH, file transfer,     │ │ - Telegram bot       │ │
+│ │ - Design tools       │ │    gateway API calls       │ │ - Cron heartbeats    │ │
+│ │ - Claude Code (dev)  │ │                            │ │ - Agent sessions     │ │
+│ └──────────────────────┘ │                            │ └──────────────────────┘ │
+│                          │                            │                          │
+│ ┌──────────────────────┐ │                            │ ┌──────────────────────┐ │
+│ │ OpenClaw (optional)  │ │                            │ │ Background Services  │ │
+│ │ - Light/overflow use │ │                            │ │ - Docker (Colima)    │ │
+│ │ - When traveling     │ │                            │ │ - Whisper inference  │ │
+│ │   without Mini       │ │                            │ │ - Data processing    │ │
+│ └──────────────────────┘ │                            │ └──────────────────────┘ │
+│                          │                            │                          │
+│ ┌──────────────────────┐ │                            │ ┌──────────────────────┐ │
+│ │ Project Files        │ │     Selective sync         │ │ Workspace Files      │ │
+│ │ (source of truth     │ │◄─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ►│ │ (agent workspace)    │ │
+│ │  for code repos)     │ │   rsync / git / manual     │ │ Memory, skills,      │ │
+│ └──────────────────────┘ │                            │ │ reports, logs        │ │
+└──────────────────────────┘                            │ └──────────────────────┘ │
+                                                        └──────────────────────────┘
+                                                                  │
+                                                        ┌─────────▼──────────┐
+                                                        │ Hetzner VPS (prod) │
+                                                        │ - Provider Search  │
+                                                        │ - CMS Pipeline     │
+                                                        │ - Personal Website │
+                                                        └────────────────────┘
+        </div>
+
+        <h3>Role Separation</h3>
+
+        <table>
+            <tr>
+                <th>Concern</th>
+                <th>MacBook Pro</th>
+                <th>Mac Mini</th>
+            </tr>
+            <tr>
+                <td>Code editing</td>
+                <td>✅ Primary</td>
+                <td>❌ Never (headless)</td>
+            </tr>
+            <tr>
+                <td>Git operations</td>
+                <td>✅ Primary (push/pull)</td>
+                <td>Read-only mirrors</td>
+            </tr>
+            <tr>
+                <td>Agent conversations</td>
+                <td>Via Telegram (routed to Mini)</td>
+                <td>✅ Runs the agents</td>
+            </tr>
+            <tr>
+                <td>Background processing</td>
+                <td>Offload to Mini</td>
+                <td>✅ Primary</td>
+            </tr>
+            <tr>
+                <td>File storage</td>
+                <td>✅ Active projects</td>
+                <td>Agent workspace, memory, logs</td>
+            </tr>
+            <tr>
+                <td>Whisper transcription</td>
+                <td>Offload to Mini</td>
+                <td>✅ Primary (Neural Engine)</td>
+            </tr>
+            <tr>
+                <td>Cron jobs</td>
+                <td>❌ None</td>
+                <td>✅ All scheduled tasks</td>
+            </tr>
+            <tr>
+                <td>Gateway</td>
+                <td>Off or light use</td>
+                <td>✅ Primary (Tailscale-accessible)</td>
+            </tr>
+        </table>
+
+        <h2 id="tailscale-networking">4. Tailscale Networking Layer</h2>
+
+        <h3>What Tailscale Is (No Jargon)</h3>
+
+        <p>Tailscale creates a <strong>private network just for your devices</strong>. Install the app on your MacBook and Mac Mini, log in with the same account, and they can talk to each other as if they're plugged into the same router — regardless of where they physically are.</p>
+
+        <p>The connection is:</p>
+        <ul>
+            <li><strong>Direct:</strong> Peer-to-peer, not through a central server</li>
+            <li><strong>Encrypted:</strong> WireGuard protocol (excellent, modern crypto)</li>
+            <li><strong>Persistent:</strong> Same IP address every time (e.g., 100.64.x.2), no matter what network you're on</li>
+            <li><strong>Automatic:</strong> No manual config, no port forwarding, no DNS fiddling</li>
+        </ul>
+
+        <h3>How It Works: The 3-Layer Stack</h3>
+
+        <h4>Layer 1: WireGuard (The Encryption)</h4>
+        <ul>
+            <li>Modern VPN protocol (~4,000 lines of code vs OpenVPN's ~100,000)</li>
+            <li>Cryptography: Curve25519 (key exchange), ChaCha20-Poly1305 (encryption)</li>
+            <li>Connectionless (UDP), stealthy (doesn't respond to unknown sources)</li>
+            <li>What WireGuard does NOT do: discover peers, handle auth, traverse NATs</li>
+        </ul>
+
+        <h4>Layer 2: Tailscale (The Coordination)</h4>
+        <ul>
+            <li>Coordination server handles: key exchange, peer discovery, ACL enforcement</li>
+            <li>Your data never touches Tailscale's servers — only metadata (which devices exist, their endpoints)</li>
+            <li>Think of it as a "phone book" that tells your devices how to find each other</li>
+        </ul>
+
+        <h4>Layer 3: NAT Traversal (The Magic)</h4>
+        <ul>
+            <li><strong>STUN:</strong> Discovers your public IP and NAT type</li>
+            <li><strong>Hole punching:</strong> Both devices send UDP packets simultaneously, creating "holes" in their NAT routers</li>
+            <li><strong>DERP relays:</strong> Fallback if direct connection fails (strict NATs, corporate firewalls)</li>
+            <li><strong>Success rate:</strong> ~95% direct (peer-to-peer), ~5% relayed (still encrypted end-to-end)</li>
+        </ul>
+
+        <h3>Tailscale ACLs: Fine-Grained Access Control</h3>
+
+        <pre>
+{
+  "acls": [
+    {
+      "action": "accept",
+      "src": ["tag:laptop"],
+      "dst": ["tag:agent-server:22,18789"]
+    }
+  ],
+  "tagOwners": {
+    "tag:laptop": ["autogroup:admin"],
+    "tag:agent-server": ["autogroup:admin"]
+  }
+}</pre>
+
+        <p><strong>Translation:</strong> The laptop can reach the agent server on port 22 (SSH) and port 18789 (OpenClaw gateway). Nothing else. No other device on the tailnet can reach the Mini at all.</p>
+
+        <h3>Cost: $0/month</h3>
+        <ul>
+            <li>Free tier: Up to 100 devices</li>
+            <li>All features including ACLs, MagicDNS, HTTPS</li>
+            <li>No bandwidth limits</li>
+            <li>Personal use = perfect fit</li>
+        </ul>
+
+        <h2 id="configuration">5. Configuration Details</h2>
+
+        <h3>Mac Mini: openclaw.json</h3>
+
+        <pre>
+{
+  "version": "2026.3.x",
+  "auth": {
+    "profiles": {
+      "anthropic": {
+        "provider": "anthropic",
+        "apiKey": "sk-ant-..."
+      }
+    },
+    "default": "anthropic"
+  },
+  "model": {
+    "default": "anthropic/claude-sonnet-4-5",
+    "fallbacks": ["anthropic/claude-opus-4-5"]
+  },
+  "workspace": {
+    "path": "/Users/blake/openclaw/workspace"
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "tailscale",
+    "auth": {
+      "mode": "token",
+      "token": "GENERATE_NEW_UNIQUE_TOKEN_HERE"
+    },
+    "tailscale": {
+      "mode": "userspace",
+      "resetOnExit": false
+    }
+  },
+  "contextPruning": {
+    "mode": "cache-ttl",
+    "ttl": 3600
+  },
+  "agents": {
+    "maxConcurrent": 4,
+    "subagents": {
+      "maxConcurrent": 8
+    }
+  },
+  "heartbeat": {
+    "interval": 1800
+  }
+}</pre>
+
+        <div class="callout warning">
+            <strong>Key Differences from MacBook Config:</strong>
+            <ul>
+                <li><code>gateway.bind</code> → <code>"tailscale"</code> (accessible over Tailscale, not just localhost)</li>
+                <li><code>gateway.tailscale.mode</code> → <code>"userspace"</code> (enable Tailscale integration)</li>
+                <li><strong>Generate a new, unique gateway token</strong> (don't reuse the MacBook's token)</li>
+            </ul>
+        </div>
+
+        <h3>MacBook Pro: openclaw.json</h3>
+
+        <pre>
+{
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "tailscale": {
+      "mode": "off"
+    }
+  }
+}</pre>
+
+        <p><strong>Strategy:</strong> MacBook keeps its own local gateway for when you're working without the Mini. When you want to reach the Mini's gateway, you hit <code>100.64.x.2:18789</code> directly.</p>
+
+        <h3>Auto-Start on Boot: Launch Agent</h3>
+
+        <p>Create <code>~/Library/LaunchAgents/com.openclaw.gateway.plist</code> on the Mac Mini:</p>
+
+        <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;com.openclaw.gateway&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/opt/homebrew/bin/openclaw&lt;/string&gt;
+        &lt;string&gt;gateway&lt;/string&gt;
+        &lt;string&gt;start&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;RunAtLoad&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;StandardOutPath&lt;/key&gt;
+    &lt;string&gt;/Users/blake/openclaw/logs/gateway-stdout.log&lt;/string&gt;
+    &lt;key&gt;StandardErrorPath&lt;/key&gt;
+    &lt;string&gt;/Users/blake/openclaw/logs/gateway-stderr.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</pre>
+
+        <p>Load it:</p>
+        <pre>
+mkdir -p ~/openclaw/logs
+launchctl load ~/Library/LaunchAgents/com.openclaw.gateway.plist</pre>
+
+        <h2 id="migration-guide">6. Migration Guide</h2>
+
+        <h3>Phase 1: Pre-Migration Backup (15 minutes)</h3>
+
+        <div class="step">
+            <p><span class="step-number">Step 1.1:</span> Export current config</p>
+            <pre>openclaw config export > ~/Desktop/openclaw-config-backup.json</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 1.2:</span> Backup workspace</p>
+            <pre>tar -czf ~/Desktop/openclaw-workspace-backup.tar.gz ~/openclaw/workspace/</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 1.3:</span> Backup ops configs</p>
+            <pre>tar -czf ~/Desktop/openclaw-ops-backup.tar.gz ~/openclaw/workspace/ops/</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 1.4:</span> Document current state</p>
+            <pre>
+openclaw status > ~/Desktop/openclaw-status-before.txt
+openclaw plugins list >> ~/Desktop/openclaw-status-before.txt</pre>
+        </div>
+
+        <h3>Phase 2: Mac Mini Physical Setup (30 minutes)</h3>
+
+        <div class="step">
+            <p><span class="step-number">Step 2.1:</span> Unbox Mac Mini, connect power + Ethernet to router</p>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 2.2:</span> Connect monitor + keyboard for initial setup (temporary)</p>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 2.3:</span> Complete macOS setup wizard</p>
+            <ul>
+                <li>Create admin account: blake</li>
+                <li>Skip Apple ID (or sign in, your call)</li>
+                <li>Skip Siri, analytics</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 2.4:</span> Configure System Settings</p>
+            <pre>
+System Settings:
+  → Energy: "Prevent automatic sleeping when display is off" ON
+  → Energy: "Start up automatically after power failure" ON
+  → Sharing → Remote Login (SSH): Enable for your user
+  → Sharing → Screen Sharing: Enable (useful for setup)
+  → Privacy & Security → FileVault: Turn On (disk encryption)
+  → Privacy & Security → Firewall: Turn On</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 2.5:</span> Test SSH from MacBook</p>
+            <pre>
+# From MacBook, while on same network
+ssh blake@&lt;mini-local-ip&gt;</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 2.6:</span> Disconnect monitor + keyboard (go headless)</p>
+        </div>
+
+        <h3>Phase 3: Install Tailscale (15 minutes)</h3>
+
+        <div class="step">
+            <p><span class="step-number">Step 3.1:</span> Install on Mac Mini</p>
+            <pre>
+ssh blake@&lt;mini-local-ip&gt;
+
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Tailscale
+brew install --cask tailscale
+
+# Start Tailscale
+tailscale up</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 3.2:</span> Install on MacBook (if not already)</p>
+            <pre>brew install --cask tailscale</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 3.3:</span> Verify connection</p>
+            <pre>
+# Check devices
+tailscale status
+
+# SSH via Tailscale
+ssh blake@100.64.x.2  # Mac Mini's Tailscale IP</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 3.4:</span> Configure ACLs</p>
+            <p>In Tailscale admin console (https://login.tailscale.com/admin/acls):</p>
+            <pre>
+{
+  "acls": [
+    {
+      "action": "accept",
+      "src": ["tag:laptop"],
+      "dst": ["tag:agent-server:22,18789"]
+    }
+  ],
+  "tagOwners": {
+    "tag:laptop": ["autogroup:admin"],
+    "tag:agent-server": ["autogroup:admin"]
+  }
+}</pre>
+            <p>Tag devices: MacBook Pro → <code>tag:laptop</code>, Mac Mini → <code>tag:agent-server</code></p>
+        </div>
+
+        <h3>Phase 4: Development Environment (30 minutes)</h3>
+
+        <div class="step">
+            <p><span class="step-number">Step 4.1:</span> Install core tools</p>
+            <pre>
+ssh blake@blakes-mac-mini  # via Tailscale MagicDNS
+
+# Xcode CLI tools
+xcode-select --install
+
+# Essential tools
+brew install git node python3 jq wget
+
+# Docker (use Colima instead of Docker Desktop to save RAM)
+brew install colima docker docker-compose
+colima start --cpu 4 --memory 4
+
+# Whisper for local transcription
+pip3 install openai-whisper
+
+# yt-dlp for media processing
+pip3 install yt-dlp</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 4.2:</span> Configure Git</p>
+            <pre>
+git config --global user.name "Blake Thomson"
+git config --global user.email "blakethomson8@gmail.com"
+
+# Generate SSH key for GitHub
+ssh-keygen -t ed25519 -C "mac-mini-agent"
+cat ~/.ssh/id_ed25519.pub
+# Add this to GitHub Settings → SSH Keys</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 4.3:</span> Configure shell environment</p>
+            <pre>
+# Add to ~/.zshrc
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+echo 'export ANTHROPIC_API_KEY="your-key-here"' >> ~/.zshrc
+source ~/.zshrc</pre>
+        </div>
+
+        <h3>Phase 5: OpenClaw Installation (30 minutes)</h3>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.1:</span> Install OpenClaw</p>
+            <pre>
+npm install -g openclaw@latest
+openclaw --version</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.2:</span> Create directory structure</p>
+            <pre>
+mkdir -p ~/openclaw
+ln -s ~/openclaw ~/.openclaw  # symlink for compatibility
+mkdir -p ~/openclaw/workspace/{memory,reports,scripts}</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.3:</span> Create openclaw.json</p>
+            <p>Use the Mac Mini configuration from section 5 above. Generate a new unique token:</p>
+            <pre>
+# Generate strong random token
+openssl rand -hex 32</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.4:</span> Transfer workspace files from MacBook</p>
+            <pre>
+# Run this on your MacBook:
+rsync -av ~/openclaw/workspace/SOUL.md \
+          ~/openclaw/workspace/USER.md \
+          ~/openclaw/workspace/WORK.md \
+          ~/openclaw/workspace/TOOLS.md \
+          ~/openclaw/workspace/AGENTS.md \
+          ~/openclaw/workspace/IDENTITY.md \
+          ~/openclaw/workspace/PERSONAL.md \
+          ~/openclaw/workspace/MEMORY.md \
+          blake@blakes-mac-mini:~/openclaw/workspace/
+
+# Transfer memory files
+rsync -av ~/openclaw/workspace/memory/ \
+          blake@blakes-mac-mini:~/openclaw/workspace/memory/</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.5:</span> Configure Telegram (if using)</p>
+            <p><strong>Important:</strong> Only ONE instance should poll the same Telegram bot at a time. Options:</p>
+            <ul>
+                <li><strong>Option A:</strong> Move bot token to Mac Mini, remove from MacBook (recommended)</li>
+                <li><strong>Option B:</strong> Create a second Telegram bot account for the MacBook</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.6:</span> Start the gateway</p>
+            <pre>
+openclaw gateway start
+
+# Verify locally
+curl -H "Authorization: Bearer your-token" http://localhost:18789/health
+
+# From MacBook, verify Tailscale access
+curl -H "Authorization: Bearer your-token" http://blakes-mac-mini:18789/health</pre>
+        </div>
+
+        <div class="step">
+            <p><span class="step-number">Step 5.7:</span> Set up auto-start on boot</p>
+            <p>Use the Launch Agent plist from section 5 above, then:</p>
+            <pre>
+launchctl load ~/Library/LaunchAgents/com.openclaw.gateway.plist
+
+# Test with a reboot
+sudo reboot</pre>
+        </div>
+
+        <h3>Phase 6: Validation (30 minutes)</h3>
+
+        <div class="callout">
+            <strong>Validation Checklist</strong>
+        </div>
+
+        <p><strong>Networking:</strong></p>
+        <ul>
+            <li>✓ Mac Mini accessible via Tailscale IP from MacBook</li>
+            <li>✓ Mac Mini accessible via MagicDNS name from MacBook</li>
+            <li>✓ SSH works from coffee shop Wi-Fi (test with phone hotspot)</li>
+            <li>✓ ACLs properly restrict access (try blocked port)</li>
+        </ul>
+
+        <p><strong>OpenClaw:</strong></p>
+        <ul>
+            <li>✓ Gateway starts on boot</li>
+            <li>✓ Gateway responds to health check over Tailscale</li>
+            <li>✓ Agent session can be started via gateway API</li>
+            <li>✓ Telegram messages route to Mac Mini</li>
+            <li>✓ Heartbeat cron fires every 30 minutes</li>
+            <li>✓ Memory files being written to <code>~/openclaw/workspace/memory/</code></li>
+        </ul>
+
+        <p><strong>Security:</strong></p>
+        <ul>
+            <li>✓ FileVault enabled (disk encryption)</li>
+            <li>✓ Firewall enabled</li>
+            <li>✓ SSH uses key-based auth (password auth disabled)</li>
+            <li>✓ Tailscale ACLs only allow laptop → agent-server on ports 22, 18789</li>
+            <li>✓ Gateway token is unique (not shared with MacBook)</li>
+            <li>✓ No ports forwarded on home router</li>
+        </ul>
+
+        <p><strong>Performance:</strong></p>
+        <ul>
+            <li>✓ RAM usage at idle < 4GB</li>
+            <li>✓ Agent session completes without throttling</li>
+            <li>✓ Whisper transcription works locally</li>
+            <li>✓ Docker containers start successfully (Colima)</li>
+        </ul>
+
+        <h2 id="access-patterns">7. Access Patterns Across Machines</h2>
+
+        <h3>Scenario: Working at Coffee Shop</h3>
+
+        <div class="architecture-diagram">
+Coffee Shop Wi-Fi
+      │
+      ├─── MacBook Pro (100.64.x.1)
+      │         │
+      │         │ Tailscale VPN (encrypted)
+      │         │
+      │         ▼
+Your Home Network
+      │
+      ├─── Mac Mini (100.64.x.2)
+      │         │
+      │         ├─── OpenClaw gateway :18789
+      │         ├─── SSH :22
+      │         └─── Agent sessions running
+
+Access patterns:
+1. Blake sends Telegram message
+2. Telegram routes to Mac Mini (at home)
+3. OpenClaw processes on Mac Mini
+4. Response sent back via Telegram
+5. Blake sees response on phone/laptop
+
+OR:
+
+1. Blake: `ssh blake@blakes-mac-mini`
+2. Tailscale establishes encrypted tunnel
+3. Direct SSH session to Mac Mini
+4. Blake can check logs, restart services, etc.
+        </div>
+
+        <h3>Scenario: Need to Process a Podcast</h3>
+
+        <pre>
+# On MacBook, trigger the work on Mac Mini via SSH:
+ssh blake@blakes-mac-mini "cd ~/openclaw/workspace && \
+  yt-dlp --extract-audio --audio-format mp3 \
+  https://youtube.com/watch?v=... -o podcast.mp3 && \
+  whisper podcast.mp3 --model medium --output_format txt"
+
+# Or via Telegram:
+Blake: "Transcribe this podcast: [youtube link]"
+Chief: *runs on Mac Mini* "Done! Here's the summary..."</pre>
+
+        <h3>Scenario: Deploy CMS Pipeline Update</h3>
+
+        <pre>
+# From MacBook, via SSH to Hetzner VPS:
+ssh dataops@5.78.148.70
+
+# Or set up GitHub Actions to deploy automatically on push</pre>
+
+        <p><strong>Key insight:</strong> MacBook is the <em>control plane</em> (you give commands), Mac Mini is the <em>execution plane</em> (heavy work happens there).</p>
+
+        <h2 id="security">8. Security Architecture</h2>
+
+        <h3>Defense in Depth: 4 Layers</h3>
+
+        <div class="architecture-diagram">
+┌─ LAYER 1: Tailscale Account ───────────────────────────────────┐
+│  Only devices authenticated with your account can connect       │
+│                                                                  │
+│  ┌─ LAYER 2: ACL Rules ──────────────────────────────────────┐ │
+│  │  Only allowed device pairs, on allowed ports               │ │
+│  │                                                            │ │
+│  │  ┌─ LAYER 3: Application Auth ─────────────────────────┐  │ │
+│  │  │  OpenClaw gateway requires token auth                │  │ │
+│  │  │  SSH requires key-based auth (no passwords)          │  │ │
+│  │  │                                                      │  │ │
+│  │  │  ┌─ LAYER 4: macOS Permissions ─────────────────┐   │  │ │
+│  │  │  │  FileVault (disk encryption)                  │   │  │ │
+│  │  │  │  Firewall (blocks incoming connections)      │   │  │ │
+│  │  │  │  macOS Gatekeeper, System Integrity Protection│   │  │ │
+│  │  │  └───────────────────────────────────────────────┘   │  │ │
+│  │  └──────────────────────────────────────────────────────┘  │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────┘
+        </div>
+
+        <p><strong>Why this matters:</strong> An attacker would need to breach ALL FOUR layers to access your agent's data.</p>
+
+        <h3>What's Protected</h3>
+        <ul>
+            <li>✅ Transport encryption (WireGuard)</li>
+            <li>✅ Authentication (OAuth login to Tailscale)</li>
+            <li>✅ Authorization (ACLs restrict which devices can talk)</li>
+            <li>✅ No open ports on your router (NAT traversal magic)</li>
+            <li>✅ Application-level auth (gateway token, SSH keys)</li>
+            <li>✅ Data at rest (FileVault disk encryption)</li>
+        </ul>
+
+        <h3>What's NOT Protected</h3>
+        <div class="callout warning">
+            <ul>
+                <li>⚠️ Device compromise: If someone gets root on your Mac Mini, game over</li>
+                <li>⚠️ Tailscale account compromise: If someone gets your login, they can add devices</li>
+                <li>⚠️ Physical access: Someone with physical access to the Mini can potentially extract data</li>
+                <li>⚠️ Prompt injection: LLMs can't differentiate user input from malicious external data</li>
+            </ul>
+        </div>
+
+        <h3>Best Practices</h3>
+        <ul>
+            <li>Use a password manager with 2FA for your Tailscale account</li>
+            <li>Rotate the OpenClaw gateway token every 90 days</li>
+            <li>Keep macOS and OpenClaw updated (security patches matter)</li>
+            <li>Review Tailscale device list monthly (remove old/unused devices)</li>
+            <li>Don't expose the gateway to the public internet (Tailscale only)</li>
+        </ul>
+
+        <h2 id="maintenance">9. Maintenance & Operations</h2>
+
+        <h3>Daily (Automated)</h3>
+        <ul>
+            <li>OpenClaw heartbeat runs every 30 minutes</li>
+            <li>Memory files appended to daily log</li>
+            <li>Docker containers cleaned up after use</li>
+        </ul>
+
+        <h3>Weekly (Manual, 5 minutes)</h3>
+        <pre>
+ssh blake@blakes-mac-mini
+
+# Check logs for errors
+tail -50 ~/openclaw/logs/gateway-stderr.log
+
+# Check disk usage
+df -h
+
+# Check memory
+vm_stat | head -5</pre>
+
+        <h3>Monthly (Manual, 15 minutes)</h3>
+        <pre>
+# Update macOS
+softwareupdate --install --all
+
+# Update Homebrew packages
+brew update && brew upgrade
+
+# Update OpenClaw
+npm update -g openclaw
+
+# Update Python tools
+pip3 install --upgrade openai-whisper yt-dlp
+
+# Clean Docker
+colima ssh -- docker system prune -f</pre>
+
+        <h3>Troubleshooting</h3>
+        <ol>
+            <li>SSH into Mini: <code>ssh blake@blakes-mac-mini</code></li>
+            <li>Check gateway: <code>launchctl list | grep openclaw</code></li>
+            <li>Check logs: <code>tail -100 ~/openclaw/logs/gateway-stderr.log</code></li>
+            <li>Restart gateway: <code>openclaw gateway restart</code></li>
+            <li>Nuclear option: <code>sudo reboot</code> (auto-start will recover)</li>
+        </ol>
+
+        <h2 id="cost-analysis">10. Cost Analysis</h2>
+
+        <h3>One-Time Costs</h3>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Cost</th>
+            </tr>
+            <tr>
+                <td>Mac Mini M4 (16GB, 256GB)</td>
+                <td>$599</td>
+            </tr>
+            <tr>
+                <td>RAM upgrade to 24GB (recommended)</td>
+                <td>+$200</td>
+            </tr>
+            <tr>
+                <td>Ethernet cable</td>
+                <td>$10</td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>~$809</strong></td>
+            </tr>
+        </table>
+
+        <h3>Ongoing Costs</h3>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Monthly</th>
+            </tr>
+            <tr>
+                <td>Tailscale</td>
+                <td>$0 (free tier, up to 100 devices)</td>
+            </tr>
+            <tr>
+                <td>Electricity (~10W average)</td>
+                <td>~$1.50</td>
+            </tr>
+            <tr>
+                <td>Anthropic API (already paying)</td>
+                <td>$0 incremental</td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>~$1.50/month</strong></td>
+            </tr>
+        </table>
+
+        <h3>Comparison to Cloud Alternatives</h3>
+        <table>
+            <tr>
+                <th>Option</th>
+                <th>Monthly Cost</th>
+                <th>Annual Cost</th>
+                <th>3-Year Total</th>
+            </tr>
+            <tr>
+                <td>Mac Mini + Tailscale</td>
+                <td>$1.50</td>
+                <td>$18</td>
+                <td>$863 (incl. hardware)</td>
+            </tr>
+            <tr>
+                <td>Hetzner VPS (CPX31)</td>
+                <td>$15</td>
+                <td>$180</td>
+                <td>$540</td>
+            </tr>
+            <tr>
+                <td>AWS EC2 (t3.large)</td>
+                <td>$60+</td>
+                <td>$720+</td>
+                <td>$2,160+</td>
+            </tr>
+            <tr>
+                <td>Digital Ocean (4GB)</td>
+                <td>$24</td>
+                <td>$288</td>
+                <td>$864</td>
+            </tr>
+        </table>
+
+        <div class="callout success">
+            <strong>ROI Analysis:</strong> The Mac Mini pays for itself in 10-14 months vs a cloud VPS, then runs for effectively free ($1.50/month electricity). Plus you keep your data in your physical possession and get Apple Silicon performance that no $15 VPS can match.
+        </div>
+
+        <h2 id="blog-outline">11. Blog Post Outline</h2>
+
+        <h3>Title: "Building a $600 Personal AI Server: Mac Mini + OpenClaw"</h3>
+
+        <h4>Hook (150 words)</h4>
+        <ul>
+            <li>The problem: Running AI agents on your laptop competes for resources</li>
+            <li>The solution: Dedicated Mac Mini running 24/7 at home, accessible anywhere</li>
+            <li>The result: $600 one-time + $1.50/month vs $30-80/month cloud VPS</li>
+        </ul>
+
+        <h4>Why Not a Cloud VPS? (300 words)</h4>
+        <ul>
+            <li>Latency to local files (50-200ms vs <1ms)</li>
+            <li>Monthly cost adds up ($30/month = $360/year)</li>
+            <li>Data residency (your home vs German data center)</li>
+            <li>Apple Silicon benefits (Neural Engine, GPU for ML)</li>
+        </ul>
+
+        <h4>The Tech Stack (400 words)</h4>
+        <ul>
+            <li>Mac Mini M4 (16-24GB RAM)</li>
+            <li>Tailscale (mesh VPN, free tier)</li>
+            <li>OpenClaw (AI agent harness)</li>
+            <li>Why each piece matters</li>
+        </ul>
+
+        <h4>Architecture Walkthrough (500 words)</h4>
+        <ul>
+            <li>ASCII diagram (MacBook ↔ Tailscale ↔ Mac Mini)</li>
+            <li>Role separation (laptop = control, Mini = execution)</li>
+            <li>Access patterns (SSH, gateway API, Telegram routing)</li>
+        </ul>
+
+        <h4>Setup Guide (Condensed) (600 words)</h4>
+        <ul>
+            <li>Phase 1: Mac Mini physical setup (30 min)</li>
+            <li>Phase 2: Tailscale (15 min)</li>
+            <li>Phase 3: OpenClaw installation (30 min)</li>
+            <li>Phase 4: Auto-start on boot (15 min)</li>
+            <li>Link to full guide for details</li>
+        </ul>
+
+        <h4>Security Deep-Dive (400 words)</h4>
+        <ul>
+            <li>4 layers of defense (Tailscale account, ACLs, app auth, macOS)</li>
+            <li>What's protected vs not protected</li>
+            <li>Best practices</li>
+        </ul>
+
+        <h4>Real-World Usage (300 words)</h4>
+        <ul>
+            <li>Working at coffee shop, agent at home</li>
+            <li>Telegram messages route to Mini</li>
+            <li>Background processing (Whisper transcription)</li>
+            <li>Cron jobs run 24/7 without laptop being open</li>
+        </ul>
+
+        <h4>Cost Analysis (200 words)</h4>
+        <ul>
+            <li>Table: Mac Mini vs cloud alternatives</li>
+            <li>ROI calculation (10-14 months)</li>
+        </ul>
+
+        <h4>Conclusion (150 words)</h4>
+        <ul>
+            <li>This is reproducible (anyone can do it)</li>
+            <li>Open source (OpenClaw, Tailscale free tier)</li>
+            <li>Foundation for personal AI infrastructure</li>
+            <li>CTA: Link to full guide, GitHub repo</li>
+        </ul>
+
+        <p><strong>Total word count:</strong> ~3,000 words<br>
+        <strong>Reading time:</strong> ~12 minutes</p>
+
+        <hr style="margin: 40px 0;">
+
+        <div class="callout success">
+            <h3>📚 Related Documentation</h3>
+            <ul>
+                <li><strong>Decision Framework:</strong> <code>~/openclaw/workspace/personal-website/content/research/infrastructure/01-decision-framework.md</code></li>
+                <li><strong>Tailscale Deep Dive:</strong> <code>~/openclaw/workspace/personal-website/content/research/infrastructure/02-tailscale-deep-dive.md</code></li>
+                <li><strong>Mac Mini Setup Guide:</strong> <code>~/openclaw/workspace/personal-website/content/research/infrastructure/03-mac-mini-setup.md</code></li>
+                <li><strong>Migration Checklist:</strong> <code>~/openclaw/workspace/OPENCLAW-MIGRATION-CHECKLIST.md</code></li>
+                <li><strong>OpenClaw Docs:</strong> <code>/usr/local/lib/node_modules/openclaw/docs/</code></li>
+            </ul>
+        </div>
+
+        <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.9em;">
+            <p><strong>Report Generated:</strong> March 4, 2026</p>
+            <p><strong>Next Steps:</strong> Review this architecture, then proceed with Phase 1 (backup) tomorrow</p>
+        </footer>
+    </div>
+</body>
+</html>
