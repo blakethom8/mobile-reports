@@ -22,12 +22,7 @@
   ul, ol { padding-left: 2em; }
   li { margin: 0.3em 0; }
   strong { font-weight: 600; }
-  blockquote {
-    margin: 1em 0;
-    padding: 0.5em 1em;
-    border-left: 3px solid #ddd;
-    color: #555;
-  }
+  blockquote { margin: 1em 0; padding: 0.5em 1em; border-left: 3px solid #ddd; color: #555; }
   hr { border: none; border-top: 1px solid #ddd; margin: 2em 0; }
   code { background: #f5f5f5; padding: 2px 5px; border-radius: 3px; font-size: 0.9em; }
   a { color: #0366d6; text-decoration: none; }
@@ -35,22 +30,310 @@
 </style>
 </head>
 <body>
-<p>#!/usr/bin/env node</p>
-<p>/**</p>
+<h1>A vision for what we could build together</h1>
+<p>Spencer —</p>
+<p>I wanted to write this out in a longer form because I think this idea deserves more than a quick brainstorm or a few scattered notes. If we’re going to seriously explore building something together, I want to be clear about what I think the opportunity is, why I think it matters, what kind of company it would require, and where I still have real questions.</p>
+<p>This is not meant to be a pitch deck. It’s closer to a founder-to-founder memo. My goal is to put the conviction on paper, not to pretend the plan is fully finished.</p>
+<h2>Why this matters to me</h2>
+<p>Every once in a while there’s an idea that stops feeling optional.</p>
+<p>Most business ideas don’t do that. They can be good, timely, profitable, even clever — but they still feel like choices. You can pursue them or not pursue them. You can build them, sell them, move on, and life goes on.</p>
+<p>This doesn’t feel like that.</p>
+<p>The more I’ve thought about elder care — and the more I’ve watched families actually go through it — the more it feels like one of those rare problems where if you see it clearly, and if you think you may be capable of helping solve it, then not doing it starts to feel like a disservice.</p>
+<p>That sounds dramatic, but I mean it.</p>
+<p>I’ve watched my parents go through this with their siblings. I’m going through versions of it with my own grandparents. You’ve lived it with your grandfather. None of this is theoretical. We’ve both seen what happens when a parent or grandparent starts needing more help and the system around them is fragmented, reactive, and deeply unfriendly to families.</p>
+<p>What hits me hardest is that the burden never arrives in one clean category. It comes as a total life-management problem.</p>
+<p>Aging parents don’t just need one more doctor’s visit. They need someone to track appointments, medications, hospital instructions, transportation, house issues, caregivers, finances, bills, insurance, legal documents, family communication, and all the little operational details that suddenly become consequential. And in most families, nobody is really equipped for that job. One sibling absorbs the chaos. Another wants to help but lives far away. Another helps financially but not operationally. Everyone is stressed. Nobody has the full picture. Trust starts to fray. And the parent — who is supposed to be at the center of care — often ends up feeling less dignified, less independent, and more confused by the whole process.</p>
+<p>That is a real societal problem. And it is getting bigger.</p>
+<p>The U.S. had about <strong>53 million caregivers</strong> in the AARP/NAC 2020 study, with nearly <strong>48 million caring for an adult</strong>. More importantly for us, about <strong>26% of family caregivers reported difficulty coordinating care</strong>. That implies roughly <strong>12.5 million adults in the U.S. are already in an active care-coordination pain state</strong>. That is not niche. That is a huge and growing part of American life.</p>
+<p>And the economic backdrop is even more striking. Family caregivers provided labor valued at roughly <strong>$600 billion in 2021</strong>. Home health and personal care aide jobs numbered <strong>4.35 million in 2024</strong>, with <strong>17% projected growth from 2024 to 2034</strong>. The broader U.S. senior living market is estimated at <strong>$943.9 billion in 2025</strong>. Long-term care costs are staggering: roughly <strong>$77,792 annually for a home health aide</strong>, <strong>$70,800 for assisted living</strong>, and <strong>$111,325 to $127,750 for nursing-home rooms</strong>.</p>
+<p>So this is the way I see it: elder care coordination is not a little app category. It is a workflow, trust, and execution layer sitting on top of a care economy already measured in hundreds of billions of dollars.</p>
+<p>And despite that, the actual family experience is still painfully broken.</p>
+<h2>The problem as I see it</h2>
+<p>At the center of this is a simple truth: when parents age, adult children become responsible for managing three different worlds at the same time.</p>
+<h2>1. Medical care</h2>
+<p>This includes the obvious things — appointments, medications, diagnoses, follow-up instructions, specialists, hospital discharges, rehab, cognitive decline, provider communication. But the hard part is not just the existence of medical work. It’s the fragmentation.</p>
+<p>Information sits across patient portals, discharge packets, pharmacy systems, memory care updates, insurance documents, and informal text threads. Families are constantly trying to answer basic questions:</p>
 <ul>
-<li>Marked CLI</li>
-<li>Copyright (c) 2018+, MarkedJS. (MIT License)</li>
-<li>Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
- */</li>
+<li>What changed at the last appointment?</li>
+<li>What medications are active now?</li>
+<li>Did someone schedule the follow-up?</li>
+<li>Did the facility tell us about that incident?</li>
+<li>Who actually understands what the doctor said?</li>
 </ul>
-<p>import { main } from &#39;./main.js&#39;;</p>
-<p>/**</p>
+<p>There is no single control plane.</p>
+<h2>2. Physical care</h2>
+<p>This is the everyday operational layer: meals, laundry, house maintenance, transportation, home safety, in-home help, companionship, errands, facility transitions, and general aging-in-place logistics.</p>
+<p>This work is relentless because it looks small in isolation but becomes overwhelming in aggregate. Somebody has to know whether Dad got to the cardiologist. Somebody has to know whether the house is being checked. Somebody has to coordinate repairs, aides, rides, and transitions. Even when families can afford help, coordinating the help becomes another job.</p>
+<h2>3. Financial care</h2>
+<p>This may be the least openly discussed and one of the most stressful.</p>
+<p>Families need visibility into savings, spending, bills, subscriptions, insurance, care expenses, reimbursements, estate-planning documents, powers of attorney, and sometimes fraud or cognitive decline risk. And they need to do it without turning the family dynamic toxic.</p>
+<p>The questions are not just financial; they are relational:</p>
 <ul>
-<li>Expose / Entry Point
- */</li>
+<li>Who has access to what?</li>
+<li>Who is paying for what?</li>
+<li>Are we all seeing the same information?</li>
+<li>Does anyone have authority to act?</li>
+<li>Are we protecting Mom, or are we just improvising?</li>
 </ul>
-<p>process.title = &#39;marked&#39;;
-main(process);</p>
+<p>Most families do not have a good system for this.</p>
+<h2>Why it gets worse with siblings</h2>
+<p>The hardest version of this problem is not just “caregiving.” It is distributed family governance.</p>
+<p>That’s the wedge I keep coming back to. Real families often look like this:</p>
+<ul>
+<li>one sibling lives nearby and is doing most of the work,</li>
+<li>one sibling lives far away and feels out of the loop,</li>
+<li>one sibling wants transparency before contributing,</li>
+<li>the parent wants to preserve autonomy,</li>
+<li>and a rotating cast of doctors, aides, facilities, insurers, and banks all operate in separate systems.</li>
+</ul>
+<p>Most tools in the market implicitly assume a single caregiver. Real life does not.</p>
+<p>And when information retrieval breaks down, sibling trust breaks down with it. One person becomes the unpaid COO of the household. Everyone else is reacting from partial information. Resentment grows. Decisions get delayed. Small mistakes become big ones.</p>
+<p>That, to me, is the core problem: not just care, but running an aging parent’s life across fragmented medical, physical, and financial systems without one sibling burning out.</p>
+<h2>The solution I think is worth building</h2>
+<p>I think the right answer is not pure software and not pure concierge.</p>
+<p>It’s a hybrid model:</p>
+<ol>
+<li><strong>an AI personal assistant as the operating layer</strong></li>
+<li><strong>a human services layer for onboarding, trust, and escalation</strong></li>
+<li><strong>a trust and permissions layer strong enough to touch both money and health</strong></li>
+</ol>
+<p>That combination is the company.</p>
+<h2>1. The AI personal assistant</h2>
+<p>The cleanest way I can describe the product is this: each family gets a purpose-built personal assistant for elder care.</p>
+<p>That assistant would maintain deep context on:</p>
+<ul>
+<li>the parent’s medical situation,</li>
+<li>the family structure,</li>
+<li>roles and permissions,</li>
+<li>connected bank and healthcare accounts,</li>
+<li>facility relationships,</li>
+<li>care history,</li>
+<li>important documents,</li>
+<li>and ongoing tasks and decisions.</li>
+</ul>
+<p>The assistant’s job is not to be a novelty chatbot. Its job is to do legwork.</p>
+<p>It should be able to:</p>
+<ul>
+<li>pull information from fragmented systems,</li>
+<li>organize and summarize what matters,</li>
+<li>keep a running household timeline,</li>
+<li>surface risks or changes,</li>
+<li>draft next steps,</li>
+<li>support family coordination,</li>
+<li>and reduce the amount of “computer time” and admin burden sitting on adult children.</li>
+</ul>
+<p>I keep thinking about it as an eldercare chief of staff.</p>
+<p>Not just advice. Actual operational help.</p>
+<p>The AI layer is the only way this becomes scalable and economically viable. Traditional human-only care coordination is too expensive to serve a massive population well. But pure self-serve software misses the emotional and trust-heavy nature of the category. AI is what makes a service-quality experience possible without pricing the entire market out.</p>
+<h2>2. The human services layer</h2>
+<p>I don’t think we should pretend this is a purely self-serve product. In fact, I think that would be a strategic mistake.</p>
+<p>When families are connecting bank accounts, medical portals, powers of attorney, and sensitive documents, the experience should begin human-to-human.</p>
+<p>Every family should have a white-glove onboarding process.</p>
+<p>That specialist would help with:</p>
+<ul>
+<li>connecting accounts,</li>
+<li>setting up permissions,</li>
+<li>clarifying who plays what role,</li>
+<li>organizing initial documents,</li>
+<li>configuring the family workspace,</li>
+<li>and making the whole thing feel trustworthy from day one.</li>
+</ul>
+<p>Then the AI assistant takes over the routine layer, with human support available for complex cases and periodic check-ins.</p>
+<p>I think quarterly check-ins are important, both for service quality and for trust reinforcement. This is not a category where you disappear after sign-up and hope retention manages itself.</p>
+<p>The humans are not there because the product failed. They are there because trust is part of the product.</p>
+<h2>3. The trust layer</h2>
+<p>This may be the deepest part of the whole thesis.</p>
+<p>I don’t think the moat is just software. Software is increasingly a commodity.</p>
+<p>The moat is the trust layer.</p>
+<p>If a family gives us access to their parent’s bank statements, medical records, insurance details, facility paperwork, POA documents, and sibling permissions — and if we handle that safely, clearly, and competently — then we become extremely hard to replace.</p>
+<p>That trust layer includes:</p>
+<ul>
+<li>role-based permissions,</li>
+<li>explicit delegated access,</li>
+<li>read vs. act boundaries,</li>
+<li>approval flows,</li>
+<li>secure document handling,</li>
+<li>audit trails,</li>
+<li>human escalation,</li>
+<li>and institution-grade compliance.</li>
+</ul>
+<p>This is why I’m not scared off by HIPAA or regulation. I actually think compliance is part of the moat. Most companies don’t want to deal with it. We should welcome it, because if we can do it well, it becomes a structural barrier to entry.</p>
+<p>Big tech can build polished consumer software. I’m less convinced families will want to hand them the keys to their parent’s entire medical and financial life. This is one of the few markets where smaller, mission-driven, highly trusted companies can have an advantage over giant platforms.</p>
+<h2>Why I think the market is still open</h2>
+<p>After looking at the competitive landscape, the most important conclusion is straightforward:</p>
+<p><strong>No one is clearly doing medical + physical + financial elder care coordination well in one unified platform.</strong></p>
+<p>The market is split into pieces.</p>
+<p>There are companies for:</p>
+<ul>
+<li>caregiver communication,</li>
+<li>benefits navigation,</li>
+<li>home care,</li>
+<li>senior marketplaces,</li>
+<li>medication management,</li>
+<li>emergency monitoring,</li>
+<li>financial monitoring,</li>
+<li>document storage,</li>
+<li>and human concierge support.</li>
+</ul>
+<p>But there is still no obvious market leader that combines:</p>
+<ol>
+<li>cross-domain data aggregation,</li>
+<li>multi-sibling collaboration,</li>
+<li>AI retrieval and synthesis,</li>
+<li>human onboarding and escalation,</li>
+<li>and a trust architecture strong enough to touch both health and money.</li>
+</ol>
+<p>That’s the white space.</p>
+<p>A few competitive observations that matter:</p>
+<ul>
+<li>Concierge-style care navigation companies are closer to the real pain, but they are often labor-heavy and not really building a durable family operating system.</li>
+<li>Communication/task-sharing apps are too shallow. They help with coordination at the surface but not with the underlying information and decision problem.</li>
+<li>Home care and service networks own one lane, not the whole household control plane.</li>
+<li>Infrastructure players like Plaid or health-record rails provide access, not orchestration.</li>
+<li>“AI” is starting to appear everywhere as a buzzword, but there is very little public evidence of a true cross-platform eldercare agent that retrieves, normalizes, summarizes, and helps operationalize information across systems.</li>
+</ul>
+<p>In other words: the category has lots of useful tools, but no trusted eldercare operating system for distributed families.</p>
+<p>That is the position I think we should claim.</p>
+<h2>The company vision</h2>
+<p>If we do this, I don’t think we should do it as a small opportunistic product company built for a quick flip.</p>
+<p>I think this is a long-haul, mission-driven company.</p>
+<p>The north star I keep coming back to is simple:</p>
+<p><strong>Help one million families with long-term longevity care.</strong></p>
+<p>That feels big enough to matter and specific enough to orient decisions.</p>
+<p>And the company model I find most inspiring here is Epic.</p>
+<p>Not because the businesses are identical, but because the philosophy matters: founder-led, patient, high-trust, deeply embedded in healthcare, built over decades rather than optimized for a 5–7 year exit. Judy Faulkner proved you can build an enormous healthcare company without contorting the mission around venture timelines.</p>
+<p>That resonates with me.</p>
+<p>Historically, I’ve often thought about businesses in more transactional terms — build something useful, create value, maybe there’s a natural buyer, maybe you don’t need to commit your whole life to it. This is different. I don’t think this is worth doing halfway. If we’re going to enter a category this sensitive and this important, I think it should be with the intention of building something lasting.</p>
+<p>Not “how fast can we sell this?”</p>
+<p>More like: “What would it take to become an institution families genuinely trust?”</p>
+<p>That has real implications.</p>
+<p>It means caring about the company itself, not just the product. It means culture matters. It means brand trust matters. It means how we hire matters. It means the physical and emotional feel of the organization matters. It means we don’t optimize only for software margins if that comes at the expense of trust and outcomes.</p>
+<h2>The phased approach I think makes sense</h2>
+<p>I don’t think we should try to build the final company on day one. But I do think we should build with the long arc in mind.</p>
+<h3>Phase 1: Platform and coordination</h3>
+<p>Start with the family operating system.</p>
+<p>The initial wedge is sibling coordination and household visibility:</p>
+<ul>
+<li>shared family workspace,</li>
+<li>roles and permissions,</li>
+<li>document vault,</li>
+<li>provider/facility/contact directory,</li>
+<li>timeline of events and decisions,</li>
+<li>AI summaries and reminders,</li>
+<li>human onboarding,</li>
+<li>and a clear sense of “everything is finally in one place.”</li>
+</ul>
+<p>We do not need every integration on day one. We do need a product that immediately reduces chaos.</p>
+<h3>Phase 2: Services expansion</h3>
+<p>Once the operating layer is established, we expand into higher-value workflows and service offerings:</p>
+<ul>
+<li>deeper financial visibility,</li>
+<li>medication and appointment pulls,</li>
+<li>insurance/claims support,</li>
+<li>transportation coordination,</li>
+<li>home logistics,</li>
+<li>facility update ingestion,</li>
+<li>premium doctor-guidance or advisory models,</li>
+<li>and stronger human support tiers.</li>
+</ul>
+<p>This is where the business starts to feel even more like a service powered by software rather than software sprinkled with service.</p>
+<h3>Phase 3: Vertical integration</h3>
+<p>Long term, I think the really ambitious version of this company asks a more interesting question:</p>
+<p>What if we don’t just coordinate care — what if we provide key pieces of it directly?</p>
+<p>That could eventually mean:</p>
+<ul>
+<li>employing care generalists,</li>
+<li>having doctors on staff for family guidance,</li>
+<li>running a financial advisory layer,</li>
+<li>building direct home-care capacity in certain markets,</li>
+<li>and creating a far tighter feedback loop between the platform and real-world service delivery.</li>
+</ul>
+<p>This is not a day-one move. But it matters strategically because it affects how we think about ownership, capital, and what assets we want to preserve.</p>
+<p>If you believe some of the biggest long-term value lies in owning higher-trust, vertically integrated services, then it becomes even more important not to give away the company too early.</p>
+<h2>Culture and hiring philosophy</h2>
+<p>I’ve been thinking a lot about what kind of company this would need to be internally.</p>
+<p>If this is going to work, the people cannot just be “customer support.” They need to be capable, empathetic operators with judgment. More like care generalists than narrow specialists.</p>
+<p>The model I’m drawn to is hiring smart, execution-oriented people, paying them well, and giving them powerful internal AI tools that make them dramatically more effective.</p>
+<p>The philosophy is not “replace humans with AI.”</p>
+<p>It’s “use AI to make great humans 10x more capable.”</p>
+<p>I like the idea of building internal tools for employees as seriously as we build external tools for families. If the care generalist has the right assistant, timeline, retrieval tools, decision support, and workflow automation, they can manage much larger family panels without becoming robotic or burnt out.</p>
+<p>There’s also something important to me about building a real company with real culture. I’m not drawn to the archetype of a fully remote, hyper-optimized, emotionally thin startup where everything is structured around speed and eventual exit. This is human work. I think there’s value in physical spaces, shared standards, and a culture that feels grounded.</p>
+<p>At the same time, I do not want startup martyrdom culture. If we hire well, we should compensate well. We should build systems that preserve people’s time and energy. The goal isn’t to create an eldercare sweatshop with AI dashboards. It’s to build a company where excellent people can do meaningful work sustainably.</p>
+<h2>Financing philosophy</h2>
+<p>This is one of the biggest founder-alignment topics.</p>
+<p>My instinct is strongly toward <strong>self-funding early</strong>.</p>
+<p>The main reason is simple: I do not want to distort the company too early around investor expectations that are misaligned with the kind of business this should become.</p>
+<p>If you raise venture too early, you often inherit a clock, a growth narrative, and an exit logic before you’ve even earned the right to choose your real identity. In our case, that seems dangerous. The temptation would be to make it look like a lightweight software category with clean SaaS optics, when the real opportunity may require patience, hybrid service economics, trust-heavy onboarding, and eventually more ambitious vertical plays.</p>
+<p>I’d rather preserve founder control and directional integrity as long as possible.</p>
+<p>The model I think makes sense is:</p>
+<ol>
+<li><strong>Phase 1: self-funded</strong> enough to build and test the product with early families</li>
+<li><strong>Phase 2: revenue-funded</strong> growth through service-backed economics</li>
+<li><strong>Phase 3: strategic capital later</strong>, only when there is a very clear use case — for example a specific vertical integration move, a doctor-guidance service, or a major distribution expansion</li>
+</ol>
+<p>I’m not morally opposed to outside capital. I just think it should be used intentionally and later, not as the default starting point.</p>
+<p>That said, this is not a philosophical abstraction. It connects directly to personal risk tolerance, timelines, and how much each founder actually wants to commit. So this is one of the places where I want your real reaction, not a performative answer.</p>
+<h2>The market opportunity in practical terms</h2>
+<p>The quantitative case is strong enough that this doesn’t have to rely on storytelling alone.</p>
+<p>A few numbers that matter:</p>
+<ul>
+<li><strong>53.0 million</strong> U.S. adults were caregivers in the prior 12 months</li>
+<li>nearly <strong>48 million</strong> were caring for an adult</li>
+<li>about <strong>26%</strong> reported difficulty coordinating care</li>
+<li>that implies around <strong>12.5 million adults</strong> in a live coordination-pain state</li>
+<li>unpaid family caregiving was worth roughly <strong>$600 billion</strong> in 2021</li>
+<li>the U.S. had <strong>4.35 million</strong> home health and personal care aide jobs in 2024</li>
+<li>long-term care costs are already high and rising</li>
+<li>a modeled direct-to-family software TAM for coordination lands roughly in the <strong>$4.5B to $15B</strong> range depending on price point</li>
+<li>a hybrid service model reaches <strong>multi-billion-dollar</strong> territory even before broader payer or channel partnerships</li>
+</ul>
+<p>So even if we’re disciplined and don’t let ourselves get carried away by giant TAM slides, the takeaway is still clear: there is plenty of room here to build a serious business.</p>
+<p>And strategically, I think there’s a particularly compelling beachhead in higher-complexity, upper-middle-income and affluent families with distributed siblings and meaningful private-pay exposure. Not because that’s the moral endpoint, but because it is the most obvious group with urgent pain, willingness to pay, and enough complexity to validate the full product. Over time, I’d want us to widen access — including income-sensitive pricing, scholarships, or other ways to avoid building something that only wealthy families can use.</p>
+<h2>What I think would make this hard to copy</h2>
+<p>If this works, I don’t think it will be because we had one clever feature.</p>
+<p>It will be because we built compounding assets in a few hard areas:</p>
+<ol>
+<li><strong>trust and permissioning</strong> — delegated access, approvals, auditability, authority management</li>
+<li><strong>connectors and retrieval workflows</strong> — across banks, portals, facilities, insurers, pharmacies, and family communications</li>
+<li><strong>household memory</strong> — durable context across people, documents, events, decisions, and tasks</li>
+<li><strong>operational playbooks</strong> — discharge, facility transition, fraud scare, medication confusion, end-of-life prep, etc.</li>
+<li><strong>human support muscle</strong> — onboarding, exception handling, trust recovery, high-stakes case support</li>
+</ol>
+<p>That combination is much harder to copy than a caregiver app or a dashboard.</p>
+<h2>Where I still have questions</h2>
+<p>I have conviction on the problem and the direction. I do not think all the answers are settled.</p>
+<p>The biggest open questions to me are founder questions.</p>
+<p>Not just “could a company exist here?” but “should we be the ones to build it, and if so, in what shape?”</p>
+<p>That’s why I want your reaction on things like:</p>
+<ul>
+<li>Do you feel the same level of mission pull here, or do you see it more as an attractive market opportunity?</li>
+<li>Are you actually interested in building a long-haul company, or does a leaner product path appeal more?</li>
+<li>How do you see your role relative to mine?</li>
+<li>Do we need a third co-founder, and if so what kind?</li>
+<li>How much personal financial risk feels reasonable versus reckless?</li>
+<li>Who would want to run this long-term if it really worked?</li>
+<li>How quickly should we lean into services versus software?</li>
+<li>How broad should the initial product be?</li>
+</ul>
+<p>I’m less interested in false certainty than in whether we can get to genuine alignment.</p>
+<h2>What I’d want this conversation to lead to</h2>
+<p>If this keeps resonating for both of us, I’d want the next step to be less about hype and more about structure.</p>
+<p>Something like:</p>
+<ul>
+<li>define the founding thesis crisply,</li>
+<li>map roles and skill gaps,</li>
+<li>decide whether we’re truly aligned on company type,</li>
+<li>outline an MVP for 10 families,</li>
+<li>think through the minimum trust/compliance architecture,</li>
+<li>model the early financial commitment,</li>
+<li>and pressure-test whether we want to step into this seriously.</li>
+</ul>
+<p>Because if we do it, I think we should do it with real intention.</p>
+<p>I’ll end where I started.</p>
+<p>I think this is one of those ideas where the combination of need, timing, personal experience, and market white space is unusually strong. I think the product concept is real. I think the company behind it could matter. And I think there’s a version of this that becomes a genuinely enduring institution in a category where families desperately need competence, trust, and relief.</p>
+<p>But that only works if the founding alignment is real.</p>
+<p>So more than anything, I want your honest reaction.</p>
+<p>What feels right to you in this? What feels off? What feels exciting? What feels heavy? What do you think I’m seeing clearly, and what do you think I might be underestimating?</p>
+<p>That’s the conversation I want to have.</p>
 
-</body>
-</html>
+</body></html>
