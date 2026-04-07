@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harbor Care | Johnson Family Workspace</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5efe5;
+      --bg-deep: #ebe2d4;
+      --surface: rgba(255, 251, 245, 0.9);
+      --surface-strong: #fffdf9;
+      --surface-muted: #f1e7d8;
+      --line: #d6c8b6;
+      --line-strong: #bfae98;
+      --ink: #20302f;
+      --muted: #62706c;
+      --accent: #3f6f6b;
+      --accent-deep: #2d5552;
+      --accent-soft: #ddecea;
+      --olive: #66764a;
+      --olive-soft: #e7edd8;
+      --sand: #b88a64;
+      --sand-soft: #f4e7da;
+      --alert: #a85e42;
+      --alert-soft: #f6e4da;
+      --shadow: 0 16px 40px rgba(45, 57, 53, 0.08);
+      --shadow-soft: 0 8px 24px rgba(45, 57, 53, 0.06);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --content-width: 1480px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(196, 221, 216, 0.55), transparent 28%),
+        linear-gradient(140deg, var(--bg) 0%, #f3ecdf 48%, var(--bg-deep) 100%);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      background: none;
+      color: inherit;
+    }
+
+    .app-shell {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.48);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 250, 244, 0.78);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(155deg, #ecf6f2 0%, #d6e6e2 100%);
+      color: var(--accent-deep);
+      box-shadow: inset 0 0 0 1px rgba(63, 111, 107, 0.14);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .person-card,
+    .support-card {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: var(--surface-strong);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .person-card h2,
+    .support-card h2 {
+      margin: 0;
+      font-size: 1.32rem;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      color: var(--ink);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .chip.success {
+      background: var(--olive-soft);
+      color: #49543a;
+    }
+
+    .chip.soft {
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+    }
+
+    .chip.alert {
+      background: var(--alert-soft);
+      color: var(--alert);
+    }
+
+    .mini-stats {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-stat {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: #fbf7f1;
+      border: 1px solid rgba(214, 200, 182, 0.7);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.05rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .mini-stat span {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 3px;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .nav-button:hover,
+    .nav-button:focus-visible {
+      background: rgba(255, 255, 255, 0.62);
+      border-color: rgba(191, 174, 152, 0.85);
+      box-shadow: var(--shadow-soft);
+      outline: none;
+    }
+
+    .nav-button.is-active {
+      background: var(--surface-strong);
+      border-color: var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .nav-button .icon-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      flex-shrink: 0;
+    }
+
+    .nav-copy {
+      min-width: 0;
+    }
+
+    .nav-copy strong {
+      display: block;
+      font-size: 0.92rem;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-copy span {
+      display: none;
+    }
+
+    .support-card p,
+    .person-card p,
+    .card p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .support-card .button-row {
+      margin-top: 16px;
+    }
+
+    .main-panel {
+      min-width: 0;
+      display: grid;
+      gap: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 24px 28px;
+      border-radius: 30px;
+      background: rgba(255, 251, 246, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.54);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar h2 {
+      margin: 6px 0 0;
+      font-size: clamp(1.95rem, 2.6vw, 2.8rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .topbar p {
+      margin: 8px 0 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .status-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.75);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .status-pill.alert {
+      border-color: #e3b59c;
+      background: var(--alert-soft);
+      color: var(--alert);
+    }
+
+    .view-stack {
+      display: grid;
+    }
+
+    .view-pane {
+      display: none;
+      gap: 20px;
+      animation: rise 260ms ease;
+    }
+
+    .view-pane.is-active {
+      display: grid;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
+      gap: 20px;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-8 { grid-column: span 8; }
+    .span-7 { grid-column: span 7; }
+    .span-6 { grid-column: span 6; }
+    .span-5 { grid-column: span 5; }
+    .span-4 { grid-column: span 4; }
+
+    .card {
+      padding: 22px;
+      border-radius: var(--radius-xl);
+      background: rgba(255, 251, 246, 0.85);
+      border: 1px solid rgba(214, 200, 182, 0.88);
+      box-shadow: var(--shadow);
+    }
+
+    .card.tight {
+      padding: 18px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1.42rem;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .card h4 {
+      margin: 0;
+      font-size: 1.03rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card-header p {
+      margin: 8px 0 0;
+      max-width: 54ch;
+    }
+
+    .icon-badge {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+    }
+
+    .icon-badge.alert {
+      background: var(--alert-soft);
+      color: var(--alert);
+    }
+
+    .icon-badge.sand {
+      background: var(--sand-soft);
+      color: #8a5f3f;
+    }
+
+    .icon {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .summary-item {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: #fffaf4;
+      border: 1px solid rgba(214, 200, 182, 0.88);
+    }
+
+    .summary-item strong {
+      display: block;
+      font-size: 1.15rem;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .summary-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .button,
+    .action-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 15px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .button:hover,
+    .button:focus-visible,
+    .action-chip:hover,
+    .action-chip:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-soft);
+      outline: none;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #f7fbfb;
+    }
+
+    .button.secondary,
+    .action-chip {
+      background: #fffaf4;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .button.sand {
+      background: var(--sand-soft);
+      color: #84593b;
+    }
+
+    .button.alert {
+      background: var(--alert-soft);
+      color: var(--alert);
+    }
+
+    .alert-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: start;
+      padding: 22px 24px;
+      border-radius: var(--radius-xl);
+      border: 1px solid #e4b9a2;
+      background: linear-gradient(135deg, rgba(255, 248, 243, 0.9), rgba(246, 228, 218, 0.96));
+      box-shadow: var(--shadow);
+    }
+
+    .alert-bar h3 {
+      margin-top: 0;
+    }
+
+    .alert-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .alert-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .detail-list,
+    .feed-list,
+    .task-list,
+    .decision-list,
+    .appt-list,
+    .claims-list,
+    .notes-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-row,
+    .feed-item,
+    .task-item,
+    .decision-item,
+    .appt-item,
+    .claim-item,
+    .note-item {
+      display: grid;
+      gap: 6px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(214, 200, 182, 0.66);
+    }
+
+    .detail-row:first-child,
+    .feed-item:first-child,
+    .task-item:first-child,
+    .decision-item:first-child,
+    .appt-item:first-child,
+    .claim-item:first-child,
+    .note-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .label-line,
+    .feed-head,
+    .task-head,
+    .decision-head,
+    .appt-head,
+    .claim-head,
+    .note-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .label-line strong,
+    .feed-head strong,
+    .task-head strong,
+    .decision-head strong,
+    .appt-head strong,
+    .claim-head strong,
+    .note-head strong {
+      font-size: 1rem;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .metric-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: #fffaf4;
+      border: 1px solid rgba(214, 200, 182, 0.88);
+    }
+
+    .metric .value {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.52rem;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .metric .subtext {
+      display: block;
+      margin-top: 7px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 6px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(63, 111, 107, 0.26), rgba(63, 111, 107, 0));
+    }
+
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      margin-top: 4px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(221, 236, 234, 0.95);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px 0;
+      border-top: 1px solid rgba(214, 200, 182, 0.72);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.96rem;
+      line-height: 1.45;
+    }
+
+    thead th {
+      padding-top: 0;
+      border-top: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    tbody tr:first-child td {
+      border-top-color: rgba(214, 200, 182, 0.86);
+    }
+
+    .progress-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .progress-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-line {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #ece2d3;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #7cb3ad);
+    }
+
+    .progress-fill.sand {
+      background: linear-gradient(90deg, #b88a64, #d8b08e);
+    }
+
+    .progress-fill.olive {
+      background: linear-gradient(90deg, #66764a, #9aac74);
+    }
+
+    .progress-fill.alert {
+      background: linear-gradient(90deg, #a85e42, #d08769);
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) 320px;
+      gap: 20px;
+    }
+
+    .chat-window {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .message {
+      max-width: 78%;
+      padding: 16px 18px;
+      border-radius: 22px;
+      font-size: 0.98rem;
+      line-height: 1.5;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .message.assistant {
+      background: #fffaf4;
+      border: 1px solid rgba(214, 200, 182, 0.86);
+      border-top-left-radius: 8px;
+    }
+
+    .message.user {
+      margin-left: auto;
+      background: linear-gradient(180deg, #3f6f6b 0%, #315a57 100%);
+      color: #f8fbfb;
+      border-top-right-radius: 8px;
+    }
+
+    .message p {
+      margin: 0;
+      color: inherit;
+    }
+
+    .message strong {
+      color: inherit;
+    }
+
+    .message ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .message li {
+      margin: 6px 0;
+    }
+
+    .chat-meta {
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .input-row {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(214, 200, 182, 0.86);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .fake-input {
+      flex: 1 1 auto;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--surface-muted);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .callout {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: #fffaf4;
+    }
+
+    .callout + .callout {
+      margin-top: 14px;
+    }
+
+    .split-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .split-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(214, 200, 182, 0.72);
+    }
+
+    .split-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .role-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .role-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.95fr);
+      gap: 16px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(214, 200, 182, 0.72);
+    }
+
+    .role-row:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .role-row strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .role-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 20px;
+    }
+
+    .availability {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .availability .split-item strong {
+      font-size: 0.98rem;
+    }
+
+    .footnote {
+      padding: 0 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .hidden-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+      white-space: nowrap;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .nav-list {
+        grid-template-columns: repeat(6, minmax(148px, 1fr));
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .nav-button {
+        min-width: 0;
+      }
+
+      .hero-grid,
+      .chat-shell,
+      .support-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .span-8,
+      .span-7,
+      .span-6,
+      .span-5,
+      .span-4 {
+        grid-column: span 6;
+      }
+
+      .summary-grid,
+      .metric-board {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 820px) {
+      .app-shell {
+        padding: 16px;
+      }
+
+      .sidebar,
+      .card,
+      .topbar,
+      .alert-bar {
+        border-radius: 24px;
+      }
+
+      .topbar {
+        padding: 20px;
+        flex-direction: column;
+      }
+
+      .status-strip {
+        justify-content: flex-start;
+      }
+
+      .summary-grid,
+      .metric-board,
+      .mini-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .span-12,
+      .span-8,
+      .span-7,
+      .span-6,
+      .span-5,
+      .span-4 {
+        grid-column: auto;
+      }
+
+      .alert-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .role-row {
+        grid-template-columns: 1fr;
+      }
+
+      .message {
+        max-width: 92%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 18c2.3-4.3 5-6.5 7-6.5S16.7 13.7 19 18"></path>
+              <path d="M5 12c1.6-3.1 3.9-4.7 7-4.7s5.4 1.6 7 4.7"></path>
+              <path d="M12 4.5v7"></path>
+            </svg>
+          </span>
+        </div>
+        <div>
+          <h1>Harbor Care</h1>
+          <p>Johnson family workspace</p>
+        </div>
+      </div>
+
+      <section class="person-card">
+        <p class="eyebrow">Caring For</p>
+        <h2>Margaret Johnson, 78</h2>
+        <p>Pasadena · Early-stage dementia · Aging in place</p>
+        <div class="chip-row">
+          <span class="chip success">Stable</span>
+          <span class="chip alert">3 alerts</span>
+        </div>
+      </section>
+
+      <nav class="nav-list" role="tablist" aria-label="Primary views">
+        <button class="nav-button is-active" id="tab-home" type="button" data-view="home" role="tab" aria-selected="true" aria-controls="view-home">
+          <span class="icon-badge" aria-hidden="true">
+            <span class="icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 11.5 12 4l9 7.5"></path>
+                <path d="M6.5 10.5V20h11v-9.5"></path>
+              </svg>
+            </span>
+          </span>
+          <span class="nav-copy">
+            <strong>Dashboard</strong>
+          </span>
+        </button>
+        <button class="nav-button" id="tab-assistant" type="button" data-view="assistant" role="tab" aria-selected="false" aria-controls="view-assistant">
+          <span class="icon-badge" aria-hidden="true">
+            <span class="icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 9.5h8"></path>
+                <path d="M8 13.5h5"></path>
+                <path d="M12 20l-3.8-2.5H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-2.2L12 20Z"></path>
+              </svg>
+            </span>
+          </span>
+          <span class="nav-copy">
+            <strong>Ask Harbor</strong>
+          </span>
+        </button>
+        <button class="nav-button" id="tab-medical" type="button" data-view="medical" role="tab" aria-selected="false" aria-controls="view-medical">
+          <span class="icon-badge" aria-hidden="true">
+            <span class="icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+                <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+              </svg>
+            </span>
+          </span>
+          <span class="nav-copy">
+            <strong>Medical</strong>
+          </span>
+        </button>
+        <button class="nav-button" id="tab-financial" type="button" data-view="financial" role="tab" aria-selected="false" aria-controls="view-financial">
+          <span class="icon-badge sand" aria-hidden="true">
+            <span class="icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 7h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 17h10"></path>
+                <rect x="3" y="4" width="18" height="16" rx="3"></rect>
+              </svg>
+            </span>
+          </span>
+          <span class="nav-copy">
+            <strong>Financial</strong>
+          </span>
+        </button>
+        <button class="nav-button" id="tab-family" type="button" data-view="family" role="tab" aria-selected="false" aria-controls="view-family">
+          <span class="icon-badge" aria-hidden="true">
+            <span class="icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M17.5 20a4.5 4.5 0 0 0-9 0"></path>
+                <path d="M14.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"></path>
+                <path d="M22 20a3.5 3.5 0 0 0-4.5-3.3"></path>
+                <path d="M18.5 6.2a2.1 2.1 0 0 1 0 4.1"></path>
+                <path d="M2 20a3.5 3.5 0 0 1 4.5-3.3"></path>
+                <path d="M5.5 6.2a2.1 2.1 0 0 0 0 4.1"></path>
+              </svg>
+            </span>
+          </span>
+          <span class="nav-copy">
+            <strong>Family</strong>
+          </span>
+        </button>
+        <button class="nav-button" id="tab-care-team" type="button" data-view="care-team" role="tab" aria-selected="false" aria-controls="view-care-team">
+          <span class="icon-badge" aria-hidden="true">
+            <span class="icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 12h16"></path>
+                <path d="M12 4v16"></path>
+                <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+              </svg>
+            </span>
+          </span>
+          <span class="nav-copy">
+            <strong>Care Team</strong>
+          </span>
+        </button>
+      </nav>
+
+      <section class="support-card">
+        <p class="eyebrow">Your Specialist</p>
+        <h2>Nina Patel</h2>
+        <div class="chip-row">
+          <span class="chip soft">Check-in Apr 15</span>
+        </div>
+        <div class="button-row">
+          <button class="button primary" type="button" data-open-view="care-team">Get help</button>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Johnson Family Workspace</p>
+          <h2 id="page-title">Dashboard / Home</h2>
+          <p id="page-subtitle">The high-level view shows what changed, what needs attention, and who is doing what so no sibling has to hunt through separate systems.</p>
+        </div>
+        <div class="status-strip" aria-label="Key status">
+          <span class="status-pill alert">3 items need review</span>
+          <span class="status-pill">Synced 7:42 AM</span>
+          <span class="status-pill">Home visits on track</span>
+          <span class="status-pill">Quarterly review Jul 12</span>
+        </div>
+      </header>
+
+      <div class="view-stack">
+        <section class="view-pane is-active" id="view-home" data-view-title="Dashboard / Home" data-view-subtitle="The high-level view shows what changed, what needs attention, and who is doing what so no sibling has to hunt through separate systems." role="tabpanel" aria-labelledby="tab-home">
+          <div class="hero-grid">
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Today At A Glance</p>
+                  <h3>Margaret is steady, but there are three follow-ups before Friday.</h3>
+                  <p>The system brings the medical, financial, and home picture together first, then gives the family clear next steps instead of forcing them to click through separate portals.</p>
+                </div>
+                <span class="icon-badge" aria-hidden="true">
+                  <span class="icon">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 5v14"></path>
+                      <path d="M5 12h14"></path>
+                    </svg>
+                  </span>
+                </span>
+              </div>
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <strong>Mar 29</strong>
+                  <span>Last doctor visit with Dr. Elena Ramirez. Mild cognitive changes stable. Continue current plan.</span>
+                </div>
+                <div class="summary-item">
+                  <strong>Apr 10, 9:30 AM</strong>
+                  <span>Upcoming PCP follow-up with Dr. Asha Morgan. Sarah joining by video.</span>
+                </div>
+                <div class="summary-item">
+                  <strong>1 refill due</strong>
+                  <span>Donepezil has four tablets left. All other medications are on track.</span>
+                </div>
+                <div class="summary-item">
+                  <strong>$4,480</strong>
+                  <span>Care-related spending this month so far across home care, pharmacy, and transport.</span>
+                </div>
+              </div>
+              <div class="button-row">
+                <button class="button primary" type="button" data-open-view="assistant">Ask Harbor for help</button>
+                <button class="button secondary" type="button" data-open-view="medical">Review medical details</button>
+                <button class="button sand" type="button" data-open-view="financial">Check bills and balances</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Care Team Status</p>
+                  <h3>Coverage is active and coordinated.</h3>
+                  <p>Visible human backup reduces anxiety when something goes beyond a routine portal check or scheduling request.</p>
+                </div>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Last home visit</strong>
+                    <span class="chip soft">Completed</span>
+                  </div>
+                  <span class="meta">David stopped by Apr 6 at 7:15 PM, checked the mail, reset the Wi-Fi router, and confirmed dinner was eaten.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Next scheduled support</strong>
+                    <span class="chip">Apr 9 at 10:00 AM</span>
+                  </div>
+                  <span class="meta">Rosa from BrightPath Home Care will handle medication setup, light laundry, and lunch prep.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Home status</strong>
+                    <span class="chip alert">Battery needs replacement</span>
+                  </div>
+                  <span class="meta">Doors locked, groceries stocked, no missed wellness check-ins. Hallway smoke detector battery flagged yesterday.</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <section class="alert-bar">
+            <div>
+              <p class="eyebrow">Attention Needed</p>
+              <h3>Three items need a decision this week.</h3>
+              <p>Alerts are grouped by impact so the family sees what needs action immediately, without sorting through feeds or buried badges.</p>
+              <ul class="alert-list">
+                <li class="alert-item">
+                  <span class="icon-badge alert" aria-hidden="true">
+                    <span class="icon">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 8v4"></path>
+                        <path d="M12 16h.01"></path>
+                        <path d="M10.3 4.9 2.8 18a1.5 1.5 0 0 0 1.3 2.2h15.8a1.5 1.5 0 0 0 1.3-2.2L13.7 4.9a1.5 1.5 0 0 0-2.6 0Z"></path>
+                      </svg>
+                    </span>
+                  </span>
+                  <div>
+                    <strong>Medication refill</strong>
+                    <p>Donepezil will run out on Apr 11. Harbor can request the CVS refill today and send pickup options to David.</p>
+                  </div>
+                </li>
+                <li class="alert-item">
+                  <span class="icon-badge alert" aria-hidden="true">
+                    <span class="icon">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M4 7h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 17h10"></path>
+                        <rect x="3" y="4" width="18" height="16" rx="3"></rect>
+                      </svg>
+                    </span>
+                  </span>
+                  <div>
+                    <strong>Insurance claim follow-up</strong>
+                    <p>Blue Shield claim #29184 for the Feb 21 ER visit is waiting on one receipt upload before reimbursement can continue.</p>
+                  </div>
+                </li>
+                <li class="alert-item">
+                  <span class="icon-badge alert" aria-hidden="true">
+                    <span class="icon">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 3v18"></path>
+                        <path d="M8 7h8"></path>
+                        <path d="M7 21h10"></path>
+                      </svg>
+                    </span>
+                  </span>
+                  <div>
+                    <strong>Home safety</strong>
+                    <p>Hallway smoke detector battery was reported low during yesterday’s evening visit. David can replace it, or Harbor can book a handyman.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="button-row">
+              <button class="button primary" type="button" data-open-view="assistant">Resolve with Harbor</button>
+              <button class="button alert" type="button" data-open-view="care-team">Escalate to Nina</button>
+            </div>
+          </section>
+
+          <div class="section-grid">
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Quick Health Summary</p>
+                  <h3>Medical snapshot</h3>
+                </div>
+                <span class="chip success">No new symptoms logged</span>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Last doctor visit</strong>
+                    <span class="meta">Mar 29</span>
+                  </div>
+                  <span class="meta">Memory clinic follow-up: cognition stable, encourage pill organizer labels, walking routine still recommended.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Upcoming appointments</strong>
+                    <span class="meta">2 this month</span>
+                  </div>
+                  <span class="meta">PCP on Apr 10 at 9:30 AM, neurology on Apr 18 at 2:00 PM, fasting labs on Apr 24 at 8:15 AM.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Medication status</strong>
+                    <span class="chip alert">1 refill due</span>
+                  </div>
+                  <span class="meta">Five active medications. Donepezil low. Lisinopril and atorvastatin refills are already in process.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Financial Snapshot</p>
+                  <h3>Money and bills</h3>
+                </div>
+                <span class="chip soft">All accounts synced</span>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Connected balances</strong>
+                    <span class="meta">$164,810 total viewable</span>
+                  </div>
+                  <span class="meta">Checking $12,480, savings $68,210, brokerage $84,120. Visa care card balance due: $1,146.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Recent transactions</strong>
+                    <span class="meta">Last 72 hours</span>
+                  </div>
+                  <span class="meta">BrightPath Home Care $460, CVS Pharmacy $42, Pasadena Water &amp; Power $61, Uber Health ride $34.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Bills due</strong>
+                    <span class="chip alert">2 within 7 days</span>
+                  </div>
+                  <span class="meta">Caregiver invoice due Apr 12 for $680 and HOA payment due Apr 15 for $320.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Physical Care Status</p>
+                  <h3>Home and visit coverage</h3>
+                </div>
+                <span class="chip">Aging in place</span>
+              </div>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Last person to visit</strong>
+                    <span class="meta">Apr 6, 7:15 PM</span>
+                  </div>
+                  <span class="meta">David checked dinner, mail, hallway lights, and medication box. Margaret was calm and oriented to the evening routine.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Next scheduled visit</strong>
+                    <span class="meta">Apr 9, 10:00 AM</span>
+                  </div>
+                  <span class="meta">BrightPath aide Rosa will visit for two hours. Transportation review planned for the Apr 10 appointment.</span>
+                </div>
+                <div class="detail-row">
+                  <div class="label-line">
+                    <strong>Home status</strong>
+                    <span class="chip alert">One maintenance item</span>
+                  </div>
+                  <span class="meta">Fridge stocked, front path clear, bedroom fall mat in place, smoke detector battery low.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Family Activity Feed</p>
+                  <h3>Recent sibling activity</h3>
+                </div>
+                <span class="chip soft">Shared transparency</span>
+              </div>
+              <div class="feed-list">
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>Sarah reviewed the memory clinic note</strong>
+                    <span class="meta">Today, 8:14 AM</span>
+                  </div>
+                  <span class="meta">Added a note to ask about driving safety at the April neurology follow-up.</span>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>Michael approved March reimbursements</strong>
+                    <span class="meta">Today, 6:40 AM</span>
+                  </div>
+                  <span class="meta">Marked the shared expense summary as reviewed and ready for export.</span>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>David uploaded home safety photos</strong>
+                    <span class="meta">Yesterday, 8:03 PM</span>
+                  </div>
+                  <span class="meta">Added hallway sensor placement and smoke detector battery reminder.</span>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>Nina prepared the quarterly review agenda</strong>
+                    <span class="meta">Yesterday, 4:10 PM</span>
+                  </div>
+                  <span class="meta">Flagged medication management and home support coverage as discussion topics.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-7">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">This Week</p>
+                  <h3>Upcoming rhythm</h3>
+                  <p>Chronology matters when the family is coordinating across time zones. This keeps the next few days obvious.</p>
+                </div>
+              </div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Apr 9, Wednesday · BrightPath home visit</strong>
+                    <p class="meta">Rosa arrives at 10:00 AM for medication setup, laundry, and lunch prep. David to confirm smoke detector battery swap.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Apr 10, Thursday · PCP follow-up</strong>
+                    <p class="meta">Dr. Asha Morgan at 9:30 AM. Sarah joins by video, David drives. Bring blood pressure log and updated medication list.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Apr 12, Saturday · Caregiver invoice due</strong>
+                    <p class="meta">$680 due to BrightPath. Michael already reviewed the charges but payment still needs approval.</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-5">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Open Tasks</p>
+                  <h3>Assigned and visible</h3>
+                </div>
+              </div>
+              <div class="task-list">
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Approve Donepezil refill request</strong>
+                    <span class="chip alert">Due today</span>
+                  </div>
+                  <span class="meta">Owner: Sarah. Harbor can send the refill request directly to CVS and notify David for pickup.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Upload ER receipt for claim #29184</strong>
+                    <span class="chip">Due Apr 11</span>
+                  </div>
+                  <span class="meta">Owner: Michael. Receipt is already scanned in the family documents folder.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Replace hallway smoke detector battery</strong>
+                    <span class="chip">Due Apr 9</span>
+                  </div>
+                  <span class="meta">Owner: David. If he cannot make it, Harbor can create a handyman request.</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view-pane" id="view-assistant" data-view-title="AI Assistant Chat" data-view-subtitle="The assistant is framed as a knowledgeable care coordinator with family context, clear sources, and human backup when something needs escalation." role="tabpanel" aria-labelledby="tab-assistant">
+          <div class="chat-shell">
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Harbor Assistant</p>
+                  <h3>Ask one question. Harbor checks the connected records and gives a direct answer.</h3>
+                  <p>This is positioned as a teammate with context, not a novelty chatbot. Replies are specific, operational, and tied to the real care plan.</p>
+                </div>
+                <span class="chip soft">Human handoff available</span>
+              </div>
+
+              <div class="button-row">
+                <button class="action-chip" type="button">What medications is Mom on?</button>
+                <button class="action-chip" type="button">Schedule a doctor appointment</button>
+                <button class="action-chip" type="button">Show me Mom's bank balance this month</button>
+                <button class="action-chip" type="button">Who visited the house last week?</button>
+              </div>
+
+              <div class="chat-window">
+                <div class="message user">
+                  <div class="chat-meta">Sarah · 8:15 AM</div>
+                  <p>What medications is Mom on right now?</p>
+                </div>
+
+                <div class="message assistant">
+                  <div class="chat-meta">Harbor · grounded answer</div>
+                  <p>Margaret currently has five active medications in the connected pharmacy and doctor records:</p>
+                  <ul>
+                    <li>Donepezil 5 mg nightly, refill due Apr 11</li>
+                    <li>Lisinopril 10 mg every morning, refill already submitted</li>
+                    <li>Atorvastatin 20 mg nightly, pickup ready at CVS</li>
+                    <li>Sertraline 25 mg every morning, on track through Apr 28</li>
+                    <li>Vitamin D3 2000 IU daily, auto-ship arrives Apr 14</li>
+                  </ul>
+                  <p>I can place the refill request for Donepezil now and send the pickup task to David.</p>
+                </div>
+
+                <div class="message user">
+                  <div class="chat-meta">Michael · 8:19 AM</div>
+                  <p>Show me Mom's bank balance this month and any unusual charges.</p>
+                </div>
+
+                <div class="message assistant">
+                  <div class="chat-meta">Harbor · financial summary</div>
+                  <p>Current connected cash balances total <strong>$80,690</strong> across checking and savings. Brokerage is <strong>$84,120</strong>.</p>
+                  <p>Unusual charges this month: a one-time stair rail install for <strong>$420</strong> on Apr 2 and an urgent care transport charge of <strong>$98</strong> on Apr 3. Everything else matches the recurring care plan.</p>
+                </div>
+
+                <div class="message user">
+                  <div class="chat-meta">David · 8:24 AM</div>
+                  <p>Who visited the house last week?</p>
+                </div>
+
+                <div class="message assistant">
+                  <div class="chat-meta">Harbor · visit log</div>
+                  <p>Last week, Margaret had four in-person visits:</p>
+                  <ul>
+                    <li>Mar 31: Rosa, BrightPath home care, 2 hours</li>
+                    <li>Apr 2: David, evening dinner check-in</li>
+                    <li>Apr 4: Rosa, medication and laundry support</li>
+                    <li>Apr 6: David, evening home safety check</li>
+                  </ul>
+                  <p>The next scheduled visit is Rosa on Apr 9 at 10:00 AM.</p>
+                </div>
+
+                <div class="message user">
+                  <div class="chat-meta">Sarah · 8:28 AM</div>
+                  <p>Schedule a doctor appointment for the driving safety discussion.</p>
+                </div>
+
+                <div class="message assistant">
+                  <div class="chat-meta">Harbor · action plan</div>
+                  <p>I can draft the request for the neurology office and hold two possible times after the Apr 18 follow-up.</p>
+                  <ul>
+                    <li>Option A: Ask Dr. Ramirez's office to add the driving discussion to the Apr 18 visit</li>
+                    <li>Option B: Book a separate telehealth consult during the week of Apr 22</li>
+                    <li>If the office needs a live caller, I’ll hand this to Nina so it does not stall</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="input-row">
+                <div class="fake-input">Ask Harbor anything about Margaret’s care, finances, appointments, or household support.</div>
+                <button class="button primary" type="button">Send</button>
+              </div>
+            </article>
+
+            <aside>
+              <div class="card tight">
+                <p class="eyebrow">Suggested Actions</p>
+                <h4>Quick wins for today</h4>
+                <div class="button-row">
+                  <button class="button secondary" type="button">Refill Donepezil</button>
+                  <button class="button secondary" type="button">Pay BrightPath invoice</button>
+                  <button class="button secondary" type="button">Book handyman</button>
+                </div>
+              </div>
+
+              <div class="card tight">
+                <p class="eyebrow">Why This Feels Different</p>
+                <h4>Specific, calm, and accountable</h4>
+                <div class="split-list">
+                  <div class="split-item">
+                    <div>
+                      <strong>Grounded answers</strong>
+                      <div class="meta">Replies reference connected accounts, medication records, visit logs, and upcoming appointments.</div>
+                    </div>
+                  </div>
+                  <div class="split-item">
+                    <div>
+                      <strong>Clear next steps</strong>
+                      <div class="meta">Each answer points to an action, approval, or handoff instead of stopping at information retrieval.</div>
+                    </div>
+                  </div>
+                  <div class="split-item">
+                    <div>
+                      <strong>Human backup</strong>
+                      <div class="meta">If a clinic call, billing dispute, or sensitive issue needs a person, Nina steps in without the family starting over.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card tight">
+                <p class="eyebrow">Shortcuts</p>
+                <h4>Jump to related views</h4>
+                <div class="button-row">
+                  <button class="button secondary" type="button" data-open-view="medical">Medical details</button>
+                  <button class="button secondary" type="button" data-open-view="financial">Financial details</button>
+                  <button class="button secondary" type="button" data-open-view="care-team">Support team</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view-pane" id="view-medical" data-view-title="Medical View" data-view-subtitle="Appointments, medications, visit summaries, and the longer health timeline stay together so the family can understand both the immediate plan and the broader trajectory." role="tabpanel" aria-labelledby="tab-medical">
+          <div class="section-grid">
+            <article class="card span-4">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Next Appointment</p>
+                  <h3>PCP follow-up</h3>
+                </div>
+                <span class="chip soft">Apr 10 · 9:30 AM</span>
+              </div>
+              <p>Dr. Asha Morgan, Pasadena Internal Medicine. Blood pressure review, medication reconciliation, and discussion of evening confusion episodes.</p>
+              <div class="button-row">
+                <button class="button secondary" type="button">Send prep note</button>
+              </div>
+            </article>
+
+            <article class="card span-4">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Medication Status</p>
+                  <h3>Five active medications</h3>
+                </div>
+                <span class="chip alert">1 refill pending</span>
+              </div>
+              <p>No missed doses recorded in the last seven days. Morning pill organizer is working; evening reminders still help on weekends.</p>
+            </article>
+
+            <article class="card span-4">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Clinical Note</p>
+                  <h3>Cognition stable</h3>
+                </div>
+                <span class="chip success">Latest note</span>
+              </div>
+              <p>Memory clinic note from Mar 29 says Margaret remains appropriate for aging in place with family oversight, simplified routines, and medication support.</p>
+            </article>
+
+            <article class="card span-5">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Upcoming Appointments</p>
+                  <h3>Next 30 days</h3>
+                </div>
+              </div>
+              <div class="appt-list">
+                <div class="appt-item">
+                  <div class="appt-head">
+                    <strong>Apr 10 · PCP follow-up with Dr. Asha Morgan</strong>
+                    <span class="chip">In person</span>
+                  </div>
+                  <span class="meta">David driving. Sarah joins by video. Bring blood pressure log and current medication list.</span>
+                </div>
+                <div class="appt-item">
+                  <div class="appt-head">
+                    <strong>Apr 18 · Neurology follow-up with Dr. Elena Ramirez</strong>
+                    <span class="chip">In person</span>
+                  </div>
+                  <span class="meta">Discuss driving safety, short-term memory changes, and whether home routines need adjustment.</span>
+                </div>
+                <div class="appt-item">
+                  <div class="appt-head">
+                    <strong>Apr 24 · Fasting labs</strong>
+                    <span class="chip">Lab visit</span>
+                  </div>
+                  <span class="meta">Ordered after PCP review. Harbor will remind the family the night before.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-7">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Recent Doctor Notes / Visit Summaries</p>
+                  <h3>Most relevant context first</h3>
+                </div>
+              </div>
+              <div class="notes-list">
+                <div class="note-item">
+                  <div class="note-head">
+                    <strong>Mar 29 · Memory clinic follow-up</strong>
+                    <span class="chip soft">Dr. Elena Ramirez</span>
+                  </div>
+                  <span class="meta">Mild cognitive impairment remains consistent with early-stage dementia. Continue Donepezil, reinforce daily structure, and revisit driving safety next visit.</span>
+                </div>
+                <div class="note-item">
+                  <div class="note-head">
+                    <strong>Mar 12 · PCP routine visit</strong>
+                    <span class="chip soft">Dr. Asha Morgan</span>
+                  </div>
+                  <span class="meta">Blood pressure controlled. Encouraged hydration and daily walking. No acute concerns. Family asked to monitor occasional missed evening doses.</span>
+                </div>
+                <div class="note-item">
+                  <div class="note-head">
+                    <strong>Feb 27 · Home physical therapy assessment</strong>
+                    <span class="chip soft">BrightPath PT</span>
+                  </div>
+                  <span class="meta">Mild balance decline on stairs. Recommended second handrail, brighter hallway lighting, and continued use of bedroom fall mat.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-12">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Medication List</p>
+                  <h3>Refill status is visible at a glance</h3>
+                </div>
+              </div>
+              <table aria-label="Medication list">
+                <thead>
+                  <tr>
+                    <th>Medication</th>
+                    <th>Dose</th>
+                    <th>Purpose</th>
+                    <th>Refill status</th>
+                    <th>Next action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Donepezil</strong></td>
+                    <td>5 mg nightly</td>
+                    <td>Memory support</td>
+                    <td><span class="chip alert">4 tablets left</span></td>
+                    <td>Approve CVS refill today</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lisinopril</strong></td>
+                    <td>10 mg morning</td>
+                    <td>Blood pressure</td>
+                    <td><span class="chip success">On track</span></td>
+                    <td>Refill already submitted Mar 31</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Atorvastatin</strong></td>
+                    <td>20 mg nightly</td>
+                    <td>Cholesterol</td>
+                    <td><span class="chip soft">Ready for pickup</span></td>
+                    <td>David can collect after PCP visit</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sertraline</strong></td>
+                    <td>25 mg morning</td>
+                    <td>Mood support</td>
+                    <td><span class="chip success">18 days left</span></td>
+                    <td>No action needed</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Vitamin D3</strong></td>
+                    <td>2000 IU daily</td>
+                    <td>Supplement</td>
+                    <td><span class="chip soft">Auto-ship Apr 14</span></td>
+                    <td>Confirm delivery</td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+
+            <article class="card span-12">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Health Timeline</p>
+                  <h3>Recent changes in context</h3>
+                </div>
+              </div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Jan 16 · Neuropsych evaluation</strong>
+                    <p class="meta">Early-stage dementia diagnosis confirmed. Family advised to centralize medications and review driving routine.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Feb 27 · Home safety and PT assessment</strong>
+                    <p class="meta">Stair rail, brighter hallway lighting, and bedroom fall mat recommended. Most changes completed by Mar 5.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Mar 29 · Memory clinic follow-up</strong>
+                    <p class="meta">Cognitive trend stable. Continue current medication plan and revisit driving safety after next neurology conversation.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <span class="timeline-dot" aria-hidden="true"></span>
+                  <div>
+                    <strong>Apr 10 to Apr 24 · Current action window</strong>
+                    <p class="meta">PCP review, neurology follow-up, and fasting labs give the family a clear checkpoint for decisions before summer planning.</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view-pane" id="view-financial" data-view-title="Financial View" data-view-subtitle="Financial information is surfaced with the same calm clarity as medical data so siblings can share visibility without turning every expense into a separate conversation." role="tabpanel" aria-labelledby="tab-financial">
+          <div class="section-grid">
+            <article class="card span-12">
+              <div class="metric-board">
+                <div class="metric">
+                  <span class="eyebrow">Connected Accounts</span>
+                  <span class="value">$164,810</span>
+                  <span class="subtext">Checking, savings, and brokerage balances currently viewable.</span>
+                </div>
+                <div class="metric">
+                  <span class="eyebrow">Care Spending</span>
+                  <span class="value">$4,480</span>
+                  <span class="subtext">Month-to-date across home care, pharmacy, transport, and utilities.</span>
+                </div>
+                <div class="metric">
+                  <span class="eyebrow">Bills Due</span>
+                  <span class="value">$1,000</span>
+                  <span class="subtext">Two payments in the next seven days: BrightPath and HOA.</span>
+                </div>
+                <div class="metric">
+                  <span class="eyebrow">Claims Pending</span>
+                  <span class="value">3</span>
+                  <span class="subtext">One needs family action, two are still in insurer review.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-7">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Connected Accounts With Balances</p>
+                  <h3>Readable, not buried in banking portals</h3>
+                </div>
+                <span class="chip soft">Synced 7:41 AM</span>
+              </div>
+              <table aria-label="Connected accounts">
+                <thead>
+                  <tr>
+                    <th>Account</th>
+                    <th>Ownership / access</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>First Pacific Checking · 1842</strong></td>
+                    <td>Margaret, family read access</td>
+                    <td>$12,480</td>
+                    <td>Healthy cash buffer</td>
+                  </tr>
+                  <tr>
+                    <td><strong>First Pacific Savings · 8820</strong></td>
+                    <td>Margaret, David POA view</td>
+                    <td>$68,210</td>
+                    <td>No unusual activity</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Vanguard Brokerage · 4471</strong></td>
+                    <td>Margaret trust account</td>
+                    <td>$84,120</td>
+                    <td>Monthly draw not scheduled</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Visa Care Card · 9032</strong></td>
+                    <td>Shared care expenses</td>
+                    <td>$1,146 due</td>
+                    <td>Payment due Apr 19</td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+
+            <article class="card span-5">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Monthly Spending Summary</p>
+                  <h3>Where the money is going</h3>
+                </div>
+              </div>
+              <div class="progress-list">
+                <div class="progress-row">
+                  <div class="label-line">
+                    <strong>Home care</strong>
+                    <span class="meta">$2,340</span>
+                  </div>
+                  <div class="progress-line"><div class="progress-fill" style="width: 78%"></div></div>
+                </div>
+                <div class="progress-row">
+                  <div class="label-line">
+                    <strong>Medical + pharmacy</strong>
+                    <span class="meta">$688</span>
+                  </div>
+                  <div class="progress-line"><div class="progress-fill sand" style="width: 36%"></div></div>
+                </div>
+                <div class="progress-row">
+                  <div class="label-line">
+                    <strong>Utilities + home</strong>
+                    <span class="meta">$412</span>
+                  </div>
+                  <div class="progress-line"><div class="progress-fill olive" style="width: 24%"></div></div>
+                </div>
+                <div class="progress-row">
+                  <div class="label-line">
+                    <strong>Transportation</strong>
+                    <span class="meta">$590</span>
+                  </div>
+                  <div class="progress-line"><div class="progress-fill sand" style="width: 31%"></div></div>
+                </div>
+                <div class="progress-row">
+                  <div class="label-line">
+                    <strong>Insurance premiums</strong>
+                    <span class="meta">$450</span>
+                  </div>
+                  <div class="progress-line"><div class="progress-fill alert" style="width: 27%"></div></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Bills And Recurring Payments</p>
+                  <h3>What is due next</h3>
+                </div>
+              </div>
+              <div class="task-list">
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>BrightPath Home Care invoice</strong>
+                    <span class="chip alert">Apr 12 · $680</span>
+                  </div>
+                  <span class="meta">Already reviewed by Michael. Awaiting final approval before autopay is triggered.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Pasadena Terrace HOA</strong>
+                    <span class="chip">Apr 15 · $320</span>
+                  </div>
+                  <span class="meta">Recurring payment. No issue flagged.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Blue Shield supplemental premium</strong>
+                    <span class="chip">Apr 20 · $450</span>
+                  </div>
+                  <span class="meta">Recurring autopay from checking.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Spectrum internet</strong>
+                    <span class="chip">Apr 21 · $74</span>
+                  </div>
+                  <span class="meta">Needed for telehealth and home camera coverage.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Insurance Claims Status</p>
+                  <h3>Visible to the whole family</h3>
+                </div>
+              </div>
+              <div class="claims-list">
+                <div class="claim-item">
+                  <div class="claim-head">
+                    <strong>Claim #29184 · Feb 21 ER visit</strong>
+                    <span class="chip alert">Action needed</span>
+                  </div>
+                  <span class="meta">Pending one receipt upload for $240 reimbursement. Michael already has the scan.</span>
+                </div>
+                <div class="claim-item">
+                  <div class="claim-head">
+                    <strong>Neurology consult follow-up</strong>
+                    <span class="chip soft">Processing</span>
+                  </div>
+                  <span class="meta">$80 copay reimbursement expected within 10 business days.</span>
+                </div>
+                <div class="claim-item">
+                  <div class="claim-head">
+                    <strong>Home physical therapy authorization</strong>
+                    <span class="chip success">Approved</span>
+                  </div>
+                  <span class="meta">Coverage active through Jun 30 for twice-monthly sessions.</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view-pane" id="view-family" data-view-title="Family View" data-view-subtitle="This view emphasizes fairness and transparency: who can do what, what has been decided, and which tasks are assigned, so one sibling does not become the invisible operator." role="tabpanel" aria-labelledby="tab-family">
+          <div class="section-grid">
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Roles And Permissions</p>
+                  <h3>Who has what access</h3>
+                </div>
+              </div>
+              <div class="role-card">
+                <div class="role-row">
+                  <div>
+                    <strong>Sarah Johnson · Portland</strong>
+                    <div class="meta">Primary care coordinator and medical point person.</div>
+                  </div>
+                  <div class="role-tags">
+                    <span class="chip soft">Medical write access</span>
+                    <span class="chip">Appointment scheduling</span>
+                    <span class="chip">Shared notes owner</span>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <div>
+                    <strong>Michael Johnson · Chicago</strong>
+                    <div class="meta">Finance reviewer and reimbursement tracker.</div>
+                  </div>
+                  <div class="role-tags">
+                    <span class="chip soft">Financial write access</span>
+                    <span class="chip">Claims tracking</span>
+                    <span class="chip">Medical read-only</span>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <div>
+                    <strong>David Johnson · Los Angeles</strong>
+                    <div class="meta">Local responder for in-person needs and household follow-through.</div>
+                  </div>
+                  <div class="role-tags">
+                    <span class="chip soft">Home access</span>
+                    <span class="chip">Visit coordination</span>
+                    <span class="chip">Financial POA on file</span>
+                  </div>
+                </div>
+                <div class="role-row">
+                  <div>
+                    <strong>Margaret Johnson</strong>
+                    <div class="meta">Parent profile stays central, with family help layered around it.</div>
+                  </div>
+                  <div class="role-tags">
+                    <span class="chip">Visible care plan</span>
+                    <span class="chip">No portal complexity</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Activity Log</p>
+                  <h3>Who did what, when</h3>
+                </div>
+              </div>
+              <div class="feed-list">
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>Sarah added April neurology question</strong>
+                    <span class="meta">Today, 8:14 AM</span>
+                  </div>
+                  <span class="meta">Saved under the medical prep note for Dr. Ramirez.</span>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>Michael approved reimbursement summary</strong>
+                    <span class="meta">Today, 6:40 AM</span>
+                  </div>
+                  <span class="meta">Marked ready to export for family records.</span>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>David logged home safety note</strong>
+                    <span class="meta">Yesterday, 8:03 PM</span>
+                  </div>
+                  <span class="meta">Smoke detector battery and hallway night light added to household list.</span>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-head">
+                    <strong>Nina updated quarterly review agenda</strong>
+                    <span class="meta">Yesterday, 4:10 PM</span>
+                  </div>
+                  <span class="meta">Medication handoff and summer support coverage are on the agenda.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Shared Notes And Decisions</p>
+                  <h3>Decision trail</h3>
+                </div>
+              </div>
+              <div class="decision-list">
+                <div class="decision-item">
+                  <div class="decision-head">
+                    <strong>Keep Margaret at home with twice-weekly aide support through summer</strong>
+                    <span class="meta">Agreed Mar 30</span>
+                  </div>
+                  <span class="meta">Revisit after July quarterly review unless fall risk changes sooner.</span>
+                </div>
+                <div class="decision-item">
+                  <div class="decision-head">
+                    <strong>David handles in-person errands; Sarah handles clinic follow-up</strong>
+                    <span class="meta">Agreed Mar 18</span>
+                  </div>
+                  <span class="meta">Reduces duplicate outreach and keeps local tasks local.</span>
+                </div>
+                <div class="decision-item">
+                  <div class="decision-head">
+                    <strong>Wait for neurology follow-up before formal driving assessment</strong>
+                    <span class="meta">Agreed Apr 3</span>
+                  </div>
+                  <span class="meta">Question is already saved for the Apr 18 appointment.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card span-6">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Task Assignments</p>
+                  <h3>Clear owners</h3>
+                </div>
+              </div>
+              <div class="task-list">
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Approve Donepezil refill</strong>
+                    <span class="chip alert">Sarah · today</span>
+                  </div>
+                  <span class="meta">Harbor can send the request once Sarah approves.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Upload ER receipt to insurer</strong>
+                    <span class="chip">Michael · Apr 11</span>
+                  </div>
+                  <span class="meta">Scan is already stored in documents; task is waiting on final submission.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Replace smoke detector battery</strong>
+                    <span class="chip">David · Apr 9</span>
+                  </div>
+                  <span class="meta">If missed, Harbor can convert this to a handyman request.</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-head">
+                    <strong>Review summer respite options</strong>
+                    <span class="chip">Nina · Apr 15</span>
+                  </div>
+                  <span class="meta">Care team will bring two vetted options to the next check-in.</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view-pane" id="view-care-team" data-view-title="Care Team" data-view-subtitle="Human support is made explicit, approachable, and easy to escalate to. The family should never wonder whether they are on their own when something becomes complex." role="tabpanel" aria-labelledby="tab-care-team">
+          <div class="support-grid">
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <p class="eyebrow">Assigned Care Specialist</p>
+                  <h3>Nina Patel is the Johnson family lead.</h3>
+                  <p>Nina handles white-glove onboarding follow-through, quarterly reviews, and any issue that should not be left to portal navigation or asynchronous back-and-forth.</p>
+                </div>
+                <span class="chip soft">Coverage active</span>
+              </div>
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <strong>Apr 2</strong>
+                  <span>Last family check-in completed with Sarah and David.</span>
+                </div>
+                <div class="summary-item">
+                  <strong>Apr 15</strong>
+                  <span>Next optional touchpoint reserved for care plan review.</span>
+                </div>
+                <div class="summary-item">
+                  <strong>Jul 12</strong>
+                  <span>Next quarterly review date with medication and home support review.</span>
+                </div>
+                <div class="summary-item">
+                  <strong>2 hours</strong>
+                  <span>Expected response time for urgent daytime issues.</span>
+                </div>
+              </div>
+
+              <div class="availability">
+                <div class="split-item">
+                  <div>
+                    <strong>Schedule a check-in</strong>
+                    <div class="meta">Choose a slot for a family review or a focused issue discussion.</div>
+                  </div>
+                  <button class="button primary" type="button">Book 20 minutes</button>
+                </div>
+                <div class="split-item">
+                  <div>
+                    <strong>Escalate an issue</strong>
+                    <div class="meta">Use this when a clinic, insurer, or care provider needs live follow-through.</div>
+                  </div>
+                  <button class="button alert" type="button">Escalate now</button>
+                </div>
+                <div class="split-item">
+                  <div>
+                    <strong>Request a plan review</strong>
+                    <div class="meta">Bring decisions about driving, housing, spending, or new support needs into one conversation.</div>
+                  </div>
+                  <button class="button secondary" type="button">Prepare review</button>
+                </div>
+              </div>
+            </article>
+
+            <aside>
+              <div class="card tight">
+                <p class="eyebrow">Available Check-In Times</p>
+                <h4>Next openings</h4>
+                <div class="split-list">
+                  <div class="split-item">
+                    <div>
+                      <strong>Wed, Apr 9 · 1:30 PM PT</strong>
+                      <div class="meta">Short care coordination check-in</div>
+                    </div>
+                  </div>
+                  <div class="split-item">
+                    <div>
+                      <strong>Thu, Apr 10 · 4:00 PM PT</strong>
+                      <div class="meta">Post-appointment recap support</div>
+                    </div>
+                  </div>
+                  <div class="split-item">
+                    <div>
+                      <strong>Tue, Apr 15 · 11:00 AM PT</strong>
+                      <div class="meta">Medication and home coverage review</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card tight">
+                <p class="eyebrow">Escalation Paths</p>
+                <h4>Obvious by design</h4>
+                <div class="split-list">
+                  <div class="split-item">
+                    <div>
+                      <strong>Urgent same-day issue</strong>
+                      <div class="meta">Falls, missed caregivers, or sudden confusion. Call Nina or mark urgent for immediate routing.</div>
+                    </div>
+                  </div>
+                  <div class="split-item">
+                    <div>
+                      <strong>Billing or insurance dispute</strong>
+                      <div class="meta">Harbor collects the context, then Nina handles the live follow-up.</div>
+                    </div>
+                  </div>
+                  <div class="split-item">
+                    <div>
+                      <strong>Care transition planning</strong>
+                      <div class="meta">Move from aging in place to heavier support without rebuilding the family timeline from memory.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card tight">
+                <p class="eyebrow">Human + AI Model</p>
+                <h4>Why both are visible</h4>
+                <p>The assistant handles the repetitive computer work. Nina handles judgment, coordination friction, and trust-sensitive conversations. Both are present in the interface so the family knows where help comes from.</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+
+      <p class="footnote">Wireframe uses fictional placeholder data for the Johnson family to demonstrate the product concept, content hierarchy, and interaction model.</p>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const tabs = Array.from(document.querySelectorAll("[data-view]"));
+      const panes = Array.from(document.querySelectorAll(".view-pane"));
+      const title = document.getElementById("page-title");
+      const subtitle = document.getElementById("page-subtitle");
+      const openers = Array.from(document.querySelectorAll("[data-open-view]"));
+
+      function activateView(viewId, replaceHash) {
+        const targetPane = panes.find((pane) => pane.id === "view-" + viewId);
+        if (!targetPane) {
+          return;
+        }
+
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.view === viewId;
+          tab.classList.toggle("is-active", isActive);
+          tab.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+
+        panes.forEach((pane) => {
+          pane.classList.toggle("is-active", pane === targetPane);
+        });
+
+        title.textContent = targetPane.dataset.viewTitle;
+        subtitle.textContent = targetPane.dataset.viewSubtitle;
+
+        if (replaceHash) {
+          history.replaceState(null, "", "#" + viewId);
+        }
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          activateView(tab.dataset.view, true);
+        });
+      });
+
+      openers.forEach((button) => {
+        button.addEventListener("click", function () {
+          activateView(button.dataset.openView, true);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+
+      const initialView = (window.location.hash || "#home").replace("#", "");
+      activateView(initialView, true);
+    }());
+  </script>
+</body>
+</html>

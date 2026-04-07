@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elder Care Coordination — Marketing Wireframe</title>
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --surface: #fffdf9;
+      --surface-soft: #f1f6f4;
+      --surface-blue: #edf4f8;
+      --text: #23313a;
+      --muted: #5e6d76;
+      --line: #d9e1df;
+      --accent: #7ea9b3;
+      --accent-deep: #4e7a86;
+      --sage: #8fae9d;
+      --warm: #d7c1a6;
+      --peach: #efe1d2;
+      --success: #6f9988;
+      --shadow: 0 18px 40px rgba(35, 49, 58, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(215,193,166,0.22), transparent 28%),
+        linear-gradient(180deg, #fbf8f3 0%, #f7f4ee 42%, #f4f7f5 100%);
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .section { padding: 96px 0; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(126,169,179,0.18);
+      color: var(--accent-deep);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sage), var(--accent));
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.8rem, 5vw, 4.9rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      margin-bottom: 22px;
+      max-width: 11ch;
+    }
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 3vw, 3.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 18px;
+    }
+    h3 {
+      font-size: 1.15rem;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .lede, .section-intro {
+      font-size: clamp(1.08rem, 1.5vw, 1.3rem);
+      color: var(--muted);
+      max-width: 62ch;
+    }
+    .section-intro { margin-bottom: 36px; }
+    .muted { color: var(--muted); }
+    .btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-deep), var(--accent));
+      color: white;
+      box-shadow: 0 12px 24px rgba(78, 122, 134, 0.2);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.78);
+      color: var(--text);
+      border-color: rgba(35,49,58,0.12);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(251, 248, 243, 0.72);
+      border-bottom: 1px solid rgba(35,49,58,0.06);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, var(--accent), var(--sage));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .hero {
+      padding: 54px 0 48px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .hero-card, .card, .story-card, .pricing-card, .mission-card, .trust-panel {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(35,49,58,0.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+    .hero-card {
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(248,251,250,0.9));
+    }
+    .hero-visual {
+      position: relative;
+      min-height: 560px;
+      padding: 22px;
+      border-radius: 34px;
+      background: linear-gradient(180deg, #eef5f8 0%, #f7f9f6 100%);
+      border: 1px solid rgba(78,122,134,0.12);
+      overflow: hidden;
+    }
+    .glow {
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(143,174,157,0.22), transparent 68%);
+      right: -40px;
+      top: -40px;
+    }
+    .family-photo {
+      position: absolute;
+      inset: 26px 26px 190px 26px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #dbe8eb, #f0e7db);
+      border: 1px solid rgba(35,49,58,0.08);
+      overflow: hidden;
+    }
+    .family-photo::before, .family-photo::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.5);
+    }
+    .family-photo::before {
+      width: 180px;
+      height: 180px;
+      left: 20px;
+      bottom: 26px;
+    }
+    .family-photo::after {
+      width: 140px;
+      height: 140px;
+      right: 28px;
+      top: 34px;
+    }
+    .floating-note, .timeline-card, .sync-card {
+      position: absolute;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(35,49,58,0.08);
+      border-radius: 20px;
+      box-shadow: 0 12px 26px rgba(35,49,58,0.09);
+    }
+    .floating-note {
+      left: 18px;
+      bottom: 94px;
+      padding: 16px;
+      width: 240px;
+    }
+    .timeline-card {
+      right: 18px;
+      bottom: 112px;
+      padding: 16px;
+      width: 220px;
+    }
+    .sync-card {
+      left: 56px;
+      right: 56px;
+      bottom: 24px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .mini-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-deep);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .mini-text {
+      font-size: 0.94rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .avatars {
+      display: flex;
+      align-items: center;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin-left: -8px;
+      background: linear-gradient(135deg, #d7c1a6, #8fae9d);
+    }
+    .avatar:first-child { margin-left: 0; }
+
+    .grid-3, .grid-4, .grid-2 {
+      display: grid;
+      gap: 22px;
+    }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .card {
+      padding: 28px;
+      height: 100%;
+    }
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+      background: linear-gradient(145deg, rgba(126,169,179,0.18), rgba(143,174,157,0.18));
+      border: 1px solid rgba(126,169,179,0.2);
+    }
+    .soft-panel {
+      padding: 32px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(237,244,248,0.75), rgba(241,246,244,0.8));
+      border: 1px solid rgba(126,169,179,0.12);
+    }
+    .flow-step {
+      position: relative;
+      padding: 28px 24px 24px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 22px;
+      border: 1px solid rgba(35,49,58,0.08);
+      min-height: 220px;
+    }
+    .step-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent-deep), var(--sage));
+      color: white;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .pillar-card {
+      text-align: center;
+      padding: 34px 26px;
+    }
+    .pillar-card .icon {
+      margin-inline: auto;
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      font-size: 1.6rem;
+    }
+    .trust-panel {
+      padding: 34px;
+    }
+    .trust-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .trust-item {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(241,246,244,0.95), rgba(255,255,255,0.95));
+      border: 1px solid rgba(35,49,58,0.06);
+    }
+    .story-wrap {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 26px;
+      align-items: stretch;
+    }
+    .story-visual {
+      min-height: 420px;
+      border-radius: 28px;
+      background: linear-gradient(150deg, #dfe9ee, #efe0cf);
+      border: 1px solid rgba(35,49,58,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .map-dot, .map-line {
+      position: absolute;
+      background: white;
+      opacity: 0.88;
+    }
+    .map-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 4px solid var(--accent-deep);
+    }
+    .map-line {
+      height: 2px;
+      transform-origin: left center;
+    }
+    .story-card {
+      padding: 36px;
+    }
+    blockquote {
+      margin: 0 0 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      line-height: 1.35;
+      color: var(--text);
+    }
+    .pricing-card, .mission-card {
+      padding: 36px;
+    }
+    .pricing-chip {
+      display: inline-flex;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(143,174,157,0.15);
+      color: var(--success);
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .price {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3rem, 5vw, 4.4rem);
+      line-height: 1;
+      margin: 8px 0 16px;
+    }
+    .price span {
+      font-size: 1.1rem;
+      font-family: Inter, sans-serif;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .pricing-list, .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0;
+    }
+    .pricing-list li, .footer-links li {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+    .mission-card {
+      background: linear-gradient(135deg, rgba(78,122,134,0.96), rgba(143,174,157,0.92));
+      color: white;
+    }
+    .mission-card p,
+    .mission-card .muted { color: rgba(255,255,255,0.82); }
+    .mission-metric {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .metric {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .metric strong {
+      display: block;
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+    footer {
+      padding: 36px 0 54px;
+      border-top: 1px solid rgba(35,49,58,0.08);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr 0.9fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .compliance-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .badge {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(35,49,58,0.08);
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .story-wrap,
+      .grid-2,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .trust-list { grid-template-columns: 1fr 1fr; }
+      .hero-visual { min-height: 500px; }
+      .mission-metric { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .section { padding: 72px 0; }
+      .nav { align-items: flex-start; }
+      .nav-links { gap: 14px; font-size: 0.9rem; }
+      .hero { padding-top: 28px; }
+      .hero-card, .story-card, .pricing-card, .mission-card, .trust-panel, .card { padding: 24px; }
+      .grid-4, .trust-list { grid-template-columns: 1fr; }
+      .hero-visual {
+        min-height: 520px;
+        padding: 16px;
+      }
+      .family-photo { inset: 18px 18px 214px 18px; }
+      .floating-note,
+      .timeline-card {
+        position: static;
+        width: auto;
+        margin-top: 14px;
+      }
+      .sync-card {
+        left: 18px;
+        right: 18px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .btn-row { flex-direction: column; align-items: stretch; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div>
+          <div>Elder Care Platform</div>
+          <div class="muted" style="font-size: 0.85rem; font-weight: 500;">Warm, coordinated longevity care</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#problem">Why families need this</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#trust">Trust</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#mission">Mission</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">AI coordination, guided by humans</div>
+          <h1>Care for your parents with more calm, clarity, and dignity.</h1>
+          <p class="lede">
+            When aging parents need help, families are suddenly asked to manage medical decisions,
+            home support, and finances all at once. Our platform brings everything into one place —
+            with an AI assistant that handles the busywork and a human specialist who helps you feel supported from day one.
+          </p>
+          <div class="btn-row">
+            <a href="#pricing" class="btn btn-primary">See how families get started</a>
+            <a href="#story" class="btn btn-secondary">Read a family story</a>
+          </div>
+          <div class="hero-card" style="margin-top: 30px;">
+            <div class="mini-label">Why this feels different</div>
+            <p class="mini-text">
+              Not a cold dashboard. Not a frantic checklist. A calmer layer around one of life’s hardest transitions —
+              designed for siblings, built for trust, and respectful of a parent’s privacy and agency.
+            </p>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Wireframe illustration showing coordinated care dashboard">
+          <div class="glow"></div>
+          <div class="family-photo"></div>
+          <div class="floating-note">
+            <div class="mini-label">This week</div>
+            <p class="mini-text">Cardiology follow-up booked, medication refill submitted, home aide invoice shared with siblings.</p>
+          </div>
+          <div class="timeline-card">
+            <div class="mini-label">Assistant summary</div>
+            <p class="mini-text">Mom’s care plan is up to date. No outstanding tasks before Friday’s appointment.</p>
+          </div>
+          <div class="sync-card">
+            <div>
+              <div class="mini-label">Family stays in sync</div>
+              <p class="mini-text">Los Angeles · Seattle · Austin</p>
+            </div>
+            <div class="avatars" aria-hidden="true">
+              <div class="avatar"></div>
+              <div class="avatar" style="background: linear-gradient(135deg, #b8d0d6, #8fae9d);"></div>
+              <div class="avatar" style="background: linear-gradient(135deg, #e9d8c5, #7ea9b3);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="problem">
+      <div class="container">
+        <div class="eyebrow">The problem</div>
+        <h2>Families are forced to coordinate deeply personal care across fragmented systems.</h2>
+        <p class="section-intro">
+          The hardest part often is not one emergency — it’s the ongoing fragmentation. Portals don’t talk to each other.
+          Siblings carry different pieces of information. Small gaps become stress, confusion, and conflict.
+        </p>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">✚</div>
+            <h3>Medical chaos</h3>
+            <p class="muted">
+              Appointments, medications, specialists, discharge paperwork, provider messages — critical context lives across too many places.
+            </p>
+          </article>
+          <article class="card">
+            <div class="icon">◔</div>
+            <h3>Financial complexity</h3>
+            <p class="muted">
+              Bills, insurance claims, spending, savings, power of attorney, and estate visibility become emotionally loaded fast.
+            </p>
+          </article>
+          <article class="card">
+            <div class="icon">⌂</div>
+            <h3>Physical care coordination</h3>
+            <p class="muted">
+              Home support, transportation, safety checks, maintenance, and the question of aging in place versus a facility all need oversight.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="container">
+        <div class="soft-panel">
+          <div class="eyebrow">How it works</div>
+          <h2>A gentler way to build a family care system.</h2>
+          <p class="section-intro">
+            We combine white-glove onboarding, secure data connections, and an assistant that understands your specific family over time.
+          </p>
+          <div class="grid-4">
+            <article class="flow-step">
+              <div class="step-num">1</div>
+              <h3>Start with a specialist</h3>
+              <p class="muted">A real human helps your family get set up, understand permissions, and decide what matters most right now.</p>
+            </article>
+            <article class="flow-step">
+              <div class="step-num">2</div>
+              <h3>Connect the important accounts</h3>
+              <p class="muted">Securely link healthcare portals, financial accounts, and care resources so information stops living in silos.</p>
+            </article>
+            <article class="flow-step">
+              <div class="step-num">3</div>
+              <h3>Your AI assistant handles the rest</h3>
+              <p class="muted">It retrieves updates, organizes tasks, tracks details, and reduces the repetitive coordination work families dread.</p>
+            </article>
+            <article class="flow-step">
+              <div class="step-num">4</div>
+              <h3>Everyone stays aligned</h3>
+              <p class="muted">Shared visibility helps siblings stay informed, share the load fairly, and make calmer decisions together.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pillars">
+      <div class="container">
+        <div class="eyebrow">Three pillars of care</div>
+        <h2>One platform built around the realities families actually face.</h2>
+        <p class="section-intro">
+          The product is structured around the three domains that define long-term elder care: medical, physical, and financial.
+        </p>
+        <div class="grid-3">
+          <article class="card pillar-card">
+            <div class="icon">⚕</div>
+            <h3>Medical</h3>
+            <p class="muted">Appointments, medications, clinical updates, provider communication, and care plan continuity.</p>
+          </article>
+          <article class="card pillar-card">
+            <div class="icon">❤</div>
+            <h3>Physical</h3>
+            <p class="muted">In-home support, transportation, safety, household help, and decisions about aging in place.</p>
+          </article>
+          <article class="card pillar-card">
+            <div class="icon">◫</div>
+            <h3>Financial</h3>
+            <p class="muted">Expenses, insurance, savings visibility, benefit coordination, and clearer family transparency.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="trust">
+      <div class="container grid-2">
+        <div>
+          <div class="eyebrow">The trust layer</div>
+          <h2>This only works if families feel safe letting us help.</h2>
+          <p class="section-intro">
+            We’re asking families to centralize the most sensitive information in their lives. Trust is not a feature — it is the product foundation.
+          </p>
+        </div>
+        <div class="trust-panel">
+          <div class="mini-label">Why families trust us</div>
+          <div class="trust-list">
+            <div class="trust-item">
+              <h3>HIPAA-compliant systems</h3>
+              <p class="muted">Built for protected health information from the beginning, not retrofitted later.</p>
+            </div>
+            <div class="trust-item">
+              <h3>Bank-level security</h3>
+              <p class="muted">Strong encryption, careful permissions, and auditability around sensitive financial access.</p>
+            </div>
+            <div class="trust-item">
+              <h3>Human onboarding</h3>
+              <p class="muted">Families meet a specialist who helps establish clarity, confidence, and the right boundaries.</p>
+            </div>
+            <div class="trust-item">
+              <h3>Quarterly check-ins</h3>
+              <p class="muted">Ongoing review keeps the system aligned as health, family roles, and care needs evolve.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="story">
+      <div class="container story-wrap">
+        <div class="story-visual" aria-hidden="true">
+          <div class="map-dot" style="top: 70px; left: 86px;"></div>
+          <div class="map-dot" style="top: 180px; right: 100px;"></div>
+          <div class="map-dot" style="bottom: 86px; left: 48%;"></div>
+          <div class="map-line" style="width: 210px; top: 84px; left: 102px; transform: rotate(18deg);"></div>
+          <div class="map-line" style="width: 180px; bottom: 96px; left: 42%; transform: rotate(-48deg);"></div>
+          <div class="floating-note" style="left: 24px; bottom: 26px; width: 260px;">
+            <div class="mini-label">Shared update</div>
+            <p class="mini-text">“Mom had a good PT session today. The grocery delivery is set for Thursday.”</p>
+          </div>
+        </div>
+        <article class="story-card">
+          <div class="eyebrow">Family story</div>
+          <blockquote>
+            “My brother was in Seattle, I was in Austin, and our mom was alone in Pasadena. We were all trying to help — but none of us had the full picture.”
+          </blockquote>
+          <p class="muted">
+            Placeholder story: After a hospitalization, the Nguyen family needed a calmer way to manage medications, follow-up visits, caregiver schedules, and mounting expenses.
+            Instead of relying on text threads, spreadsheets, and memory, they used the platform to keep every update in one place.
+          </p>
+          <p class="muted">
+            The result wasn’t just efficiency. It was relief. Their mom felt less like a burden, and the siblings stopped arguing about who knew what and who was doing enough.
+          </p>
+          <p style="margin-top: 22px; font-weight: 700;">— Placeholder for a real family testimonial</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="container grid-2">
+        <article class="pricing-card">
+          <div class="pricing-chip">Pricing preview</div>
+          <h2>Plans starting at $X<span style="font-size: 1.25rem; font-family: Inter, sans-serif; color: var(--muted);">/month</span></h2>
+          <p class="section-intro" style="margin-bottom: 18px;">
+            Built as a services-led product, not a cold subscription funnel. Families pay for coordination, trust, and relief — with room for financial flexibility.
+          </p>
+          <ul class="pricing-list">
+            <li><span>•</span><span>Human onboarding and account setup</span></li>
+            <li><span>•</span><span>AI-powered updates, retrieval, and care coordination</span></li>
+            <li><span>•</span><span>Quarterly care reviews and support escalation</span></li>
+            <li><span>•</span><span>Income-scaled pricing and scholarship programs available</span></li>
+          </ul>
+        </article>
+        <article class="card" style="padding: 32px; background: linear-gradient(180deg, rgba(241,246,244,0.92), rgba(255,255,255,0.88));">
+          <div class="mini-label">Designed for approachability</div>
+          <p class="muted">
+            This section intentionally avoids aggressive plan comparisons or “buy now” pressure. The emotional cue is support, not conversion urgency.
+          </p>
+          <div style="margin-top: 22px; padding: 22px; border-radius: 20px; background: rgba(255,255,255,0.82); border: 1px solid rgba(35,49,58,0.07);">
+            <div class="mini-label">Future pricing modules</div>
+            <p class="mini-text">Optional tiers could include memory care support, facility transition planning, or family financial coordination.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="mission">
+      <div class="container">
+        <article class="mission-card">
+          <div class="eyebrow" style="background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.16);">About & mission</div>
+          <h2>Our mission is to help one million families with long-term longevity care.</h2>
+          <p class="section-intro">
+            We believe aging support should feel more human, more coordinated, and less lonely. This is a long-game company built around trust, relationships, and real family relief.
+          </p>
+          <div class="mission-metric">
+            <div class="metric">
+              <strong>1M</strong>
+              <span>families supported over time</span>
+            </div>
+            <div class="metric">
+              <strong>3</strong>
+              <span>care domains unified in one place</span>
+            </div>
+            <div class="metric">
+              <strong>1</strong>
+              <span>shared system that helps families move together</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div>
+            <div>Elder Care Platform</div>
+            <div class="muted" style="font-size: 0.88rem; font-weight: 500;">For distributed families caring well</div>
+          </div>
+        </div>
+        <p class="muted" style="margin-top: 16px; max-width: 34ch;">
+          A wireframe concept for an elder care coordination company combining AI assistance, human support, and a strong trust layer.
+        </p>
+        <div class="compliance-badges">
+          <div class="badge">HIPAA Ready</div>
+          <div class="badge">Encrypted Data</div>
+          <div class="badge">Audit Trails</div>
+        </div>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul class="footer-links">
+          <li><a href="#problem">The problem</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#pillars">Care pillars</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Company</h3>
+        <ul class="footer-links">
+          <li><a href="#mission">About</a></li>
+          <li><a href="#trust">Trust & security</a></li>
+          <li><a href="#pricing">Pricing preview</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <ul class="footer-links">
+          <li><span>hello@placeholder.com</span></li>
+          <li><span>(000) 000-0000</span></li>
+          <li><span>Quarterly family care reviews</span></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
