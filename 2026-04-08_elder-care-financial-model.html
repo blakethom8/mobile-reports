@@ -627,6 +627,41 @@
       font-size: 1.1rem;
     }
 
+    .setup-context-card {
+      border: 1px solid #dbe5f8;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(41,98,255,0.08), rgba(255,255,255,0.96));
+      padding: 14px;
+    }
+
+    .setup-context-card h4 {
+      margin: 0 0 6px;
+      font-size: 0.98rem;
+      color: var(--header);
+    }
+
+    .setup-context-card p {
+      margin: 0;
+      color: #4b5a71;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .setup-context-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(41,98,255,0.10);
+      color: #234697;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
     .setup-quick-read {
       display: grid;
       gap: 10px;
@@ -1387,7 +1422,7 @@
           <h2>Inputs &amp; Scenarios</h2>
         </div>
 
-        <div class="control-group">
+        <div class="control-group" data-preview-context="scenario">
           <h3>Pre-Built Scenarios</h3>
           <div class="scenario-buttons" id="scenarioButtons">
             <button type="button" data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
@@ -1398,7 +1433,7 @@
           <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
         </div>
 
-        <details class="control-group collapsible-group" id="phase-editor-group">
+        <details class="control-group collapsible-group" id="phase-editor-group" data-preview-context="phase">
           <summary>
             <span>📅 Company Phases</span>
             <span class="summary-meta">3-phase staffing + growth plan <span class="summary-caret">▾</span></span>
@@ -1413,21 +1448,21 @@
           </div>
         </details>
 
-        <details class="control-group collapsible-group">
+        <details class="control-group collapsible-group" data-preview-context="demand">
           <summary><span>📊 Demand &amp; Time</span><span class="summary-caret">▾</span></summary>
           <div style="padding:12px 16px 16px" id="demand-group">
             <div class="field-note" style="margin-bottom:10px">Growth targets, human time per family, and churn. These demand-side drivers determine how many FSRs you need.</div>
           </div>
         </details>
 
-        <details class="control-group collapsible-group">
+        <details class="control-group collapsible-group" data-preview-context="revenue">
           <summary><span>💰 Revenue</span><span class="summary-caret">▾</span></summary>
           <div style="padding:12px 16px 16px" id="revenue-group">
             <div class="field-note" style="margin-bottom:10px">What you charge per family.</div>
           </div>
         </details>
 
-        <details class="control-group collapsible-group">
+        <details class="control-group collapsible-group" data-preview-context="fsr">
           <summary><span>👥 FSR Capacity</span><span class="summary-caret">▾</span></summary>
           <div style="padding:12px 16px 16px" id="fsr-group">
             <div class="field-note" style="margin-bottom:10px">FSR compensation and panel size — supply-side levers to meet demand.</div>
@@ -1435,7 +1470,7 @@
           </div>
         </details>
 
-        <details class="control-group collapsible-group">
+        <details class="control-group collapsible-group" data-preview-context="team">
           <summary><span>🏢 Team &amp; Fixed Costs</span><span class="summary-caret">▾</span></summary>
           <div style="padding:12px 16px 16px" id="team-costs-group">
             <div class="field-note" style="margin-bottom:10px">Engineering, org management, infrastructure. Fixed burn that doesn't scale with families.</div>
@@ -1555,6 +1590,7 @@
                 <h3>Preview Pane</h3>
                 <div class="small muted">Key metrics and a current-plan readout that stay visible while you tune the model.</div>
               </div>
+              <div id="setupPreviewContext"></div>
               <div class="setup-preview-metrics" id="setupSummaryGrid"></div>
               <div class="setup-quick-read" id="setupQuickRead"></div>
             </section>
@@ -1901,6 +1937,8 @@
     let activeScenarioKey = null;
     let activeView = 'setup';
     let activeCapacityMonth = 12;
+    let activePreviewContext = 'demand';
+    let latestModel = null;
 
     const money0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
     const money2 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -2613,6 +2651,16 @@
       `;
     }
 
+    function previewMetricCard(label, value, sub, tone='neutral') {
+      return `
+        <div class="card">
+          <div class="metric-label">${label}</div>
+          <div class="metric-value ${tone}">${value}</div>
+          <div class="metric-sub">${sub}</div>
+        </div>
+      `;
+    }
+
     function showMetricDefinition(key) {
       const def = metricDefinitions[key];
       if (!def) return;
@@ -2872,15 +2920,93 @@
         premium: 'Premium Concierge',
         healthplan: 'Health Plan Scale',
       };
+      const currentFamilyCapacity = Math.floor(currentRow.totalFsrs * assumptions.effectiveFamiliesPerFsr);
+      const currentHeadroom = Math.max(0, currentFamilyCapacity - currentRow.activeFamilies);
+      const peakFsrMonth = rows.find(row => row.totalFsrs === summary.maxFsrs)?.month || rows.length;
+      const previewContexts = {
+        demand: {
+          kicker: 'Active Lens',
+          title: 'Demand & Time',
+          description: 'This section changes FSR demand most directly: onboarding throughput, recurring workload, and how quickly families accumulate.',
+          metrics: [
+            previewMetricCard('Human time / family / month', `${twoDec.format(assumptions.ongoingHoursPerFamily)} hrs`, `${twoDec.format(assumptions.ongoingHoursPerFamily * 60)} minutes from outreach rate × handle time.`, 'positive'),
+            previewMetricCard('Onboarding capacity / FSR', `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new/mo`, `${intFmt.format(assumptions.onboardingHoursPool)} reserved onboarding hours and ${oneDec.format(state.onboardingHours)} hours per family.`),
+            previewMetricCard(`Month ${activeCapacityMonth} required FSR pool`, `${intFmt.format(currentRow.totalFsrs)} FSRs`, `${twoDec.format(currentRow.onboardingLaneFsrs)} onboarding lane eq · ${twoDec.format(currentRow.accountLaneFsrs)} account lane eq.`),
+            previewMetricCard(`Month ${activeCapacityMonth} family capacity`, `${intFmt.format(currentFamilyCapacity)} families`, `${intFmt.format(currentHeadroom)} families of modeled headroom at the current FSR staffing.`),
+            previewMetricCard('Peak FSR pool in plan', `${intFmt.format(summary.maxFsrs)} FSRs`, `Highest modeled FSR requirement occurs around month ${peakFsrMonth}.`),
+          ],
+        },
+        revenue: {
+          kicker: 'Active Lens',
+          title: 'Revenue & Acquisition',
+          description: 'These inputs shape monetization quality and how much value each family contributes before fixed costs.',
+          metrics: [
+            previewMetricCard('Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly price less modeled variable delivery cost.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
+            previewMetricCard('Planning CAC', money0.format(assumptions.estimatedCAC), `${money0.format(state.acquisitionCost)} acquisition + ${money0.format(assumptions.onboardingLaborCost)} onboarding labor.`),
+            previewMetricCard('LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', 'Efficiency of acquiring one family under current assumptions.', summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
+            previewMetricCard('Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', 'Active family hurdle under the current burn and unit margin.'),
+            previewMetricCard(`Month ${activeCapacityMonth} revenue`, money0.format(currentRow.revenue), `${money0.format(currentRow.onboardingRevenue)} onboarding + ${money0.format(currentRow.recurringRevenue)} recurring.`),
+          ],
+        },
+        fsr: {
+          kicker: 'Active Lens',
+          title: 'FSR Capacity',
+          description: 'These assumptions determine how much one FSR can carry, what that labor costs, and how much family capacity the model creates.',
+          metrics: [
+            previewMetricCard('Effective families / FSR', intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr)), `${intFmt.format(state.familiesPerFsr)} target ratio vs ${workloadLimit} workload-limited ratio.`),
+            previewMetricCard('FSR cost / family', money2.format(assumptions.steadyStateFsrCostPerFamily), 'Monthly FSR labor burden per active family at the effective panel ratio.'),
+            previewMetricCard(`Month ${activeCapacityMonth} required FSR pool`, `${intFmt.format(currentRow.totalFsrs)} FSRs`, `${twoDec.format(currentRow.onboardingLaneFsrs)} onboarding lane eq · ${twoDec.format(currentRow.accountLaneFsrs)} account lane eq.`),
+            previewMetricCard(`Month ${activeCapacityMonth} family capacity`, `${intFmt.format(currentFamilyCapacity)} families`, `${intFmt.format(currentHeadroom)} families of modeled headroom with the current FSR pool.`),
+            previewMetricCard('Variable cost / family', money2.format(summary.variableCostPerFamily), 'FSR labor plus AI/cloud, shared infra, and payment processing.', 'neutral'),
+          ],
+        },
+        team: {
+          kicker: 'Active Lens',
+          title: 'Team & Fixed Costs',
+          description: 'These inputs change the fixed burn the family base must absorb before the model turns self-funding.',
+          metrics: [
+            previewMetricCard(`Month ${activeCapacityMonth} fixed burn`, money0.format(currentRow.fixedCosts), `${currentRow.phaseName} phase fixed-cost base at the current review month.`, 'negative'),
+            previewMetricCard('Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', 'How many active families are needed to clear the current burn.'),
+            previewMetricCard('Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the plan self-funds.', 'negative'),
+            previewMetricCard(`Month ${activeCapacityMonth} net income`, money0.format(currentRow.netIncome), 'Current phase profitability after fixed and variable costs.', currentRow.netIncome >= 0 ? 'positive' : 'negative'),
+            previewMetricCard('36-mo net income', money0.format(summary.finalNetIncome), 'Ending monthly net income at month 36.', summary.finalNetIncome >= 0 ? 'positive' : 'negative'),
+          ],
+        },
+        phase: {
+          kicker: 'Active Lens',
+          title: 'Phase Buildout',
+          description: 'Phase edits step the company shape through time and change where staffing and cost cliffs hit the model.',
+          metrics: [
+            previewMetricCard('Active phase at review month', currentRow.phaseName, `Month ${activeCapacityMonth} currently sits in this phase.`),
+            previewMetricCard(`Month ${activeCapacityMonth} fixed burn`, money0.format(currentRow.fixedCosts), 'Fixed-cost base at the current phase boundary.', 'negative'),
+            previewMetricCard(`Month ${activeCapacityMonth} required FSR pool`, `${intFmt.format(currentRow.totalFsrs)} FSRs`, `${intFmt.format(currentRow.activeFamilies)} active families and ${intFmt.format(currentRow.newFamilies)} new families/mo.`),
+            previewMetricCard('Break-even month', summary.breakEvenMonth ? `M${summary.breakEvenMonth}` : 'Not in 36 mo', 'When monthly net income first turns positive.', summary.breakEvenMonth ? 'positive' : 'negative'),
+            previewMetricCard('Capital required', money0.format(summary.peakCapitalRequired), 'Funding gap created by the full stepped buildout path.', 'negative'),
+          ],
+        },
+        scenario: {
+          kicker: 'Active Lens',
+          title: 'Scenarios',
+          description: 'Scenario selection changes the whole starting posture of the model before you fine-tune any individual assumption.',
+          metrics: [
+            previewMetricCard('Loaded scenario', activeScenarioKey ? (scenarioLabels[activeScenarioKey] || activeScenarioKey) : 'Custom plan', activeScenarioKey ? 'Built-in preset currently loaded.' : 'Assumptions no longer exactly match a built-in preset.'),
+            previewMetricCard('36-mo active families', intFmt.format(summary.finalFamilies), 'Installed family base at the end of the 36-month horizon.', 'positive'),
+            previewMetricCard('Break-even month', summary.breakEvenMonth ? `M${summary.breakEvenMonth}` : 'Not in 36 mo', 'First month of positive monthly net income.', summary.breakEvenMonth ? 'positive' : 'negative'),
+            previewMetricCard('Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit for the active plan.', 'negative'),
+            previewMetricCard('Peak FSR pool', intFmt.format(summary.maxFsrs), 'Highest modeled FSR requirement across the 36-month plan.'),
+          ],
+        },
+      };
+      const activeContext = previewContexts[activePreviewContext] || previewContexts.demand;
 
-      document.getElementById('setupSummaryGrid').innerHTML = [
-        metricCard('onboardingCapacityPerFsr', 'Onboarding capacity / FSR', `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new/mo`, `${intFmt.format(assumptions.onboardingHoursPool)} onboarding hours reserved each month and ${oneDec.format(state.onboardingHours)} hours needed per family.`, 'neutral'),
-        metricCard('effectiveFamiliesPerFsr', 'Effective families / FSR', intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr)), `${intFmt.format(state.familiesPerFsr)} target ratio vs ${workloadLimit} workload-limited ratio.`, 'neutral'),
-        metricCard('effectiveChurn', 'Effective monthly churn', buildEffectiveChurnCard(model), `Lifetime cap of ${oneDec.format(state.lifetimeCapYears)} years creates a ${oneDec.format(summary.structuralChurnRate * 100)}% monthly floor.`, 'neutral'),
-        metricCard('variableCostPerFamily', 'Variable cost / family', money2.format(summary.variableCostPerFamily), 'Includes FSR staffing, AI/cloud, shared infra, and payment processing.', 'neutral'),
-        metricCard('ltv', 'LTV / family', Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', `Contribution margin capped by ${intFmt.format(summary.lifetimeCapMonths)} months or the effective churn curve, whichever is shorter.`, summary.ltv > 0 ? 'positive' : 'negative'),
-        metricCard('ltvCac', 'LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', `Uses planning CAC of ${money0.format(assumptions.estimatedCAC)} including acquisition and onboarding burden.`, summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
-      ].join('');
+      document.getElementById('setupPreviewContext').innerHTML = `
+        <div class="setup-context-card">
+          <div class="setup-context-kicker">${activeContext.kicker}</div>
+          <h4>${activeContext.title}</h4>
+          <p>${activeContext.description}</p>
+        </div>
+      `;
+      document.getElementById('setupSummaryGrid').innerHTML = activeContext.metrics.join('');
 
       document.getElementById('setupQuickRead').innerHTML = `
         <div class="setup-readout-card">
@@ -3261,6 +3387,24 @@
           showMetricDefinition(btn.dataset.metricHelp);
         };
       });
+    }
+
+    function setPreviewContext(context) {
+      if (!context || context === activePreviewContext) return;
+      activePreviewContext = context;
+      if (latestModel && activeView === 'setup') renderModelSetup(latestModel);
+    }
+
+    function bindPreviewContextTracking() {
+      const handleContextEvent = event => {
+        const host = event.target?.closest?.('#filtersWorkbench');
+        if (!host) return;
+        const contextHost = event.target.closest('[data-preview-context]');
+        if (contextHost?.dataset.previewContext) setPreviewContext(contextHost.dataset.previewContext);
+      };
+
+      document.addEventListener('focusin', handleContextEvent);
+      document.addEventListener('pointerdown', handleContextEvent);
     }
 
     function syncControlDock() {
@@ -4059,6 +4203,7 @@
 
     function updateAll() {
       const model = calculateModel(currentInputs());
+      latestModel = model;
       renderMetrics(model);
       renderModelSetup(model);
       buildCharts(model);
@@ -4075,6 +4220,7 @@
       fieldDefs.forEach(createField);
       refreshSavedScenarioDropdown();
       buildDefinitionsModal();
+      bindPreviewContextTracking();
       activeScenarioKey = 'conservative';
       syncScenarioButtonState();
       buildPhaseEditor();
