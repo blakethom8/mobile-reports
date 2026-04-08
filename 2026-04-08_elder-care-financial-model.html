@@ -24,6 +24,8 @@
       --amber-soft: rgba(199, 138, 16, 0.12);
       --shadow: 0 8px 24px rgba(22, 31, 56, 0.08);
       --radius: 14px;
+      --sticky-offset: 112px;
+      --preview-max-height: calc(100vh - 132px);
     }
 
     * { box-sizing: border-box; }
@@ -595,22 +597,64 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .setup-workspace-grid {
+    .setup-page-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.78fr);
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
       gap: 18px;
       align-items: start;
     }
 
-    .setup-controls-stack,
-    .setup-preview-column {
+    .setup-main-section {
+      grid-column: 1;
+    }
+
+    .setup-sidebar-column {
+      grid-column: 2;
+      grid-row: 1 / span 5;
       display: grid;
       gap: 18px;
+      align-self: stretch;
+      min-height: 100%;
     }
 
     .setup-preview-card {
       position: sticky;
-      top: 150px;
+      top: var(--sticky-offset);
+      max-height: var(--preview-max-height);
+      overflow: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .setup-preview-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .setup-preview-btn {
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid #d7e2f4;
+      background: #f7faff;
+      color: #48607e;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+
+    .setup-preview-btn:hover {
+      border-color: rgba(41,98,255,0.35);
+      color: #234697;
+      transform: translateY(-1px);
+    }
+
+    .setup-preview-btn.active {
+      border-color: rgba(41,98,255,0.38);
+      background: linear-gradient(135deg, rgba(41,98,255,0.14), rgba(41,98,255,0.05));
+      color: #16346f;
+      box-shadow: inset 0 0 0 1px rgba(41,98,255,0.08);
     }
 
     .setup-preview-metrics {
@@ -1367,8 +1411,9 @@
       .metrics-grid, .capacity-grid, .setup-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .growth-metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .snapshot-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
-      .setup-workspace-grid, .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid, .setup-filter-host #filtersWorkbench { grid-template-columns: 1fr; }
-      .setup-preview-card { position: static; top: auto; }
+      .setup-page-grid, .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid, .setup-filter-host #filtersWorkbench { grid-template-columns: 1fr; }
+      .setup-main-section, .setup-sidebar-column { grid-column: auto; grid-row: auto; }
+      .setup-preview-card { position: static; top: auto; max-height: none; overflow: visible; }
       .setup-filter-host .phase-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .capacity-layout, .steady-charts-grid { grid-template-columns: 1fr; }
     }
@@ -1380,6 +1425,7 @@
       header .title-row { align-items: flex-start; }
       .modal { max-height: calc(100vh - 20px); }
       .view-switcher { width: 100%; display: grid; grid-template-columns: 1fr; border-radius: 18px; }
+      .setup-preview-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .setup-filter-host .phase-cards { grid-template-columns: 1fr; }
     }
 
@@ -1556,67 +1602,66 @@
       </div>
 
       <div class="view-panel active" id="view-setup">
-        <section class="section-card section-stack">
-          <div>
-            <h3>Model Definitions &amp; Setup</h3>
-            <div class="small muted">Use this as the primary planning workspace: update scenarios and assumptions here, then read the effects in the cards, impacts, and formulas below.</div>
-          </div>
-          <div class="setup-intro-grid">
-            <div class="analysis-card">
-              <div class="analysis-label">Why this exists</div>
-              <div class="analysis-value">This is the home base for editing and reasoning together.</div>
-              <div class="small muted" style="margin-top:6px;">The setup view now puts the live controls, formulas, and downstream consequences in one place so the model is easier to teach, audit, and tune.</div>
+        <div class="setup-page-grid">
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Model Definitions &amp; Setup</h3>
+              <div class="small muted">Use this as the primary planning workspace: update scenarios and assumptions here, then read the effects in the cards, impacts, and formulas below.</div>
             </div>
-            <div class="analysis-card">
-              <div class="analysis-label">How to use it</div>
-              <div class="analysis-value">Tune the controls here first, then move to growth, capacity, or scenario views.</div>
-              <div class="small muted" style="margin-top:6px;">This is the same model state used everywhere else in the dashboard, so every change here updates the rest of the application immediately.</div>
-            </div>
-          </div>
-        </section>
-        <div class="setup-workspace-grid">
-          <div class="setup-controls-stack">
-            <section class="section-card section-stack">
-              <div>
-                <h3>Live Controls</h3>
-                <div class="small muted">Edit scenarios, phase plans, and the major operating assumptions directly here.</div>
+            <div class="setup-intro-grid">
+              <div class="analysis-card">
+                <div class="analysis-label">Why this exists</div>
+                <div class="analysis-value">This is the home base for editing and reasoning together.</div>
+                <div class="small muted" style="margin-top:6px;">The setup view now puts the live controls, formulas, and downstream consequences in one place so the model is easier to teach, audit, and tune.</div>
               </div>
-              <div class="setup-filter-host" id="setupFiltersHost"></div>
-            </section>
-          </div>
-          <aside class="setup-preview-column">
+              <div class="analysis-card">
+                <div class="analysis-label">How to use it</div>
+                <div class="analysis-value">Tune the controls here first, then move to growth, capacity, or scenario views.</div>
+                <div class="small muted" style="margin-top:6px;">This is the same model state used everywhere else in the dashboard, so every change here updates the rest of the application immediately.</div>
+              </div>
+            </div>
+          </section>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Live Controls</h3>
+              <div class="small muted">Edit scenarios, phase plans, and the major operating assumptions directly here.</div>
+            </div>
+            <div class="setup-filter-host" id="setupFiltersHost"></div>
+          </section>
+          <aside class="setup-sidebar-column">
             <section class="section-card section-stack setup-preview-card">
               <div>
                 <h3>Preview Pane</h3>
                 <div class="small muted">Key metrics and a current-plan readout that stay visible while you tune the model.</div>
               </div>
+              <div class="setup-preview-nav" id="setupPreviewNav"></div>
               <div id="setupPreviewContext"></div>
               <div class="setup-preview-metrics" id="setupSummaryGrid"></div>
               <div class="setup-quick-read" id="setupQuickRead"></div>
             </section>
           </aside>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Parameter Workbook</h3>
+              <div class="small muted">A cleaner readout of the active assumptions, grouped by the operating logic they control.</div>
+            </div>
+            <div class="setup-grid" id="parameterWorkbook"></div>
+          </section>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Key Driver Impacts</h3>
+              <div class="small muted">The setup view should explain the cascade: change an assumption here, and these are the metrics that move.</div>
+            </div>
+            <div class="impact-grid" id="driverImpactGrid"></div>
+          </section>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Core Formulas</h3>
+              <div class="small muted">High-signal definitions to anchor the model logic before you interpret the outputs.</div>
+            </div>
+            <div class="definition-grid" id="definitionLibraryGrid"></div>
+          </section>
         </div>
-        <section class="section-card section-stack">
-          <div>
-            <h3>Parameter Workbook</h3>
-            <div class="small muted">A cleaner readout of the active assumptions, grouped by the operating logic they control.</div>
-          </div>
-          <div class="setup-grid" id="parameterWorkbook"></div>
-        </section>
-        <section class="section-card section-stack">
-          <div>
-            <h3>Key Driver Impacts</h3>
-            <div class="small muted">The setup view should explain the cascade: change an assumption here, and these are the metrics that move.</div>
-          </div>
-          <div class="impact-grid" id="driverImpactGrid"></div>
-        </section>
-        <section class="section-card section-stack">
-          <div>
-            <h3>Core Formulas</h3>
-            <div class="small muted">High-signal definitions to anchor the model logic before you interpret the outputs.</div>
-          </div>
-          <div class="definition-grid" id="definitionLibraryGrid"></div>
-        </section>
       </div>
 
       <div class="view-panel" id="view-capacity">
@@ -1939,12 +1984,23 @@
     let activeCapacityMonth = 12;
     let activePreviewContext = 'demand';
     let latestModel = null;
+    let previewViewportSyncFrame = null;
+    let previewInteractionLockUntil = 0;
 
     const money0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
     const money2 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const intFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
     const oneDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const twoDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const previewContextOrder = ['scenario', 'phase', 'demand', 'revenue', 'fsr', 'team'];
+    const previewContextLabels = {
+      scenario: 'Scenario',
+      phase: 'Phases',
+      demand: 'Demand',
+      revenue: 'Revenue',
+      fsr: 'FSR',
+      team: 'Team',
+    };
 
     const metricDefinitions = {
       fixedByPhase: {
@@ -2998,6 +3054,18 @@
         },
       };
       const activeContext = previewContexts[activePreviewContext] || previewContexts.demand;
+      const previewNavHost = document.getElementById('setupPreviewNav');
+
+      if (previewNavHost) {
+        previewNavHost.innerHTML = previewContextOrder.map(key => `
+          <button type="button" class="setup-preview-btn ${key === activePreviewContext ? 'active' : ''}" data-preview-nav="${key}">
+            ${previewContextLabels[key]}
+          </button>
+        `).join('');
+        previewNavHost.querySelectorAll('[data-preview-nav]').forEach(btn => {
+          btn.onclick = () => scrollToPreviewContext(btn.dataset.previewNav);
+        });
+      }
 
       document.getElementById('setupPreviewContext').innerHTML = `
         <div class="setup-context-card">
@@ -3389,10 +3457,72 @@
       });
     }
 
-    function setPreviewContext(context) {
+    function syncStickyOffsets() {
+      const header = document.querySelector('header');
+      const offset = Math.max(96, (header?.offsetHeight || 96) + 16);
+      document.documentElement.style.setProperty('--sticky-offset', `${offset}px`);
+      document.documentElement.style.setProperty('--preview-max-height', `calc(100vh - ${offset + 20}px)`);
+    }
+
+    function setPreviewContext(context, options = {}) {
+      if (options.lockMs) previewInteractionLockUntil = Date.now() + options.lockMs;
       if (!context || context === activePreviewContext) return;
       activePreviewContext = context;
       if (latestModel && activeView === 'setup') renderModelSetup(latestModel);
+    }
+
+    function getPreviewContextSections() {
+      return Array.from(document.querySelectorAll('#filtersWorkbench [data-preview-context]'));
+    }
+
+    function getPreviewContextAnchor(section) {
+      if (!(section instanceof HTMLElement)) return section;
+      if (section.matches('details.collapsible-group')) {
+        return section.querySelector('summary') || section;
+      }
+      return section;
+    }
+
+    function updatePreviewContextFromViewport() {
+      if (activeView !== 'setup') return;
+      if (Date.now() < previewInteractionLockUntil) return;
+      const sections = getPreviewContextSections();
+      if (!sections.length) return;
+
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const anchor = headerHeight + 28;
+      let lastAbove = null;
+      let firstBelow = null;
+
+      for (const section of sections) {
+        const anchorEl = getPreviewContextAnchor(section);
+        const rect = anchorEl.getBoundingClientRect();
+        if (rect.top <= anchor) lastAbove = section;
+        if (!firstBelow && rect.top > anchor) firstBelow = section;
+      }
+
+      setPreviewContext((lastAbove || firstBelow || sections[0]).dataset.previewContext);
+    }
+
+    function schedulePreviewViewportSync() {
+      if (previewViewportSyncFrame != null) return;
+      previewViewportSyncFrame = requestAnimationFrame(() => {
+        previewViewportSyncFrame = null;
+        updatePreviewContextFromViewport();
+      });
+    }
+
+    function scrollToPreviewContext(context) {
+      const section = document.querySelector(`#filtersWorkbench [data-preview-context="${context}"]`);
+      if (!section) return;
+      if (section.matches('details.collapsible-group') && !section.open) section.open = true;
+      setPreviewContext(context, { lockMs: 1200 });
+
+      const anchorEl = getPreviewContextAnchor(section);
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const targetTop = window.scrollY + anchorEl.getBoundingClientRect().top - headerHeight - 18;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+      schedulePreviewViewportSync();
     }
 
     function bindPreviewContextTracking() {
@@ -3400,11 +3530,27 @@
         const host = event.target?.closest?.('#filtersWorkbench');
         if (!host) return;
         const contextHost = event.target.closest('[data-preview-context]');
-        if (contextHost?.dataset.previewContext) setPreviewContext(contextHost.dataset.previewContext);
+        if (contextHost?.dataset.previewContext) {
+          setPreviewContext(contextHost.dataset.previewContext, { lockMs: 1400 });
+          schedulePreviewViewportSync();
+        }
       };
 
       document.addEventListener('focusin', handleContextEvent);
       document.addEventListener('pointerdown', handleContextEvent);
+      document.addEventListener('input', handleContextEvent);
+      document.addEventListener('change', handleContextEvent);
+      document.addEventListener('toggle', event => {
+        const contextHost = event.target?.closest?.('[data-preview-context]');
+        if (!contextHost || !contextHost.closest('#filtersWorkbench')) return;
+        setPreviewContext(contextHost.dataset.previewContext);
+        schedulePreviewViewportSync();
+      }, true);
+      window.addEventListener('scroll', schedulePreviewViewportSync, { passive: true });
+      window.addEventListener('resize', () => {
+        syncStickyOffsets();
+        schedulePreviewViewportSync();
+      });
     }
 
     function syncControlDock() {
@@ -3433,9 +3579,11 @@
       });
       syncControlDock();
       requestAnimationFrame(() => {
+        syncStickyOffsets();
         Object.values(charts).forEach(chart => {
           if (chart && typeof chart.resize === 'function') chart.resize();
         });
+        schedulePreviewViewportSync();
       });
       if (syncUrl) syncUrlState();
     }
@@ -4212,11 +4360,13 @@
       renderSteadyState(model);
       renderTable(model);
       bindMetricHelpButtons();
+      schedulePreviewViewportSync();
       syncUrlState();
     }
 
     function init() {
       const urlConfig = getUrlConfig();
+      syncStickyOffsets();
       fieldDefs.forEach(createField);
       refreshSavedScenarioDropdown();
       buildDefinitionsModal();
@@ -4232,6 +4382,7 @@
         document.querySelectorAll('details.collapsible-group').forEach(detail => {
           detail.open = true;
         });
+        schedulePreviewViewportSync();
       }
 
       document.querySelectorAll('[data-scenario]').forEach(btn => {
