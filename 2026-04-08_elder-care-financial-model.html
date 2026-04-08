@@ -595,6 +595,76 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .setup-workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.78fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .setup-controls-stack,
+    .setup-preview-column {
+      display: grid;
+      gap: 18px;
+    }
+
+    .setup-preview-card {
+      position: sticky;
+      top: 150px;
+    }
+
+    .setup-preview-metrics {
+      display: grid;
+      gap: 10px;
+    }
+
+    .setup-preview-metrics .card {
+      padding: 11px 12px;
+      min-height: 0;
+    }
+
+    .setup-preview-metrics .metric-value {
+      font-size: 1.1rem;
+    }
+
+    .setup-quick-read {
+      display: grid;
+      gap: 10px;
+    }
+
+    .setup-readout-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fbfdff, #f7faff);
+      padding: 14px;
+    }
+
+    .setup-readout-card h4 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: var(--header);
+    }
+
+    .setup-readout-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      padding-top: 8px;
+      border-top: 1px solid #e8eef8;
+      font-size: 0.84rem;
+    }
+
+    .setup-readout-row:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .setup-readout-row strong {
+      color: var(--header);
+      text-align: right;
+    }
+
     .setup-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -717,7 +787,7 @@
     .setup-filter-host #filtersWorkbench {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      gap: 14px;
     }
 
     .setup-filter-host .panel-header,
@@ -732,6 +802,19 @@
       border-top: none;
     }
 
+    .setup-filter-host details.collapsible-group summary {
+      padding: 12px 14px;
+    }
+
+    .setup-filter-host .phase-editor-body {
+      padding: 0 14px 14px;
+    }
+
+    .setup-filter-host .phase-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
     .setup-filter-host .panel-header {
       margin-bottom: 0;
       padding-bottom: 4px;
@@ -744,6 +827,10 @@
 
     .setup-filter-host .field-note {
       font-size: 0.74rem;
+    }
+
+    .setup-filter-host .range-number {
+      grid-template-columns: 1fr 84px;
     }
 
     .fsr-math-box {
@@ -1245,7 +1332,9 @@
       .metrics-grid, .capacity-grid, .setup-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .growth-metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .snapshot-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
-      .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid, .setup-filter-host #filtersWorkbench { grid-template-columns: 1fr; }
+      .setup-workspace-grid, .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid, .setup-filter-host #filtersWorkbench { grid-template-columns: 1fr; }
+      .setup-preview-card { position: static; top: auto; }
+      .setup-filter-host .phase-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .capacity-layout, .steady-charts-grid { grid-template-columns: 1fr; }
     }
 
@@ -1256,6 +1345,7 @@
       header .title-row { align-items: flex-start; }
       .modal { max-height: calc(100vh - 20px); }
       .view-switcher { width: 100%; display: grid; grid-template-columns: 1fr; border-radius: 18px; }
+      .setup-filter-host .phase-cards { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
@@ -1448,18 +1538,31 @@
             </div>
           </div>
         </section>
-        <section class="section-card section-stack">
-          <div>
-            <h3>Live Controls</h3>
-            <div class="small muted">Edit scenarios, phase plans, and all major assumptions directly in the main setup workspace.</div>
+        <div class="setup-workspace-grid">
+          <div class="setup-controls-stack">
+            <section class="section-card section-stack">
+              <div>
+                <h3>Live Controls</h3>
+                <div class="small muted">Edit scenarios, phase plans, and the major operating assumptions directly here.</div>
+              </div>
+              <div class="setup-filter-host" id="setupFiltersHost"></div>
+            </section>
           </div>
-          <div class="setup-filter-host" id="setupFiltersHost"></div>
-        </section>
-        <section class="metrics-grid setup-summary-grid" id="setupSummaryGrid"></section>
+          <aside class="setup-preview-column">
+            <section class="section-card section-stack setup-preview-card">
+              <div>
+                <h3>Preview Pane</h3>
+                <div class="small muted">Key metrics and a current-plan readout that stay visible while you tune the model.</div>
+              </div>
+              <div class="setup-preview-metrics" id="setupSummaryGrid"></div>
+              <div class="setup-quick-read" id="setupQuickRead"></div>
+            </section>
+          </aside>
+        </div>
         <section class="section-card section-stack">
           <div>
             <h3>Parameter Workbook</h3>
-            <div class="small muted">A clean readout of the active assumptions, grouped by the operating logic they control.</div>
+            <div class="small muted">A cleaner readout of the active assumptions, grouped by the operating logic they control.</div>
           </div>
           <div class="setup-grid" id="parameterWorkbook"></div>
         </section>
@@ -2762,6 +2865,12 @@
       const workloadLimit = Number.isFinite(assumptions.workloadFamiliesPerFsr)
         ? intFmt.format(Math.floor(assumptions.workloadFamiliesPerFsr))
         : 'N/A';
+      const scenarioLabels = {
+        optimistic: 'Optimistic',
+        conservative: 'Conservative',
+        premium: 'Premium Concierge',
+        healthplan: 'Health Plan Scale',
+      };
 
       document.getElementById('setupSummaryGrid').innerHTML = [
         metricCard('onboardingCapacityPerFsr', 'Onboarding capacity / FSR', `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new/mo`, `${intFmt.format(assumptions.onboardingHoursPool)} onboarding hours reserved each month and ${oneDec.format(state.onboardingHours)} hours needed per family.`, 'neutral'),
@@ -2771,6 +2880,29 @@
         metricCard('ltv', 'LTV / family', Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', `Contribution margin capped by ${intFmt.format(summary.lifetimeCapMonths)} months or the effective churn curve, whichever is shorter.`, summary.ltv > 0 ? 'positive' : 'negative'),
         metricCard('ltvCac', 'LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', `Uses planning CAC of ${money0.format(assumptions.estimatedCAC)} including acquisition and onboarding burden.`, summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
       ].join('');
+
+      document.getElementById('setupQuickRead').innerHTML = `
+        <div class="setup-readout-card">
+          <h4>Current Plan Readout</h4>
+          <div class="setup-readout-row"><span>Scenario</span><strong>${activeScenarioKey ? (scenarioLabels[activeScenarioKey] || activeScenarioKey) : 'Custom plan'}</strong></div>
+          <div class="setup-readout-row"><span>Review month</span><strong>Month ${activeCapacityMonth}</strong></div>
+          <div class="setup-readout-row"><span>Active phase</span><strong>${currentRow.phaseName}</strong></div>
+          <div class="setup-readout-row"><span>Break-even</span><strong>${summary.breakEvenMonth ? `M${summary.breakEvenMonth}` : 'Not in 36 mo'}</strong></div>
+          <div class="setup-readout-row"><span>Cumulative cash positive</span><strong>${summary.positiveCashMonth ? `M${summary.positiveCashMonth}` : 'Not in 36 mo'}</strong></div>
+          <div class="setup-readout-row"><span>36-mo active families</span><strong>${intFmt.format(summary.finalFamilies)}</strong></div>
+          <div class="setup-readout-row"><span>Peak FSR pool</span><strong>${intFmt.format(summary.maxFsrs)}</strong></div>
+        </div>
+        <div class="setup-readout-card">
+          <h4>Month ${activeCapacityMonth} Snapshot</h4>
+          <div class="setup-readout-row"><span>Revenue</span><strong>${money0.format(currentRow.revenue)}</strong></div>
+          <div class="setup-readout-row"><span>Fixed costs</span><strong>${money0.format(currentRow.fixedCosts)}</strong></div>
+          <div class="setup-readout-row"><span>Variable costs</span><strong>${money0.format(currentRow.variableCosts)}</strong></div>
+          <div class="setup-readout-row"><span>Net income</span><strong class="${currentRow.netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(currentRow.netIncome)}</strong></div>
+          <div class="setup-readout-row"><span>Active families</span><strong>${intFmt.format(currentRow.activeFamilies)}</strong></div>
+          <div class="setup-readout-row"><span>Required FSR pool</span><strong>${intFmt.format(currentRow.totalFsrs)}</strong></div>
+          <div class="setup-readout-row"><span>Capital required</span><strong class="negative">${money0.format(summary.peakCapitalRequired)}</strong></div>
+        </div>
+      `;
 
       const phaseRows = phaseState.enabled
         ? phaseSnapshots.map(phase => setupRow(
