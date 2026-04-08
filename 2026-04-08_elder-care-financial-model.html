@@ -81,6 +81,10 @@
       align-items: start;
     }
 
+    .layout.setup-focused {
+      grid-template-columns: 1fr;
+    }
+
     .panel, .card, .chart-card, .table-card, .section-card, .snapshot-card, .scale-table-wrap {
       background: var(--card);
       border-radius: var(--radius);
@@ -94,6 +98,10 @@
       top: 94px;
       max-height: calc(100vh - 114px);
       overflow: auto;
+    }
+
+    body.setup-view-active #inputsPanel {
+      display: none;
     }
 
     .panel-header {
@@ -706,6 +714,38 @@
       line-height: 1.4;
     }
 
+    .setup-filter-host #filtersWorkbench {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .setup-filter-host .panel-header,
+    .setup-filter-host .control-group:first-of-type,
+    .setup-filter-host #phase-editor-group {
+      grid-column: 1 / -1;
+    }
+
+    .setup-filter-host .control-group {
+      margin-bottom: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .setup-filter-host .panel-header {
+      margin-bottom: 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .setup-filter-host .panel-header h2 {
+      font-size: 1.02rem;
+    }
+
+    .setup-filter-host .field-note {
+      font-size: 0.74rem;
+    }
+
     .fsr-math-box {
       margin-top: 12px;
       padding: 14px;
@@ -1205,7 +1245,7 @@
       .metrics-grid, .capacity-grid, .setup-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .growth-metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .snapshot-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
-      .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid { grid-template-columns: 1fr; }
+      .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid, .setup-filter-host #filtersWorkbench { grid-template-columns: 1fr; }
       .capacity-layout, .steady-charts-grid { grid-template-columns: 1fr; }
     }
 
@@ -1251,77 +1291,79 @@
   </header>
 
   <div class="layout">
-    <aside class="panel">
-      <div class="panel-header">
-        <h2>Inputs &amp; Scenarios</h2>
-      </div>
-
-      <div class="control-group">
-        <h3>Pre-Built Scenarios</h3>
-        <div class="scenario-buttons" id="scenarioButtons">
-          <button type="button" data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
-          <button type="button" data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
-          <button type="button" data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
-          <button type="button" data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
+    <aside class="panel" id="inputsPanel">
+      <div id="filtersWorkbench">
+        <div class="panel-header">
+          <h2>Inputs &amp; Scenarios</h2>
         </div>
-        <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
-      </div>
 
-      <details class="control-group collapsible-group" id="phase-editor-group">
-        <summary>
-          <span>📅 Company Phases</span>
-          <span class="summary-meta">3-phase staffing + growth plan <span class="summary-caret">▾</span></span>
-        </summary>
-        <div class="phase-editor-body">
-          <div class="toggle-row">
-            <label class="toggle-check"><input type="checkbox" id="phaseScalingEnabled"> Enable phase scaling</label>
-            <span class="summary-meta" id="phaseScalingStatus">Flat staffing inputs active</span>
+        <div class="control-group">
+          <h3>Pre-Built Scenarios</h3>
+          <div class="scenario-buttons" id="scenarioButtons">
+            <button type="button" data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
+            <button type="button" data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
+            <button type="button" data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
+            <button type="button" data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
           </div>
-          <div class="field-note">When enabled, monthly growth, engineering, org management, org management salary, and office/infra costs follow the phase schedule below.</div>
-          <div class="phase-cards" id="phaseCards"></div>
+          <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
         </div>
-      </details>
 
-      <details class="control-group collapsible-group">
-        <summary><span>📊 Demand &amp; Time</span><span class="summary-caret">▾</span></summary>
-        <div style="padding:12px 16px 16px" id="demand-group">
-          <div class="field-note" style="margin-bottom:10px">Growth targets, human time per family, and churn. These demand-side drivers determine how many FSRs you need.</div>
-        </div>
-      </details>
+        <details class="control-group collapsible-group" id="phase-editor-group">
+          <summary>
+            <span>📅 Company Phases</span>
+            <span class="summary-meta">3-phase staffing + growth plan <span class="summary-caret">▾</span></span>
+          </summary>
+          <div class="phase-editor-body">
+            <div class="toggle-row">
+              <label class="toggle-check"><input type="checkbox" id="phaseScalingEnabled"> Enable phase scaling</label>
+              <span class="summary-meta" id="phaseScalingStatus">Flat staffing inputs active</span>
+            </div>
+            <div class="field-note">When enabled, monthly growth, engineering, org management, org management salary, and office/infra costs follow the phase schedule below.</div>
+            <div class="phase-cards" id="phaseCards"></div>
+          </div>
+        </details>
 
-      <details class="control-group collapsible-group">
-        <summary><span>💰 Revenue</span><span class="summary-caret">▾</span></summary>
-        <div style="padding:12px 16px 16px" id="revenue-group">
-          <div class="field-note" style="margin-bottom:10px">What you charge per family.</div>
-        </div>
-      </details>
+        <details class="control-group collapsible-group">
+          <summary><span>📊 Demand &amp; Time</span><span class="summary-caret">▾</span></summary>
+          <div style="padding:12px 16px 16px" id="demand-group">
+            <div class="field-note" style="margin-bottom:10px">Growth targets, human time per family, and churn. These demand-side drivers determine how many FSRs you need.</div>
+          </div>
+        </details>
 
-      <details class="control-group collapsible-group">
-        <summary><span>👥 FSR Capacity</span><span class="summary-caret">▾</span></summary>
-        <div style="padding:12px 16px 16px" id="fsr-group">
-          <div class="field-note" style="margin-bottom:10px">FSR compensation and panel size — supply-side levers to meet demand.</div>
-          <div class="fsr-math-box" id="fsrMathBox"></div>
-        </div>
-      </details>
+        <details class="control-group collapsible-group">
+          <summary><span>💰 Revenue</span><span class="summary-caret">▾</span></summary>
+          <div style="padding:12px 16px 16px" id="revenue-group">
+            <div class="field-note" style="margin-bottom:10px">What you charge per family.</div>
+          </div>
+        </details>
 
-      <details class="control-group collapsible-group">
-        <summary><span>🏢 Team &amp; Fixed Costs</span><span class="summary-caret">▾</span></summary>
-        <div style="padding:12px 16px 16px" id="team-costs-group">
-          <div class="field-note" style="margin-bottom:10px">Engineering, org management, infrastructure. Fixed burn that doesn't scale with families.</div>
-        </div>
-      </details>
+        <details class="control-group collapsible-group">
+          <summary><span>👥 FSR Capacity</span><span class="summary-caret">▾</span></summary>
+          <div style="padding:12px 16px 16px" id="fsr-group">
+            <div class="field-note" style="margin-bottom:10px">FSR compensation and panel size — supply-side levers to meet demand.</div>
+            <div class="fsr-math-box" id="fsrMathBox"></div>
+          </div>
+        </details>
+
+        <details class="control-group collapsible-group">
+          <summary><span>🏢 Team &amp; Fixed Costs</span><span class="summary-caret">▾</span></summary>
+          <div style="padding:12px 16px 16px" id="team-costs-group">
+            <div class="field-note" style="margin-bottom:10px">Engineering, org management, infrastructure. Fixed burn that doesn't scale with families.</div>
+          </div>
+        </details>
+      </div>
     </aside>
 
     <main class="main">
       <section class="view-switcher">
-        <button class="view-btn active" type="button" data-view="growth">Growth Model</button>
-        <button class="view-btn" type="button" data-view="setup">Model Setup</button>
+        <button class="view-btn active" type="button" data-view="setup">Model Setup</button>
+        <button class="view-btn" type="button" data-view="growth">Growth Model</button>
         <button class="view-btn" type="button" data-view="capacity">Capacity Planner</button>
         <button class="view-btn" type="button" data-view="scenario">Scenario Planner</button>
         <button class="view-btn" type="button" data-view="steady">Steady State</button>
       </section>
 
-      <div class="view-panel active" id="view-growth">
+      <div class="view-panel" id="view-growth">
         <section class="metrics-grid growth-metrics-grid" id="metricsGrid"></section>
 
                 <section class="charts-grid">
@@ -1387,30 +1429,37 @@
         </section>
       </div>
 
-      <div class="view-panel" id="view-setup">
+      <div class="view-panel active" id="view-setup">
         <section class="section-card section-stack">
           <div>
             <h3>Model Definitions &amp; Setup</h3>
-            <div class="small muted">Use this view as the planning workbook: see your assumptions in one place, understand what each variable does, and read the immediate impact on the operating model.</div>
+            <div class="small muted">Use this as the primary planning workspace: update scenarios and assumptions here, then read the effects in the cards, impacts, and formulas below.</div>
           </div>
           <div class="setup-intro-grid">
             <div class="analysis-card">
               <div class="analysis-label">Why this exists</div>
-              <div class="analysis-value">The left rail is good for editing, but not for reasoning.</div>
-              <div class="small muted" style="margin-top:6px;">This tab lays out the variables, formulas, and consequences side by side so the model is easier to teach, audit, and tune.</div>
+              <div class="analysis-value">This is the home base for editing and reasoning together.</div>
+              <div class="small muted" style="margin-top:6px;">The setup view now puts the live controls, formulas, and downstream consequences in one place so the model is easier to teach, audit, and tune.</div>
             </div>
             <div class="analysis-card">
               <div class="analysis-label">How to use it</div>
-              <div class="analysis-value">Start with assumptions, then read impacts, then move to growth or scenario views.</div>
-              <div class="small muted" style="margin-top:6px;">The values here stay synced with the inputs in the left rail and the phase plan above it.</div>
+              <div class="analysis-value">Tune the controls here first, then move to growth, capacity, or scenario views.</div>
+              <div class="small muted" style="margin-top:6px;">This is the same model state used everywhere else in the dashboard, so every change here updates the rest of the application immediately.</div>
             </div>
           </div>
+        </section>
+        <section class="section-card section-stack">
+          <div>
+            <h3>Live Controls</h3>
+            <div class="small muted">Edit scenarios, phase plans, and all major assumptions directly in the main setup workspace.</div>
+          </div>
+          <div class="setup-filter-host" id="setupFiltersHost"></div>
         </section>
         <section class="metrics-grid setup-summary-grid" id="setupSummaryGrid"></section>
         <section class="section-card section-stack">
           <div>
             <h3>Parameter Workbook</h3>
-            <div class="small muted">Grouped assumptions with their current values and the immediate business logic they control.</div>
+            <div class="small muted">A clean readout of the active assumptions, grouped by the operating logic they control.</div>
           </div>
           <div class="setup-grid" id="parameterWorkbook"></div>
         </section>
@@ -1746,7 +1795,7 @@
     let monthlyRows = [];
     let charts = {};
     let activeScenarioKey = null;
-    let activeView = 'growth';
+    let activeView = 'setup';
     let activeCapacityMonth = 12;
 
     const money0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -2765,7 +2814,7 @@
           setupRow('Current break-even fixed burn', money0.format(summary.burnRate), `${Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A'} active families needed to clear that burn at current unit margin.`),
         ]),
         setupCard('Phase Buildout', 'A clearer read on how the operating plan steps up over time, separate from the Growth dashboard.', [
-          setupRow('Phase scaling', phaseState.enabled ? 'Enabled' : 'Disabled', phaseState.enabled ? 'Inputs in the left rail are overridden by the phase cards where applicable.' : 'Base staffing and growth inputs apply to every month.'),
+          setupRow('Phase scaling', phaseState.enabled ? 'Enabled' : 'Disabled', phaseState.enabled ? 'Base staffing inputs are overridden by the phase cards where applicable.' : 'Base staffing and growth inputs apply to every month.'),
           setupRow('Current review point', `Month ${activeCapacityMonth}`, `${currentRow.phaseName} is the active phase for the capacity snapshot and break-even framing.`),
           ...phaseRows,
         ]),
@@ -3056,6 +3105,22 @@
       });
     }
 
+    function syncControlDock() {
+      const panel = document.getElementById('inputsPanel');
+      const workbench = document.getElementById('filtersWorkbench');
+      const setupHost = document.getElementById('setupFiltersHost');
+      const layout = document.querySelector('.layout');
+      if (!panel || !workbench || !setupHost || !layout) return;
+      const useSetupDock = activeView === 'setup';
+      document.body.classList.toggle('setup-view-active', useSetupDock);
+      layout.classList.toggle('setup-focused', useSetupDock);
+      if (useSetupDock) {
+        if (workbench.parentElement !== setupHost) setupHost.appendChild(workbench);
+      } else if (workbench.parentElement !== panel) {
+        panel.appendChild(workbench);
+      }
+    }
+
     function setActiveView(view, syncUrl = true) {
       activeView = view;
       document.querySelectorAll('.view-btn').forEach(btn => {
@@ -3063,6 +3128,12 @@
       });
       document.querySelectorAll('.view-panel').forEach(panel => {
         panel.classList.toggle('active', panel.id === `view-${activeView}`);
+      });
+      syncControlDock();
+      requestAnimationFrame(() => {
+        Object.values(charts).forEach(chart => {
+          if (chart && typeof chart.resize === 'function') chart.resize();
+        });
       });
       if (syncUrl) syncUrlState();
     }
@@ -3757,8 +3828,8 @@
           <div class="doc-card">
             <h3>How to use this dashboard</h3>
             <ol>
-              <li>Pick a starting scenario from the left panel.</li>
-              <li>Open Model Setup to review the assumptions as a workbook instead of scanning the left rail one control at a time.</li>
+              <li>Start in Model Setup and pick a starting scenario.</li>
+              <li>Use the live controls there to review and edit assumptions without leaving the main workspace.</li>
               <li>Adjust staffing, FSR, revenue, churn, and lifetime-cap assumptions.</li>
               <li>Use the setup impacts and formulas to see why the economics moved before you interpret the charts.</li>
               <li>Return to Growth Model for the condensed top cards, charts, phase timeline, and monthly forecast.</li>
@@ -3852,7 +3923,7 @@
       setCapacityMonth(urlConfig.month || 12, false);
       const initialScenarioKey = urlConfig.scenario || 'conservative';
       setInputs({ ...defaultInputs, ...scenarioPresets[initialScenarioKey] }, { scenarioKey: initialScenarioKey, phaseState: scenarioPhasePresets[initialScenarioKey] });
-      setActiveView(urlConfig.view || 'growth', false);
+      setActiveView(urlConfig.view || 'setup', false);
       if (urlConfig.expandAll) {
         document.querySelectorAll('details.collapsible-group').forEach(detail => {
           detail.open = true;
