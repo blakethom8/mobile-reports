@@ -1463,6 +1463,7 @@
           </div>
           <div class="chart-card">
             <h3>Family Growth</h3>
+            <div class="small muted">Active families against the modeled family capacity implied by that month’s FSR pool.</div>
             <div class="chart-wrap"><canvas id="familyGrowthChart"></canvas></div>
           </div>
           <div class="chart-card">
@@ -3060,6 +3061,7 @@
       const labels = rows.map(r => `M${r.month}`);
       const cumulativeColors = rows.map(r => r.cumulativeCash >= 0 ? 'rgba(31,157,85,0.18)' : 'rgba(214,69,69,0.16)');
       const phaseBoundaries = model.phaseRanges.slice(1).map((phase, index) => ({ month: phase.start, nextMonth: model.phaseRanges[index + 2]?.start || 36 }));
+      const familyCapacitySeries = rows.map(r => Math.floor(r.totalFsrs * model.assumptions.effectiveFamiliesPerFsr));
 
       destroyChart('cashFlow');
       charts.cashFlow = new Chart(document.getElementById('cashFlowChart'), {
@@ -3132,6 +3134,18 @@
               borderWidth: 3,
             },
             {
+              label: 'FSR Family Capacity',
+              data: familyCapacitySeries,
+              borderColor: '#c78a10',
+              backgroundColor: 'rgba(199,138,16,0.10)',
+              tension: 0.15,
+              borderDash: [8, 6],
+              borderWidth: 3,
+              fill: false,
+              pointRadius: 0,
+              pointHoverRadius: 4,
+            },
+            {
               label: 'New Families',
               data: rows.map(r => r.newFamilies),
               borderColor: '#1f9d55',
@@ -3154,7 +3168,19 @@
         options: {
           maintainAspectRatio: false,
           interaction: { mode: 'index', intersect: false },
-          plugins: { legend: { position: 'bottom' } },
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                afterBody: items => {
+                  const index = items?.[0]?.dataIndex;
+                  if (index == null) return '';
+                  const headroom = familyCapacitySeries[index] - rows[index].activeFamilies;
+                  return `FSR headroom: ${intFmt.format(Math.max(0, Math.floor(headroom)))} families`;
+                }
+              }
+            }
+          },
           scales: { y: { beginAtZero: true } }
         }
       });
