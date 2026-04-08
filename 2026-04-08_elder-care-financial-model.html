@@ -1136,6 +1136,13 @@
     const twoDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const metricDefinitions = {
+      fixedByPhase: {
+        title: 'Fixed costs by phase',
+        formula: '(Engineers × Salary/12) + (Org Mgmt × Salary/12) + Office/Infra per phase',
+        meaning: 'Monthly fixed cost at each company phase. Shows how costs step up as you scale the team.',
+        drivers: 'Engineer count, org management headcount and salary, and office/infrastructure costs configured per phase.',
+        interpretation: 'Compare across phases to see cost cliff events. The jump between phases is what pushes break-even out.'
+      },
       burnRate: {
         title: 'Monthly burn rate',
         formula: 'Fixed payroll + office/infra + base ops',
