@@ -655,17 +655,25 @@
         <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
       </div>
 
-      <div class="control-group" id="team-costs-group">
-        <h3>Team &amp; Costs</h3>
-      </div>
-
-      <div class="control-group" id="fsr-group">
-        <h3>FSR Model</h3>
-        <div class="fsr-math-box" id="fsrMathBox"></div>
+      <div class="control-group" id="demand-group">
+        <h3>📊 Demand &amp; Time</h3>
+        <div class="field-note" style="margin-bottom:12px">How many families, how much human time each needs, and churn. These demand-side drivers determine how many FSRs you need.</div>
       </div>
 
       <div class="control-group" id="revenue-group">
-        <h3>Revenue</h3>
+        <h3>💰 Revenue</h3>
+        <div class="field-note" style="margin-bottom:12px">What you charge per family. Revenue minus variable costs = contribution margin.</div>
+      </div>
+
+      <div class="control-group" id="fsr-group">
+        <h3>👥 FSR Capacity</h3>
+        <div class="field-note" style="margin-bottom:12px">FSR compensation and steady-state panel size — your supply-side levers to meet demand.</div>
+        <div class="fsr-math-box" id="fsrMathBox"></div>
+      </div>
+
+      <div class="control-group" id="team-costs-group">
+        <h3>🏢 Team &amp; Fixed Costs</h3>
+        <div class="field-note" style="margin-bottom:12px">Engineering, org management, infrastructure. These don't scale with family count.</div>
       </div>
     </aside>
 
@@ -789,23 +797,24 @@
     const scaleTargets = [1000, 5000, 10000, 25000, 50000];
 
     const fieldDefs = [
-      { key: 'engineers', label: 'Number of engineers', group: 'team-costs-group', min: 1, max: 10, step: 1, default: 5, format: 'int' },
-      { key: 'engineerSalary', label: 'Engineer avg salary', group: 'team-costs-group', min: 150000, max: 350000, step: 5000, default: 250000, format: 'currency0' },
-      { key: 'orgManagementHeadcount', label: 'Org management headcount', group: 'team-costs-group', min: 1, max: 6, step: 1, default: 2, format: 'int' },
-      { key: 'orgManagementSalary', label: 'Org management salary', group: 'team-costs-group', min: 80000, max: 250000, step: 5000, default: 135000, format: 'currency0' },
-      { key: 'officeInfraMonthly', label: 'Monthly office/infra cost', group: 'team-costs-group', min: 5000, max: 50000, step: 500, default: 10000, format: 'currency0' },
-      { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 1, max: 20, step: 0.5, default: 5, format: 'currency2' },
+      { key: 'engineers', label: 'Number of engineers', group: 'team-costs-group', min: 1, max: 50, step: 1, default: 5, format: 'int' },
+      { key: 'engineerSalary', label: 'Engineer avg salary', group: 'team-costs-group', min: 100000, max: 400000, step: 5000, default: 250000, format: 'currency0' },
+      { key: 'orgManagementHeadcount', label: 'Org management headcount', group: 'team-costs-group', min: 1, max: 50, step: 1, default: 2, format: 'int' },
+      { key: 'orgManagementSalary', label: 'Org management salary', group: 'team-costs-group', min: 60000, max: 300000, step: 5000, default: 135000, format: 'currency0' },
+      { key: 'officeInfraMonthly', label: 'Monthly office/infra cost', group: 'team-costs-group', min: 0, max: 200000, step: 1000, default: 10000, format: 'currency0' },
+      { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 0.5, max: 50, step: 0.5, default: 5, format: 'currency2' },
 
-      { key: 'fsrSalary', label: 'FSR salary', group: 'fsr-group', min: 80000, max: 200000, step: 5000, default: 125000, format: 'currency0' },
-      { key: 'familiesPerFsr', label: 'Steady-state families per FSR', group: 'fsr-group', min: 100, max: 2000, step: 25, default: 400, format: 'int' },
-      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'fsr-group', min: 1, max: 15, step: 0.5, default: 6, format: 'hours' },
-      { key: 'outreachRate', label: 'Monthly human outreach rate', group: 'fsr-group', min: 1, max: 25, step: 0.5, default: 8, format: 'percent' },
-      { key: 'handleTimeMinutes', label: 'Avg handle time per interaction', group: 'fsr-group', min: 10, max: 90, step: 1, default: 40, format: 'minutes' },
+      { key: 'newFamiliesPerMonth', label: 'New families per month (growth target)', group: 'demand-group', min: 5, max: 1000, step: 5, default: 100, format: 'int' },
+      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'demand-group', min: 0.5, max: 20, step: 0.5, default: 6, format: 'hours' },
+      { key: 'outreachRate', label: 'Monthly human outreach rate', group: 'demand-group', min: 1, max: 30, step: 0.5, default: 8, format: 'percent' },
+      { key: 'handleTimeMinutes', label: 'Avg handle time per interaction', group: 'demand-group', min: 5, max: 120, step: 1, default: 40, format: 'minutes' },
+      { key: 'churnRate', label: 'Monthly churn rate', group: 'demand-group', min: 0.1, max: 8, step: 0.1, default: 1.5, format: 'percent' },
 
-      { key: 'monthlyPrice', label: 'Monthly price per family', group: 'revenue-group', min: 49, max: 999, step: 5, default: 249, format: 'currency0' },
-      { key: 'newFamiliesPerMonth', label: 'New families onboarded per month', group: 'revenue-group', min: 10, max: 500, step: 5, default: 100, format: 'int' },
-      { key: 'churnRate', label: 'Monthly churn rate', group: 'revenue-group', min: 0.5, max: 5, step: 0.1, default: 1.5, format: 'percent' },
-      { key: 'onboardingFee', label: 'Onboarding fee (one-time)', group: 'revenue-group', min: 0, max: 2000, step: 25, default: 500, format: 'currency0' },
+      { key: 'monthlyPrice', label: 'Monthly price per family', group: 'revenue-group', min: 29, max: 1500, step: 5, default: 249, format: 'currency0' },
+      { key: 'onboardingFee', label: 'Onboarding fee (one-time)', group: 'revenue-group', min: 0, max: 5000, step: 25, default: 500, format: 'currency0' },
+
+      { key: 'fsrSalary', label: 'FSR salary', group: 'fsr-group', min: 60000, max: 250000, step: 5000, default: 125000, format: 'currency0' },
+      { key: 'familiesPerFsr', label: 'Steady-state families per FSR', group: 'fsr-group', min: 50, max: 3000, step: 25, default: 400, format: 'int' },
     ];
 
     const defaultInputs = Object.fromEntries(fieldDefs.map(f => [f.key, f.default]));
