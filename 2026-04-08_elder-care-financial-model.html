@@ -881,6 +881,28 @@
       border-top: none;
     }
 
+    .setup-filter-host .control-group.preview-context-active {
+      position: relative;
+      border-radius: 14px;
+      outline: 2px solid rgba(41,98,255,0.2);
+      outline-offset: 3px;
+    }
+
+    .setup-filter-host .control-group.preview-context-active:not(details) {
+      background: linear-gradient(180deg, rgba(41,98,255,0.05), rgba(255,255,255,0.96));
+      padding: 12px;
+    }
+
+    .setup-filter-host details.preview-context-active {
+      border-color: rgba(41,98,255,0.4);
+      box-shadow: 0 0 0 3px rgba(41,98,255,0.08);
+    }
+
+    .setup-filter-host details.preview-context-active > summary {
+      background: linear-gradient(180deg, rgba(41,98,255,0.08), rgba(255,255,255,0));
+      color: #173b80;
+    }
+
     .setup-filter-host details.collapsible-group summary {
       padding: 12px 14px;
     }
@@ -3058,7 +3080,7 @@
 
       if (previewNavHost) {
         previewNavHost.innerHTML = previewContextOrder.map(key => `
-          <button type="button" class="setup-preview-btn ${key === activePreviewContext ? 'active' : ''}" data-preview-nav="${key}">
+          <button type="button" class="setup-preview-btn ${key === activePreviewContext ? 'active' : ''}" data-preview-nav="${key}" aria-pressed="${key === activePreviewContext ? 'true' : 'false'}">
             ${previewContextLabels[key]}
           </button>
         `).join('');
@@ -3464,10 +3486,18 @@
       document.documentElement.style.setProperty('--preview-max-height', `calc(100vh - ${offset + 20}px)`);
     }
 
+    function syncPreviewContextHighlights() {
+      document.querySelectorAll('#filtersWorkbench [data-preview-context]').forEach(section => {
+        const isActive = section.dataset.previewContext === activePreviewContext;
+        section.classList.toggle('preview-context-active', isActive);
+      });
+    }
+
     function setPreviewContext(context, options = {}) {
       if (options.lockMs) previewInteractionLockUntil = Date.now() + options.lockMs;
       if (!context || context === activePreviewContext) return;
       activePreviewContext = context;
+      syncPreviewContextHighlights();
       if (latestModel && activeView === 'setup') renderModelSetup(latestModel);
     }
 
@@ -3564,6 +3594,7 @@
       layout.classList.toggle('setup-focused', useSetupDock);
       if (useSetupDock) {
         if (workbench.parentElement !== setupHost) setupHost.appendChild(workbench);
+        syncPreviewContextHighlights();
       } else if (workbench.parentElement !== panel) {
         panel.appendChild(workbench);
       }
