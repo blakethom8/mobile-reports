@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elder Care Platform Financial Model</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --header: #172033;
+      --text: #1d2a3b;
+      --muted: #6b778c;
+      --line: #d9e1ec;
+      --accent: #2962ff;
+      --accent-soft: rgba(41, 98, 255, 0.12);
+      --green: #1f9d55;
+      --green-soft: rgba(31, 157, 85, 0.12);
+      --red: #d64545;
+      --red-soft: rgba(214, 69, 69, 0.12);
+      --amber: #c78a10;
+      --shadow: 0 8px 24px rgba(22, 31, 56, 0.08);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, #172033, #24324d);
+      color: #fff;
+      padding: 18px 24px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.01em;
+    }
+
+    .subhead {
+      margin-top: 6px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.92rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 350px minmax(0, 1fr);
+      gap: 20px;
+      padding: 20px;
+      align-items: start;
+    }
+
+    .panel, .card, .chart-card, .table-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(217, 225, 236, 0.7);
+    }
+
+    .panel {
+      padding: 18px;
+      position: sticky;
+      top: 94px;
+      max-height: calc(100vh - 114px);
+      overflow: auto;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .panel h2, .section-title {
+      margin: 0;
+      font-size: 1.02rem;
+    }
+
+    .control-group {
+      margin-bottom: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    .control-group:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .control-group h3 {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      color: var(--header);
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .field-note {
+      color: var(--muted);
+      font-size: 0.74rem;
+      margin-top: 4px;
+    }
+
+    .value-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    input[type="number"], select, input[type="text"] {
+      width: 110px;
+      padding: 8px 10px;
+      border: 1px solid #c9d4e5;
+      border-radius: 10px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: #e9eef8; color: var(--text); }
+    .btn-green { background: var(--green); color: white; }
+    .btn-danger { background: #eef2f8; color: var(--red); }
+
+    .scenario-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .scenario-buttons button {
+      background: #eef3ff;
+      color: #27437f;
+      border: 1px solid #d7e2ff;
+      text-align: left;
+      min-height: 56px;
+      padding: 10px;
+      font-size: 0.84rem;
+      line-height: 1.2;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      padding: 16px;
+      min-height: 118px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .metric-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .neutral { color: var(--accent); }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-card {
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .chart-card h3, .table-card h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 320px;
+    }
+
+    .table-card {
+      padding: 16px;
+    }
+
+    .table-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .table-scroll {
+      max-height: 520px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eef2f7;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+    th {
+      position: sticky;
+      top: 0;
+      background: #f8fbff;
+      z-index: 1;
+      color: #32445c;
+    }
+
+    tbody tr:nth-child(odd) { background: #fbfdff; }
+    tbody tr.cash-positive { background: rgba(31, 157, 85, 0.06); }
+    tbody tr.cash-negative { background: rgba(214, 69, 69, 0.05); }
+
+    .helper-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .helper-box {
+      padding: 12px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid #e5edf9;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 0.8rem; }
+
+    @media (max-width: 1240px) {
+      .layout { grid-template-columns: 1fr; }
+      .panel { position: static; max-height: none; }
+      .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 860px) {
+      .charts-grid, .helper-grid, .metrics-grid { grid-template-columns: 1fr; }
+      .scenario-buttons { grid-template-columns: 1fr; }
+      header .title-row { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-row">
+      <div>
+        <h1>Elder Care Platform Financial Planning Model</h1>
+        <div class="subhead">Interactive 36-month planning dashboard for pricing, staffing, family growth, FSR capacity, and capital needs.</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" id="resetDefaultsBtn">Reset to Defaults</button>
+        <button class="btn-primary" id="saveScenarioBtn">Save Scenario</button>
+        <select id="savedScenarioSelect">
+          <option value="">Load saved scenario…</option>
+        </select>
+        <button class="btn-green" id="exportCsvBtn">Export CSV</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <div class="panel-header">
+        <h2>Inputs & Scenarios</h2>
+      </div>
+
+      <div class="control-group">
+        <h3>Pre-Built Scenarios</h3>
+        <div class="scenario-buttons">
+          <button data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
+          <button data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
+          <button data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
+          <button data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
+        </div>
+        <div class="field-note">Scenarios update all inputs instantly. You can then fine-tune individual variables and save your own versions locally.</div>
+      </div>
+
+      <div class="control-group" id="team-costs-group">
+        <h3>Team & Costs</h3>
+      </div>
+
+      <div class="control-group" id="fsr-group">
+        <h3>FSR Model</h3>
+      </div>
+
+      <div class="control-group" id="revenue-group">
+        <h3>Revenue</h3>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="metrics-grid" id="metricsGrid"></section>
+
+      <section class="helper-grid" id="helperGrid"></section>
+
+      <section class="charts-grid">
+        <div class="chart-card">
+          <h3>36-Month Cash Flow</h3>
+          <div class="chart-wrap"><canvas id="cashFlowChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Family Growth</h3>
+          <div class="chart-wrap"><canvas id="familyGrowthChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Team Scaling</h3>
+          <div class="chart-wrap"><canvas id="teamScalingChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Unit Economics Waterfall</h3>
+          <div class="chart-wrap"><canvas id="waterfallChart"></canvas></div>
+        </div>
+      </section>
+
+      <section class="table-card">
+        <h3>Monthly Breakdown (36 Months)</h3>
+        <div class="table-meta" id="tableMeta"></div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>New Families</th>
+                <th>Churned</th>
+                <th>Total Active</th>
+                <th>Onboarding FSRs</th>
+                <th>Account FSRs</th>
+                <th>Total FSRs</th>
+                <th>Revenue</th>
+                <th>Fixed Costs</th>
+                <th>Variable Costs</th>
+                <th>Net Income</th>
+                <th>Cumulative Cash</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const SCENARIO_STORAGE_KEY = 'elderCareFinancialModel.savedScenarios';
+
+    const fieldDefs = [
+      { key: 'engineers', label: 'Number of engineers', group: 'team-costs-group', min: 1, max: 10, step: 1, default: 5, format: 'int' },
+      { key: 'engineerSalary', label: 'Engineer avg salary', group: 'team-costs-group', min: 150000, max: 350000, step: 5000, default: 250000, format: 'currency0' },
+      { key: 'founders', label: 'Number of founders', group: 'team-costs-group', min: 1, max: 3, step: 1, default: 2, format: 'int' },
+      { key: 'founderSalary', label: 'Founder salary', group: 'team-costs-group', min: 80000, max: 200000, step: 5000, default: 135000, format: 'currency0' },
+      { key: 'officeInfraMonthly', label: 'Monthly office/infra cost', group: 'team-costs-group', min: 5000, max: 50000, step: 500, default: 10000, format: 'currency0' },
+      { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 1, max: 20, step: 0.5, default: 5, format: 'currency2' },
+
+      { key: 'fsrSalary', label: 'FSR salary', group: 'fsr-group', min: 80000, max: 200000, step: 5000, default: 125000, format: 'currency0' },
+      { key: 'familiesPerFsr', label: 'Steady-state families per FSR', group: 'fsr-group', min: 100, max: 2000, step: 25, default: 400, format: 'int' },
+      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'fsr-group', min: 1, max: 15, step: 0.5, default: 6, format: 'hours' },
+      { key: 'outreachRate', label: 'Monthly human outreach rate', group: 'fsr-group', min: 1, max: 25, step: 0.5, default: 8, format: 'percent' },
+      { key: 'handleTimeMinutes', label: 'Avg handle time per interaction', group: 'fsr-group', min: 10, max: 90, step: 1, default: 40, format: 'minutes' },
+
+      { key: 'monthlyPrice', label: 'Monthly price per family', group: 'revenue-group', min: 49, max: 999, step: 5, default: 249, format: 'currency0' },
+      { key: 'newFamiliesPerMonth', label: 'New families onboarded per month', group: 'revenue-group', min: 10, max: 500, step: 5, default: 100, format: 'int' },
+      { key: 'churnRate', label: 'Monthly churn rate', group: 'revenue-group', min: 0.5, max: 5, step: 0.1, default: 1.5, format: 'percent' },
+      { key: 'onboardingFee', label: 'Onboarding fee (one-time)', group: 'revenue-group', min: 0, max: 2000, step: 25, default: 500, format: 'currency0' },
+    ];
+
+    const defaultInputs = Object.fromEntries(fieldDefs.map(f => [f.key, f.default]));
+
+    const scenarioPresets = {
+      optimistic: {
+        familiesPerFsr: 1000,
+        outreachRate: 5,
+        onboardingHours: 3,
+        monthlyPrice: 299,
+        newFamiliesPerMonth: 100,
+        churnRate: 1,
+      },
+      conservative: {
+        familiesPerFsr: 400,
+        outreachRate: 8,
+        onboardingHours: 6,
+        monthlyPrice: 249,
+        newFamiliesPerMonth: 75,
+        churnRate: 2,
+      },
+      premium: {
+        familiesPerFsr: 300,
+        outreachRate: 10,
+        onboardingHours: 8,
+        monthlyPrice: 499,
+        newFamiliesPerMonth: 50,
+        churnRate: 1.5,
+      },
+      healthplan: {
+        familiesPerFsr: 500,
+        outreachRate: 6,
+        onboardingHours: 4,
+        monthlyPrice: 199,
+        newFamiliesPerMonth: 300,
+        churnRate: 1,
+      }
+    };
+
+    const state = { ...defaultInputs };
+    const controls = {};
+    let monthlyRows = [];
+    let charts = {};
+
+    const money0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const money2 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const intFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+    const oneDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const twoDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function formatValue(value, format) {
+      switch (format) {
+        case 'currency0': return money0.format(value);
+        case 'currency2': return money2.format(value);
+        case 'percent': return `${oneDec.format(value)}%`;
+        case 'hours': return `${oneDec.format(value)} hrs`;
+        case 'minutes': return `${intFmt.format(value)} min`;
+        case 'int':
+        default: return intFmt.format(value);
+      }
+    }
+
+    function parseByStep(raw, step) {
+      const val = Number(raw);
+      if (Number.isNaN(val)) return 0;
+      return step < 1 ? Number(val.toFixed(2)) : val;
+    }
+
+    function createField(def) {
+      const parent = document.getElementById(def.group);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'field';
+      wrapper.innerHTML = `
+        <div class="field-top">
+          <label for="${def.key}-range">${def.label}</label>
+          <div class="value-wrap">
+            <input id="${def.key}-number" type="number" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
+          </div>
+        </div>
+        <input id="${def.key}-range" type="range" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
+        <div class="field-note" id="${def.key}-display">${formatValue(def.default, def.format)}</div>
+      `;
+      parent.appendChild(wrapper);
+
+      const range = wrapper.querySelector(`#${def.key}-range`);
+      const number = wrapper.querySelector(`#${def.key}-number`);
+      const display = wrapper.querySelector(`#${def.key}-display`);
+
+      function sync(nextVal) {
+        let value = parseByStep(nextVal, def.step);
+        value = Math.min(def.max, Math.max(def.min, value));
+        state[def.key] = value;
+        range.value = value;
+        number.value = value;
+        display.textContent = formatValue(value, def.format);
+        updateAll();
+      }
+
+      range.addEventListener('input', e => sync(e.target.value));
+      number.addEventListener('input', e => sync(e.target.value));
+
+      controls[def.key] = { range, number, display, def, sync };
+    }
+
+    function setInputs(values) {
+      fieldDefs.forEach(def => {
+        const value = values[def.key] ?? state[def.key] ?? def.default;
+        controls[def.key].sync(value);
+      });
+    }
+
+    function currentInputs() {
+      return Object.fromEntries(fieldDefs.map(def => [def.key, state[def.key]]));
+    }
+
+    function calculateModel(inputs) {
+      const months = 36;
+      const rows = [];
+
+      const fsrMonthlySalary = inputs.fsrSalary / 12;
+      const engineerMonthlySalary = inputs.engineerSalary / 12;
+      const founderMonthlySalary = inputs.founderSalary / 12;
+      const paymentProcessingRate = 0.03;
+      const sharedInfraPerFamily = 4;
+      const baseOpsHeadcount = 1;
+      const opsSalary = 110000;
+      const opsMonthlySalary = opsSalary / 12;
+      const monthlyChurn = inputs.churnRate / 100;
+      const outreachRate = inputs.outreachRate / 100;
+      const handleHours = inputs.handleTimeMinutes / 60;
+      const onboardingCapacityPerFsr = (160 * 0.5) / inputs.onboardingHours;
+      const ongoingHoursPerFamily = outreachRate * handleHours;
+      const ongoingFsrCapacityHours = 160 * 0.5;
+      const familiesSupportedByWorkload = ongoingHoursPerFamily > 0 ? ongoingFsrCapacityHours / ongoingHoursPerFamily : Infinity;
+      const effectiveFamiliesPerFsr = Math.min(inputs.familiesPerFsr, familiesSupportedByWorkload);
+      const accountFamiliesCapacity = Math.max(1, effectiveFamiliesPerFsr);
+
+      let activeFamilies = 0;
+      let cumulativeCash = 0;
+      let breakEvenMonth = null;
+      let peakCapitalRequired = 0;
+      let positiveCashMonth = null;
+
+      for (let month = 1; month <= months; month++) {
+        const startingFamilies = activeFamilies;
+        const churnedFamilies = startingFamilies * monthlyChurn;
+        const newFamilies = inputs.newFamiliesPerMonth;
+        activeFamilies = Math.max(0, startingFamilies - churnedFamilies + newFamilies);
+
+        const onboardingFsrs = Math.ceil(newFamilies / Math.max(0.0001, onboardingCapacityPerFsr));
+        const accountFsrs = Math.ceil(activeFamilies / accountFamiliesCapacity);
+        const totalFsrs = Math.max(onboardingFsrs, accountFsrs, Math.ceil((newFamilies / Math.max(0.0001, onboardingCapacityPerFsr)) + (activeFamilies * ongoingHoursPerFamily / Math.max(1, ongoingFsrCapacityHours))));
+
+        const opsHeadcount = Math.max(baseOpsHeadcount, Math.ceil(activeFamilies / 2500));
+        const fixedCosts = (
+          inputs.engineers * engineerMonthlySalary +
+          inputs.founders * founderMonthlySalary +
+          inputs.officeInfraMonthly +
+          opsHeadcount * opsMonthlySalary
+        );
+
+        const fsrCost = totalFsrs * fsrMonthlySalary;
+        const aiCost = activeFamilies * inputs.aiCloudPerFamily;
+        const sharedInfraCost = activeFamilies * sharedInfraPerFamily;
+        const recurringRevenue = activeFamilies * inputs.monthlyPrice;
+        const onboardingRevenue = newFamilies * inputs.onboardingFee;
+        const paymentProcessing = recurringRevenue * paymentProcessingRate;
+        const variableCosts = fsrCost + aiCost + sharedInfraCost + paymentProcessing;
+        const totalRevenue = recurringRevenue + onboardingRevenue;
+        const netIncome = totalRevenue - fixedCosts - variableCosts;
+        cumulativeCash += netIncome;
+        peakCapitalRequired = Math.max(peakCapitalRequired, Math.max(0, -cumulativeCash));
+
+        if (breakEvenMonth === null && netIncome >= 0) breakEvenMonth = month;
+        if (positiveCashMonth === null && cumulativeCash >= 0) positiveCashMonth = month;
+
+        rows.push({
+          month,
+          newFamilies,
+          churnedFamilies,
+          activeFamilies,
+          onboardingFsrs,
+          accountFsrs,
+          totalFsrs,
+          opsHeadcount,
+          revenue: totalRevenue,
+          recurringRevenue,
+          onboardingRevenue,
+          fixedCosts,
+          variableCosts,
+          fsrCost,
+          aiCost,
+          sharedInfraCost,
+          paymentProcessing,
+          netIncome,
+          cumulativeCash,
+        });
+      }
+
+      const firstMonth = rows[0];
+      const burnRate = firstMonth.fixedCosts;
+      const steadyStateFsrCostPerFamily = fsrMonthlySalary / accountFamiliesCapacity;
+      const paymentProcessingPerFamily = inputs.monthlyPrice * paymentProcessingRate;
+      const variableCostPerFamily = steadyStateFsrCostPerFamily + inputs.aiCloudPerFamily + sharedInfraPerFamily + paymentProcessingPerFamily;
+      const contributionMarginPerFamily = inputs.monthlyPrice - variableCostPerFamily;
+      const breakEvenFamilies = contributionMarginPerFamily > 0 ? burnRate / contributionMarginPerFamily : Infinity;
+      const ltv = monthlyChurn > 0 ? contributionMarginPerFamily / monthlyChurn : Infinity;
+      const onboardingLaborCost = inputs.onboardingHours * (inputs.fsrSalary / 12 / 160);
+      const estimatedCAC = 600 + onboardingLaborCost;
+      const ltvCac = estimatedCAC > 0 ? ltv / estimatedCAC : Infinity;
+
+      return {
+        rows,
+        assumptions: {
+          onboardingCapacityPerFsr,
+          accountFamiliesCapacity,
+          ongoingHoursPerFamily,
+          steadyStateFsrCostPerFamily,
+          paymentProcessingPerFamily,
+          estimatedCAC,
+          onboardingLaborCost,
+        },
+        summary: {
+          burnRate,
+          variableCostPerFamily,
+          contributionMarginPerFamily,
+          breakEvenFamilies,
+          breakEvenMonth,
+          positiveCashMonth,
+          peakCapitalRequired,
+          ltv,
+          ltvCac,
+          monthsToPositiveCash: positiveCashMonth,
+          finalFamilies: rows[rows.length - 1].activeFamilies,
+          finalCash: rows[rows.length - 1].cumulativeCash,
+          maxFsrs: Math.max(...rows.map(r => r.totalFsrs)),
+          maxOps: Math.max(...rows.map(r => r.opsHeadcount)),
+        }
+      };
+    }
+
+    function metricCard(label, value, sub, tone='neutral') {
+      return `
+        <div class="card">
+          <div class="metric-label">${label}</div>
+          <div class="metric-value ${tone}">${value}</div>
+          <div class="metric-sub">${sub}</div>
+        </div>
+      `;
+    }
+
+    function helperBox(title, body) {
+      return `<div class="helper-box"><strong>${title}</strong><br>${body}</div>`;
+    }
+
+    function renderMetrics(model) {
+      const { summary, assumptions } = model;
+      const metrics = [
+        metricCard('Monthly burn rate', money0.format(summary.burnRate), 'Core fixed payroll + office + ops before FSR and per-family variable spend.', 'negative'),
+        metricCard('Variable cost / family', money2.format(summary.variableCostPerFamily), 'Includes FSR staffing, AI/cloud, shared infra, and payment processing.', 'neutral'),
+        metricCard('Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
+        metricCard('Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', 'Approximate active family count needed to cover monthly fixed burn.', 'neutral'),
+        metricCard('Months to break-even', summary.breakEvenMonth ? `${summary.breakEvenMonth} mo` : 'Not in 36 mo', 'First month with positive monthly net income in the forecast.', summary.breakEvenMonth ? 'positive' : 'negative'),
+        metricCard('Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the model self-funds.', 'negative'),
+        metricCard('LTV / family', Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', 'Contribution margin divided by monthly churn rate.', summary.ltv > 0 ? 'positive' : 'negative'),
+        metricCard('LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', `Uses planning CAC of ${money0.format(assumptions.estimatedCAC)} including acquisition and onboarding burden.`, summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
+      ];
+      document.getElementById('metricsGrid').innerHTML = metrics.join('');
+
+      const helpers = [
+        helperBox('FSR onboarding capacity', `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new families per onboarding FSR per month, assuming 80 hours/month dedicated to onboarding.`),
+        helperBox('Human time per family / month', `${twoDec.format(assumptions.ongoingHoursPerFamily)} hrs (${twoDec.format(assumptions.ongoingHoursPerFamily * 60)} min) from outreach rate × handle time.`),
+        helperBox('Effective families per FSR', `${intFmt.format(Math.floor(assumptions.accountFamiliesCapacity))} families/FSR after applying both target panel ratio and outreach workload capacity.`),
+        helperBox('Steady-state variable cost stack', `${money2.format(assumptions.steadyStateFsrCostPerFamily)} FSR + ${money2.format(state.aiCloudPerFamily)} AI/cloud + ${money2.format(4)} shared infra + ${money2.format(assumptions.paymentProcessingPerFamily)} payment processing per family/month.`),
+        helperBox('Onboarding labor cost / family', `${money0.format(assumptions.onboardingLaborCost)} estimated human onboarding labor per new family before acquisition cost.`),
+        helperBox('Planning CAC assumption', `${money0.format(assumptions.estimatedCAC)} = ${money0.format(600)} acquisition + ${money0.format(assumptions.onboardingLaborCost)} onboarding labor.`),
+      ];
+      document.getElementById('helperGrid').innerHTML = helpers.join('');
+    }
+
+    function destroyChart(name) {
+      if (charts[name]) charts[name].destroy();
+    }
+
+    function baseCurrencyTicks(value) {
+      return money0.format(value);
+    }
+
+    function buildCharts(model) {
+      const rows = model.rows;
+      const labels = rows.map(r => `M${r.month}`);
+      const cumulativeColors = rows.map(r => r.cumulativeCash >= 0 ? 'rgba(31,157,85,0.18)' : 'rgba(214,69,69,0.16)');
+
+      destroyChart('cashFlow');
+      charts.cashFlow = new Chart(document.getElementById('cashFlowChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Monthly Revenue',
+              data: rows.map(r => r.revenue),
+              borderColor: '#2962ff',
+              backgroundColor: 'rgba(41,98,255,0.10)',
+              borderWidth: 2,
+              tension: 0.25,
+              fill: false,
+            },
+            {
+              label: 'Monthly Costs',
+              data: rows.map(r => r.fixedCosts + r.variableCosts),
+              borderColor: '#d64545',
+              backgroundColor: 'rgba(214,69,69,0.10)',
+              borderWidth: 2,
+              tension: 0.25,
+              fill: false,
+            },
+            {
+              label: 'Cumulative Cash Position',
+              data: rows.map(r => r.cumulativeCash),
+              borderColor: '#1f9d55',
+              backgroundColor: cumulativeColors,
+              borderWidth: 3,
+              tension: 0.2,
+              fill: true,
+              yAxisID: 'y1',
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            y: { ticks: { callback: baseCurrencyTicks } },
+            y1: {
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              ticks: { callback: baseCurrencyTicks }
+            }
+          },
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+
+      destroyChart('familyGrowth');
+      charts.familyGrowth = new Chart(document.getElementById('familyGrowthChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Active Families',
+              data: rows.map(r => r.activeFamilies),
+              borderColor: '#2962ff',
+              backgroundColor: 'rgba(41,98,255,0.15)',
+              fill: true,
+              tension: 0.25,
+              borderWidth: 3,
+            },
+            {
+              label: 'New Families',
+              data: rows.map(r => r.newFamilies),
+              borderColor: '#1f9d55',
+              backgroundColor: 'rgba(31,157,85,0.10)',
+              tension: 0.2,
+              borderDash: [5, 5],
+              fill: false,
+            },
+            {
+              label: 'Churned Families',
+              data: rows.map(r => r.churnedFamilies),
+              borderColor: '#d64545',
+              backgroundColor: 'rgba(214,69,69,0.10)',
+              tension: 0.2,
+              borderDash: [5, 5],
+              fill: false,
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { position: 'bottom' } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      const milestoneMonths = [6, 12, 18, 24, 30, 36];
+      const milestoneRows = milestoneMonths.map(m => rows[m - 1]);
+      destroyChart('teamScaling');
+      charts.teamScaling = new Chart(document.getElementById('teamScalingChart'), {
+        type: 'bar',
+        data: {
+          labels: milestoneMonths.map(m => `M${m}`),
+          datasets: [
+            {
+              label: 'Engineers',
+              data: milestoneRows.map(() => state.engineers),
+              backgroundColor: '#2962ff',
+            },
+            {
+              label: 'FSRs',
+              data: milestoneRows.map(r => r.totalFsrs),
+              backgroundColor: '#1f9d55',
+            },
+            {
+              label: 'Ops',
+              data: milestoneRows.map(r => r.opsHeadcount),
+              backgroundColor: '#f4b740',
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+
+      const avgActiveFamilies = rows.reduce((sum, r) => sum + r.activeFamilies, 0) / rows.length;
+      const allocatedFixed = avgActiveFamilies > 0 ? model.summary.burnRate / avgActiveFamilies : 0;
+      const revenuePerFamily = state.monthlyPrice;
+      const variablePerFamily = model.summary.variableCostPerFamily;
+      const netMarginPerFamily = revenuePerFamily - variablePerFamily - allocatedFixed;
+
+      destroyChart('waterfall');
+      charts.waterfall = new Chart(document.getElementById('waterfallChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Revenue / Family', 'Variable Costs', 'Allocated Fixed', 'Net Margin'],
+          datasets: [{
+            label: 'Monthly Unit Economics',
+            data: [revenuePerFamily, -variablePerFamily, -allocatedFixed, netMarginPerFamily],
+            backgroundColor: [
+              'rgba(41,98,255,0.85)',
+              'rgba(214,69,69,0.85)',
+              'rgba(244,183,64,0.9)',
+              netMarginPerFamily >= 0 ? 'rgba(31,157,85,0.9)' : 'rgba(214,69,69,0.9)'
+            ],
+            borderRadius: 8,
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { ticks: { callback: baseCurrencyTicks } }
+          }
+        }
+      });
+    }
+
+    function renderTable(model) {
+      const tbody = document.getElementById('tableBody');
+      monthlyRows = model.rows;
+      tbody.innerHTML = model.rows.map(row => {
+        const cls = row.cumulativeCash >= 0 ? 'cash-positive' : 'cash-negative';
+        return `
+          <tr class="${cls}">
+            <td>M${row.month}</td>
+            <td>${intFmt.format(row.newFamilies)}</td>
+            <td>${oneDec.format(row.churnedFamilies)}</td>
+            <td>${intFmt.format(row.activeFamilies)}</td>
+            <td>${intFmt.format(row.onboardingFsrs)}</td>
+            <td>${intFmt.format(row.accountFsrs)}</td>
+            <td>${intFmt.format(row.totalFsrs)}</td>
+            <td>${money0.format(row.revenue)}</td>
+            <td>${money0.format(row.fixedCosts)}</td>
+            <td>${money0.format(row.variableCosts)}</td>
+            <td class="${row.netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(row.netIncome)}</td>
+            <td class="${row.cumulativeCash >= 0 ? 'positive' : 'negative'}">${money0.format(row.cumulativeCash)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const meta = document.getElementById('tableMeta');
+      const positiveMonth = model.summary.positiveCashMonth ? `Cumulative cash turns positive in month ${model.summary.positiveCashMonth}.` : 'Cumulative cash does not turn positive within 36 months.';
+      meta.innerHTML = `
+        <div><strong>36-month ending families:</strong> ${intFmt.format(model.summary.finalFamilies)}</div>
+        <div><strong>Peak FSRs required:</strong> ${intFmt.format(model.summary.maxFsrs)}</div>
+        <div><strong>36-month ending cash:</strong> <span class="${model.summary.finalCash >= 0 ? 'positive' : 'negative'}">${money0.format(model.summary.finalCash)}</span></div>
+        <div>${positiveMonth}</div>
+      `;
+    }
+
+    function exportCsv() {
+      const headers = ['Month','New Families','Churned Families','Total Active Families','Onboarding FSRs','Account FSRs','Total FSRs','Ops Headcount','Revenue','Recurring Revenue','Onboarding Revenue','Fixed Costs','Variable Costs','Net Income','Cumulative Cash'];
+      const lines = [headers.join(',')];
+      monthlyRows.forEach(r => {
+        lines.push([
+          r.month,
+          r.newFamilies,
+          r.churnedFamilies.toFixed(2),
+          r.activeFamilies.toFixed(2),
+          r.onboardingFsrs,
+          r.accountFsrs,
+          r.totalFsrs,
+          r.opsHeadcount,
+          r.revenue.toFixed(2),
+          r.recurringRevenue.toFixed(2),
+          r.onboardingRevenue.toFixed(2),
+          r.fixedCosts.toFixed(2),
+          r.variableCosts.toFixed(2),
+          r.netIncome.toFixed(2),
+          r.cumulativeCash.toFixed(2),
+        ].join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'elder-care-financial-model.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function getSavedScenarios() {
+      try {
+        return JSON.parse(localStorage.getItem(SCENARIO_STORAGE_KEY) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function refreshSavedScenarioDropdown() {
+      const select = document.getElementById('savedScenarioSelect');
+      const saved = getSavedScenarios();
+      select.innerHTML = '<option value="">Load saved scenario…</option>' + Object.keys(saved).sort().map(name => `<option value="${name}">${name}</option>`).join('');
+    }
+
+    function saveCurrentScenario() {
+      const name = window.prompt('Name this scenario:');
+      if (!name) return;
+      const saved = getSavedScenarios();
+      saved[name] = currentInputs();
+      localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(saved));
+      refreshSavedScenarioDropdown();
+      document.getElementById('savedScenarioSelect').value = name;
+    }
+
+    function loadSavedScenario(name) {
+      const saved = getSavedScenarios();
+      if (saved[name]) setInputs(saved[name]);
+    }
+
+    function updateAll() {
+      const model = calculateModel(currentInputs());
+      renderMetrics(model);
+      buildCharts(model);
+      renderTable(model);
+    }
+
+    function init() {
+      fieldDefs.forEach(createField);
+      refreshSavedScenarioDropdown();
+      updateAll();
+
+      document.querySelectorAll('[data-scenario]').forEach(btn => {
+        btn.addEventListener('click', () => setInputs({ ...defaultInputs, ...scenarioPresets[btn.dataset.scenario] }));
+      });
+
+      document.getElementById('resetDefaultsBtn').addEventListener('click', () => setInputs(defaultInputs));
+      document.getElementById('saveScenarioBtn').addEventListener('click', saveCurrentScenario);
+      document.getElementById('savedScenarioSelect').addEventListener('change', e => {
+        if (e.target.value) loadSavedScenario(e.target.value);
+      });
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+    }
+
+    init();
+  </script>
+</body>
+</html>
