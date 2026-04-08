@@ -10,6 +10,7 @@
       --bg: #f4f7fb;
       --card: #ffffff;
       --header: #172033;
+      --header-2: #24324d;
       --text: #1d2a3b;
       --muted: #6b778c;
       --line: #d9e1ec;
@@ -20,11 +21,13 @@
       --red: #d64545;
       --red-soft: rgba(214, 69, 69, 0.12);
       --amber: #c78a10;
+      --amber-soft: rgba(199, 138, 16, 0.12);
       --shadow: 0 8px 24px rgba(22, 31, 56, 0.08);
       --radius: 14px;
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -33,13 +36,13 @@
     }
 
     header {
-      background: linear-gradient(135deg, #172033, #24324d);
+      background: linear-gradient(135deg, var(--header), var(--header-2));
       color: #fff;
       padding: 18px 24px;
       box-shadow: var(--shadow);
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 40;
     }
 
     header .title-row {
@@ -60,6 +63,7 @@
       margin-top: 6px;
       color: rgba(255,255,255,0.78);
       font-size: 0.92rem;
+      max-width: 860px;
     }
 
     .header-actions {
@@ -71,13 +75,13 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 350px minmax(0, 1fr);
+      grid-template-columns: 360px minmax(0, 1fr);
       gap: 20px;
       padding: 20px;
       align-items: start;
     }
 
-    .panel, .card, .chart-card, .table-card {
+    .panel, .card, .chart-card, .table-card, .section-card, .snapshot-card, .scale-table-wrap {
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -143,6 +147,7 @@
       color: var(--muted);
       font-size: 0.74rem;
       margin-top: 4px;
+      line-height: 1.45;
     }
 
     .value-wrap {
@@ -157,7 +162,7 @@
     }
 
     input[type="number"], select, input[type="text"] {
-      width: 110px;
+      width: 118px;
       padding: 8px 10px;
       border: 1px solid #c9d4e5;
       border-radius: 10px;
@@ -166,13 +171,18 @@
       background: #fff;
     }
 
+    input[type="number"]:focus, select:focus, input[type="text"]:focus, button:focus {
+      outline: 2px solid rgba(41,98,255,0.16);
+      outline-offset: 1px;
+    }
+
     button {
       border: none;
       border-radius: 10px;
       padding: 10px 14px;
       font: inherit;
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
     }
 
     button:hover { transform: translateY(-1px); }
@@ -198,6 +208,14 @@
       padding: 10px;
       font-size: 0.84rem;
       line-height: 1.2;
+      box-shadow: none;
+    }
+
+    .scenario-buttons button.active {
+      background: linear-gradient(135deg, rgba(41,98,255,0.14), rgba(41,98,255,0.05));
+      border-color: rgba(41,98,255,0.4);
+      color: #16346f;
+      box-shadow: inset 0 0 0 1px rgba(41,98,255,0.1);
     }
 
     .main {
@@ -215,15 +233,41 @@
 
     .card {
       padding: 16px;
-      min-height: 118px;
+      min-height: 124px;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
 
     .metric-label {
       color: var(--muted);
       font-size: 0.8rem;
-      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+      line-height: 1.3;
+    }
+
+    .metric-help-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      padding: 0;
+      font-size: 0.85rem;
+      background: #eef3ff;
+      color: #234697;
+      border: 1px solid #d8e2ff;
+      flex: 0 0 auto;
+    }
+
+    .metric-help-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
     }
 
     .metric-value {
@@ -239,9 +283,69 @@
       line-height: 1.35;
     }
 
+    .metric-definition {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--text);
+      display: none;
+    }
+
+    .metric-definition.open {
+      display: block;
+    }
+
+    .metric-definition strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--header);
+    }
+
     .positive { color: var(--green); }
     .negative { color: var(--red); }
     .neutral { color: var(--accent); }
+
+    .helper-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .helper-box {
+      padding: 12px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid #e5edf9;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .fsr-math-box {
+      margin-top: 12px;
+      padding: 14px;
+      background: #f8fbff;
+      border: 1px solid #e3ebfb;
+      border-radius: 12px;
+    }
+
+    .fsr-math-box h4 {
+      margin: 0 0 10px;
+      font-size: 0.88rem;
+      color: var(--header);
+    }
+
+    .math-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 0;
+      border-top: 1px dashed #dbe5f7;
+      font-size: 0.8rem;
+    }
+
+    .math-row:first-of-type { border-top: none; padding-top: 0; }
 
     .charts-grid {
       display: grid;
@@ -249,12 +353,12 @@
       gap: 16px;
     }
 
-    .chart-card {
+    .chart-card, .table-card, .section-card {
       padding: 16px;
       min-width: 0;
     }
 
-    .chart-card h3, .table-card h3 {
+    .chart-card h3, .table-card h3, .section-card h3 {
       margin: 0 0 12px;
       font-size: 1rem;
     }
@@ -264,11 +368,7 @@
       height: 320px;
     }
 
-    .table-card {
-      padding: 16px;
-    }
-
-    .table-meta {
+    .table-meta, .section-meta {
       display: flex;
       justify-content: space-between;
       gap: 12px;
@@ -300,6 +400,7 @@
     }
 
     th:first-child, td:first-child { text-align: left; }
+
     th {
       position: sticky;
       top: 0;
@@ -312,34 +413,209 @@
     tbody tr.cash-positive { background: rgba(31, 157, 85, 0.06); }
     tbody tr.cash-negative { background: rgba(214, 69, 69, 0.05); }
 
-    .helper-grid {
+    .section-stack {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .timeline-bar {
+      display: flex;
+      min-height: 54px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #eef2f7;
+    }
+
+    .phase-segment {
+      position: relative;
+      padding: 10px 12px;
+      color: white;
+      display: flex;
+      align-items: flex-end;
+      font-size: 0.8rem;
+      line-height: 1.25;
+      min-width: 80px;
+    }
+
+    .phase-build { background: linear-gradient(135deg, #d64545, #bf3030); }
+    .phase-scale { background: linear-gradient(135deg, #d89b18, #bb820e); }
+    .phase-breakeven { background: linear-gradient(135deg, #efb73f, #d99917); color: #273248; }
+    .phase-profit { background: linear-gradient(135deg, #1f9d55, #157a41); }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(180px, 1fr));
       gap: 12px;
     }
 
-    .helper-box {
-      padding: 12px;
+    .snapshot-card {
+      padding: 14px;
+    }
+
+    .snapshot-card h4 {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+    }
+
+    .snapshot-stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.8rem;
+      padding: 4px 0;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .snapshot-stat:first-of-type { border-top: none; }
+
+    .scale-table-wrap {
+      overflow: auto;
       border-radius: 12px;
-      background: #f8fbff;
-      border: 1px solid #e5edf9;
-      font-size: 0.82rem;
-      line-height: 1.45;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .scale-row-highlight {
+      background: rgba(41,98,255,0.10) !important;
+      box-shadow: inset 4px 0 0 rgba(41,98,255,0.85);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #eef3ff;
+      color: #264184;
+      border: 1px solid #dae3fb;
     }
 
     .muted { color: var(--muted); }
     .small { font-size: 0.8rem; }
 
-    @media (max-width: 1240px) {
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 28, 46, 0.58);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(1120px, 100%);
+      max-height: calc(100vh - 40px);
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      background: linear-gradient(135deg, #f8fbff, #ffffff);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .modal-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px 0;
+      flex-wrap: wrap;
+      background: white;
+    }
+
+    .tab-btn {
+      background: #eef2f8;
+      color: var(--text);
+      border: 1px solid #dce5f3;
+      padding: 9px 12px;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .modal-body {
+      padding: 18px 20px 22px;
+      overflow: auto;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .doc-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fbfdff;
+    }
+
+    .doc-card h3, .doc-card h4 {
+      margin-top: 0;
+    }
+
+    .doc-card p, .doc-card li {
+      color: #334257;
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    .doc-card ul { margin: 10px 0 0 18px; padding: 0; }
+    .doc-card .formula { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #eef3ff; padding: 8px 10px; border-radius: 10px; display: inline-block; }
+
+    @media (max-width: 1320px) {
       .layout { grid-template-columns: 1fr; }
       .panel { position: static; max-height: none; }
       .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .snapshot-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
     }
 
-    @media (max-width: 860px) {
-      .charts-grid, .helper-grid, .metrics-grid { grid-template-columns: 1fr; }
+    @media (max-width: 920px) {
+      .charts-grid, .helper-grid, .metrics-grid, .guide-grid { grid-template-columns: 1fr; }
       .scenario-buttons { grid-template-columns: 1fr; }
+      .snapshot-grid { grid-template-columns: 1fr 1fr; }
       header .title-row { align-items: flex-start; }
+      .modal { max-height: calc(100vh - 20px); }
+    }
+
+    @media (max-width: 640px) {
+      .layout { padding: 12px; gap: 14px; }
+      header { padding: 14px 16px; }
+      .header-actions { width: 100%; }
+      .header-actions > * { flex: 1 1 140px; }
+      .snapshot-grid { grid-template-columns: 1fr; }
+      .timeline-bar { flex-direction: column; }
+      .phase-segment { min-width: 100%; min-height: 58px; }
+      .modal-backdrop { padding: 10px; }
+      .modal-header, .modal-body, .modal-tabs { padding-left: 14px; padding-right: 14px; }
     }
   </style>
 </head>
@@ -348,9 +624,10 @@
     <div class="title-row">
       <div>
         <h1>Elder Care Platform Financial Planning Model</h1>
-        <div class="subhead">Interactive 36-month planning dashboard for pricing, staffing, family growth, FSR capacity, and capital needs.</div>
+        <div class="subhead">Interactive 36-month planning dashboard for pricing, staffing, family growth, FSR capacity, operating cash flow, and capital needs.</div>
       </div>
       <div class="header-actions">
+        <button class="btn-secondary" id="openDefinitionsBtn">Definitions &amp; Guide</button>
         <button class="btn-secondary" id="resetDefaultsBtn">Reset to Defaults</button>
         <button class="btn-primary" id="saveScenarioBtn">Save Scenario</button>
         <select id="savedScenarioSelect">
@@ -364,26 +641,27 @@
   <div class="layout">
     <aside class="panel">
       <div class="panel-header">
-        <h2>Inputs & Scenarios</h2>
+        <h2>Inputs &amp; Scenarios</h2>
       </div>
 
       <div class="control-group">
         <h3>Pre-Built Scenarios</h3>
-        <div class="scenario-buttons">
-          <button data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
-          <button data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
-          <button data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
-          <button data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
+        <div class="scenario-buttons" id="scenarioButtons">
+          <button type="button" data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
+          <button type="button" data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
+          <button type="button" data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
+          <button type="button" data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
         </div>
-        <div class="field-note">Scenarios update all inputs instantly. You can then fine-tune individual variables and save your own versions locally.</div>
+        <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
       </div>
 
       <div class="control-group" id="team-costs-group">
-        <h3>Team & Costs</h3>
+        <h3>Team &amp; Costs</h3>
       </div>
 
       <div class="control-group" id="fsr-group">
         <h3>FSR Model</h3>
+        <div class="fsr-math-box" id="fsrMathBox"></div>
       </div>
 
       <div class="control-group" id="revenue-group">
@@ -415,6 +693,43 @@
         </div>
       </section>
 
+      <section class="section-card section-stack">
+        <div>
+          <h3>Operating Cash Flows &amp; Company Phases</h3>
+          <div class="section-meta" id="phaseMeta"></div>
+        </div>
+
+        <div>
+          <div class="small muted" style="margin-bottom:8px;">Company phase timeline</div>
+          <div class="timeline-bar" id="phaseTimeline"></div>
+        </div>
+
+        <div>
+          <div class="small muted" style="margin-bottom:8px;">Operating cash flow snapshots</div>
+          <div class="snapshot-grid" id="snapshotGrid"></div>
+        </div>
+
+        <div>
+          <div class="small muted" style="margin-bottom:8px;">Scale analysis using current assumptions</div>
+          <div class="scale-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Scale</th>
+                  <th>Monthly Revenue</th>
+                  <th>FSRs Needed</th>
+                  <th>Monthly Costs</th>
+                  <th>Net Margin</th>
+                  <th>Total Headcount</th>
+                  <th>Approx Position</th>
+                </tr>
+              </thead>
+              <tbody id="scaleTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section class="table-card">
         <h3>Monthly Breakdown (36 Months)</h3>
         <div class="table-meta" id="tableMeta"></div>
@@ -443,14 +758,41 @@
     </main>
   </div>
 
+  <div class="modal-backdrop" id="definitionsModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="definitionsTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="definitionsTitle">Definitions &amp; Dashboard Guide</h2>
+          <div class="small muted">Metric formulas, operating logic, and how to interpret scale, staffing, and break-even.</div>
+        </div>
+        <button class="btn-secondary" id="closeDefinitionsBtn">Close</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-tab="definitions" type="button">Metric Definitions</button>
+        <button class="tab-btn" data-tab="guide" type="button">Dashboard Guide</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-panel active" id="tab-definitions"></div>
+        <div class="tab-panel" id="tab-guide"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SCENARIO_STORAGE_KEY = 'elderCareFinancialModel.savedScenarios';
+    const MONTHLY_AVAILABLE_HOURS = 160;
+    const ONBOARDING_ALLOCATION_RATIO = 0.5;
+    const SHARED_INFRA_PER_FAMILY = 4;
+    const PAYMENT_PROCESSING_RATE = 0.03;
+    const BASE_OPS_HEADCOUNT = 1;
+    const OPS_SALARY = 110000;
+    const scaleTargets = [1000, 5000, 10000, 25000, 50000];
 
     const fieldDefs = [
       { key: 'engineers', label: 'Number of engineers', group: 'team-costs-group', min: 1, max: 10, step: 1, default: 5, format: 'int' },
       { key: 'engineerSalary', label: 'Engineer avg salary', group: 'team-costs-group', min: 150000, max: 350000, step: 5000, default: 250000, format: 'currency0' },
-      { key: 'founders', label: 'Number of founders', group: 'team-costs-group', min: 1, max: 3, step: 1, default: 2, format: 'int' },
-      { key: 'founderSalary', label: 'Founder salary', group: 'team-costs-group', min: 80000, max: 200000, step: 5000, default: 135000, format: 'currency0' },
+      { key: 'orgManagementHeadcount', label: 'Org management headcount', group: 'team-costs-group', min: 1, max: 6, step: 1, default: 2, format: 'int' },
+      { key: 'orgManagementSalary', label: 'Org management salary', group: 'team-costs-group', min: 80000, max: 250000, step: 5000, default: 135000, format: 'currency0' },
       { key: 'officeInfraMonthly', label: 'Monthly office/infra cost', group: 'team-costs-group', min: 5000, max: 50000, step: 500, default: 10000, format: 'currency0' },
       { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 1, max: 20, step: 0.5, default: 5, format: 'currency2' },
 
@@ -507,12 +849,73 @@
     const controls = {};
     let monthlyRows = [];
     let charts = {};
+    let activeMetricDefinition = null;
+    let activeScenarioKey = null;
 
     const money0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
     const money2 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const intFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
     const oneDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const twoDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    const metricDefinitions = {
+      burnRate: {
+        title: 'Monthly burn rate',
+        formula: 'Fixed payroll + office/infra + base ops',
+        meaning: 'How much fixed monthly spend the company carries before family-linked variable costs.',
+        drivers: 'Engineer count and salary, org management headcount and salary, office/infra, and baseline ops staffing.',
+        interpretation: 'Higher burn raises the break-even family count and increases peak capital required.'
+      },
+      variableCostPerFamily: {
+        title: 'Variable cost / family',
+        formula: 'FSR cost/family + AI/cloud + shared infra + payment processing',
+        meaning: 'The monthly cost that scales with each active family.',
+        drivers: 'FSR capacity, FSR salary, AI/cloud spend, payment fees, and steady-state workload.',
+        interpretation: 'This must stay far below price for the model to scale attractively.'
+      },
+      contributionMarginPerFamily: {
+        title: 'Contribution margin / family',
+        formula: 'Monthly price - variable cost / family',
+        meaning: 'How much monthly contribution each active family provides toward covering fixed costs and profit.',
+        drivers: 'Price, FSR efficiency, AI/cloud cost, and payment processing.',
+        interpretation: 'Higher contribution margin shortens payback and lowers break-even scale.'
+      },
+      breakEvenFamilies: {
+        title: 'Break-even families',
+        formula: 'Monthly burn rate / contribution margin per family',
+        meaning: 'Approximate active family count needed to cover monthly fixed burn.',
+        drivers: 'Fixed cost structure and per-family contribution margin.',
+        interpretation: 'If this number is high, the company needs more capital and more time before becoming self-sustaining.'
+      },
+      breakEvenMonth: {
+        title: 'Months to break-even',
+        formula: 'First forecast month with net income >= 0',
+        meaning: 'When monthly operations turn positive in the modeled ramp.',
+        drivers: 'Growth rate, churn, price, staffing, and variable cost structure.',
+        interpretation: 'Earlier break-even means a cleaner self-financed or lower-capital path.'
+      },
+      capitalRequired: {
+        title: 'Capital required',
+        formula: 'Peak cumulative cash deficit before self-funding',
+        meaning: 'How much cash the business would need to bridge the modeled burn period.',
+        drivers: 'Time to break-even, burn rate, onboarding speed, and recurring margin.',
+        interpretation: 'This is the funding need implied by the current scenario.'
+      },
+      ltv: {
+        title: 'LTV / family',
+        formula: 'Contribution margin per family / monthly churn',
+        meaning: 'Retention-adjusted value of one family before fixed overhead.',
+        drivers: 'Contribution margin and churn rate.',
+        interpretation: 'Even strong pricing can be undermined quickly if churn rises.'
+      },
+      ltvCac: {
+        title: 'LTV : CAC',
+        formula: 'LTV / planning CAC',
+        meaning: 'A shorthand for how efficiently acquisition spend turns into contribution value.',
+        drivers: 'Contribution margin, churn, and estimated acquisition/onboarding cost.',
+        interpretation: 'Above ~3x is generally attractive; below ~1x is dangerous.'
+      }
+    };
 
     function formatValue(value, format) {
       switch (format) {
@@ -528,8 +931,15 @@
 
     function parseByStep(raw, step) {
       const val = Number(raw);
-      if (Number.isNaN(val)) return 0;
+      if (Number.isNaN(val)) return null;
       return step < 1 ? Number(val.toFixed(2)) : val;
+    }
+
+    function clampValue(value, def) {
+      const parsed = parseByStep(value, def.step);
+      if (parsed === null) return def.default;
+      const clamped = Math.min(def.max, Math.max(def.min, parsed));
+      return def.step < 1 ? Number(clamped.toFixed(2)) : clamped;
     }
 
     function createField(def) {
@@ -552,9 +962,8 @@
       const number = wrapper.querySelector(`#${def.key}-number`);
       const display = wrapper.querySelector(`#${def.key}-display`);
 
-      function sync(nextVal) {
-        let value = parseByStep(nextVal, def.step);
-        value = Math.min(def.max, Math.max(def.min, value));
+      function syncCommitted(nextVal) {
+        const value = clampValue(nextVal, def);
         state[def.key] = value;
         range.value = value;
         number.value = value;
@@ -562,17 +971,49 @@
         updateAll();
       }
 
-      range.addEventListener('input', e => sync(e.target.value));
-      number.addEventListener('input', e => sync(e.target.value));
+      function syncFromSlider(nextVal) {
+        const value = clampValue(nextVal, def);
+        state[def.key] = value;
+        range.value = value;
+        number.value = value;
+        display.textContent = formatValue(value, def.format);
+        updateAll();
+      }
 
-      controls[def.key] = { range, number, display, def, sync };
+      range.addEventListener('input', e => syncFromSlider(e.target.value));
+      number.addEventListener('input', e => {
+        const raw = e.target.value;
+        if (raw === '') return;
+        const parsed = parseByStep(raw, def.step);
+        if (parsed === null) return;
+        state[def.key] = parsed;
+        range.value = Math.min(def.max, Math.max(def.min, parsed));
+        display.textContent = formatValue(parsed, def.format);
+        updateAll();
+      });
+      number.addEventListener('blur', e => {
+        if (e.target.value === '') {
+          syncCommitted(def.default);
+          return;
+        }
+        syncCommitted(e.target.value);
+      });
+      number.addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.target.blur();
+      });
+
+      controls[def.key] = { range, number, display, def, sync: syncCommitted };
     }
 
-    function setInputs(values) {
+    function setInputs(values, options = {}) {
       fieldDefs.forEach(def => {
         const value = values[def.key] ?? state[def.key] ?? def.default;
         controls[def.key].sync(value);
       });
+      if (options.scenarioKey !== undefined) {
+        activeScenarioKey = options.scenarioKey;
+        syncScenarioButtonState();
+      }
     }
 
     function currentInputs() {
@@ -585,21 +1026,17 @@
 
       const fsrMonthlySalary = inputs.fsrSalary / 12;
       const engineerMonthlySalary = inputs.engineerSalary / 12;
-      const founderMonthlySalary = inputs.founderSalary / 12;
-      const paymentProcessingRate = 0.03;
-      const sharedInfraPerFamily = 4;
-      const baseOpsHeadcount = 1;
-      const opsSalary = 110000;
-      const opsMonthlySalary = opsSalary / 12;
+      const managementMonthlySalary = inputs.orgManagementSalary / 12;
+      const opsMonthlySalary = OPS_SALARY / 12;
       const monthlyChurn = inputs.churnRate / 100;
       const outreachRate = inputs.outreachRate / 100;
       const handleHours = inputs.handleTimeMinutes / 60;
-      const onboardingCapacityPerFsr = (160 * 0.5) / inputs.onboardingHours;
+      const onboardingHoursPool = MONTHLY_AVAILABLE_HOURS * ONBOARDING_ALLOCATION_RATIO;
+      const steadyStateHoursPool = MONTHLY_AVAILABLE_HOURS * (1 - ONBOARDING_ALLOCATION_RATIO);
+      const onboardingCapacityPerFsr = onboardingHoursPool / inputs.onboardingHours;
       const ongoingHoursPerFamily = outreachRate * handleHours;
-      const ongoingFsrCapacityHours = 160 * 0.5;
-      const familiesSupportedByWorkload = ongoingHoursPerFamily > 0 ? ongoingFsrCapacityHours / ongoingHoursPerFamily : Infinity;
-      const effectiveFamiliesPerFsr = Math.min(inputs.familiesPerFsr, familiesSupportedByWorkload);
-      const accountFamiliesCapacity = Math.max(1, effectiveFamiliesPerFsr);
+      const familiesSupportedByWorkload = ongoingHoursPerFamily > 0 ? steadyStateHoursPool / ongoingHoursPerFamily : Infinity;
+      const effectiveFamiliesPerFsr = Math.max(1, Math.min(inputs.familiesPerFsr, familiesSupportedByWorkload));
 
       let activeFamilies = 0;
       let cumulativeCash = 0;
@@ -614,23 +1051,27 @@
         activeFamilies = Math.max(0, startingFamilies - churnedFamilies + newFamilies);
 
         const onboardingFsrs = Math.ceil(newFamilies / Math.max(0.0001, onboardingCapacityPerFsr));
-        const accountFsrs = Math.ceil(activeFamilies / accountFamiliesCapacity);
-        const totalFsrs = Math.max(onboardingFsrs, accountFsrs, Math.ceil((newFamilies / Math.max(0.0001, onboardingCapacityPerFsr)) + (activeFamilies * ongoingHoursPerFamily / Math.max(1, ongoingFsrCapacityHours))));
+        const accountFsrs = Math.ceil(activeFamilies / effectiveFamiliesPerFsr);
+        const totalFsrs = Math.max(
+          onboardingFsrs,
+          accountFsrs,
+          Math.ceil((newFamilies / Math.max(0.0001, onboardingCapacityPerFsr)) + (activeFamilies * ongoingHoursPerFamily / Math.max(1, steadyStateHoursPool)))
+        );
 
-        const opsHeadcount = Math.max(baseOpsHeadcount, Math.ceil(activeFamilies / 2500));
+        const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(activeFamilies / 2500));
         const fixedCosts = (
           inputs.engineers * engineerMonthlySalary +
-          inputs.founders * founderMonthlySalary +
+          inputs.orgManagementHeadcount * managementMonthlySalary +
           inputs.officeInfraMonthly +
           opsHeadcount * opsMonthlySalary
         );
 
         const fsrCost = totalFsrs * fsrMonthlySalary;
         const aiCost = activeFamilies * inputs.aiCloudPerFamily;
-        const sharedInfraCost = activeFamilies * sharedInfraPerFamily;
+        const sharedInfraCost = activeFamilies * SHARED_INFRA_PER_FAMILY;
         const recurringRevenue = activeFamilies * inputs.monthlyPrice;
         const onboardingRevenue = newFamilies * inputs.onboardingFee;
-        const paymentProcessing = recurringRevenue * paymentProcessingRate;
+        const paymentProcessing = recurringRevenue * PAYMENT_PROCESSING_RATE;
         const variableCosts = fsrCost + aiCost + sharedInfraCost + paymentProcessing;
         const totalRevenue = recurringRevenue + onboardingRevenue;
         const netIncome = totalRevenue - fixedCosts - variableCosts;
@@ -665,13 +1106,13 @@
 
       const firstMonth = rows[0];
       const burnRate = firstMonth.fixedCosts;
-      const steadyStateFsrCostPerFamily = fsrMonthlySalary / accountFamiliesCapacity;
-      const paymentProcessingPerFamily = inputs.monthlyPrice * paymentProcessingRate;
-      const variableCostPerFamily = steadyStateFsrCostPerFamily + inputs.aiCloudPerFamily + sharedInfraPerFamily + paymentProcessingPerFamily;
+      const steadyStateFsrCostPerFamily = fsrMonthlySalary / effectiveFamiliesPerFsr;
+      const paymentProcessingPerFamily = inputs.monthlyPrice * PAYMENT_PROCESSING_RATE;
+      const variableCostPerFamily = steadyStateFsrCostPerFamily + inputs.aiCloudPerFamily + SHARED_INFRA_PER_FAMILY + paymentProcessingPerFamily;
       const contributionMarginPerFamily = inputs.monthlyPrice - variableCostPerFamily;
       const breakEvenFamilies = contributionMarginPerFamily > 0 ? burnRate / contributionMarginPerFamily : Infinity;
       const ltv = monthlyChurn > 0 ? contributionMarginPerFamily / monthlyChurn : Infinity;
-      const onboardingLaborCost = inputs.onboardingHours * (inputs.fsrSalary / 12 / 160);
+      const onboardingLaborCost = inputs.onboardingHours * (inputs.fsrSalary / 12 / MONTHLY_AVAILABLE_HOURS);
       const estimatedCAC = 600 + onboardingLaborCost;
       const ltvCac = estimatedCAC > 0 ? ltv / estimatedCAC : Infinity;
 
@@ -679,12 +1120,17 @@
         rows,
         assumptions: {
           onboardingCapacityPerFsr,
-          accountFamiliesCapacity,
           ongoingHoursPerFamily,
           steadyStateFsrCostPerFamily,
           paymentProcessingPerFamily,
           estimatedCAC,
           onboardingLaborCost,
+          effectiveFamiliesPerFsr,
+          workloadFamiliesPerFsr: familiesSupportedByWorkload,
+          onboardingHoursPool,
+          steadyStateHoursPool,
+          outreachRate,
+          handleHours,
         },
         summary: {
           burnRate,
@@ -696,7 +1142,6 @@
           peakCapitalRequired,
           ltv,
           ltvCac,
-          monthsToPositiveCash: positiveCashMonth,
           finalFamilies: rows[rows.length - 1].activeFamilies,
           finalCash: rows[rows.length - 1].cumulativeCash,
           maxFsrs: Math.max(...rows.map(r => r.totalFsrs)),
@@ -705,12 +1150,39 @@
       };
     }
 
-    function metricCard(label, value, sub, tone='neutral') {
+    function derivePhases(rows) {
+      const firstRevenueMonth = rows.find(r => r.revenue > 0)?.month ?? 1;
+      const firstPositiveNet = rows.find(r => r.netIncome >= 0)?.month ?? rows.length;
+      const firstStrongNet = rows.find(r => r.netIncome >= 0 && (r.netIncome / Math.max(1, r.revenue)) >= 0.1)?.month ?? rows.length;
+      const buildEnd = Math.max(1, Math.min(rows.length, firstRevenueMonth));
+      const scalingEnd = Math.max(buildEnd, Math.min(rows.length, firstPositiveNet));
+      const approachEnd = Math.max(scalingEnd, Math.min(rows.length, firstStrongNet));
+
+      return [
+        { label: 'Phase 1: Pre-Revenue / Build', start: 1, end: buildEnd, className: 'phase-build' },
+        { label: 'Phase 2: Early Revenue / Scaling', start: buildEnd + 1, end: scalingEnd, className: 'phase-scale' },
+        { label: 'Phase 3: Break-Even Approach', start: scalingEnd + 1, end: approachEnd, className: 'phase-breakeven' },
+        { label: 'Phase 4: Profitable Growth', start: approachEnd + 1, end: rows.length, className: 'phase-profit' },
+      ].filter(phase => phase.start <= phase.end);
+    }
+
+    function metricCard(key, label, value, sub, tone='neutral') {
+      const def = metricDefinitions[key];
+      const isOpen = activeMetricDefinition === key;
       return `
         <div class="card">
-          <div class="metric-label">${label}</div>
+          <div class="metric-top">
+            <div class="metric-label">${label}</div>
+            <button type="button" class="metric-help-btn ${isOpen ? 'active' : ''}" data-metric-help="${key}" aria-label="Explain ${label}">?</button>
+          </div>
           <div class="metric-value ${tone}">${value}</div>
           <div class="metric-sub">${sub}</div>
+          <div class="metric-definition ${isOpen ? 'open' : ''}">
+            <strong>Formula</strong>${def.formula}
+            <strong>What it means</strong>${def.meaning}
+            <strong>What drives it</strong>${def.drivers}
+            <strong>How to interpret it</strong>${def.interpretation}
+          </div>
         </div>
       `;
     }
@@ -722,26 +1194,50 @@
     function renderMetrics(model) {
       const { summary, assumptions } = model;
       const metrics = [
-        metricCard('Monthly burn rate', money0.format(summary.burnRate), 'Core fixed payroll + office + ops before FSR and per-family variable spend.', 'negative'),
-        metricCard('Variable cost / family', money2.format(summary.variableCostPerFamily), 'Includes FSR staffing, AI/cloud, shared infra, and payment processing.', 'neutral'),
-        metricCard('Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
-        metricCard('Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', 'Approximate active family count needed to cover monthly fixed burn.', 'neutral'),
-        metricCard('Months to break-even', summary.breakEvenMonth ? `${summary.breakEvenMonth} mo` : 'Not in 36 mo', 'First month with positive monthly net income in the forecast.', summary.breakEvenMonth ? 'positive' : 'negative'),
-        metricCard('Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the model self-funds.', 'negative'),
-        metricCard('LTV / family', Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', 'Contribution margin divided by monthly churn rate.', summary.ltv > 0 ? 'positive' : 'negative'),
-        metricCard('LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', `Uses planning CAC of ${money0.format(assumptions.estimatedCAC)} including acquisition and onboarding burden.`, summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
+        metricCard('burnRate', 'Monthly burn rate', money0.format(summary.burnRate), 'Core fixed payroll + office + ops before FSR and per-family variable spend.', 'negative'),
+        metricCard('variableCostPerFamily', 'Variable cost / family', money2.format(summary.variableCostPerFamily), 'Includes FSR staffing, AI/cloud, shared infra, and payment processing.', 'neutral'),
+        metricCard('contributionMarginPerFamily', 'Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
+        metricCard('breakEvenFamilies', 'Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', 'Approximate active family count needed to cover monthly fixed burn.', 'neutral'),
+        metricCard('breakEvenMonth', 'Months to break-even', summary.breakEvenMonth ? `${summary.breakEvenMonth} mo` : 'Not in 36 mo', 'First month with positive monthly net income in the forecast.', summary.breakEvenMonth ? 'positive' : 'negative'),
+        metricCard('capitalRequired', 'Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the model self-funds.', 'negative'),
+        metricCard('ltv', 'LTV / family', Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', 'Contribution margin divided by monthly churn rate.', summary.ltv > 0 ? 'positive' : 'negative'),
+        metricCard('ltvCac', 'LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', `Uses planning CAC of ${money0.format(assumptions.estimatedCAC)} including acquisition and onboarding burden.`, summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
       ];
       document.getElementById('metricsGrid').innerHTML = metrics.join('');
 
+      document.querySelectorAll('[data-metric-help]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeMetricDefinition = activeMetricDefinition === btn.dataset.metricHelp ? null : btn.dataset.metricHelp;
+          renderMetrics(model);
+        });
+      });
+
       const helpers = [
-        helperBox('FSR onboarding capacity', `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new families per onboarding FSR per month, assuming 80 hours/month dedicated to onboarding.`),
+        helperBox('FSR onboarding capacity', `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new families per FSR per month using 80 onboarding hours/month.`),
         helperBox('Human time per family / month', `${twoDec.format(assumptions.ongoingHoursPerFamily)} hrs (${twoDec.format(assumptions.ongoingHoursPerFamily * 60)} min) from outreach rate × handle time.`),
-        helperBox('Effective families per FSR', `${intFmt.format(Math.floor(assumptions.accountFamiliesCapacity))} families/FSR after applying both target panel ratio and outreach workload capacity.`),
-        helperBox('Steady-state variable cost stack', `${money2.format(assumptions.steadyStateFsrCostPerFamily)} FSR + ${money2.format(state.aiCloudPerFamily)} AI/cloud + ${money2.format(4)} shared infra + ${money2.format(assumptions.paymentProcessingPerFamily)} payment processing per family/month.`),
+        helperBox('Effective families per FSR', `${intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr))} families/FSR after applying both target panel ratio and workload reality.`),
+        helperBox('Steady-state variable cost stack', `${money2.format(assumptions.steadyStateFsrCostPerFamily)} FSR + ${money2.format(state.aiCloudPerFamily)} AI/cloud + ${money2.format(SHARED_INFRA_PER_FAMILY)} shared infra + ${money2.format(assumptions.paymentProcessingPerFamily)} payment processing per family/month.`),
         helperBox('Onboarding labor cost / family', `${money0.format(assumptions.onboardingLaborCost)} estimated human onboarding labor per new family before acquisition cost.`),
         helperBox('Planning CAC assumption', `${money0.format(assumptions.estimatedCAC)} = ${money0.format(600)} acquisition + ${money0.format(assumptions.onboardingLaborCost)} onboarding labor.`),
       ];
       document.getElementById('helperGrid').innerHTML = helpers.join('');
+
+      renderFsrMath(model);
+      renderPhaseSection(model);
+    }
+
+    function renderFsrMath(model) {
+      const a = model.assumptions;
+      document.getElementById('fsrMathBox').innerHTML = `
+        <h4>FSR Math</h4>
+        <div class="math-row"><span>Monthly available hours</span><strong>${MONTHLY_AVAILABLE_HOURS} hrs</strong></div>
+        <div class="math-row"><span>Onboarding allocation</span><strong>${intFmt.format(a.onboardingHoursPool)} hrs (${intFmt.format(ONBOARDING_ALLOCATION_RATIO * 100)}%)</strong></div>
+        <div class="math-row"><span>Onboarding capacity</span><strong>${intFmt.format(a.onboardingHoursPool)} ÷ ${oneDec.format(state.onboardingHours)} = ${twoDec.format(a.onboardingCapacityPerFsr)} families/FSR/mo</strong></div>
+        <div class="math-row"><span>Steady-state workload</span><strong>${oneDec.format(state.outreachRate)}% × ${intFmt.format(state.handleTimeMinutes)} min = ${twoDec.format(a.ongoingHoursPerFamily)} hrs/family/mo</strong></div>
+        <div class="math-row"><span>Max families per FSR by workload</span><strong>${intFmt.format(a.steadyStateHoursPool)} ÷ ${twoDec.format(a.ongoingHoursPerFamily)} = ${Number.isFinite(a.workloadFamiliesPerFsr) ? intFmt.format(Math.floor(a.workloadFamiliesPerFsr)) : 'N/A'} families</strong></div>
+        <div class="math-row"><span>Effective ratio</span><strong>min(${intFmt.format(state.familiesPerFsr)}, ${Number.isFinite(a.workloadFamiliesPerFsr) ? intFmt.format(Math.floor(a.workloadFamiliesPerFsr)) : '∞'}) = ${intFmt.format(Math.floor(a.effectiveFamiliesPerFsr))}</strong></div>
+        <div class="field-note">This makes the model transparent: longer onboarding reduces onboarding throughput; higher outreach or longer handle times reduce steady-state capacity; both flow into FSR staffing, variable costs, and break-even timing.</div>
+      `;
     }
 
     function destroyChart(name) {
@@ -873,6 +1369,11 @@
               label: 'Ops',
               data: milestoneRows.map(r => r.opsHeadcount),
               backgroundColor: '#f4b740',
+            },
+            {
+              label: 'Org Mgmt',
+              data: milestoneRows.map(() => state.orgManagementHeadcount),
+              backgroundColor: '#6f7ff7',
             }
           ]
         },
@@ -914,6 +1415,80 @@
           }
         }
       });
+    }
+
+    function renderPhaseSection(model) {
+      const rows = model.rows;
+      const phases = derivePhases(rows);
+      const phaseTimeline = document.getElementById('phaseTimeline');
+      phaseTimeline.innerHTML = phases.map(phase => {
+        const width = ((phase.end - phase.start + 1) / rows.length) * 100;
+        return `<div class="phase-segment ${phase.className}" style="width:${width}%"><div>${phase.label}<br><span class="small">Months ${phase.start}-${phase.end}</span></div></div>`;
+      }).join('');
+
+      const firstPositiveNet = rows.find(r => r.netIncome >= 0)?.month;
+      const firstPositiveCash = rows.find(r => r.cumulativeCash >= 0)?.month;
+      document.getElementById('phaseMeta').innerHTML = `
+        <div><span class="pill">Net income positive: ${firstPositiveNet ? `Month ${firstPositiveNet}` : 'not within 36 months'}</span></div>
+        <div><span class="pill">Cumulative cash positive: ${firstPositiveCash ? `Month ${firstPositiveCash}` : 'not within 36 months'}</span></div>
+        <div><span class="pill">36-month active families: ${intFmt.format(rows[rows.length - 1].activeFamilies)}</span></div>
+      `;
+
+      const snapshotMonths = [6, 12, 18, 24, 30, 36];
+      document.getElementById('snapshotGrid').innerHTML = snapshotMonths.map(month => {
+        const row = rows[month - 1];
+        return `
+          <div class="snapshot-card">
+            <h4>Month ${month}</h4>
+            <div class="snapshot-stat"><span>Revenue</span><strong>${money0.format(row.revenue)}</strong></div>
+            <div class="snapshot-stat"><span>Fixed costs</span><strong>${money0.format(row.fixedCosts)}</strong></div>
+            <div class="snapshot-stat"><span>Variable costs</span><strong>${money0.format(row.variableCosts)}</strong></div>
+            <div class="snapshot-stat"><span>Net income</span><strong class="${row.netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(row.netIncome)}</strong></div>
+            <div class="snapshot-stat"><span>Total families</span><strong>${intFmt.format(row.activeFamilies)}</strong></div>
+            <div class="snapshot-stat"><span>Total FSRs</span><strong>${intFmt.format(row.totalFsrs)}</strong></div>
+          </div>
+        `;
+      }).join('');
+
+      renderScaleTable(model);
+    }
+
+    function renderScaleTable(model) {
+      const nearestCurrent = scaleTargets.reduce((best, target) => {
+        return Math.abs(target - model.summary.finalFamilies) < Math.abs(best - model.summary.finalFamilies) ? target : best;
+      }, scaleTargets[0]);
+
+      const body = document.getElementById('scaleTableBody');
+      body.innerHTML = scaleTargets.map(targetFamilies => {
+        const recurringRevenue = targetFamilies * state.monthlyPrice;
+        const accountFsrs = Math.ceil(targetFamilies / model.assumptions.effectiveFamiliesPerFsr);
+        const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(targetFamilies / 2500));
+        const fixedCosts = (
+          state.engineers * (state.engineerSalary / 12) +
+          state.orgManagementHeadcount * (state.orgManagementSalary / 12) +
+          state.officeInfraMonthly +
+          opsHeadcount * (OPS_SALARY / 12)
+        );
+        const fsrCosts = accountFsrs * (state.fsrSalary / 12);
+        const variableCosts = fsrCosts + (targetFamilies * state.aiCloudPerFamily) + (targetFamilies * SHARED_INFRA_PER_FAMILY) + (recurringRevenue * PAYMENT_PROCESSING_RATE);
+        const totalCosts = fixedCosts + variableCosts;
+        const netIncome = recurringRevenue - totalCosts;
+        const totalHeadcount = state.engineers + state.orgManagementHeadcount + opsHeadcount + accountFsrs;
+        const rowClass = targetFamilies === nearestCurrent ? 'scale-row-highlight' : '';
+        const positionText = targetFamilies === nearestCurrent ? 'Closest to current 36-mo scenario' : targetFamilies < model.summary.finalFamilies ? 'Below current scenario' : 'Above current scenario';
+
+        return `
+          <tr class="${rowClass}">
+            <td>${intFmt.format(targetFamilies)} families</td>
+            <td>${money0.format(recurringRevenue)}</td>
+            <td>${intFmt.format(accountFsrs)}</td>
+            <td>${money0.format(totalCosts)}</td>
+            <td class="${netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(netIncome)}</td>
+            <td>${intFmt.format(totalHeadcount)}</td>
+            <td>${positionText}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderTable(model) {
@@ -1002,11 +1577,179 @@
       localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(saved));
       refreshSavedScenarioDropdown();
       document.getElementById('savedScenarioSelect').value = name;
+      activeScenarioKey = null;
+      syncScenarioButtonState();
     }
 
     function loadSavedScenario(name) {
       const saved = getSavedScenarios();
-      if (saved[name]) setInputs(saved[name]);
+      if (saved[name]) {
+        activeScenarioKey = null;
+        syncScenarioButtonState();
+        setInputs(saved[name]);
+      }
+    }
+
+    function syncScenarioButtonState() {
+      document.querySelectorAll('[data-scenario]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scenario === activeScenarioKey);
+      });
+    }
+
+    function buildDefinitionsModal() {
+      const definitionsHtml = `
+        <div class="guide-grid">
+          <div class="doc-card">
+            <h3>Core dashboard metrics</h3>
+            <h4>Monthly burn rate</h4>
+            <p><span class="formula">Fixed payroll + office/infra + base ops</span></p>
+            <p>What it means: the fixed monthly carrying cost before variable family-level delivery costs. This is the hurdle contribution margin must cover.</p>
+            <p>What affects it: engineer count, org management structure, office/infrastructure, and basic operations staffing.</p>
+
+            <h4>Variable cost per family</h4>
+            <p><span class="formula">FSR cost/family + AI/cloud + shared infra + payment processing</span></p>
+            <p>What it means: the direct monthly cost to serve one active family. This is where the services-enabled software thesis either works or breaks.</p>
+            <p>What affects it: FSR salary, effective FSR capacity, AI usage, infra burden, and pricing-dependent payment fees.</p>
+
+            <h4>Contribution margin per family</h4>
+            <p><span class="formula">Monthly price - variable cost per family</span></p>
+            <p>What it means: monthly dollars available from each family to absorb burn and create profit.</p>
+            <p>What affects it: price, FSR efficiency, AI/cloud cost, and payment processing.</p>
+
+            <h4>Break-even families</h4>
+            <p><span class="formula">Burn rate / contribution margin per family</span></p>
+            <p>What it means: approximate active family count needed to cover the monthly fixed cost base.</p>
+            <p>What affects it: both sides of the equation matter — lower burn or higher contribution margin both help.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>Operating and retention metrics</h3>
+            <h4>Months to break-even</h4>
+            <p><span class="formula">First month where net income ≥ 0</span></p>
+            <p>What it means: when monthly operations stop losing money under the current growth path.</p>
+            <p>What affects it: onboarding throughput, growth, churn, pricing, and variable cost discipline.</p>
+
+            <h4>Capital required</h4>
+            <p><span class="formula">Peak negative cumulative cash</span></p>
+            <p>What it means: the maximum funding gap before the model turns self-funding.</p>
+            <p>What affects it: time spent below break-even and how deep monthly losses are early on.</p>
+
+            <h4>LTV / family</h4>
+            <p><span class="formula">Contribution margin per family / monthly churn</span></p>
+            <p>What it means: value of a family relationship before fixed overhead, assuming current churn persists.</p>
+            <p>What affects it: contribution margin and churn. Small churn changes can swing LTV a lot.</p>
+
+            <h4>LTV : CAC</h4>
+            <p><span class="formula">LTV / CAC</span></p>
+            <p>What it means: an efficiency score for acquisition. The model uses a planning CAC that includes onboarding labor.</p>
+            <p>What affects it: retention, pricing, service efficiency, and acquisition cost.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>FSR capacity definitions</h3>
+            <h4>Onboarding capacity</h4>
+            <p><span class="formula">80 onboarding hrs / onboarding hours per family</span></p>
+            <p>What it means: how many new families one FSR can onboard per month if half their hours go to onboarding.</p>
+            <p>Why it matters: this is the first growth bottleneck. If onboarding expands from 3 hours to 6 hours, capacity per FSR is cut in half.</p>
+
+            <h4>Steady-state workload per family</h4>
+            <p><span class="formula">Outreach rate × handle time</span></p>
+            <p>What it means: recurring human time per family per month once a family is active.</p>
+            <p>Why it matters: this drives workload-based FSR capacity and therefore variable labor cost.</p>
+
+            <h4>Effective families per FSR</h4>
+            <p><span class="formula">min(input ratio, workload-derived ratio)</span></p>
+            <p>What it means: the model uses the stricter of what you hope one FSR can manage and what the monthly workload math actually supports.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>Relationships between the metrics</h3>
+            <ul>
+              <li>Higher onboarding hours reduce onboarding capacity per FSR.</li>
+              <li>Lower onboarding capacity means more FSR hiring earlier.</li>
+              <li>More FSRs raise variable costs and increase capital needs.</li>
+              <li>Higher outreach rate or longer handle time lowers steady-state families per FSR.</li>
+              <li>Lower effective FSR capacity increases variable cost per family.</li>
+              <li>Higher variable cost compresses contribution margin.</li>
+              <li>Lower contribution margin pushes break-even families higher and delays positive cash flow.</li>
+            </ul>
+            <p>This is the core operating chain: <strong>human time → FSR capacity → variable cost → contribution margin → break-even</strong>.</p>
+          </div>
+        </div>
+      `;
+
+      const guideHtml = `
+        <div class="guide-grid">
+          <div class="doc-card">
+            <h3>How to use this dashboard</h3>
+            <ol>
+              <li>Pick a starting scenario from the left panel.</li>
+              <li>Adjust staffing, FSR, and revenue assumptions.</li>
+              <li>Watch the top cards for the immediate economics shift.</li>
+              <li>Use the FSR Math box to see why capacity changed.</li>
+              <li>Use the charts to see whether growth outruns burn.</li>
+              <li>Use the phase timeline and snapshots to understand the company shape through time.</li>
+              <li>Use the scale analysis table to ask, “What would this business look like at 10K or 50K families under these assumptions?”</li>
+            </ol>
+            <h4>What the scenarios mean</h4>
+            <p><strong>Optimistic</strong> assumes a strong AI-amplified service model with 1,000 families per FSR, relatively low onboarding time, and strong pricing.</p>
+            <p><strong>Conservative</strong> assumes heavier service intensity and slower operational leverage.</p>
+            <p><strong>Premium Concierge</strong> assumes a high-touch model with higher price but lower FSR capacity.</p>
+            <p><strong>Health Plan Scale</strong> assumes lower price but much faster family growth and more operational throughput pressure.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>Key drivers and sensitivity analysis</h3>
+            <h4>1) Onboarding hours</h4>
+            <p>If onboarding rises from 3 hours to 6 hours, onboarding capacity per FSR drops from about 26.7 families/month to 13.3. That means you need roughly twice as many onboarding FSRs for the same growth pace.</p>
+            <h4>2) Outreach rate and handle time</h4>
+            <p>If outreach rate rises or each human interaction gets longer, steady-state workload per family rises. That lowers workload-derived FSR capacity and pushes variable labor up.</p>
+            <h4>3) Price</h4>
+            <p>Price is the cleanest margin lever, but it only works if value and trust are strong enough to support it.</p>
+            <h4>4) Churn</h4>
+            <p>Churn controls compounding. A seemingly small monthly change can materially move LTV and the funding profile.</p>
+            <h4>5) Org management and engineering load</h4>
+            <p>These are mostly fixed costs early on. They do not scale directly with family count, so they are painful early and much easier to absorb at scale.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>How the metrics relate to each other</h3>
+            <p>The dashboard is built around one core belief from the unit economics memo: <strong>human time per family per month is the most important operating number</strong>.</p>
+            <ul>
+              <li>Onboarding time affects onboarding capacity.</li>
+              <li>Onboarding capacity affects how many FSRs you need to support growth.</li>
+              <li>Steady-state outreach intensity affects how many families an FSR can realistically carry.</li>
+              <li>Both of those determine FSR spend, which drives variable cost per family.</li>
+              <li>Variable cost determines contribution margin.</li>
+              <li>Contribution margin determines break-even scale and capital required.</li>
+            </ul>
+            <p>So when you change onboarding from 3 hours to 6 hours, you are not just editing one field — you are changing staffing needs, variable costs, and how fast the business can reach self-sustaining economics.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>What 10K, 25K, and 50K families mean operationally</h3>
+            <p><strong>10K families:</strong> this is a real scaled operator. FSR specialization, QA, compliance rigor, and management layers become mandatory, not optional.</p>
+            <p><strong>25K families:</strong> the business looks more like a category company. Distribution channels, payer relationships, incident management, and operating systems matter as much as product.</p>
+            <p><strong>50K families:</strong> the model can still look attractive if human time remains compressed, but management overhead, reliability, security, and geographic complexity all rise.</p>
+            <p>The scale analysis table translates those abstract milestones into a monthly P&amp;L and staffing footprint using the exact assumptions currently loaded into the model.</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('tab-definitions').innerHTML = definitionsHtml;
+      document.getElementById('tab-guide').innerHTML = guideHtml;
+    }
+
+    function openDefinitionsModal() {
+      const modal = document.getElementById('definitionsModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeDefinitionsModal() {
+      const modal = document.getElementById('definitionsModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
     }
 
     function updateAll() {
@@ -1019,18 +1762,44 @@
     function init() {
       fieldDefs.forEach(createField);
       refreshSavedScenarioDropdown();
-      updateAll();
+      buildDefinitionsModal();
+      activeScenarioKey = 'conservative';
+      syncScenarioButtonState();
+      setInputs({ ...defaultInputs, ...scenarioPresets.conservative }, { scenarioKey: 'conservative' });
 
       document.querySelectorAll('[data-scenario]').forEach(btn => {
-        btn.addEventListener('click', () => setInputs({ ...defaultInputs, ...scenarioPresets[btn.dataset.scenario] }));
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.scenario;
+          setInputs({ ...defaultInputs, ...scenarioPresets[key] }, { scenarioKey: key });
+        });
       });
 
-      document.getElementById('resetDefaultsBtn').addEventListener('click', () => setInputs(defaultInputs));
+      document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+        activeScenarioKey = null;
+        syncScenarioButtonState();
+        setInputs(defaultInputs);
+      });
       document.getElementById('saveScenarioBtn').addEventListener('click', saveCurrentScenario);
       document.getElementById('savedScenarioSelect').addEventListener('change', e => {
         if (e.target.value) loadSavedScenario(e.target.value);
       });
       document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+      document.getElementById('openDefinitionsBtn').addEventListener('click', openDefinitionsModal);
+      document.getElementById('closeDefinitionsBtn').addEventListener('click', closeDefinitionsModal);
+      document.getElementById('definitionsModal').addEventListener('click', e => {
+        if (e.target.id === 'definitionsModal') closeDefinitionsModal();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeDefinitionsModal();
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(other => other.classList.toggle('active', other === btn));
+          document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
     }
 
     init();
