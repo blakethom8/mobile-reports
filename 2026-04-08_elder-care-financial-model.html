@@ -218,6 +218,200 @@
       box-shadow: inset 0 0 0 1px rgba(41,98,255,0.1);
     }
 
+
+    details.collapsible-group {
+      border: 1px solid #e2eaf5;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fbfdff, #f7faff);
+      overflow: hidden;
+    }
+
+    details.collapsible-group summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--header);
+    }
+
+    details.collapsible-group summary::-webkit-details-marker { display: none; }
+    .summary-meta {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .summary-caret {
+      font-size: 0.9rem;
+      color: var(--muted);
+      transition: transform 0.18s ease;
+    }
+
+    details[open] .summary-caret { transform: rotate(180deg); }
+
+    .phase-editor-body {
+      padding: 0 16px 16px;
+      border-top: 1px solid #e6edf7;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 0 10px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .toggle-check input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+    }
+
+    .phase-cards {
+      display: grid;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .phase-card {
+      border-radius: 14px;
+      border: 1px solid #dfe8f5;
+      background: white;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      overflow: hidden;
+    }
+
+    .phase-card.phase-blue { border-left: 5px solid #2962ff; }
+    .phase-card.phase-amber { border-left: 5px solid #d89b18; }
+    .phase-card.phase-green { border-left: 5px solid #1f9d55; }
+    .phase-segment.phase-blue { background: linear-gradient(135deg, #2962ff, #1d4fd8); }
+    .phase-segment.phase-amber { background: linear-gradient(135deg, #d89b18, #bb820e); }
+    .phase-segment.phase-green { background: linear-gradient(135deg, #1f9d55, #157a41); }
+
+    .phase-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 12px 8px;
+    }
+
+    .phase-card-header input[type="text"] {
+      width: 100%;
+      min-width: 0;
+      font-weight: 700;
+    }
+
+    .phase-badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .phase-blue .phase-badge { background: rgba(41,98,255,0.10); color: #234697; }
+    .phase-amber .phase-badge { background: rgba(216,155,24,0.14); color: #8b5b00; }
+    .phase-green .phase-badge { background: rgba(31,157,85,0.12); color: #15613a; }
+
+    .phase-card-body {
+      padding: 0 12px 12px;
+    }
+
+    .phase-range {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .phase-mini-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .phase-start-row {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid #e5edf9;
+      margin-bottom: 10px;
+    }
+
+    .phase-start-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .phase-start-row .range-number {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .phase-start-static {
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f5f8fc;
+      border: 1px solid #e4ebf6;
+      margin-bottom: 10px;
+    }
+
+    .compact-field {
+      margin-bottom: 0;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #fafcff;
+      border: 1px solid #e8eef7;
+    }
+
+    .compact-field .field-top {
+      margin-bottom: 8px;
+    }
+
+    .range-number {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .disabled-group {
+      opacity: 0.52;
+    }
+
+    .disabled-group .field-note {
+      color: #8b95a8;
+    }
+
+    .phase-note-inline {
+      font-size: 0.76rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.45;
+    }
     .main {
       display: flex;
       flex-direction: column;
@@ -655,6 +849,21 @@
         <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
       </div>
 
+      <details class="control-group collapsible-group" id="phase-editor-group" open>
+        <summary>
+          <span>📅 Company Phases</span>
+          <span class="summary-meta">3-phase staffing + growth plan <span class="summary-caret">▾</span></span>
+        </summary>
+        <div class="phase-editor-body">
+          <div class="toggle-row">
+            <label class="toggle-check"><input type="checkbox" id="phaseScalingEnabled"> Enable phase scaling</label>
+            <span class="summary-meta" id="phaseScalingStatus">Flat staffing inputs active</span>
+          </div>
+          <div class="field-note">When enabled, monthly growth, engineering, org management, org management salary, and office/infra costs follow the phase schedule below.</div>
+          <div class="phase-cards" id="phaseCards"></div>
+        </div>
+      </details>
+
       <div class="control-group" id="demand-group">
         <h3>📊 Demand &amp; Time</h3>
         <div class="field-note" style="margin-bottom:12px">How many families, how much human time each needs, and churn. These demand-side drivers determine how many FSRs you need.</div>
@@ -795,6 +1004,8 @@
     const BASE_OPS_HEADCOUNT = 1;
     const OPS_SALARY = 110000;
     const scaleTargets = [1000, 5000, 10000, 25000, 50000];
+    const phasePalette = ['phase-blue', 'phase-amber', 'phase-green'];
+    const phasedOverrideKeys = ['engineers', 'orgManagementHeadcount', 'orgManagementSalary', 'officeInfraMonthly'];
 
     const fieldDefs = [
       { key: 'engineers', label: 'Number of engineers', group: 'team-costs-group', min: 1, max: 50, step: 1, default: 5, format: 'int' },
@@ -818,6 +1029,17 @@
     ];
 
     const defaultInputs = Object.fromEntries(fieldDefs.map(f => [f.key, f.default]));
+
+    function getDefaultPhases() {
+      return {
+        enabled: false,
+        phases: [
+          { id: 'phase1', name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
+          { id: 'phase2', name: 'Early Growth', startMonth: 13, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
+          { id: 'phase3', name: 'Scale', startMonth: 25, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
+        ]
+      };
+    }
 
     const scenarioPresets = {
       optimistic: {
@@ -854,8 +1076,45 @@
       }
     };
 
+    const scenarioPhasePresets = {
+      optimistic: {
+        enabled: true,
+        phases: [
+          { name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 100 },
+          { name: 'Early Growth', startMonth: 7, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 180 },
+          { name: 'Scale', startMonth: 19, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 260 },
+        ]
+      },
+      conservative: {
+        enabled: true,
+        phases: [
+          { name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
+          { name: 'Early Growth', startMonth: 15, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 125 },
+          { name: 'Scale', startMonth: 27, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 190 },
+        ]
+      },
+      premium: {
+        enabled: true,
+        phases: [
+          { name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 50 },
+          { name: 'Early Growth', startMonth: 13, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 100 },
+          { name: 'Scale', startMonth: 25, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 160 },
+        ]
+      },
+      healthplan: {
+        enabled: true,
+        phases: [
+          { name: 'Health Plan Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 300 },
+          { name: 'Network Expansion', startMonth: 7, engineers: 9, orgManagementHeadcount: 4, orgManagementSalary: 145000, officeInfraMonthly: 30000, newFamiliesPerMonth: 425 },
+          { name: 'Enterprise Scale', startMonth: 15, engineers: 14, orgManagementHeadcount: 7, orgManagementSalary: 155000, officeInfraMonthly: 50000, newFamiliesPerMonth: 575 },
+        ]
+      }
+    };
+
     const state = { ...defaultInputs };
     const controls = {};
+    const phaseControls = { starts: {}, fields: {}, names: {} };
+    let phaseState = getDefaultPhases();
     let monthlyRows = [];
     let charts = {};
     let activeMetricDefinition = null;
@@ -877,99 +1136,146 @@
       },
       variableCostPerFamily: {
         title: 'Variable cost / family',
-        formula: 'FSR cost/family + AI/cloud + shared infra + payment processing',
-        meaning: 'The monthly cost that scales with each active family.',
-        drivers: 'FSR capacity, FSR salary, AI/cloud spend, payment fees, and steady-state workload.',
-        interpretation: 'This must stay far below price for the model to scale attractively.'
+        formula: 'FSR cost/family + AI/cloud + shared infra + payment fees',
+        meaning: 'Estimated monthly delivery cost for one active family before fixed overhead.',
+        drivers: 'FSR salary, realistic FSR capacity, AI/cloud, shared infrastructure, and payment processing.',
+        interpretation: 'Lower variable costs expand contribution margin and improve scale economics.'
       },
       contributionMarginPerFamily: {
         title: 'Contribution margin / family',
         formula: 'Monthly price - variable cost / family',
-        meaning: 'How much monthly contribution each active family provides toward covering fixed costs and profit.',
-        drivers: 'Price, FSR efficiency, AI/cloud cost, and payment processing.',
-        interpretation: 'Higher contribution margin shortens payback and lowers break-even scale.'
+        meaning: 'Monthly dollars each active family contributes toward fixed burn and eventual profit.',
+        drivers: 'Pricing, FSR efficiency, AI/cloud cost, shared infra, and payment processing.',
+        interpretation: 'Higher contribution margin lowers break-even scale and reduces funding needs.'
       },
       breakEvenFamilies: {
         title: 'Break-even families',
-        formula: 'Monthly burn rate / contribution margin per family',
-        meaning: 'Approximate active family count needed to cover monthly fixed burn.',
-        drivers: 'Fixed cost structure and per-family contribution margin.',
-        interpretation: 'If this number is high, the company needs more capital and more time before becoming self-sustaining.'
+        formula: 'Current phase fixed costs / contribution margin per family',
+        meaning: 'Approximate active families needed to cover the fixed monthly cost base for the phase used in the metric.',
+        drivers: 'Phase-specific staffing and office costs, plus contribution margin quality.',
+        interpretation: 'Use this as a directional hurdle rate for the current phase, not a promise of exact month timing.'
       },
       breakEvenMonth: {
         title: 'Months to break-even',
-        formula: 'First forecast month with net income >= 0',
-        meaning: 'When monthly operations turn positive in the modeled ramp.',
-        drivers: 'Growth rate, churn, price, staffing, and variable cost structure.',
-        interpretation: 'Earlier break-even means a cleaner self-financed or lower-capital path.'
+        formula: 'First month where net income ≥ 0',
+        meaning: 'The first month monthly operations turn profitable under the active growth and cost path.',
+        drivers: 'Growth pace, churn, pricing, FSR capacity, and phase-specific fixed costs.',
+        interpretation: 'Earlier break-even means a faster path to self-funding.'
       },
       capitalRequired: {
         title: 'Capital required',
-        formula: 'Peak cumulative cash deficit before self-funding',
-        meaning: 'How much cash the business would need to bridge the modeled burn period.',
-        drivers: 'Time to break-even, burn rate, onboarding speed, and recurring margin.',
-        interpretation: 'This is the funding need implied by the current scenario.'
+        formula: 'Peak negative cumulative cash',
+        meaning: 'Maximum funding gap before the forecast self-funds.',
+        drivers: 'How long losses persist, how deep they are, and where fixed-cost step-ups occur.',
+        interpretation: 'Phase step-ups can materially increase required capital even if the end state looks healthy.'
       },
       ltv: {
         title: 'LTV / family',
-        formula: 'Contribution margin per family / monthly churn',
-        meaning: 'Retention-adjusted value of one family before fixed overhead.',
-        drivers: 'Contribution margin and churn rate.',
-        interpretation: 'Even strong pricing can be undermined quickly if churn rises.'
+        formula: 'Contribution margin / monthly churn',
+        meaning: 'Estimated value of a family relationship before fixed overhead.',
+        drivers: 'Contribution margin and churn.',
+        interpretation: 'Higher LTV gives you more room to invest in growth.'
       },
       ltvCac: {
         title: 'LTV : CAC',
-        formula: 'LTV / planning CAC',
-        meaning: 'A shorthand for how efficiently acquisition spend turns into contribution value.',
-        drivers: 'Contribution margin, churn, and estimated acquisition/onboarding cost.',
-        interpretation: 'Above ~3x is generally attractive; below ~1x is dangerous.'
-      }
+        formula: 'LTV / CAC',
+        meaning: 'Efficiency score for acquisition using the planning CAC assumption.',
+        drivers: 'Retention, pricing, service efficiency, and acquisition burden.',
+        interpretation: 'A higher ratio generally means healthier unit economics.'
+      },
     };
 
-    function formatValue(value, format) {
-      switch (format) {
-        case 'currency0': return money0.format(value);
-        case 'currency2': return money2.format(value);
-        case 'percent': return `${oneDec.format(value)}%`;
-        case 'hours': return `${oneDec.format(value)} hrs`;
-        case 'minutes': return `${intFmt.format(value)} min`;
-        case 'int':
-        default: return intFmt.format(value);
-      }
-    }
-
-    function parseByStep(raw, step) {
-      const val = Number(raw);
-      if (Number.isNaN(val)) return null;
-      return step < 1 ? Number(val.toFixed(2)) : val;
+    function clonePhases(source) {
+      return {
+        enabled: !!source.enabled,
+        phases: (source.phases || []).map((phase, index) => ({
+          id: phase.id || `phase${index + 1}`,
+          name: phase.name,
+          startMonth: phase.startMonth,
+          engineers: phase.engineers,
+          orgManagementHeadcount: phase.orgManagementHeadcount,
+          orgManagementSalary: phase.orgManagementSalary,
+          officeInfraMonthly: phase.officeInfraMonthly,
+          newFamiliesPerMonth: phase.newFamiliesPerMonth,
+        }))
+      };
     }
 
     function clampValue(value, def) {
-      const parsed = parseByStep(value, def.step);
-      if (parsed === null) return def.default;
-      const clamped = Math.min(def.max, Math.max(def.min, parsed));
-      return def.step < 1 ? Number(clamped.toFixed(2)) : clamped;
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return def.default;
+      return Math.min(def.max, Math.max(def.min, numeric));
+    }
+
+    function parseByStep(raw, step) {
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function formatValue(value, format) {
+      if (format === 'currency0') return money0.format(value);
+      if (format === 'currency2') return money2.format(value);
+      if (format === 'percent') return `${oneDec.format(value)}%`;
+      if (format === 'minutes') return `${intFmt.format(value)} min`;
+      if (format === 'hours') return `${oneDec.format(value)} hrs`;
+      return intFmt.format(value);
+    }
+
+    function sanitizePhaseState() {
+      const defaults = getDefaultPhases();
+      const phases = phaseState.phases.map((phase, index) => ({ ...defaults.phases[index], ...phase, id: `phase${index + 1}` }));
+      phases[0].startMonth = 1;
+      phases[1].startMonth = Math.max(2, Math.min(35, Number(phases[1].startMonth) || defaults.phases[1].startMonth));
+      phases[2].startMonth = Math.max(3, Math.min(36, Number(phases[2].startMonth) || defaults.phases[2].startMonth));
+      phases[1].startMonth = Math.min(phases[1].startMonth, phases[2].startMonth - 1);
+      phases[2].startMonth = Math.max(phases[2].startMonth, phases[1].startMonth + 1);
+      phases[2].startMonth = Math.min(phases[2].startMonth, 36);
+      phases[1].startMonth = Math.max(2, Math.min(phases[1].startMonth, 35));
+      phaseState = { enabled: !!phaseState.enabled, phases };
+      return phaseState;
+    }
+
+    function getPhaseRanges() {
+      const phases = sanitizePhaseState().phases;
+      return phases.map((phase, index) => ({
+        ...phase,
+        start: phase.startMonth,
+        end: index < phases.length - 1 ? phases[index + 1].startMonth - 1 : 36,
+        paletteClass: phasePalette[index] || 'phase-blue'
+      }));
+    }
+
+    function getPhaseForMonth(month, customPhaseState = phaseState) {
+      const phases = clonePhases(customPhaseState).phases;
+      phases[0].startMonth = 1;
+      phases[1].startMonth = Math.max(2, Math.min(35, phases[1].startMonth));
+      phases[2].startMonth = Math.max(phases[1].startMonth + 1, Math.min(36, phases[2].startMonth));
+      for (let i = phases.length - 1; i >= 0; i--) {
+        if (month >= phases[i].startMonth) return phases[i];
+      }
+      return phases[0];
     }
 
     function createField(def) {
-      const parent = document.getElementById(def.group);
+      const group = document.getElementById(def.group);
       const wrapper = document.createElement('div');
       wrapper.className = 'field';
+      wrapper.dataset.fieldKey = def.key;
       wrapper.innerHTML = `
         <div class="field-top">
-          <label for="${def.key}-range">${def.label}</label>
+          <label for="range-${def.key}">${def.label}</label>
           <div class="value-wrap">
-            <input id="${def.key}-number" type="number" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
+            <strong id="display-${def.key}">${formatValue(def.default, def.format)}</strong>
+            <input id="input-${def.key}" type="number" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
           </div>
         </div>
-        <input id="${def.key}-range" type="range" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
-        <div class="field-note" id="${def.key}-display">${formatValue(def.default, def.format)}</div>
+        <input id="range-${def.key}" type="range" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
       `;
-      parent.appendChild(wrapper);
+      group.appendChild(wrapper);
 
-      const range = wrapper.querySelector(`#${def.key}-range`);
-      const number = wrapper.querySelector(`#${def.key}-number`);
-      const display = wrapper.querySelector(`#${def.key}-display`);
+      const range = wrapper.querySelector(`#range-${def.key}`);
+      const number = wrapper.querySelector(`#input-${def.key}`);
+      const display = wrapper.querySelector(`#display-${def.key}`);
 
       function syncCommitted(nextVal) {
         const value = clampValue(nextVal, def);
@@ -977,6 +1283,7 @@
         range.value = value;
         number.value = value;
         display.textContent = formatValue(value, def.format);
+        updateDisabledBaseFieldState();
         updateAll();
       }
 
@@ -986,6 +1293,7 @@
         range.value = value;
         number.value = value;
         display.textContent = formatValue(value, def.format);
+        updateDisabledBaseFieldState();
         updateAll();
       }
 
@@ -998,6 +1306,7 @@
         state[def.key] = parsed;
         range.value = Math.min(def.max, Math.max(def.min, parsed));
         display.textContent = formatValue(parsed, def.format);
+        updateDisabledBaseFieldState();
         updateAll();
       });
       number.addEventListener('blur', e => {
@@ -1011,7 +1320,180 @@
         if (e.key === 'Enter') e.target.blur();
       });
 
-      controls[def.key] = { range, number, display, def, sync: syncCommitted };
+      controls[def.key] = { range, number, display, def, sync: syncCommitted, wrapper };
+    }
+
+    function createCompactRangeField({ parent, id, label, value, min, max, step, format, onChange }) {
+      const field = document.createElement('div');
+      field.className = 'compact-field';
+      field.innerHTML = `
+        <div class="field-top">
+          <label for="${id}-range">${label}</label>
+          <strong id="${id}-display">${formatValue(value, format)}</strong>
+        </div>
+        <div class="range-number">
+          <input id="${id}-range" type="range" min="${min}" max="${max}" step="${step}" value="${value}" />
+          <input id="${id}-input" type="number" min="${min}" max="${max}" step="${step}" value="${value}" />
+        </div>
+      `;
+      parent.appendChild(field);
+
+      const range = field.querySelector(`#${id}-range`);
+      const number = field.querySelector(`#${id}-input`);
+      const display = field.querySelector(`#${id}-display`);
+      const def = { min, max, step, default: value, format };
+
+      function sync(next, trigger = true) {
+        const parsed = clampValue(next, def);
+        range.value = parsed;
+        number.value = parsed;
+        display.textContent = formatValue(parsed, format);
+        if (trigger) onChange(parsed);
+      }
+
+      range.addEventListener('input', e => sync(e.target.value, true));
+      number.addEventListener('input', e => {
+        if (e.target.value === '') return;
+        sync(e.target.value, true);
+      });
+      number.addEventListener('blur', e => sync(e.target.value || value, true));
+      number.addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.target.blur();
+      });
+
+      return { field, range, number, display, sync };
+    }
+
+    function buildPhaseEditor() {
+      sanitizePhaseState();
+      const container = document.getElementById('phaseCards');
+      container.innerHTML = '';
+      const ranges = getPhaseRanges();
+      ranges.forEach((phase, index) => {
+        const card = document.createElement('div');
+        card.className = `phase-card ${phase.paletteClass}`;
+        card.innerHTML = `
+          <div class="phase-card-header">
+            <input type="text" id="phase-name-${index}" value="${phase.name.replace(/"/g, '&quot;')}" />
+            <span class="phase-badge">P${index + 1}</span>
+          </div>
+          <div class="phase-card-body">
+            <div class="phase-range" id="phase-range-${index}">Months ${phase.start}-${phase.end}</div>
+            ${index === 0 ? '<div class="phase-start-static">Start month fixed at Month 1.</div>' : `<div class="phase-start-row"><div class="phase-start-label"><span>Start month</span><strong id="phase-start-display-${index}">Month ${phase.start}</strong></div><div class="range-number" id="phase-start-controls-${index}"></div></div>`}
+            <div class="phase-mini-grid" id="phase-fields-${index}"></div>
+          </div>
+        `;
+        container.appendChild(card);
+
+        const nameInput = card.querySelector(`#phase-name-${index}`);
+        nameInput.addEventListener('input', e => {
+          phaseState.phases[index].name = e.target.value || getDefaultPhases().phases[index].name;
+          updateAll();
+        });
+        phaseControls.names[index] = nameInput;
+
+        if (index > 0) {
+          const startHost = card.querySelector(`#phase-start-controls-${index}`);
+          const startControl = createCompactRangeField({
+            parent: startHost,
+            id: `phase-start-${index}`,
+            label: '',
+            value: phase.start,
+            min: index === 1 ? 2 : 3,
+            max: index === 1 ? 35 : 36,
+            step: 1,
+            format: 'int',
+            onChange: next => {
+              phaseState.phases[index].startMonth = Math.round(next);
+              sanitizePhaseState();
+              updatePhaseEditorDisplay();
+              updateAll();
+            }
+          });
+          startControl.field.classList.remove('compact-field');
+          startControl.field.style.padding = '0';
+          startControl.field.style.border = 'none';
+          startControl.field.style.background = 'transparent';
+          startControl.field.querySelector('.field-top')?.remove();
+          phaseControls.starts[index] = startControl;
+        }
+
+        const fieldHost = card.querySelector(`#phase-fields-${index}`);
+        const fieldMap = {};
+        [
+          { key: 'engineers', label: 'Engineers', min: 1, max: 50, step: 1, format: 'int' },
+          { key: 'orgManagementHeadcount', label: 'Org management', min: 1, max: 50, step: 1, format: 'int' },
+          { key: 'orgManagementSalary', label: 'Org mgmt salary', min: 60000, max: 300000, step: 5000, format: 'currency0' },
+          { key: 'officeInfraMonthly', label: 'Office / infra', min: 0, max: 200000, step: 1000, format: 'currency0' },
+          { key: 'newFamiliesPerMonth', label: 'New families / mo', min: 5, max: 1000, step: 5, format: 'int' },
+        ].forEach(def => {
+          fieldMap[def.key] = createCompactRangeField({
+            parent: fieldHost,
+            id: `phase-${index}-${def.key}`,
+            label: def.label,
+            value: phase[def.key],
+            min: def.min,
+            max: def.max,
+            step: def.step,
+            format: def.format,
+            onChange: next => {
+              phaseState.phases[index][def.key] = next;
+              updateAll();
+            }
+          });
+        });
+        phaseControls.fields[index] = fieldMap;
+      });
+
+      const phaseToggle = document.getElementById('phaseScalingEnabled');
+      phaseToggle.checked = phaseState.enabled;
+      phaseToggle.addEventListener('change', e => {
+        phaseState.enabled = e.target.checked;
+        updateDisabledBaseFieldState();
+        updateAll();
+      });
+      updatePhaseEditorDisplay();
+    }
+
+    function updatePhaseEditorDisplay() {
+      const ranges = getPhaseRanges();
+      ranges.forEach((phase, index) => {
+        const rangeEl = document.getElementById(`phase-range-${index}`);
+        if (rangeEl) rangeEl.textContent = `Months ${phase.start}-${phase.end}`;
+        if (phaseControls.names[index] && phaseControls.names[index].value !== phase.name) phaseControls.names[index].value = phase.name;
+        if (index > 0 && phaseControls.starts[index]) {
+          phaseControls.starts[index].sync(phase.start, false);
+          const display = document.getElementById(`phase-start-display-${index}`);
+          if (display) display.textContent = `Month ${phase.start}`;
+        }
+        Object.entries(phaseControls.fields[index] || {}).forEach(([key, control]) => {
+          if (control.number !== document.activeElement && control.range !== document.activeElement) control.sync(phase[key], false);
+        });
+      });
+      const status = document.getElementById('phaseScalingStatus');
+      if (status) status.textContent = phaseState.enabled ? 'Phase-specific staffing active' : 'Flat staffing inputs active';
+      const toggle = document.getElementById('phaseScalingEnabled');
+      if (toggle && toggle.checked !== phaseState.enabled) toggle.checked = phaseState.enabled;
+      updateDisabledBaseFieldState();
+    }
+
+    function updateDisabledBaseFieldState() {
+      const disabled = !!phaseState.enabled;
+      phasedOverrideKeys.forEach(key => {
+        const control = controls[key];
+        if (!control) return;
+        control.wrapper.classList.toggle('disabled-group', disabled);
+        control.range.disabled = disabled;
+        control.number.disabled = disabled;
+        let note = control.wrapper.querySelector('.phase-note-inline');
+        if (disabled && !note) {
+          note = document.createElement('div');
+          note.className = 'phase-note-inline';
+          note.textContent = 'Phase scaling is on — this base input is overridden by the active phase card.';
+          control.wrapper.appendChild(note);
+        }
+        if (!disabled && note) note.remove();
+      });
     }
 
     function setInputs(values, options = {}) {
@@ -1019,6 +1501,11 @@
         const value = values[def.key] ?? state[def.key] ?? def.default;
         controls[def.key].sync(value);
       });
+      if (options.phaseState) {
+        phaseState = clonePhases(options.phaseState);
+        sanitizePhaseState();
+        buildPhaseEditor();
+      }
       if (options.scenarioKey !== undefined) {
         activeScenarioKey = options.scenarioKey;
         syncScenarioButtonState();
@@ -1026,16 +1513,27 @@
     }
 
     function currentInputs() {
-      return Object.fromEntries(fieldDefs.map(def => [def.key, state[def.key]]));
+      return {
+        ...Object.fromEntries(fieldDefs.map(def => [def.key, state[def.key]])),
+        phaseEditor: clonePhases(phaseState),
+      };
+    }
+
+    function normalizeLoadedScenario(values) {
+      const clean = { ...values };
+      const loadedPhaseState = clean.phaseEditor ? clonePhases(clean.phaseEditor) : getDefaultPhases();
+      delete clean.phaseEditor;
+      return { inputs: clean, phaseState: loadedPhaseState };
     }
 
     function calculateModel(inputs) {
       const months = 36;
       const rows = [];
+      const activePhaseState = inputs.phaseEditor ? clonePhases(inputs.phaseEditor) : clonePhases(phaseState);
+      const phaseScalingEnabled = !!activePhaseState.enabled;
 
       const fsrMonthlySalary = inputs.fsrSalary / 12;
       const engineerMonthlySalary = inputs.engineerSalary / 12;
-      const managementMonthlySalary = inputs.orgManagementSalary / 12;
       const opsMonthlySalary = OPS_SALARY / 12;
       const monthlyChurn = inputs.churnRate / 100;
       const outreachRate = inputs.outreachRate / 100;
@@ -1054,9 +1552,11 @@
       let positiveCashMonth = null;
 
       for (let month = 1; month <= months; month++) {
+        const currentPhase = phaseScalingEnabled ? getPhaseForMonth(month, activePhaseState) : { ...activePhaseState.phases[0], name: 'Flat plan', startMonth: 1, engineers: inputs.engineers, orgManagementHeadcount: inputs.orgManagementHeadcount, orgManagementSalary: inputs.orgManagementSalary, officeInfraMonthly: inputs.officeInfraMonthly, newFamiliesPerMonth: inputs.newFamiliesPerMonth };
+        const managementMonthlySalary = currentPhase.orgManagementSalary / 12;
         const startingFamilies = activeFamilies;
         const churnedFamilies = startingFamilies * monthlyChurn;
-        const newFamilies = inputs.newFamiliesPerMonth;
+        const newFamilies = currentPhase.newFamiliesPerMonth;
         activeFamilies = Math.max(0, startingFamilies - churnedFamilies + newFamilies);
 
         const onboardingFsrs = Math.ceil(newFamilies / Math.max(0.0001, onboardingCapacityPerFsr));
@@ -1069,9 +1569,9 @@
 
         const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(activeFamilies / 2500));
         const fixedCosts = (
-          inputs.engineers * engineerMonthlySalary +
-          inputs.orgManagementHeadcount * managementMonthlySalary +
-          inputs.officeInfraMonthly +
+          currentPhase.engineers * engineerMonthlySalary +
+          currentPhase.orgManagementHeadcount * managementMonthlySalary +
+          currentPhase.officeInfraMonthly +
           opsHeadcount * opsMonthlySalary
         );
 
@@ -1092,6 +1592,8 @@
 
         rows.push({
           month,
+          phaseName: currentPhase.name,
+          phaseStartMonth: currentPhase.startMonth,
           newFamilies,
           churnedFamilies,
           activeFamilies,
@@ -1099,6 +1601,10 @@
           accountFsrs,
           totalFsrs,
           opsHeadcount,
+          engineers: currentPhase.engineers,
+          orgManagementHeadcount: currentPhase.orgManagementHeadcount,
+          orgManagementSalary: currentPhase.orgManagementSalary,
+          officeInfraMonthly: currentPhase.officeInfraMonthly,
           revenue: totalRevenue,
           recurringRevenue,
           onboardingRevenue,
@@ -1113,8 +1619,15 @@
         });
       }
 
-      const firstMonth = rows[0];
-      const burnRate = firstMonth.fixedCosts;
+      const currentPhaseMetric = phaseScalingEnabled ? getPhaseForMonth(1, activePhaseState) : { name: 'Flat plan', engineers: inputs.engineers, orgManagementHeadcount: inputs.orgManagementHeadcount, orgManagementSalary: inputs.orgManagementSalary, officeInfraMonthly: inputs.officeInfraMonthly };
+      const currentOpsHeadcount = rows[0]?.opsHeadcount || BASE_OPS_HEADCOUNT;
+      const breakEvenFixedCosts = (
+        currentPhaseMetric.engineers * engineerMonthlySalary +
+        currentPhaseMetric.orgManagementHeadcount * (currentPhaseMetric.orgManagementSalary / 12) +
+        currentPhaseMetric.officeInfraMonthly +
+        currentOpsHeadcount * opsMonthlySalary
+      );
+      const burnRate = breakEvenFixedCosts;
       const steadyStateFsrCostPerFamily = fsrMonthlySalary / effectiveFamiliesPerFsr;
       const paymentProcessingPerFamily = inputs.monthlyPrice * PAYMENT_PROCESSING_RATE;
       const variableCostPerFamily = steadyStateFsrCostPerFamily + inputs.aiCloudPerFamily + SHARED_INFRA_PER_FAMILY + paymentProcessingPerFamily;
@@ -1127,6 +1640,8 @@
 
       return {
         rows,
+        phaseConfig: activePhaseState,
+        phaseRanges: phaseScalingEnabled ? getPhaseRanges() : [{ name: 'Flat plan', start: 1, end: 36, engineers: inputs.engineers, orgManagementHeadcount: inputs.orgManagementHeadcount, orgManagementSalary: inputs.orgManagementSalary, officeInfraMonthly: inputs.officeInfraMonthly, newFamiliesPerMonth: inputs.newFamiliesPerMonth, paletteClass: 'phase-blue' }],
         assumptions: {
           onboardingCapacityPerFsr,
           ongoingHoursPerFamily,
@@ -1155,24 +1670,9 @@
           finalCash: rows[rows.length - 1].cumulativeCash,
           maxFsrs: Math.max(...rows.map(r => r.totalFsrs)),
           maxOps: Math.max(...rows.map(r => r.opsHeadcount)),
+          breakEvenPhaseName: currentPhaseMetric.name,
         }
       };
-    }
-
-    function derivePhases(rows) {
-      const firstRevenueMonth = rows.find(r => r.revenue > 0)?.month ?? 1;
-      const firstPositiveNet = rows.find(r => r.netIncome >= 0)?.month ?? rows.length;
-      const firstStrongNet = rows.find(r => r.netIncome >= 0 && (r.netIncome / Math.max(1, r.revenue)) >= 0.1)?.month ?? rows.length;
-      const buildEnd = Math.max(1, Math.min(rows.length, firstRevenueMonth));
-      const scalingEnd = Math.max(buildEnd, Math.min(rows.length, firstPositiveNet));
-      const approachEnd = Math.max(scalingEnd, Math.min(rows.length, firstStrongNet));
-
-      return [
-        { label: 'Phase 1: Pre-Revenue / Build', start: 1, end: buildEnd, className: 'phase-build' },
-        { label: 'Phase 2: Early Revenue / Scaling', start: buildEnd + 1, end: scalingEnd, className: 'phase-scale' },
-        { label: 'Phase 3: Break-Even Approach', start: scalingEnd + 1, end: approachEnd, className: 'phase-breakeven' },
-        { label: 'Phase 4: Profitable Growth', start: approachEnd + 1, end: rows.length, className: 'phase-profit' },
-      ].filter(phase => phase.start <= phase.end);
     }
 
     function metricCard(key, label, value, sub, tone='neutral') {
@@ -1203,12 +1703,12 @@
     function renderMetrics(model) {
       const { summary, assumptions } = model;
       const metrics = [
-        metricCard('burnRate', 'Monthly burn rate', money0.format(summary.burnRate), 'Core fixed payroll + office + ops before FSR and per-family variable spend.', 'negative'),
+        metricCard('burnRate', 'Monthly burn rate', money0.format(summary.burnRate), `Current break-even fixed cost base using ${summary.breakEvenPhaseName}.`, 'negative'),
         metricCard('variableCostPerFamily', 'Variable cost / family', money2.format(summary.variableCostPerFamily), 'Includes FSR staffing, AI/cloud, shared infra, and payment processing.', 'neutral'),
         metricCard('contributionMarginPerFamily', 'Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
-        metricCard('breakEvenFamilies', 'Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', 'Approximate active family count needed to cover monthly fixed burn.', 'neutral'),
+        metricCard('breakEvenFamilies', 'Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', `Approximate active family count needed to cover fixed burn in ${summary.breakEvenPhaseName}.`, 'neutral'),
         metricCard('breakEvenMonth', 'Months to break-even', summary.breakEvenMonth ? `${summary.breakEvenMonth} mo` : 'Not in 36 mo', 'First month with positive monthly net income in the forecast.', summary.breakEvenMonth ? 'positive' : 'negative'),
-        metricCard('capitalRequired', 'Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the model self-funds.', 'negative'),
+        metricCard('capitalRequired', 'Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the model self-funds, including phase step-ups.', 'negative'),
         metricCard('ltv', 'LTV / family', Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', 'Contribution margin divided by monthly churn rate.', summary.ltv > 0 ? 'positive' : 'negative'),
         metricCard('ltvCac', 'LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', `Uses planning CAC of ${money0.format(assumptions.estimatedCAC)} including acquisition and onboarding burden.`, summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
       ];
@@ -1257,10 +1757,39 @@
       return money0.format(value);
     }
 
+    const phaseBoundaryPlugin = {
+      id: 'phaseBoundaryPlugin',
+      beforeDraw(chart, args, options) {
+        const boundaries = options?.boundaries || [];
+        if (!boundaries.length) return;
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || !scales.x) return;
+        ctx.save();
+        boundaries.forEach((boundary, index) => {
+          const x = scales.x.getPixelForValue(boundary.month - 1);
+          if (Number.isFinite(x)) {
+            ctx.fillStyle = index % 2 === 0 ? 'rgba(41,98,255,0.04)' : 'rgba(216,155,24,0.05)';
+            const nextMonth = boundary.nextMonth || 36;
+            const nextX = scales.x.getPixelForValue(Math.min(35, nextMonth - 1));
+            const width = Math.max(2, nextX - x);
+            ctx.fillRect(x, chartArea.top, width, chartArea.bottom - chartArea.top);
+            ctx.strokeStyle = 'rgba(44,66,110,0.18)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x, chartArea.top);
+            ctx.lineTo(x, chartArea.bottom);
+            ctx.stroke();
+          }
+        });
+        ctx.restore();
+      }
+    };
+
     function buildCharts(model) {
       const rows = model.rows;
       const labels = rows.map(r => `M${r.month}`);
       const cumulativeColors = rows.map(r => r.cumulativeCash >= 0 ? 'rgba(31,157,85,0.18)' : 'rgba(214,69,69,0.16)');
+      const phaseBoundaries = model.phaseRanges.slice(1).map((phase, index) => ({ month: phase.start, nextMonth: model.phaseRanges[index + 2]?.start || 36 }));
 
       destroyChart('cashFlow');
       charts.cashFlow = new Chart(document.getElementById('cashFlowChart'), {
@@ -1309,8 +1838,12 @@
               ticks: { callback: baseCurrencyTicks }
             }
           },
-          plugins: { legend: { position: 'bottom' } }
-        }
+          plugins: {
+            legend: { position: 'bottom' },
+            phaseBoundaryPlugin: { boundaries: phaseBoundaries }
+          }
+        },
+        plugins: [phaseBoundaryPlugin]
       });
 
       destroyChart('familyGrowth');
@@ -1366,7 +1899,7 @@
           datasets: [
             {
               label: 'Engineers',
-              data: milestoneRows.map(() => state.engineers),
+              data: milestoneRows.map(r => r.engineers),
               backgroundColor: '#2962ff',
             },
             {
@@ -1381,7 +1914,7 @@
             },
             {
               label: 'Org Mgmt',
-              data: milestoneRows.map(() => state.orgManagementHeadcount),
+              data: milestoneRows.map(r => r.orgManagementHeadcount),
               backgroundColor: '#6f7ff7',
             }
           ]
@@ -1428,11 +1961,13 @@
 
     function renderPhaseSection(model) {
       const rows = model.rows;
-      const phases = derivePhases(rows);
+      const phases = model.phaseRanges;
       const phaseTimeline = document.getElementById('phaseTimeline');
       phaseTimeline.innerHTML = phases.map(phase => {
         const width = ((phase.end - phase.start + 1) / rows.length) * 100;
-        return `<div class="phase-segment ${phase.className}" style="width:${width}%"><div>${phase.label}<br><span class="small">Months ${phase.start}-${phase.end}</span></div></div>`;
+        const phaseRows = rows.filter(row => row.month >= phase.start && row.month <= phase.end);
+        const monthBurn = phaseRows.length ? phaseRows.reduce((sum, row) => sum + (row.fixedCosts + row.variableCosts - row.revenue), 0) / phaseRows.length : 0;
+        return `<div class="phase-segment ${phase.paletteClass || 'phase-build'}" style="width:${width}%"><div><strong>${phase.name}</strong><br><span class="small">Months ${phase.start}-${phase.end} · Team ${intFmt.format(phase.engineers + phase.orgManagementHeadcount)} + ops/FSR scaling · Burn ${money0.format(monthBurn)}</span></div></div>`;
       }).join('');
 
       const firstPositiveNet = rows.find(r => r.netIncome >= 0)?.month;
@@ -1449,6 +1984,7 @@
         return `
           <div class="snapshot-card">
             <h4>Month ${month}</h4>
+            <div class="snapshot-stat"><span>Phase</span><strong>${row.phaseName}</strong></div>
             <div class="snapshot-stat"><span>Revenue</span><strong>${money0.format(row.revenue)}</strong></div>
             <div class="snapshot-stat"><span>Fixed costs</span><strong>${money0.format(row.fixedCosts)}</strong></div>
             <div class="snapshot-stat"><span>Variable costs</span><strong>${money0.format(row.variableCosts)}</strong></div>
@@ -1469,20 +2005,22 @@
 
       const body = document.getElementById('scaleTableBody');
       body.innerHTML = scaleTargets.map(targetFamilies => {
+        const phaseMonth = Math.max(1, Math.min(36, model.summary.breakEvenMonth || 36));
+        const phase = phaseState.enabled ? getPhaseForMonth(phaseMonth, phaseState) : { name: 'Flat plan', engineers: state.engineers, orgManagementHeadcount: state.orgManagementHeadcount, orgManagementSalary: state.orgManagementSalary, officeInfraMonthly: state.officeInfraMonthly };
         const recurringRevenue = targetFamilies * state.monthlyPrice;
         const accountFsrs = Math.ceil(targetFamilies / model.assumptions.effectiveFamiliesPerFsr);
         const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(targetFamilies / 2500));
         const fixedCosts = (
-          state.engineers * (state.engineerSalary / 12) +
-          state.orgManagementHeadcount * (state.orgManagementSalary / 12) +
-          state.officeInfraMonthly +
+          phase.engineers * (state.engineerSalary / 12) +
+          phase.orgManagementHeadcount * (phase.orgManagementSalary / 12) +
+          phase.officeInfraMonthly +
           opsHeadcount * (OPS_SALARY / 12)
         );
         const fsrCosts = accountFsrs * (state.fsrSalary / 12);
         const variableCosts = fsrCosts + (targetFamilies * state.aiCloudPerFamily) + (targetFamilies * SHARED_INFRA_PER_FAMILY) + (recurringRevenue * PAYMENT_PROCESSING_RATE);
         const totalCosts = fixedCosts + variableCosts;
         const netIncome = recurringRevenue - totalCosts;
-        const totalHeadcount = state.engineers + state.orgManagementHeadcount + opsHeadcount + accountFsrs;
+        const totalHeadcount = phase.engineers + phase.orgManagementHeadcount + opsHeadcount + accountFsrs;
         const rowClass = targetFamilies === nearestCurrent ? 'scale-row-highlight' : '';
         const positionText = targetFamilies === nearestCurrent ? 'Closest to current 36-mo scenario' : targetFamilies < model.summary.finalFamilies ? 'Below current scenario' : 'Above current scenario';
 
@@ -1534,11 +2072,12 @@
     }
 
     function exportCsv() {
-      const headers = ['Month','New Families','Churned Families','Total Active Families','Onboarding FSRs','Account FSRs','Total FSRs','Ops Headcount','Revenue','Recurring Revenue','Onboarding Revenue','Fixed Costs','Variable Costs','Net Income','Cumulative Cash'];
+      const headers = ['Month','Phase','New Families','Churned Families','Total Active Families','Onboarding FSRs','Account FSRs','Total FSRs','Ops Headcount','Revenue','Recurring Revenue','Onboarding Revenue','Fixed Costs','Variable Costs','Net Income','Cumulative Cash'];
       const lines = [headers.join(',')];
       monthlyRows.forEach(r => {
         lines.push([
           r.month,
+          `"${r.phaseName}"`,
           r.newFamilies,
           r.churnedFamilies.toFixed(2),
           r.activeFamilies.toFixed(2),
@@ -1595,7 +2134,8 @@
       if (saved[name]) {
         activeScenarioKey = null;
         syncScenarioButtonState();
-        setInputs(saved[name]);
+        const normalized = normalizeLoadedScenario(saved[name]);
+        setInputs(normalized.inputs, { phaseState: normalized.phaseState });
       }
     }
 
@@ -1774,19 +2314,22 @@
       buildDefinitionsModal();
       activeScenarioKey = 'conservative';
       syncScenarioButtonState();
-      setInputs({ ...defaultInputs, ...scenarioPresets.conservative }, { scenarioKey: 'conservative' });
+      buildPhaseEditor();
+      setInputs({ ...defaultInputs, ...scenarioPresets.conservative }, { scenarioKey: 'conservative', phaseState: scenarioPhasePresets.conservative });
 
       document.querySelectorAll('[data-scenario]').forEach(btn => {
         btn.addEventListener('click', () => {
           const key = btn.dataset.scenario;
-          setInputs({ ...defaultInputs, ...scenarioPresets[key] }, { scenarioKey: key });
+          setInputs({ ...defaultInputs, ...scenarioPresets[key] }, { scenarioKey: key, phaseState: scenarioPhasePresets[key] || getDefaultPhases() });
         });
       });
 
       document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
         activeScenarioKey = null;
         syncScenarioButtonState();
-        setInputs(defaultInputs);
+        phaseState = getDefaultPhases();
+        buildPhaseEditor();
+        setInputs(defaultInputs, { phaseState });
       });
       document.getElementById('saveScenarioBtn').addEventListener('click', saveCurrentScenario);
       document.getElementById('savedScenarioSelect').addEventListener('change', e => {
@@ -1810,7 +2353,6 @@
         });
       });
     }
-
     init();
   </script>
 </body>
