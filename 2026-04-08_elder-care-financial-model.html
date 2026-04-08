@@ -120,34 +120,34 @@
     }
 
     .control-group h3 {
-      margin: 0 0 12px;
-      font-size: 0.95rem;
+      margin: 0 0 8px;
+      font-size: 0.88rem;
       color: var(--header);
     }
 
     .field {
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .field-top {
       display: flex;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: 6px;
+      margin-bottom: 4px;
       align-items: center;
     }
 
     label {
-      font-size: 0.88rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text);
     }
 
     .field-note {
       color: var(--muted);
-      font-size: 0.74rem;
-      margin-top: 4px;
-      line-height: 1.45;
+      font-size: 0.7rem;
+      margin-top: 3px;
+      line-height: 1.4;
     }
 
     .value-wrap {
@@ -162,8 +162,9 @@
     }
 
     input[type="number"], select, input[type="text"] {
-      width: 118px;
-      padding: 8px 10px;
+      width: 100px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
       border: 1px solid #c9d4e5;
       border-radius: 10px;
       font: inherit;
@@ -849,7 +850,7 @@
         <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
       </div>
 
-      <details class="control-group collapsible-group" id="phase-editor-group" open>
+      <details class="control-group collapsible-group" id="phase-editor-group">
         <summary>
           <span>📅 Company Phases</span>
           <span class="summary-meta">3-phase staffing + growth plan <span class="summary-caret">▾</span></span>
@@ -864,26 +865,34 @@
         </div>
       </details>
 
-      <div class="control-group" id="demand-group">
-        <h3>📊 Demand &amp; Time</h3>
-        <div class="field-note" style="margin-bottom:12px">How many families, how much human time each needs, and churn. These demand-side drivers determine how many FSRs you need.</div>
-      </div>
+      <details class="control-group collapsible-group">
+        <summary><span>📊 Demand &amp; Time</span><span class="summary-caret">▾</span></summary>
+        <div style="padding:12px 16px 16px" id="demand-group">
+          <div class="field-note" style="margin-bottom:10px">Growth targets, human time per family, and churn. These demand-side drivers determine how many FSRs you need.</div>
+        </div>
+      </details>
 
-      <div class="control-group" id="revenue-group">
-        <h3>💰 Revenue</h3>
-        <div class="field-note" style="margin-bottom:12px">What you charge per family. Revenue minus variable costs = contribution margin.</div>
-      </div>
+      <details class="control-group collapsible-group">
+        <summary><span>💰 Revenue</span><span class="summary-caret">▾</span></summary>
+        <div style="padding:12px 16px 16px" id="revenue-group">
+          <div class="field-note" style="margin-bottom:10px">What you charge per family.</div>
+        </div>
+      </details>
 
-      <div class="control-group" id="fsr-group">
-        <h3>👥 FSR Capacity</h3>
-        <div class="field-note" style="margin-bottom:12px">FSR compensation and steady-state panel size — your supply-side levers to meet demand.</div>
-        <div class="fsr-math-box" id="fsrMathBox"></div>
-      </div>
+      <details class="control-group collapsible-group">
+        <summary><span>👥 FSR Capacity</span><span class="summary-caret">▾</span></summary>
+        <div style="padding:12px 16px 16px" id="fsr-group">
+          <div class="field-note" style="margin-bottom:10px">FSR compensation and panel size — supply-side levers to meet demand.</div>
+          <div class="fsr-math-box" id="fsrMathBox"></div>
+        </div>
+      </details>
 
-      <div class="control-group" id="team-costs-group">
-        <h3>🏢 Team &amp; Fixed Costs</h3>
-        <div class="field-note" style="margin-bottom:12px">Engineering, org management, infrastructure. These don't scale with family count.</div>
-      </div>
+      <details class="control-group collapsible-group">
+        <summary><span>🏢 Team &amp; Fixed Costs</span><span class="summary-caret">▾</span></summary>
+        <div style="padding:12px 16px 16px" id="team-costs-group">
+          <div class="field-note" style="margin-bottom:10px">Engineering, org management, infrastructure. Fixed burn that doesn't scale with families.</div>
+        </div>
+      </details>
     </aside>
 
     <main class="main">
@@ -1703,7 +1712,15 @@
     function renderMetrics(model) {
       const { summary, assumptions } = model;
       const metrics = [
-        metricCard('burnRate', 'Monthly burn rate', money0.format(summary.burnRate), `Current break-even fixed cost base using ${summary.breakEvenPhaseName}.`, 'negative'),
+        metricCard('fixedByPhase', 'Fixed costs by phase', (() => {
+          const ranges = getPhaseRanges();
+          return ranges.map((p, i) => {
+            const eng = (p.engineers || state.engineers) * (state.engineerSalary / 12);
+            const org = (p.orgManagementHeadcount || state.orgManagementHeadcount) * ((p.orgManagementSalary || state.orgManagementSalary) / 12);
+            const office = p.officeInfraMonthly || state.officeInfraMonthly;
+            return `P${i+1}: ${money0.format(eng + org + office)}`;
+          }).join(' · ');
+        })(), `Monthly fixed burn per phase (excl. variable/FSR costs). ${phaseState.enabled ? 'Phase scaling active.' : 'Flat costs — enable phases for stepped view.'}`, 'negative'),
         metricCard('variableCostPerFamily', 'Variable cost / family', money2.format(summary.variableCostPerFamily), 'Includes FSR staffing, AI/cloud, shared infra, and payment processing.', 'neutral'),
         metricCard('contributionMarginPerFamily', 'Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
         metricCard('breakEvenFamilies', 'Break-even families', Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A', `Approximate active family count needed to cover fixed burn in ${summary.breakEvenPhaseName}.`, 'neutral'),
