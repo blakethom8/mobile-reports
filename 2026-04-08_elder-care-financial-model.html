@@ -1950,7 +1950,7 @@
       { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 0.5, max: 50, step: 0.5, default: 5, format: 'currency2' },
 
       { key: 'newFamiliesPerMonth', label: 'New families / month (flat, no phases)', group: 'demand-group', min: 5, max: 1000, step: 5, default: 100, format: 'int' },
-      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'demand-group', min: 0.5, max: 20, step: 0.5, default: 3, format: 'hours' },
+      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'demand-group', min: 0.5, max: 20, step: 0.5, default: 6, format: 'hours' },
       { key: 'churnRate', label: 'Monthly total churn rate', group: 'demand-group', min: 0.1, max: 8, step: 0.1, default: 2.5, format: 'percent' },
 
       { key: 'monthlyPrice', label: 'Monthly price per family', group: 'revenue-group', min: 29, max: 1500, step: 5, default: 249, format: 'currency0' },
@@ -1967,9 +1967,9 @@
       return {
         enabled: false,
         phases: [
-          { id: 'phase1', name: 'Build & Launch', startMonth: 1, engineers: 3, orgManagementHeadcount: 4, orgManagementSalary: 250000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
-          { id: 'phase2', name: 'Early Growth', startMonth: 13, engineers: 5, orgManagementHeadcount: 7, orgManagementSalary: 250000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
-          { id: 'phase3', name: 'Scale', startMonth: 25, engineers: 8, orgManagementHeadcount: 10, orgManagementSalary: 250000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
+          { id: 'phase1', name: 'Build & Launch', startMonth: 1, engineers: 3, engineerSalary: 250000, orgManagementHeadcount: 4, orgManagementSalary: 250000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
+          { id: 'phase2', name: 'Early Growth', startMonth: 13, engineers: 5, engineerSalary: 250000, orgManagementHeadcount: 7, orgManagementSalary: 250000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
+          { id: 'phase3', name: 'Scale', startMonth: 25, engineers: 8, engineerSalary: 250000, orgManagementHeadcount: 10, orgManagementSalary: 250000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
         ]
       };
     }
@@ -2439,9 +2439,10 @@
         const fieldMap = {};
         [
           { key: 'engineers', label: 'Engineers', min: 1, max: 50, step: 1, format: 'int' },
+          { key: 'engineerSalary', label: 'Eng salary (fully loaded)', min: 100000, max: 500000, step: 5000, format: 'currency0' },
           { key: 'orgManagementHeadcount', label: 'Org management', min: 1, max: 50, step: 1, format: 'int' },
-          { key: 'orgManagementSalary', label: 'Org mgmt salary', min: 60000, max: 300000, step: 5000, format: 'currency0' },
-          { key: 'officeInfraMonthly', label: 'Office / infra', min: 0, max: 200000, step: 1000, format: 'currency0' },
+          { key: 'orgManagementSalary', label: 'Org mgmt salary (fully loaded)', min: 60000, max: 500000, step: 5000, format: 'currency0' },
+          { key: 'officeInfraMonthly', label: 'Office / infra / mo', min: 0, max: 200000, step: 1000, format: 'currency0' },
           { key: 'newFamiliesPerMonth', label: 'New families / mo', min: 5, max: 1000, step: 5, format: 'int' },
         ].forEach(def => {
           fieldMap[def.key] = createCompactRangeField({
@@ -2594,8 +2595,9 @@
         const totalFsrs = Math.max(1, onboardingFsrs + serviceFsrs);
 
         const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(activeFamilies / 2500));
+        const phaseEngineerSalary = (currentPhase.engineerSalary || inputs.engineerSalary) / 12;
         const fixedCosts = (
-          currentPhase.engineers * engineerMonthlySalary +
+          currentPhase.engineers * phaseEngineerSalary +
           currentPhase.orgManagementHeadcount * managementMonthlySalary +
           currentPhase.officeInfraMonthly +
           opsHeadcount * opsMonthlySalary
