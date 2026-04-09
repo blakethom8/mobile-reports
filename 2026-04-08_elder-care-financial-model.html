@@ -1582,16 +1582,18 @@
           <button class="btn-primary" style="width:100%;font-size:0.82rem;padding:8px 14px;" onclick="setActiveView('setup')">&larr; Full Model Setup</button>
         </div>
 
-        <div class="control-group" data-preview-context="scenario" data-views="setup,growth,fsr,steady">
-          <h3>Pre-Built Scenarios</h3>
+        <details class="control-group collapsible-group" data-preview-context="scenario" data-views="setup,growth,fsr,steady">
+          <summary><span>Pre-Built Scenarios</span></summary>
+          <div style="padding:8px 14px 14px">
           <div class="scenario-buttons" id="scenarioButtons">
             <button type="button" data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
             <button type="button" data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
             <button type="button" data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
             <button type="button" data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
           </div>
-          <div class="field-note">Scenario buttons now set a visible active state immediately. Pick one, then fine-tune any individual assumption and save your own scenario locally.</div>
-        </div>
+          <div class="field-note">Pick one to load baseline assumptions, then adjust phases and FSR inputs above.</div>
+          </div>
+        </details>
 
         <details class="control-group collapsible-group" id="phase-editor-group" data-preview-context="phase" data-views="setup">
           <summary>
@@ -1608,9 +1610,10 @@
           </div>
         </details>
 
-        <details class="control-group collapsible-group" data-preview-context="demand" data-views="setup,growth,fsr">
-          <summary><span>Demand &amp; Time</span></summary>
+        <details class="control-group collapsible-group" data-preview-context="demand" data-views="setup,fsr">
+          <summary><span>FSR Demand Inputs</span></summary>
           <div style="padding:12px 16px 16px" id="demand-group">
+          <div class="field-note" style="margin-bottom:10px">Onboarding hours and churn drive FSR headcount calculations. New families/month is set per phase above.</div>
             <div class="field-note" style="margin-bottom:10px">Growth targets, human time per family, and churn. These demand-side drivers determine how many FSRs you need.</div>
           </div>
         </details>
@@ -1946,9 +1949,9 @@
       { key: 'officeInfraMonthly', label: 'Monthly office/infra cost', group: 'team-costs-group', min: 0, max: 200000, step: 1000, default: 10000, format: 'currency0' },
       { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 0.5, max: 50, step: 0.5, default: 5, format: 'currency2' },
 
-      { key: 'newFamiliesPerMonth', label: 'New families per month (growth target)', group: 'demand-group', min: 5, max: 1000, step: 5, default: 100, format: 'int' },
-      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'demand-group', min: 0.5, max: 20, step: 0.5, default: 6, format: 'hours' },
-      { key: 'churnRate', label: 'Monthly total churn rate', group: 'demand-group', min: 0.1, max: 8, step: 0.1, default: 1.5, format: 'percent' },
+      { key: 'newFamiliesPerMonth', label: 'New families / month (flat, no phases)', group: 'demand-group', min: 5, max: 1000, step: 5, default: 100, format: 'int' },
+      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'demand-group', min: 0.5, max: 20, step: 0.5, default: 3, format: 'hours' },
+      { key: 'churnRate', label: 'Monthly total churn rate', group: 'demand-group', min: 0.1, max: 8, step: 0.1, default: 2.5, format: 'percent' },
 
       { key: 'monthlyPrice', label: 'Monthly price per family', group: 'revenue-group', min: 29, max: 1500, step: 5, default: 249, format: 'currency0' },
       { key: 'onboardingFee', label: 'Onboarding fee (one-time)', group: 'revenue-group', min: 0, max: 5000, step: 25, default: 500, format: 'currency0' },
