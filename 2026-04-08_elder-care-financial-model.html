@@ -1791,6 +1791,69 @@
       </div>
 
       <div class="view-panel" id="view-fsr">
+
+        <!-- FSR Demand Calculator -->
+        <div class="section-card" style="margin-bottom:18px;padding:20px 24px">
+          <h3 style="margin:0 0 14px;font-size:1rem">FSR Demand Calculator</h3>
+          <p style="margin:0 0 16px;color:var(--muted);font-size:0.84rem">Adjust the three core drivers to see how FSR headcount, steady-state families, and revenue work out. Onboarding is typically 75-85% of total FSR labor during the growth phase.</p>
+
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px">
+            <div class="field">
+              <div class="field-top"><label for="dc-new-families">New families / month</label></div>
+              <input type="range" id="dc-new-families-range" min="10" max="500" step="5" value="100" style="width:100%;accent-color:var(--accent)">
+              <input type="number" id="dc-new-families" min="10" max="500" step="5" value="100" style="width:80px;margin-top:4px">
+            </div>
+            <div class="field">
+              <div class="field-top"><label for="dc-onboard-hrs">Onboarding hrs / family</label></div>
+              <input type="range" id="dc-onboard-hrs-range" min="1" max="12" step="0.5" value="3" style="width:100%;accent-color:var(--accent)">
+              <input type="number" id="dc-onboard-hrs" min="1" max="12" step="0.5" value="3" style="width:80px;margin-top:4px">
+            </div>
+            <div class="field">
+              <div class="field-top"><label for="dc-churn">Monthly churn (%)</label></div>
+              <input type="range" id="dc-churn-range" min="0.5" max="5" step="0.1" value="2.5" style="width:100%;accent-color:var(--accent)">
+              <input type="number" id="dc-churn" min="0.5" max="5" step="0.1" value="2.5" style="width:80px;margin-top:4px">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:20px" id="dc-outputs">
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--accent)" id="dc-fsrs">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Onboarding FSRs</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--text)" id="dc-steady-families">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Steady-state families</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.3rem;font-weight:700;color:var(--green)" id="dc-steady-rev">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Steady-state MRR</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--amber)" id="dc-onboard-pct">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">% FSR labor = onboarding</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--text)" id="dc-months-ss">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Mo to approach steady state</div>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table style="width:100%;font-size:0.83rem;border-collapse:collapse">
+              <thead>
+                <tr>
+                  <th style="padding:8px 10px;text-align:left;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">New families/mo</th>
+                  <th style="padding:8px 10px;text-align:right;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">Onboarding FSRs</th>
+                  <th style="padding:8px 10px;text-align:right;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">Steady-state families</th>
+                  <th style="padding:8px 10px;text-align:right;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">Steady-state MRR</th>
+                </tr>
+              </thead>
+              <tbody id="dc-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="fsr-details-grid" id="fsrDetailsGrid"></div>
       </div>
 
@@ -4058,6 +4121,62 @@
       syncUrlState();
     }
 
+    // ── FSR Demand Calculator ───────────────────────────────────────────
+    function initDemandCalculator() {
+      const ids = ['dc-new-families', 'dc-onboard-hrs', 'dc-churn'];
+      ids.forEach(id => {
+        const num = document.getElementById(id);
+        const range = document.getElementById(id + '-range');
+        if (!num || !range) return;
+        num.addEventListener('input', () => { range.value = num.value; updateDemandCalc(); });
+        range.addEventListener('input', () => { num.value = range.value; updateDemandCalc(); });
+      });
+      updateDemandCalc();
+    }
+
+    function updateDemandCalc() {
+      const newFam = parseFloat(document.getElementById('dc-new-families')?.value || 100);
+      const onbHrs = parseFloat(document.getElementById('dc-onboard-hrs')?.value || 3);
+      const churnPct = parseFloat(document.getElementById('dc-churn')?.value || 2.5);
+      const price = state.monthlyPrice || 149;
+
+      const fsrs = Math.ceil((newFam * onbHrs) / 160);
+      const steadyFam = Math.round(newFam / (churnPct / 100));
+      const steadyRev = steadyFam * price;
+      const onbHrsTotal = newFam * onbHrs;
+      const panelHrsTotal = steadyFam * 0.053;
+      const onbPct = Math.round(onbHrsTotal / (onbHrsTotal + panelHrsTotal) * 100);
+      const monthsSS = Math.round((1 / (churnPct / 100)) * 3);
+
+      const fmt0 = v => new Intl.NumberFormat('en-US', {maximumFractionDigits:0}).format(v);
+      const fmtCurr = v => new Intl.NumberFormat('en-US', {style:'currency',currency:'USD',maximumFractionDigits:0}).format(v);
+
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      set('dc-fsrs', fsrs);
+      set('dc-steady-families', fmt0(steadyFam));
+      set('dc-steady-rev', fmtCurr(steadyRev));
+      set('dc-onboard-pct', onbPct + '%');
+      set('dc-months-ss', monthsSS);
+
+      // table
+      const tbody = document.getElementById('dc-table-body');
+      if (!tbody) return;
+      const targets = [25, 50, 100, 200, 500];
+      tbody.innerHTML = targets.map(t => {
+        const sf = Math.round(t / (churnPct / 100));
+        const fr = Math.ceil((t * onbHrs) / 160);
+        const sr = sf * price;
+        const highlight = Math.abs(t - newFam) < 30 ? 'background:#f0f5ff' : '';
+        return `<tr style="${highlight}">
+          <td style="padding:8px 10px;border-bottom:1px solid var(--line)">${t === newFam ? '<strong>' + t + '</strong>' : t}</td>
+          <td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)">${fr}</td>
+          <td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)">${fmt0(sf)}</td>
+          <td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)">${fmtCurr(sr)}</td>
+        </tr>`;
+      }).join('');
+    }
+    // ── end FSR Demand Calculator ──────────────────────────────────────
+
     function init() {
       const urlConfig = getUrlConfig();
       syncStickyOffsets();
@@ -4128,6 +4247,7 @@
       });
     }
     init();
+    initDemandCalculator();
   </script>
 </body>
 </html>
