@@ -1964,9 +1964,9 @@
       return {
         enabled: false,
         phases: [
-          { id: 'phase1', name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
-          { id: 'phase2', name: 'Early Growth', startMonth: 13, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
-          { id: 'phase3', name: 'Scale', startMonth: 25, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
+          { id: 'phase1', name: 'Build & Launch', startMonth: 1, engineers: 3, orgManagementHeadcount: 4, orgManagementSalary: 250000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
+          { id: 'phase2', name: 'Early Growth', startMonth: 13, engineers: 5, orgManagementHeadcount: 7, orgManagementSalary: 250000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
+          { id: 'phase3', name: 'Scale', startMonth: 25, engineers: 8, orgManagementHeadcount: 10, orgManagementSalary: 250000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
         ]
       };
     }
@@ -2313,12 +2313,13 @@
       range.addEventListener('input', e => syncFromSlider(e.target.value));
       number.addEventListener('input', e => {
         const raw = e.target.value;
-        if (raw === '') return;
+        if (raw === '' || raw === '-') return; // allow partial input while typing
         const parsed = parseByStep(raw, def.step);
         if (parsed === null) return;
-        state[def.key] = parsed;
-        range.value = Math.min(def.max, Math.max(def.min, parsed));
-        display.textContent = formatValue(parsed, def.format);
+        const clamped = Math.min(def.max, Math.max(def.min, parsed));
+        state[def.key] = clamped;
+        range.value = clamped;
+        display.textContent = formatValue(clamped, def.format);
         updateDisabledBaseFieldState();
         updateAll();
       });
@@ -2797,7 +2798,7 @@
         const row = model.rows[model.rows.length - 1];
         return `<div class="flat-phase-card"><strong>${money0.format(getFixedCostForPhase(flatPhase, inputs, row.opsHeadcount))}/mo</strong> · includes ops at the selected scale</div>`;
       }
-      return buildPhaseMiniColumns(model.phaseSnapshots, item => `${money0.format(item.fixedCosts)} (${intFmt.format(item.row.totalFsrs)} FSR)`);
+      return buildPhaseMiniColumns(model.phaseSnapshots, item => `${money0.format(item.fixedCosts)}/mo`);
     }
 
     function buildBreakEvenByPhaseCard(model) {
@@ -2944,7 +2945,7 @@
     function renderMetrics(model) {
       const { summary, assumptions } = model;
       const metrics = [
-        metricCard('fixedByPhase', 'Fixed costs by phase', buildFixedCostsByPhaseCard(model, state), `Monthly fixed burn per phase including estimated ops load. ${phaseState.enabled ? 'Phase scaling active.' : 'Flat costs — enable phases for stepped view.'}`, 'negative'),
+        metricCard('fixedByPhase', 'Fixed costs by phase', buildFixedCostsByPhaseCard(model, state), `Monthly corporate fixed burn (engineers + org mgmt + office). FSR/variable costs are separate. ${phaseState.enabled ? 'Phase scaling active.' : 'Flat costs — enable phases.'}`, 'negative'),
         metricCard('breakEvenFamilies', 'Break-even families by phase', buildBreakEvenByPhaseCard(model), 'Active families needed to cover the fixed cost base in each phase using current contribution margin.', 'neutral'),
         metricCard('familiesPerFsr', 'Panel size (families / FSR)', intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr)), 'Target families per FSR — the binding panel size used in the operating model.', 'positive'),
         metricCard('contributionMarginPerFamily', 'Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
@@ -3418,6 +3419,7 @@
             y1: {
               position: 'right',
               grid: { drawOnChartArea: false },
+              reverse: false,
               ticks: { callback: baseCurrencyTicks }
             }
           },
@@ -3436,63 +3438,51 @@
           labels,
           datasets: [
             {
-              label: 'Active Families',
+              label: 'Panel Lives',
               data: rows.map(r => r.activeFamilies),
               borderColor: '#2962ff',
-              backgroundColor: 'rgba(41,98,255,0.15)',
+              backgroundColor: 'rgba(41,98,255,0.12)',
               fill: true,
               tension: 0.25,
               borderWidth: 3,
+              yAxisID: 'y',
             },
             {
-              label: 'FSR Family Capacity',
-              data: familyCapacitySeries,
-              borderColor: '#c78a10',
-              backgroundColor: 'rgba(199,138,16,0.10)',
-              tension: 0.15,
-              borderDash: [8, 6],
-              borderWidth: 3,
-              fill: false,
-              pointRadius: 0,
-              pointHoverRadius: 4,
-            },
-            {
-              label: 'New Families',
+              label: 'New Families / Mo',
               data: rows.map(r => r.newFamilies),
               borderColor: '#1f9d55',
               backgroundColor: 'rgba(31,157,85,0.10)',
               tension: 0.2,
               borderDash: [5, 5],
               fill: false,
+              yAxisID: 'y1',
             },
             {
-              label: 'Churned Families',
+              label: 'Churned / Mo',
               data: rows.map(r => r.churnedFamilies),
               borderColor: '#d64545',
               backgroundColor: 'rgba(214,69,69,0.10)',
               tension: 0.2,
-              borderDash: [5, 5],
+              borderDash: [3, 3],
               fill: false,
+              yAxisID: 'y1',
             }
           ]
         },
         options: {
           maintainAspectRatio: false,
           interaction: { mode: 'index', intersect: false },
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                afterBody: items => {
-                  const index = items?.[0]?.dataIndex;
-                  if (index == null) return '';
-                  const headroom = familyCapacitySeries[index] - rows[index].activeFamilies;
-                  return `FSR headroom: ${intFmt.format(Math.max(0, Math.floor(headroom)))} families`;
-                }
-              }
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            y: { beginAtZero: true, ticks: { callback: v => intFmt.format(v) }, title: { display: true, text: 'Panel Lives' } },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              ticks: { callback: v => intFmt.format(v) },
+              title: { display: true, text: 'Families / Month' }
             }
-          },
-          scales: { y: { beginAtZero: true } }
+          }
         }
       });
 
