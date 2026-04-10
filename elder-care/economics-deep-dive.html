@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elder Care Platform — Business Economics Deep Dive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & Base ────────────────────────────────────── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --dark: #172033;
+    --light: #f4f7fb;
+    --accent: #2962ff;
+    --green: #1f9d55;
+    --red: #e53935;
+    --orange: #ef6c00;
+    --text-dark: #1a2332;
+    --text-muted: #5a6a7e;
+    --card-bg: #ffffff;
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --radius: 10px;
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── Slide Shell ─────────────────────────────────────── */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+    padding: 48px 40px;
+    position: relative;
+  }
+
+  .slide-inner {
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .slide.dark { background: var(--dark); color: #ffffff; }
+  .slide.dark .muted { color: rgba(255,255,255,0.55); }
+
+  .slide.light { background: var(--light); color: var(--text-dark); }
+  .slide.light .muted { color: var(--text-muted); }
+
+  /* ── Typography ──────────────────────────────────────── */
+  h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; }
+  h2 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 28px; line-height: 1.2; }
+  h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+  p  { font-size: 0.92rem; }
+
+  .tagline {
+    font-size: 1.2rem;
+    font-weight: 400;
+    opacity: 0.8;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0.6;
+    margin-top: 10px;
+  }
+
+  .accent { color: var(--accent); }
+  .green  { color: var(--green); }
+  .red    { color: var(--red); }
+  strong  { font-weight: 700; }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+
+  /* ── Cards ───────────────────────────────────────────── */
+  .card-row {
+    display: grid;
+    gap: 18px;
+  }
+  .card-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .slide.dark .card {
+    background: rgba(255,255,255,0.07);
+    box-shadow: none;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .card h3 { font-size: 0.95rem; }
+  .card p  { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+  .slide.dark .card p { color: rgba(255,255,255,0.6); }
+
+  /* ── Metric cards ────────────────────────────────────── */
+  .metric {
+    text-align: center;
+    padding: 24px 16px;
+  }
+  .metric .number {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .metric .label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-top: 6px;
+    color: var(--text-muted);
+  }
+  .metric .sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  .slide.dark .metric .label,
+  .slide.dark .metric .sub { color: rgba(255,255,255,0.5); }
+
+  /* ── Tables ──────────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  table th, table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+  table th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  table td { font-variant-numeric: tabular-nums; }
+  table tr.highlight td {
+    background: rgba(41,98,255,0.06);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  table tr.total td {
+    font-weight: 700;
+    border-top: 2px solid rgba(0,0,0,0.15);
+    border-bottom: none;
+  }
+  table tr.total.green-row td { color: var(--green); }
+  .slide.dark table th { color: rgba(255,255,255,0.45); }
+  .slide.dark table td { border-color: rgba(255,255,255,0.08); }
+
+  .table-compact th, .table-compact td { padding: 8px 12px; font-size: 0.82rem; }
+
+  /* ── Callout box ─────────────────────────────────────── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    background: rgba(41,98,255,0.04);
+    border-radius: 0 8px 8px 0;
+    line-height: 1.55;
+  }
+  .callout.green-callout { border-color: var(--green); background: rgba(31,157,85,0.04); }
+  .callout.orange-callout { border-color: var(--orange); background: rgba(239,108,0,0.04); }
+  .slide.dark .callout {
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* ── Two-column layout ───────────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* ── CSS Bar Charts ──────────────────────────────────── */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bar-row .bar-label {
+    width: 140px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: right;
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+  .bar-track {
+    flex: 1;
+    height: 26px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .bar-fill.blue   { background: var(--accent); }
+  .bar-fill.green  { background: var(--green); }
+  .bar-fill.red    { background: var(--red); }
+  .bar-fill.orange { background: var(--orange); }
+  .bar-fill.light-blue { background: #64b5f6; }
+  .bar-fill.gray   { background: #90a4ae; }
+  .bar-value {
+    font-size: 0.78rem;
+    font-weight: 600;
+    width: 60px;
+    flex-shrink: 0;
+    text-align: left;
+  }
+
+  /* ── Horizontal waterfall ────────────────────────────── */
+  .waterfall {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 160px;
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+  .wf-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  }
+  .wf-bar .wf-fill {
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
+    min-height: 20px;
+  }
+  .wf-bar .wf-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 6px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* ── Horizontal stacked bar ──────────────────────────── */
+  .h-stack-bar {
+    display: flex;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .h-stack-bar .segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* ── Timeline ────────────────────────────────────────── */
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: 24px;
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    z-index: 0;
+  }
+  .timeline-phase {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding: 0 12px;
+  }
+  .timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin: 16px auto 16px;
+    box-shadow: 0 0 0 4px rgba(41,98,255,0.25);
+  }
+  .timeline-phase h3 { font-size: 0.95rem; color: #fff; margin-bottom: 4px; }
+  .timeline-phase p { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.45; }
+
+  /* ── Slide navigation sidebar ──────────────────────────── */
+  .slide-nav {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px 12px;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  .slide-nav .nav-section {
+    margin-bottom: 6px;
+  }
+  .slide-nav .nav-section-label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(128,128,128,0.5);
+    padding: 4px 8px 2px;
+    pointer-events: none;
+  }
+  .slide-nav .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+    pointer-events: all;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+  .slide-nav .nav-item:hover {
+    background: rgba(41,98,255,0.08);
+  }
+  .slide-nav .nav-item .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(128,128,128,0.25);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+  .slide-nav .nav-item.active .nav-dot {
+    background: var(--accent);
+    transform: scale(1.5);
+  }
+  .slide-nav .nav-item .nav-label {
+    font-size: 0.65rem;
+    color: rgba(100,100,120,0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+    line-height: 1.3;
+  }
+  .slide-nav .nav-item.active .nav-label {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .slide-nav .nav-item:hover .nav-label {
+    color: var(--text-dark);
+  }
+
+  /* ── Slide number ───────────────────────────────────── */
+  .slide-number {
+    position: absolute;
+    bottom: 20px;
+    left: 28px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    opacity: 0.35;
+    letter-spacing: 0.05em;
+  }
+  .slide.dark .slide-number { color: rgba(255,255,255,0.5); }
+  .slide.light .slide-number { color: var(--text-muted); }
+
+  /* Legacy dots container — hidden, replaced by sidebar */
+  .slide-dots { display: none; }
+
+  /* ── Back button ─────────────────────────────────────── */
+  .back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1001;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+  }
+  .back-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+
+  /* ── Fade-in animation ───────────────────────────────── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Bullet list ─────────────────────────────────────── */
+  ul.detail-list {
+    list-style: none;
+    padding: 0;
+  }
+  ul.detail-list li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  ul.detail-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .numbered-list {
+    counter-reset: item;
+    list-style: none;
+    padding: 0;
+  }
+  .numbered-list li {
+    counter-increment: item;
+    padding: 10px 0 10px 36px;
+    position: relative;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .numbered-list li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Inline formula ──────────────────────────────────── */
+  .formula {
+    font-family: 'Inter', monospace;
+    font-size: 0.82rem;
+    background: rgba(0,0,0,0.04);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .slide.dark .formula {
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ── Margin trend chart ──────────────────────────────── */
+  .trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 120px;
+    margin: 20px 0 8px;
+    padding: 0 10px;
+  }
+  .trend-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  }
+  .trend-col .trend-fill {
+    width: 100%;
+    max-width: 60px;
+    border-radius: 4px 4px 0 0;
+    background: var(--accent);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .trend-col .trend-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .slide { padding: 36px 20px; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.4rem; margin-bottom: 20px; }
+    .card-row.cols-2,
+    .card-row.cols-3,
+    .card-row.cols-4 { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; gap: 20px; }
+    .timeline { grid-template-columns: 1fr; gap: 24px; }
+    .timeline::before { display: none; }
+    .metric .number { font-size: 1.8rem; }
+    .waterfall { height: 120px; }
+    .bar-row .bar-label { width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Back button -->
+<a href="index.html" class="back-btn" title="Back to overview">&larr;</a>
+
+<!-- Slide indicator dots (legacy, hidden) -->
+<nav class="slide-dots" aria-label="Slide navigation"></nav>
+<!-- Section navigation sidebar -->
+<nav class="slide-nav" aria-label="Slide navigation"></nav>
+
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 1 — Title
+     ════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="slide-1">
+  <div class="slide-inner fade-in" style="text-align:center;">
+    <p class="section-label" style="color:rgba(255,255,255,0.4); letter-spacing:0.15em; margin-bottom:16px;">Internal Working Document</p>
+    <h1>Elder Care Platform</h1>
+    <p class="tagline">Business Economics &amp; Unit Economics Deep Dive</p>
+    <p class="subtitle" style="margin-top:32px; opacity:0.4;">April 2026 &mdash; For Internal Use Only</p>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 2 — The Economic Thesis
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-2">
+  <div class="slide-inner fade-in">
+    <h2>The Economic Thesis</h2>
+
+    <div class="callout" style="font-size:0.95rem; margin-bottom:24px;">
+      We believe we can scale <strong>Family Support Representatives</strong> (FSRs) &mdash; human specialists who onboard families, resolve escalations, and steward ongoing care relationships &mdash; to manage large panels of aging adults through AI and technology. The human touch is critical for a strong business and value proposition &mdash; it's our differentiator &mdash; but it requires us to scale thoughtfully as an organization.
+    </div>
+
+    <ul class="detail-list" style="margin-bottom:24px;">
+      <li><strong>Panel management at scale:</strong> Each FSR manages a panel of 400+ families, supported by AI that handles ~95% of routine coordination &mdash; information retrieval, monitoring, alerts, scheduling, and family updates.</li>
+      <li><strong>Human touch as the differentiator:</strong> FSRs build trust through personalized onboarding, handle complex escalations, and conduct quarterly care plan reviews. This human relationship is what families pay for and what competitors can't easily replicate.</li>
+      <li><strong>AI as the economic driver:</strong> Our ability to compress human time per family is what makes the panel model work. Without AI, an FSR handles 30-50 families. With AI, they handle 400+. That's the entire margin story.</li>
+    </ul>
+
+    <h3 style="font-size:1rem; margin-bottom:12px;">The Economics of Panel Management</h3>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px;">
+      At $249/month with ~$43 in variable costs, each family contributes $206/month to cover fixed costs and generate profit. The key metric: <strong>human time per family per month</strong>. If we keep this below 0.10 hours in steady state, the economics are exceptional at any scale.
+    </p>
+
+    <div class="card-row cols-3">
+      <div class="card metric">
+        <div class="number accent">$206</div>
+        <div class="label">Contribution Margin / Family</div>
+      </div>
+      <div class="card metric">
+        <div class="number green">83%</div>
+        <div class="label">Gross Margin</div>
+      </div>
+      <div class="card metric">
+        <div class="number" style="color:var(--dark);">400+</div>
+        <div class="label">Families per FSR (AI-enabled)</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 4 — FSR Two-Lane Model
+     ════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 3b — Fixed vs Variable Cost Structure
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-3b">
+  <div class="slide-inner fade-in">
+    <h2>Fixed Costs vs. Variable Costs</h2>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">FSRs are variable costs — they scale with families. Fixed costs are the corporate team that exists regardless of family count.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+      <!-- Fixed Costs -->
+      <div class="card" style="border-left:4px solid var(--accent);">
+        <h3 style="font-size:1rem; margin-bottom:4px; color:var(--accent);">Fixed Costs <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted);">(don't scale with families)</span></h3>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Engineers $250K · Org mgmt $200K · Ops $110K (1 per 2,500 families)</p>
+        <table class="data-table" style="font-size:0.78rem;">
+          <thead>
+            <tr>
+              <th style="text-align:left; font-weight:600; padding-bottom:4px;">Role</th>
+              <th style="text-align:right; font-weight:600;">Ph 1</th>
+              <th style="text-align:right; font-weight:600;">Ph 2</th>
+              <th style="text-align:right; font-weight:600;">Ph 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Engineers</td><td style="text-align:right;">5</td><td style="text-align:right;">6</td><td style="text-align:right;">8</td></tr>
+            <tr><td>Org management</td><td style="text-align:right;">4</td><td style="text-align:right;">6</td><td style="text-align:right;">8</td></tr>
+            <tr><td>Operations / admin</td><td style="text-align:right;">1</td><td style="text-align:right;">1</td><td style="text-align:right;">2</td></tr>
+            <tr class="total"><td><strong>Total corporate headcount</strong></td><td style="text-align:right;"><strong>10</strong></td><td style="text-align:right;"><strong>13</strong></td><td style="text-align:right;"><strong>18</strong></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px; padding:10px; background:#f0f4ff; border-radius:6px; font-size:0.78rem;">
+          <table style="width:100%; border-collapse:collapse; font-size:0.76rem;">
+            <thead>
+              <tr>
+                <th style="text-align:left; color:var(--text-muted); font-weight:500; padding-bottom:4px;"></th>
+                <th style="text-align:right; color:var(--text-muted); font-weight:500;">Ph 1</th>
+                <th style="text-align:right; color:var(--text-muted); font-weight:500;">Ph 2</th>
+                <th style="text-align:right; color:var(--text-muted); font-weight:500;">Ph 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="color:var(--text-muted);">People payroll / mo</td><td style="text-align:right;">$180K</td><td style="text-align:right;">$234K</td><td style="text-align:right;">$318K</td></tr>
+              <tr><td style="color:var(--text-muted);">Office / infra / mo</td><td style="text-align:right;">$10K</td><td style="text-align:right;">$25K</td><td style="text-align:right;">$40K</td></tr>
+              <tr style="border-top:1px solid var(--line); font-weight:700;">
+                <td>Fixed burn / mo</td><td style="text-align:right;">$190K</td><td style="text-align:right;">$259K</td><td style="text-align:right;">$358K</td>
+              </tr>
+              <tr style="color:var(--text-muted);">
+                <td>Annual</td><td style="text-align:right;">$2.3M</td><td style="text-align:right;">$3.1M</td><td style="text-align:right;">$4.3M</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Variable Costs -->
+      <div class="card" style="border-left:4px solid var(--green);">
+        <h3 style="font-size:1rem; margin-bottom:12px; color:var(--green);">Variable Costs <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted);">(scale with each family)</span></h3>
+        <table class="data-table" style="font-size:0.82rem;">
+          <tr><td>FSR labor allocation</td><td style="text-align:right;">$26.04/family</td></tr>
+          <tr><td>AI / cloud</td><td style="text-align:right;">$5.00/family</td></tr>
+          <tr><td>Shared infrastructure</td><td style="text-align:right;">$4.00/family</td></tr>
+          <tr><td>Payment processing</td><td style="text-align:right;">$7.47/family</td></tr>
+          <tr class="total"><td><strong>Total per family</strong></td><td style="text-align:right;"><strong>$42.51/mo</strong></td></tr>
+        </table>
+        <div style="margin-top:12px; padding:10px; background:#f0fff4; border-radius:6px; font-size:0.78rem;">
+          <strong>FSRs are variable, not fixed.</strong> Each FSR manages 400 families generating $99,600/month in revenue. The FSR costs $10,417/month. <span style="color:var(--green); font-weight:600;">That's a 9.6x return on each FSR hire.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Break-even families to cover fixed costs -->
+    <div class="card" style="padding:16px;">
+      <h3 style="font-size:0.95rem; margin-bottom:12px;">How Many Families Cover Fixed Costs?</h3>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Each family contributes $206/month after variable costs. The break-even point is: Fixed Costs / $206 contribution margin.</p>
+      <div style="display:flex; gap:16px;">
+        <div style="flex:1; padding:12px; background:var(--light); border-radius:6px; text-align:center;">
+          <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Phase 1</div>
+          <div style="font-size:1.4rem; font-weight:800; color:var(--accent);">920</div>
+          <div style="font-size:0.72rem; color:var(--text-muted);">families to break even</div>
+          <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">($190K fixed / $206 margin)</div>
+        </div>
+        <div style="flex:1; padding:12px; background:var(--light); border-radius:6px; text-align:center;">
+          <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Phase 2</div>
+          <div style="font-size:1.4rem; font-weight:800; color:var(--green);">1,255</div>
+          <div style="font-size:0.72rem; color:var(--text-muted);">families to break even</div>
+          <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">($259K fixed / $206 margin)</div>
+        </div>
+        <div style="flex:1; padding:12px; background:var(--light); border-radius:6px; text-align:center;">
+          <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Phase 3</div>
+          <div style="font-size:1.4rem; font-weight:800; color:var(--orange);">1,735</div>
+          <div style="font-size:0.72rem; color:var(--text-muted);">families to break even</div>
+          <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">($358K fixed / $206 margin)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 4 — FSR Capacity & Demand Drivers
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-4">
+  <div class="slide-inner fade-in">
+    <h2>FSR Capacity &amp; Demand Drivers</h2>
+
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">An FSR does both jobs &mdash; onboarding new families and managing their ongoing panel. We calculate capacity for each demand type separately so we can see which workload is actually driving headcount at any point in the ramp.</p>
+
+    <div class="two-col" style="margin-bottom:24px;">
+      <div class="card">
+        <h3 class="accent">Onboarding Demand</h3>
+        <p style="margin-bottom:8px;">Driven by <strong>new families per month</strong>.</p>
+        <p>160 hrs/month total &middot; 50% allocated to onboarding = <strong>80 hrs/FSR/mo</strong><br>
+        At 6 hrs/family &rarr; <strong>~13 new families per FSR per month</strong></p>
+        <div class="callout" style="margin:12px 0 0; padding:10px 14px; font-size:0.82rem;">
+          <span class="formula">Onboarding FSRs needed = new families / month &divide; onboarding capacity per FSR</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="green">Panel Demand</h3>
+        <p style="margin-bottom:8px;">Driven by <strong>total active families</strong> and outreach intensity.</p>
+        <p>80 hrs/FSR/mo for panel &middot; at 8% outreach &times; 40 min/touch = <strong>~0.053 hrs/family/mo</strong><br>
+        &rarr; workload supports <strong>~1,500 paneled families per FSR</strong></p>
+        <div class="callout green-callout" style="margin:12px 0 0; padding:10px 14px; font-size:0.82rem;">
+          <span class="formula">Panel FSRs needed = active families &divide; binding panel size per FSR</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:0.88rem; margin-bottom:6px; font-weight:600;">Required FSR pool = whichever demand is binding</p>
+    <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:16px;">Under a cross-trained model, we size the pool to the larger of the two demands rather than adding them. During growth phases, <strong>onboarding throughput is typically the binding constraint</strong>. As the installed base grows, panel demand can overtake it &mdash; and that crossover is where AI tooling (reducing panel demand hours per family) creates the most leverage.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>New / Month</th>
+          <th>Onboarding FSRs needed</th>
+          <th>Active Families (M12)</th>
+          <th>Panel FSRs needed</th>
+          <th>Required FSR pool</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>75</td><td>3</td><td>~800</td><td>2</td><td><strong>5</strong></td></tr>
+        <tr><td>150</td><td>6</td><td>~2,250</td><td>6</td><td><strong>12</strong></td></tr>
+        <tr class="highlight"><td>250</td><td>10</td><td>~4,450</td><td>11</td><td><strong>21</strong></td></tr>
+        <tr><td>500</td><td>19</td><td>~9,500</td><td>24</td><td><strong>43</strong></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.78rem; color:var(--text-muted); margin-top:8px;">250 new/month (highlighted) is our Phase 3 target. Active family count assumes 2% monthly churn and ramp-up. Panel FSRs needed calculated at 8% outreach &times; 40 min handle time.</p>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 16 — 3-Year Roadmap (dark)
+     ════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="slide-16">
+  <div class="slide-inner fade-in" style="text-align:center;">
+    <p class="section-label" style="color:rgba(255,255,255,0.35);">Execution Plan</p>
+    <h2 style="margin-bottom:12px;">What We're Building</h2>
+    <p style="font-size:0.9rem; color:rgba(255,255,255,0.55); margin-bottom:32px; max-width:700px; margin-left:auto; margin-right:auto;">
+      By Year 3, we have a choice: stay lean and profitable, or accelerate with health plan partners toward 10K+ families.
+    </p>
+
+    <div class="timeline">
+      <div class="timeline-phase">
+        <div class="timeline-dot"></div>
+        <h3>Year 1</h3>
+        <p style="text-align:left;">
+          <strong style="color:#fff;">Product-market fit.</strong><br>
+          ~800 families. Prove onboarding. Validate churn.<br><br>
+          <span style="color:var(--accent); font-weight:600;">15 people</span><br>
+          <span style="font-size:0.78rem;">5 eng, 4 mgmt, 5 FSRs, 1 ops</span>
+        </p>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.12); text-align:left;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.45);">Annualized Revenue</span><span style="color:#fff; font-weight:600;">$2.7M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:1px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Recurring</span><span style="color:rgba(255,255,255,0.6);">$2.2M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Onboarding fees</span><span style="color:rgba(255,255,255,0.6);">$450K</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.45);">Annualized Costs</span><span style="color:#fff; font-weight:600;">$3.1M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:1px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Fixed</span><span style="color:rgba(255,255,255,0.6);">$2.3M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Variable</span><span style="color:rgba(255,255,255,0.6);">$814K</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem;"><span style="color:var(--red);">Net Income</span><span style="color:var(--red); font-weight:700;">($413K)</span></div>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-dot" style="background:var(--green); box-shadow:0 0 0 4px rgba(31,157,85,0.25);"></div>
+        <h3>Year 2</h3>
+        <p style="text-align:left;">
+          <strong style="color:#fff;">Hit profitability.</strong><br>
+          ~2,250 families. Refine operations. Prove unit economics.<br><br>
+          <span style="color:var(--green); font-weight:600;">25 people</span><br>
+          <span style="font-size:0.78rem;">6 eng, 6 mgmt, 12 FSRs, 1 ops</span>
+        </p>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.12); text-align:left;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.45);">Annualized Revenue</span><span style="color:#fff; font-weight:600;">$7.3M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:1px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Recurring</span><span style="color:rgba(255,255,255,0.6);">$6.4M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Onboarding fees</span><span style="color:rgba(255,255,255,0.6);">$900K</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.45);">Annualized Costs</span><span style="color:#fff; font-weight:600;">$5.0M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:1px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Fixed</span><span style="color:rgba(255,255,255,0.6);">$3.1M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Variable</span><span style="color:rgba(255,255,255,0.6);">$1.9M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem;"><span style="color:var(--green);">Net Income</span><span style="color:var(--green); font-weight:700;">$2.3M</span></div>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-dot" style="background:var(--orange); box-shadow:0 0 0 4px rgba(239,108,0,0.25);"></div>
+        <h3>Year 3</h3>
+        <p style="text-align:left;">
+          <strong style="color:#fff;">Scale &amp; cash generation.</strong><br>
+          ~4,455 families. Ready for partnerships.<br><br>
+          <span style="color:var(--orange); font-weight:600;">40 people</span><br>
+          <span style="font-size:0.78rem;">8 eng, 8 mgmt, 22 FSRs, 1 ops</span>
+        </p>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.12); text-align:left;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.45);">Annualized Revenue</span><span style="color:#fff; font-weight:600;">$14.3M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:1px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Recurring</span><span style="color:rgba(255,255,255,0.6);">$12.8M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Onboarding fees</span><span style="color:rgba(255,255,255,0.6);">$1.5M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.45);">Annualized Costs</span><span style="color:#fff; font-weight:600;">$7.8M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:1px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Fixed</span><span style="color:rgba(255,255,255,0.6);">$4.3M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:3px;"><span style="color:rgba(255,255,255,0.35);">&nbsp;&nbsp;Variable</span><span style="color:rgba(255,255,255,0.6);">$3.5M</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem;"><span style="color:var(--green);">Net Income</span><span style="color:var(--green); font-weight:700;">$6.5M</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 15 — Capital Requirements
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-15">
+  <div class="slide-inner fade-in">
+    <h2>Funding the First Three Years</h2>
+
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Cumulative cash position by month. Peak capital need: $1.25M. Self-funded path is viable with disciplined hiring.</p>
+
+    <!-- Cash flow bar chart -->
+    <p style="font-size:0.78rem; font-weight:600; margin-bottom:8px; color:var(--text-muted);">CUMULATIVE CASH POSITION ($K)</p>
+    <div style="display:flex; align-items:flex-end; gap:8px; height:200px; padding:0 10px; border-bottom:2px solid rgba(0,0,0,0.1); position:relative;">
+      <!-- Zero line -->
+      <div style="position:absolute; left:0; right:0; bottom:100px; border-top:1px dashed rgba(0,0,0,0.15); z-index:0;"></div>
+      <div style="position:absolute; left:-4px; bottom:95px; font-size:0.65rem; color:var(--text-muted);">$0</div>
+
+      <!-- Bars (anchored from the zero line at bottom:100px) -->
+      <!-- M6: -750K -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative;">
+        <div style="position:absolute; bottom:100px; transform:translateY(0); width:80%; max-width:60px;">
+          <div style="height:56px; background:var(--red); border-radius:0 0 4px 4px; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; color:#fff;">-$750K</div>
+        </div>
+        <div style="position:absolute; bottom:4px; font-size:0.7rem; font-weight:500; color:var(--text-muted);">M6</div>
+      </div>
+      <!-- M12: -1,150K -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative;">
+        <div style="position:absolute; bottom:100px; transform:translateY(0); width:80%; max-width:60px;">
+          <div style="height:86px; background:var(--red); border-radius:0 0 4px 4px; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; color:#fff;">-$1.15M</div>
+        </div>
+        <div style="position:absolute; bottom:4px; font-size:0.7rem; font-weight:500; color:var(--text-muted);">M12</div>
+      </div>
+      <!-- M18: -1,140K (trough) -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative;">
+        <div style="position:absolute; bottom:100px; transform:translateY(0); width:80%; max-width:60px;">
+          <div style="height:85px; background:var(--orange); border-radius:0 0 4px 4px; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; color:#fff;">-$1.14M</div>
+        </div>
+        <div style="position:absolute; bottom:4px; font-size:0.7rem; font-weight:500; color:var(--text-muted);">M18</div>
+      </div>
+      <!-- M24: -170K -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative;">
+        <div style="position:absolute; bottom:100px; transform:translateY(0); width:80%; max-width:60px;">
+          <div style="height:13px; background:var(--orange); border-radius:0 0 4px 4px; display:flex; align-items:center; justify-content:center; font-size:0.62rem; font-weight:700; color:#fff;">-$170K</div>
+        </div>
+        <div style="position:absolute; bottom:4px; font-size:0.7rem; font-weight:500; color:var(--text-muted);">M24</div>
+      </div>
+      <!-- M30: +1,700K -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative;">
+        <div style="position:absolute; bottom:100px; width:80%; max-width:60px;">
+          <div style="height:60px; background:var(--green); border-radius:4px 4px 0 0; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; color:#fff; transform:translateY(-60px);">+$1.7M</div>
+        </div>
+        <div style="position:absolute; bottom:4px; font-size:0.7rem; font-weight:500; color:var(--text-muted);">M30</div>
+      </div>
+      <!-- M36: +4,350K -->
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative;">
+        <div style="position:absolute; bottom:100px; width:80%; max-width:60px;">
+          <div style="height:96px; background:var(--green); border-radius:4px 4px 0 0; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; color:#fff; transform:translateY(-96px);">+$4.35M</div>
+        </div>
+        <div style="position:absolute; bottom:4px; font-size:0.7rem; font-weight:500; color:var(--text-muted);">M36</div>
+      </div>
+    </div>
+
+    <div class="card-row cols-3" style="margin-top:28px;">
+      <div class="card metric">
+        <div class="number red" style="font-size:1.6rem;">$1.25M</div>
+        <div class="label">Peak Capital Need</div>
+        <div class="sub">Around month 12-18</div>
+      </div>
+      <div class="card metric">
+        <div class="number accent" style="font-size:1.6rem;">M16</div>
+        <div class="label">Monthly Break-even</div>
+        <div class="sub">Operating cash flow positive</div>
+      </div>
+      <div class="card metric">
+        <div class="number green" style="font-size:1.6rem;">~M24</div>
+        <div class="label">Cumulative Cash-Positive</div>
+        <div class="sub">Total investment recovered</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      Self-funded path is viable with disciplined hiring. If we raise, it's for acceleration (faster hiring, marketing spend) rather than survival. The business generates cash well before we run out.
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 14 — Sensitivity Levers
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-14">
+  <div class="slide-inner fade-in">
+    <h2>What Moves the Needle Most</h2>
+
+    <div class="card-row cols-2" style="margin-bottom:18px;">
+      <div class="card">
+        <h3><span class="accent">1</span> &nbsp;Price Sensitivity</h3>
+        <table class="table-compact">
+          <thead><tr><th>Price</th><th style="text-align:right;">Contrib. Margin</th><th style="text-align:right;">Break-even Families</th></tr></thead>
+          <tbody>
+            <tr><td>$199/mo</td><td style="text-align:right;">$156.49 (79%)</td><td style="text-align:right;">973</td></tr>
+            <tr class="highlight"><td>$249/mo</td><td style="text-align:right;">$206.49 (83%)</td><td style="text-align:right;">730</td></tr>
+            <tr><td>$299/mo</td><td style="text-align:right;">$256.49 (86%)</td><td style="text-align:right;">590</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">$50 price change = ~$500K annual impact at 1,000 families</p>
+      </div>
+      <div class="card">
+        <h3><span class="accent">2</span> &nbsp;Onboarding Hours</h3>
+        <table class="table-compact">
+          <thead><tr><th>Hours</th><th style="text-align:right;">Onb. FSRs @ 250/mo</th><th style="text-align:right;">Annual Cost Delta</th></tr></thead>
+          <tbody>
+            <tr><td>3 hrs</td><td style="text-align:right;">5 FSRs</td><td style="text-align:right; color:var(--green);">-$625K</td></tr>
+            <tr class="highlight"><td>6 hrs (baseline)</td><td style="text-align:right;">10 FSRs</td><td style="text-align:right;">&mdash;</td></tr>
+            <tr><td>8 hrs</td><td style="text-align:right;">13 FSRs</td><td style="text-align:right; color:var(--red);">+$375K</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">Highest ROI lever. Directly determines onboarding team size.</p>
+      </div>
+    </div>
+
+    <div class="card-row cols-2">
+      <div class="card">
+        <h3><span class="accent">3</span> &nbsp;Panel Size (Service FSRs)</h3>
+        <table class="table-compact">
+          <thead><tr><th>Panel</th><th style="text-align:right;">FSR Alloc. / Family</th><th style="text-align:right;">Contrib. Margin</th></tr></thead>
+          <tbody>
+            <tr><td>300 families</td><td style="text-align:right;">$34.72</td><td style="text-align:right;">$197.81 (79%)</td></tr>
+            <tr class="highlight"><td>400 families</td><td style="text-align:right;">$26.04</td><td style="text-align:right;">$206.49 (83%)</td></tr>
+            <tr><td>600 families</td><td style="text-align:right;">$17.36</td><td style="text-align:right;">$215.17 (86%)</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">AI improvements directly expand panel capacity over time.</p>
+      </div>
+      <div class="card">
+        <h3><span class="accent">4</span> &nbsp;Churn Rate Impact</h3>
+        <table class="table-compact">
+          <thead><tr><th>Monthly Churn</th><th style="text-align:right;">LTV</th><th style="text-align:right;">Yr 3 Active</th></tr></thead>
+          <tbody>
+            <tr><td>1.5%</td><td style="text-align:right;">$13,766</td><td style="text-align:right;">~5,100</td></tr>
+            <tr class="highlight"><td>2.0% (baseline)</td><td style="text-align:right;">$10,324</td><td style="text-align:right;">~4,455</td></tr>
+            <tr><td>2.5%</td><td style="text-align:right;">$8,260</td><td style="text-align:right;">~3,940</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">0.5% churn change = ~$2K LTV swing and ~500 family difference at Year 3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 17 — Open Questions
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-17">
+  <div class="slide-inner fade-in">
+    <h2>What We Still Need to Validate</h2>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:24px;">These are the assumptions the model is most sensitive to. Each one has a concrete test and a timeline for getting an answer.</p>
+
+    <ol class="numbered-list">
+      <li>
+        <strong>Onboarding timelines and panel management demands</strong><br>
+        <span style="color:var(--text-muted);">How long does it really take to onboard a family? 6 hours is our planning assumption, but AI-guided onboarding (Clicky concept) could cut this to 3. And what does ongoing panel management actually demand? These two numbers drive FSR headcount more than anything else.</span>
+      </li>
+      <li>
+        <strong>What's the real panel capacity?</strong><br>
+        <span style="color:var(--text-muted);">We think it's closer to 1,000 families per FSR at maturity, not 400. If AI handles 95%+ of routine work, 400 may be far too conservative. We model at 400 to be safe, but the economics improve dramatically at higher capacity. Answerable once we have 1,000+ families and can measure time-per-family empirically.</span>
+      </li>
+      <li>
+        <strong>Price point and pricing structure</strong><br>
+        <span style="color:var(--text-muted);">Is $249/month the right price? Should we tier it ($79 AI-only / $149 shared FSR / $299 dedicated)? $149 still works (contribution margin: $106, 71%) but requires ~2x the families. Price sensitivity testing is a Year 1 priority.</span>
+      </li>
+      <li>
+        <strong>What's actual voluntary churn once we have real families?</strong><br>
+        <span style="color:var(--text-muted);">If voluntary churn is near zero, total churn drops to ~1.67% and LTV jumps to $12,389. Need 12+ months of data to measure this reliably.</span>
+      </li>
+      <li>
+        <strong>Are there future health plan or strategic partnerships to explore?</strong><br>
+        <span style="color:var(--text-muted);">Health plans, Medicare Advantage programs, employer caregiver benefits, and hospital discharge coordination are all potential channels to capture new demand beyond organic growth. These are Year 3+ explorations once we've proven the model.</span>
+      </li>
+      <li>
+        <strong>Can we operate with a leaner org management team?</strong><br>
+        <span style="color:var(--text-muted);">4 managers at $200K is $800K/year in Phase 1. If AI tools reduce management overhead, we might run with 2-3 initially. This is a real question about org design.</span>
+      </li>
+    </ol>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 8 — Three Business Structures (dark divider)
+     ════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="slide-8">
+  <div class="slide-inner fade-in" style="text-align:center;">
+    <p class="section-label" style="color:rgba(255,255,255,0.35);">Section II</p>
+    <h2 style="margin-bottom:16px;">Three Scales, Three Different Businesses</h2>
+    <p class="tagline" style="margin-bottom:40px; max-width:700px; margin-left:auto; margin-right:auto;">Each scale is a viable business. The question is which one we're building toward.</p>
+
+    <div class="card-row cols-3">
+      <div class="card" style="text-align:left;">
+        <h3 style="color:var(--accent);">Organic</h3>
+        <div class="metric" style="padding:12px 0;">
+          <div class="number" style="font-size:1.6rem;">4,500</div>
+          <div class="label" style="color:rgba(255,255,255,0.5);">families</div>
+        </div>
+        <p>A profitable, founder-controlled company. ~40 people. $13M ARR. Strong cash generation by Year 3.</p>
+      </div>
+      <div class="card" style="text-align:left;">
+        <h3 style="color:var(--green);">Mid-Scale</h3>
+        <div class="metric" style="padding:12px 0;">
+          <div class="number" style="font-size:1.6rem;">10,000</div>
+          <div class="label" style="color:rgba(255,255,255,0.5);">families</div>
+        </div>
+        <p>A market leader with health plan partnerships. ~48 people. $30M ARR. Regional expansion.</p>
+      </div>
+      <div class="card" style="text-align:left;">
+        <h3 style="color:var(--orange);">Enterprise</h3>
+        <div class="metric" style="padding:12px 0;">
+          <div class="number" style="font-size:1.6rem;">50-100K</div>
+          <div class="label" style="color:rgba(255,255,255,0.5);">families</div>
+        </div>
+        <p>A category-defining platform. 200-400 people. $150-300M ARR. National presence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 9 — Organic Scale P&L
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-9">
+  <div class="slide-inner fade-in">
+    <h2>Organic Business: ~4,500 Families <span style="font-weight:400; font-size:1rem; color:var(--text-muted);">(Year 3)</span></h2>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">36-month plan outcome. Self-funded, founder-controlled. Team: 5 eng, 8 mgmt, 22 FSRs, 1 ops = ~40 people.</p>
+
+    <div class="two-col" style="gap:28px;">
+      <div>
+        <table>
+          <thead>
+            <tr><th>Line Item</th><th style="text-align:right;">Monthly</th><th style="text-align:right;">Annual</th></tr>
+          </thead>
+          <tbody>
+            <tr style="background:rgba(31,157,85,0.04);"><td><strong>Recurring Revenue</strong></td><td style="text-align:right;">$1,109K</td><td style="text-align:right;">$13.3M</td></tr>
+            <tr style="background:rgba(31,157,85,0.04);"><td><strong>Onboarding Revenue</strong></td><td style="text-align:right;">$125K</td><td style="text-align:right;">$1.5M</td></tr>
+            <tr class="total green-row"><td><strong>Total Revenue</strong></td><td style="text-align:right;"><strong>$1,234K</strong></td><td style="text-align:right;"><strong>$14.8M</strong></td></tr>
+            <tr><td colspan="3" style="height:6px; border:none;"></td></tr>
+            <tr><td>FSR Payroll (22 FSRs)</td><td style="text-align:right;">$229K</td><td style="text-align:right;">$2.75M</td></tr>
+            <tr><td>Engineering (8)</td><td style="text-align:right;">$167K</td><td style="text-align:right;">$2.0M</td></tr>
+            <tr><td>Org Management (8)</td><td style="text-align:right;">$133K</td><td style="text-align:right;">$1.6M</td></tr>
+            <tr><td>Operations (1)</td><td style="text-align:right;">$9K</td><td style="text-align:right;">$110K</td></tr>
+            <tr><td>Office / Infrastructure</td><td style="text-align:right;">$40K</td><td style="text-align:right;">$480K</td></tr>
+            <tr><td>AI / Cloud</td><td style="text-align:right;">$22K</td><td style="text-align:right;">$267K</td></tr>
+            <tr><td>Shared Infrastructure</td><td style="text-align:right;">$18K</td><td style="text-align:right;">$214K</td></tr>
+            <tr><td>Payment Processing</td><td style="text-align:right;">$33K</td><td style="text-align:right;">$400K</td></tr>
+            <tr class="total"><td><strong>Total Costs</strong></td><td style="text-align:right;"><strong>$661K</strong></td><td style="text-align:right;"><strong>$7.9M</strong></td></tr>
+            <tr><td colspan="3" style="height:4px; border:none;"></td></tr>
+            <tr class="total green-row"><td><strong>Net Income</strong></td><td style="text-align:right;"><strong>$573K</strong></td><td style="text-align:right;"><strong>$6.9M</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="card metric" style="margin-bottom:16px;">
+          <div class="number green" style="font-size:2.6rem;">46%</div>
+          <div class="label">Net Margin</div>
+        </div>
+        <div class="card-row cols-2" style="margin-bottom:16px;">
+          <div class="card metric">
+            <div class="number" style="font-size:1.4rem;">$1.25M</div>
+            <div class="label">Capital Required</div>
+          </div>
+          <div class="card metric">
+            <div class="number green" style="font-size:1.4rem;">+$4.35M</div>
+            <div class="label">Cumulative Cash @ M36</div>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>Cost breakdown:</strong><br>
+          People: 81% of costs<br>
+          Infrastructure: 10%<br>
+          Processing: 5%<br>
+          Office: 6%
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 10 — Mid-Scale P&L (10K families)
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-10">
+  <div class="slide-inner fade-in">
+    <h2>Partnership-Accelerated: 10,000 Families <span style="font-weight:400; font-size:1rem; color:var(--text-muted);">(Year 5)</span></h2>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Steady-state P&L. 48 people total. Health plan partnerships drive intake volume above churn replacement.</p>
+
+    <div class="two-col" style="gap:28px;">
+      <div>
+        <table>
+          <thead>
+            <tr><th>Line Item</th><th style="text-align:right;">Monthly</th><th style="text-align:right;">Annual</th></tr>
+          </thead>
+          <tbody>
+            <tr style="background:rgba(31,157,85,0.04);"><td><strong>MRR</strong></td><td style="text-align:right;">$2,490K</td><td style="text-align:right;">$29.9M</td></tr>
+            <tr style="background:rgba(31,157,85,0.04);"><td><strong>Onboarding Revenue</strong></td><td style="text-align:right;">$100K</td><td style="text-align:right;">$1.2M</td></tr>
+            <tr class="total green-row"><td><strong>Total Revenue</strong></td><td style="text-align:right;"><strong>$2,590K</strong></td><td style="text-align:right;"><strong>$31.1M</strong></td></tr>
+            <tr><td colspan="3" style="height:6px; border:none;"></td></tr>
+            <tr><td>FSR Payroll (33 FSRs)</td><td style="text-align:right;">$344K</td><td style="text-align:right;">$4.1M</td></tr>
+            <tr><td>Engineering (8)</td><td style="text-align:right;">$167K</td><td style="text-align:right;">$2.0M</td></tr>
+            <tr><td>Org Management (5)</td><td style="text-align:right;">$83K</td><td style="text-align:right;">$1.0M</td></tr>
+            <tr><td>Operations (2)</td><td style="text-align:right;">$18K</td><td style="text-align:right;">$220K</td></tr>
+            <tr><td>Office / Infra + Overhead</td><td style="text-align:right;">$201K</td><td style="text-align:right;">$2.4M</td></tr>
+            <tr><td>AI / Cloud + Infra</td><td style="text-align:right;">$90K</td><td style="text-align:right;">$1.1M</td></tr>
+            <tr><td>Payment Processing</td><td style="text-align:right;">$75K</td><td style="text-align:right;">$896K</td></tr>
+            <tr class="total"><td><strong>Total Costs</strong></td><td style="text-align:right;"><strong>$941K</strong></td><td style="text-align:right;"><strong>$11.3M</strong></td></tr>
+            <tr><td colspan="3" style="height:4px; border:none;"></td></tr>
+            <tr class="total green-row"><td><strong>Net Profit</strong></td><td style="text-align:right;"><strong>$1,549K</strong></td><td style="text-align:right;"><strong>$18.6M</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="card metric" style="margin-bottom:16px;">
+          <div class="number green" style="font-size:2.6rem;">62%</div>
+          <div class="label">Net Margin</div>
+          <div class="sub">up from 46% at organic scale</div>
+        </div>
+        <div class="callout green-callout">
+          <strong>Why margin improves from 46% to 62%:</strong> Fixed costs (engineering, management) spread across 2.2x more families. Engineering costs are identical at both scales &mdash; the same platform serves 4,500 or 10,000 families.
+        </div>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:12px;">
+          <strong>Revenue per employee:</strong> $648K (vs. $370K at organic). This is the operating leverage of the AI-first model &mdash; revenue scales with families, not headcount.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 11 — Enterprise Scale (50K families)
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-11">
+  <div class="slide-inner fade-in">
+    <h2>Enterprise Platform: 50,000 Families</h2>
+
+    <div class="two-col" style="gap:28px;">
+      <div>
+        <table>
+          <thead>
+            <tr><th>Metric</th><th style="text-align:right;">Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Monthly Recurring Revenue</td><td style="text-align:right;">$12.45M</td></tr>
+            <tr class="highlight"><td>Annual Recurring Revenue</td><td style="text-align:right;"><strong>$149.4M</strong></td></tr>
+            <tr><td>Total Monthly Costs</td><td style="text-align:right;">$4.08M</td></tr>
+            <tr class="total green-row"><td>Net Monthly Profit</td><td style="text-align:right;"><strong>$8.37M</strong></td></tr>
+            <tr class="total green-row"><td>Net Margin</td><td style="text-align:right;"><strong>67.3%</strong></td></tr>
+            <tr><td colspan="2" style="height:6px; border:none;"></td></tr>
+            <tr><td>Total Headcount</td><td style="text-align:right;">203</td></tr>
+            <tr><td>FSRs (125 service + 38 onboarding)</td><td style="text-align:right;">163</td></tr>
+            <tr><td>Revenue / Employee</td><td style="text-align:right;">$736K</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="callout orange-callout" style="margin-top:0;">
+          <strong>This is a fundamentally different company.</strong> 163 FSRs across multiple regions, dedicated HR, training teams, regional management. But the unit economics only get better &mdash; margins increase from 62% to 67% due to scale efficiencies.
+        </div>
+
+        <div class="callout" style="margin-top:16px;">
+          <strong>Scale challenge:</strong> At this scale, monthly churn replacement is <strong>1,000 families</strong>. You need enterprise sales channels (health plans, Medicare Advantage, large employer programs) to sustain this intake. Direct-to-consumer alone can't fill this pipeline.
+        </div>
+
+        <div style="margin-top:16px;">
+          <p style="font-size:0.82rem; font-weight:600; margin-bottom:8px;">FSR BREAKDOWN</p>
+          <div class="h-stack-bar">
+            <div class="segment" style="width:76.7%; background:var(--accent);">125 Service FSRs</div>
+            <div class="segment" style="width:23.3%; background:var(--orange);">38 Onboarding</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 12 — Scale Comparison Dashboard
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-12">
+  <div class="slide-inner fade-in">
+    <h2>Economics Across Scale</h2>
+
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th style="text-align:right;">5K</th>
+            <th style="text-align:right;">10K</th>
+            <th style="text-align:right;">25K</th>
+            <th style="text-align:right;">50K</th>
+            <th style="text-align:right;">100K</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>ARR</td><td style="text-align:right;">$14.9M</td><td style="text-align:right;">$29.9M</td><td style="text-align:right;">$74.7M</td><td style="text-align:right;">$149.4M</td><td style="text-align:right;">$298.8M</td></tr>
+          <tr class="highlight"><td>Net Margin</td><td style="text-align:right;">58.6%</td><td style="text-align:right;">62.2%</td><td style="text-align:right;">66.0%</td><td style="text-align:right;">67.3%</td><td style="text-align:right;">67.8%</td></tr>
+          <tr><td>Total Headcount</td><td style="text-align:right;">27</td><td style="text-align:right;">48</td><td style="text-align:right;">107</td><td style="text-align:right;">203</td><td style="text-align:right;">388</td></tr>
+          <tr><td>FSRs</td><td style="text-align:right;">17</td><td style="text-align:right;">33</td><td style="text-align:right;">82</td><td style="text-align:right;">163</td><td style="text-align:right;">325</td></tr>
+          <tr><td>Monthly Profit</td><td style="text-align:right;">$729K</td><td style="text-align:right;">$1.55M</td><td style="text-align:right;">$4.11M</td><td style="text-align:right;">$8.37M</td><td style="text-align:right;">$16.9M</td></tr>
+          <tr class="highlight"><td>Annual Profit</td><td style="text-align:right;">$8.8M</td><td style="text-align:right;">$18.6M</td><td style="text-align:right;">$49.3M</td><td style="text-align:right;">$100.5M</td><td style="text-align:right;">$202.7M</td></tr>
+          <tr><td>Revenue / Employee</td><td style="text-align:right;">$553K</td><td style="text-align:right;">$623K</td><td style="text-align:right;">$698K</td><td style="text-align:right;">$736K</td><td style="text-align:right;">$770K</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Margin trend chart -->
+    <p style="font-size:0.78rem; font-weight:600; margin-top:28px; margin-bottom:4px; color:var(--text-muted);">NET MARGIN % BY SCALE</p>
+    <div class="trend-chart">
+      <div class="trend-col">
+        <div class="trend-fill" style="height:73%;">58.6%</div>
+        <div class="trend-label">5K</div>
+      </div>
+      <div class="trend-col">
+        <div class="trend-fill" style="height:78%;">62.2%</div>
+        <div class="trend-label">10K</div>
+      </div>
+      <div class="trend-col">
+        <div class="trend-fill" style="height:83%;">66.0%</div>
+        <div class="trend-label">25K</div>
+      </div>
+      <div class="trend-col">
+        <div class="trend-fill" style="height:85%;">67.3%</div>
+        <div class="trend-label">50K</div>
+      </div>
+      <div class="trend-col">
+        <div class="trend-fill" style="height:86%;">67.8%</div>
+        <div class="trend-label">100K</div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem; color:var(--text-muted); margin-top:8px; text-align:center;">Margins plateau around 67-68%. The business gets incrementally more efficient but the improvement flattens as variable costs dominate.</p>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 13 — What Changes at Scale
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-13">
+  <div class="slide-inner fade-in">
+    <h2>What's Different at Each Level</h2>
+
+    <div class="card-row cols-3">
+      <div class="card">
+        <h3 class="accent">Organic (5K)</h3>
+        <ul class="detail-list" style="margin-top:8px;">
+          <li>Single market / region</li>
+          <li>Small, elite marketing team using digital tools and AI agents</li>
+          <li>Engineers build sales pipeline automation &mdash; no dedicated sales headcount</li>
+          <li>FSRs support referral pipeline through family relationships</li>
+          <li>Small, tight-knit team (~27 people)</li>
+          <li>Minimal management layers</li>
+          <li>$553K revenue per employee</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="green">Mid-Scale (10-25K)</h3>
+        <ul class="detail-list" style="margin-top:8px;">
+          <li>2-3 markets / regions</li>
+          <li>1-2 health plan partnerships driving referral volume</li>
+          <li>Regional FSR managers needed</li>
+          <li>Dedicated sales &amp; marketing team</li>
+          <li>HR and training function emerges</li>
+          <li>QA and compliance processes formalize</li>
+          <li>$623-698K revenue per employee</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--orange);">Enterprise (50K+)</h3>
+        <ul class="detail-list" style="margin-top:8px;">
+          <li>National / multi-state presence</li>
+          <li>Multiple health plan contracts</li>
+          <li>Regional offices and management layers</li>
+          <li>Dedicated compliance and legal team</li>
+          <li>FSR career ladder and specialization</li>
+          <li>Enterprise sales organization</li>
+          <li>$736-770K revenue per employee</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:24px;">
+      <strong>Key insight:</strong> The operational complexity inflection point is around 10K families. Below that, you can run with a flat org and founder involvement. Above it, you need middle management, regional structure, and institutional processes. The economics support it &mdash; but the company feels very different.<br><br>
+      <strong>Note on sales:</strong> Our model does not include dedicated sales headcount. At the organic stage, growth is driven by digital marketing, AI-powered outreach agents built by our engineering team, and FSRs generating referrals through their family relationships. A dedicated sales function only becomes necessary at the mid-scale level when pursuing health plan partnerships.
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 3 — Variable Cost Waterfall
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-3">
+  <div class="slide-inner fade-in">
+    <h2>What It Costs to Serve One Family</h2>
+    <p class="section-label">Variable cost breakdown per family per month</p>
+
+    <div class="waterfall" style="height:180px;">
+      <div class="wf-bar">
+        <div class="wf-fill blue" style="height:61%;">$26.04</div>
+        <div class="wf-label">FSR Labor<br>Allocation</div>
+      </div>
+      <div class="wf-bar">
+        <div class="wf-fill light-blue" style="height:12%;">$5.00</div>
+        <div class="wf-label">AI &amp;<br>Cloud</div>
+      </div>
+      <div class="wf-bar">
+        <div class="wf-fill gray" style="height:9%;">$4.00</div>
+        <div class="wf-label">Shared<br>Infra</div>
+      </div>
+      <div class="wf-bar">
+        <div class="wf-fill orange" style="height:18%;">$7.47</div>
+        <div class="wf-label">Payment<br>Processing</div>
+      </div>
+      <div class="wf-bar">
+        <div class="wf-fill red" style="height:100%;">$42.51</div>
+        <div class="wf-label"><strong>Total<br>Variable</strong></div>
+      </div>
+    </div>
+
+    <div class="h-stack-bar" style="margin:24px 0 12px;">
+      <div class="segment" style="width:17.1%; background:var(--red);">$42.51</div>
+      <div class="segment" style="width:82.9%; background:var(--green);">$206.49 Contribution Margin</div>
+    </div>
+    <p style="text-align:center; font-size:0.82rem; color:var(--text-muted);">Revenue $249.00 &minus; Variable $42.51 = <strong class="green">Contribution Margin $206.49 (82.9%)</strong></p>
+
+    <div class="two-col" style="margin-top:24px;">
+      <div>
+        <table class="table-compact">
+          <tr><th colspan="2">Cost component detail</th></tr>
+          <tr><td>FSR labor</td><td style="text-align:right;">$125K / 12 / 400 families = <strong>$26.04</strong></td></tr>
+          <tr><td>AI & cloud compute</td><td style="text-align:right;"><strong>$5.00</strong></td></tr>
+          <tr><td>Shared infrastructure</td><td style="text-align:right;"><strong>$4.00</strong></td></tr>
+          <tr><td>Payment processing (3%)</td><td style="text-align:right;"><strong>$7.47</strong></td></tr>
+          <tr class="total"><td>Total variable / family / month</td><td style="text-align:right;"><strong>$42.51</strong></td></tr>
+        </table>
+      </div>
+      <div class="callout" style="margin:0;">
+        <strong>The panel size lever:</strong> FSR allocation is the biggest variable cost component. Improving panel size from 400 to 600 families/FSR would drop this to $17.36, pushing contribution margin to $215 (86%).
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 5 — Onboarding Economics
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-5">
+  <div class="slide-inner fade-in">
+    <h2>Onboarding: The Moat, The Bottleneck, The Lever</h2>
+
+    <div class="card-row cols-3" style="margin-bottom:24px;">
+      <div class="card">
+        <h3 class="red">The Cost</h3>
+        <p style="margin-bottom:8px;">6 hours &times; ($125K &divide; 1,920 work hrs/yr)</p>
+        <div class="metric" style="padding:16px 0 8px;">
+          <div class="number" style="font-size:1.8rem; color:var(--red);">$390.63</div>
+          <div class="label">Labor cost per onboarding</div>
+        </div>
+        <p>+ $600 acquisition cost*<br>= <strong>$990.63 total CAC</strong></p>
+        <p style="font-size:0.7rem; color:var(--orange); margin-top:6px;">*$600 acquisition cost is a planning estimate &mdash; not yet validated. Actual CAC could range from $200 (referral-driven) to $1,500+ (paid digital). This is a key variable to test in Year 1.</p>
+      </div>
+      <div class="card">
+        <h3 class="accent">The Revenue</h3>
+        <p style="margin-bottom:8px;">$500 onboarding fee collected upfront</p>
+        <div class="metric" style="padding:16px 0 8px;">
+          <div class="number" style="font-size:1.8rem; color:var(--accent);">~51%</div>
+          <div class="label">of true cost covered</div>
+        </div>
+        <p>Remaining $490.63 recovered via subscription margin over <strong>~2.4 months</strong></p>
+      </div>
+      <div class="card">
+        <h3 class="green">The Lever</h3>
+        <p style="margin-bottom:8px;">Reducing onboarding from 6 to 3 hours</p>
+        <div class="metric" style="padding:16px 0 8px;">
+          <div class="number" style="font-size:1.8rem; color:var(--green);">-5 FSRs</div>
+          <div class="label">at Phase 3 (250 new/mo)</div>
+        </div>
+        <p>= <strong>$625K/year</strong> in salary savings. Halves onboarding headcount.</p>
+      </div>
+    </div>
+
+    <div class="callout green-callout">
+      <strong>AI-guided onboarding (Clicky concept) is our single highest-ROI investment.</strong> Every hour we shave off onboarding time directly reduces FSR headcount, improves CAC payback, and unlocks faster growth without proportional hiring.
+    </div>
+
+    <table class="table-compact" style="margin-top:16px;">
+      <thead>
+        <tr><th>Onboarding Hours</th><th>Labor Cost</th><th>Total CAC</th><th>FSRs @ 250/mo</th><th>Annual FSR Cost</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>3 hrs</td><td>$195.31</td><td>$795.31</td><td>5</td><td>$625K</td></tr>
+        <tr class="highlight"><td>6 hrs (baseline)</td><td>$390.63</td><td>$990.63</td><td>10</td><td>$1.25M</td></tr>
+        <tr><td>8 hrs</td><td>$520.83</td><td>$1,120.83</td><td>13</td><td>$1.63M</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 6 — Churn Model
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-6">
+  <div class="slide-inner fade-in">
+    <h2>Churn Is Structural, Not a Product Problem</h2>
+
+    <div class="two-col" style="margin-bottom:24px;">
+      <div>
+        <h3>Monthly Churn: 2.0% <span style="font-weight:400; font-size:0.82rem; color:var(--text-muted);">(annual: ~21.5%)</span></h3>
+
+        <div class="h-stack-bar" style="margin:16px 0 8px;">
+          <div class="segment" style="width:83.5%; background:var(--accent);">1.67% structural</div>
+          <div class="segment" style="width:16.5%; background:var(--orange);">0.33%</div>
+        </div>
+
+        <table class="table-compact" style="margin-top:12px;">
+          <tr><td><strong>Structural (1.67%)</strong></td><td>Natural end of ~5-year care journey: death, facility transition, estate resolution</td></tr>
+          <tr><td><strong>Voluntary (0.33%)</strong></td><td>Dissatisfaction, affordability, switching to alternatives</td></tr>
+        </table>
+
+        <div class="callout" style="margin-top:16px;">
+          Only <strong>0.33%</strong> of monthly churn is within our control. If voluntary churn is near zero, we're doing everything right. We can't prevent aging.
+        </div>
+      </div>
+      <div>
+        <h3>Churn Replacement Demand</h3>
+        <table>
+          <thead>
+            <tr><th>Active Families</th><th>Lost / Month</th><th>Lost / Year</th><th>Replace / Mo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1,000</td><td>20</td><td>240</td><td>20</td></tr>
+            <tr><td>5,000</td><td>100</td><td>1,200</td><td>100</td></tr>
+            <tr class="highlight"><td>10,000</td><td>200</td><td>2,400</td><td>200</td></tr>
+            <tr><td>50,000</td><td>1,000</td><td>12,000</td><td>1,000</td></tr>
+          </tbody>
+        </table>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:12px;">
+          At 10K families, <strong>200 of every month's onboardings are just replacing churn.</strong> Growth requires intake above this replacement floor.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 7 — LTV & Payback
+     ════════════════════════════════════════════════════════ -->
+<section class="slide light" id="slide-7">
+  <div class="slide-inner fade-in">
+    <h2>Lifetime Value &amp; Customer Acquisition Economics</h2>
+
+    <div class="card-row cols-3" style="margin-bottom:24px;">
+      <div class="card metric">
+        <div class="number green" style="font-size:2.4rem;">$10,324</div>
+        <div class="label">Lifetime Value (LTV)</div>
+        <div class="sub">Expected total contribution margin per family over their care journey</div>
+      </div>
+      <div class="card metric">
+        <div class="number accent" style="font-size:2.4rem;">10.4x</div>
+        <div class="label">LTV : CAC Ratio</div>
+        <div class="sub">SaaS benchmark is 3x — we're well above that threshold</div>
+      </div>
+      <div class="card metric">
+        <div class="number" style="font-size:2.4rem; color:var(--dark);">~5 mo</div>
+        <div class="label">Payback Period</div>
+        <div class="sub">Months to recover the full cost of acquiring a new family</div>
+      </div>
+    </div>
+
+    <!-- Payback period visual -->
+    <p style="font-size:0.78rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">PAYBACK IN CONTEXT OF CUSTOMER LIFETIME</p>
+    <div style="display:flex; height:28px; border-radius:5px; overflow:hidden; margin-bottom:20px;">
+      <div style="width:10%; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:#fff;">~5 mo</div>
+      <div style="width:90%; background:var(--green); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:#fff;">~45 months of net contribution</div>
+    </div>
+
+    <div class="callout">
+      The combination of high contribution margin ($206/family/month) and low churn (2% monthly) produces strong unit economics. The LTV:CAC ratio is highly sensitive to actual acquisition cost &mdash; our $600 CAC estimate is a planning assumption, not a validated number. Even at $1,500 CAC, the ratio would still be a healthy 4.3x with a ~7 month payback.
+    </div>
+  </div>
+</section>
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 18 — Closing (dark)
+     ════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="slide-18">
+  <div class="slide-inner fade-in" style="text-align:center;">
+    <h1 style="margin-bottom:16px;">Elder Care Platform</h1>
+    <p class="tagline" style="opacity:0.7;">Business Economics Working Document</p>
+    <p class="subtitle" style="margin-top:32px; opacity:0.35;">April 2026 &mdash; For Internal Use</p>
+    <div style="margin-top:48px; display:flex; justify-content:center; gap:24px;">
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--accent);">83%</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:4px;">Contribution Margin</div>
+      </div>
+      <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--green);">10.4x</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:4px;">LTV:CAC</div>
+      </div>
+      <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--accent);">$14.8M</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:4px;">Year 3 Revenue</div>
+      </div>
+      <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--green);">46%</div>
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:4px;">Net Margin</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     JavaScript — Navigation & Animation
+     ════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  const slides = document.querySelectorAll('.slide');
+  const navContainer = document.querySelector('.slide-nav');
+
+  // Slide metadata for navigation sidebar
+  const slideMeta = [
+    { section: null,              label: 'Title' },
+    { section: 'Business Thesis', label: 'Economic Thesis' },
+    { section: null,              label: 'Fixed vs Variable' },
+    { section: null,              label: 'FSR Capacity & Demand Drivers' },
+    { section: null,              label: '3-Year Roadmap' },
+    { section: null,              label: 'Capital Requirements' },
+    { section: null,              label: 'Sensitivity Levers' },
+    { section: null,              label: 'Open Questions' },
+    { section: 'Scale Analysis',  label: 'Three Structures' },
+    { section: null,              label: 'Organic (4,500)' },
+    { section: null,              label: 'Mid-Scale (10K)' },
+    { section: null,              label: 'Enterprise (50K)' },
+    { section: null,              label: 'Scale Comparison' },
+    { section: null,              label: 'What Changes' },
+    { section: 'Unit Economics',  label: 'Cost Waterfall' },
+    { section: null,              label: 'Onboarding Economics' },
+    { section: null,              label: 'Churn Model' },
+    { section: null,              label: 'LTV & Payback' },
+    { section: null,              label: 'Close' },
+  ];
+
+  // Build navigation sidebar
+  const navItems = [];
+  slideMeta.forEach((meta, i) => {
+    if (meta.section) {
+      const sectionLabel = document.createElement('div');
+      sectionLabel.className = 'nav-section-label';
+      sectionLabel.textContent = meta.section;
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'nav-section';
+      sectionDiv.appendChild(sectionLabel);
+      navContainer.appendChild(sectionDiv);
+    }
+    const btn = document.createElement('button');
+    btn.className = 'nav-item';
+    btn.innerHTML = '<span class="nav-dot"></span><span class="nav-label">' + meta.label + '</span>';
+    btn.addEventListener('click', () => {
+      slides[i].scrollIntoView({ behavior: 'smooth' });
+    });
+    navContainer.appendChild(btn);
+    navItems.push(btn);
+  });
+
+  // Add slide numbers to each slide
+  slides.forEach((slide, i) => {
+    const num = document.createElement('div');
+    num.className = 'slide-number';
+    num.textContent = (i + 1) + ' / ' + slides.length;
+    slide.appendChild(num);
+  });
+
+  // IntersectionObserver for active nav + fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(slides).indexOf(entry.target);
+        navItems.forEach((item, i) => item.classList.toggle('active', i === index));
+        const fadeEls = entry.target.querySelectorAll('.fade-in');
+        fadeEls.forEach(el => el.classList.add('visible'));
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(slide => observer.observe(slide));
+
+  // Arrow key navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      const current = getCurrentSlideIndex();
+      if (current < slides.length - 1) {
+        slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const current = getCurrentSlideIndex();
+      if (current > 0) {
+        slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
+  function getCurrentSlideIndex() {
+    let closest = 0;
+    let minDist = Infinity;
+    slides.forEach((slide, i) => {
+      const rect = slide.getBoundingClientRect();
+      const dist = Math.abs(rect.top);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = i;
+      }
+    });
+    return closest;
+  }
+
+  // Activate first slide on load
+  navItems[0]?.classList.add('active');
+  slides[0]?.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+})();
+</script>
+
+</body>
+</html>

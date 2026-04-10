@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elder Care Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1724;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    text-align: center;
+    max-width: 900px;
+    padding: 40px 24px;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .tagline {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.55);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 36px 28px;
+    text-align: left;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(41,98,255,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .card-icon.blue { background: rgba(41,98,255,0.15); color: #5b8aff; }
+  .card-icon.green { background: rgba(31,157,85,0.15); color: #3dbf6e; }
+  .card-icon.orange { background: rgba(239,108,0,0.15); color: #ff9d3d; }
+
+  .card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .card p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .card .arrow {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #5b8aff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card:hover .arrow { gap: 10px; }
+
+  .card .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  .badge.slides { background: rgba(41,98,255,0.15); color: #5b8aff; }
+  .badge.interactive { background: rgba(31,157,85,0.15); color: #3dbf6e; }
+  .badge.presentation { background: rgba(239,108,0,0.15); color: #ff9d3d; }
+
+  .footer {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: 1fr; }
+    h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="eyebrow">Internal Working Documents</div>
+  <h1>Elder Care Platform</h1>
+  <p class="tagline">Helping families manage aging parents with AI-powered coordination</p>
+
+  <div class="cards">
+    <a class="card" href="economics-deep-dive.html">
+      <div class="card-icon orange">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+      </div>
+      <span class="badge presentation">19 Slides</span>
+      <h2>Economics Deep Dive</h2>
+      <p>Detailed unit economics, FSR model, cost structure, P&Ls at three scales, and sensitivity analysis. For internal working sessions.</p>
+      <div class="arrow">View presentation <span>&rarr;</span></div>
+    </a>
+
+    <a class="card" href="financial-model.html">
+      <div class="card-icon green">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+      </div>
+      <span class="badge interactive">Interactive</span>
+      <h2>Operational Model</h2>
+      <p>Interactive 36-month financial planning dashboard. Adjust scenarios, growth rates, and assumptions to see real-time impact.</p>
+      <div class="arrow">Open dashboard <span>&rarr;</span></div>
+    </a>
+
+    <div class="card" style="opacity:0.45; cursor:default;">
+      <div class="card-icon blue">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <span class="badge slides">Coming Soon</span>
+      <h2>Business Overview Deck</h2>
+      <p>High-level pitch deck covering the problem, solution, market opportunity, and 3-year growth plan. For partners and advisors.</p>
+      <div class="arrow" style="color:rgba(255,255,255,0.3);">In progress</div>
+    </div>
+  </div>
+
+  <div class="footer">April 2026 &mdash; For Internal Use</div>
+</div>
+
+</body>
+</html>

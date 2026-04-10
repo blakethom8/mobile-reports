@@ -1,0 +1,4545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elder Care Platform Financial Model</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --header: #172033;
+      --header-2: #24324d;
+      --text: #1d2a3b;
+      --muted: #6b778c;
+      --line: #d9e1ec;
+      --accent: #2962ff;
+      --accent-soft: rgba(41, 98, 255, 0.12);
+      --green: #1f9d55;
+      --green-soft: rgba(31, 157, 85, 0.12);
+      --red: #d64545;
+      --red-soft: rgba(214, 69, 69, 0.12);
+      --amber: #c78a10;
+      --amber-soft: rgba(199, 138, 16, 0.12);
+      --shadow: 0 8px 24px rgba(22, 31, 56, 0.08);
+      --radius: 14px;
+      --sticky-offset: 112px;
+      --preview-max-height: calc(100vh - 132px);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--header), var(--header-2));
+      color: #fff;
+      padding: 18px 24px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    header .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.01em;
+    }
+
+    .subhead {
+      margin-top: 6px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.92rem;
+      max-width: 860px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 20px;
+      padding: 20px;
+      align-items: start;
+    }
+
+    .layout.setup-focused {
+      grid-template-columns: 1fr;
+    }
+
+    .panel, .card, .chart-card, .table-card, .section-card, .snapshot-card, .scale-table-wrap {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(217, 225, 236, 0.7);
+    }
+
+    .panel {
+      padding: 18px;
+      position: sticky;
+      top: 94px;
+      max-height: calc(100vh - 114px);
+      overflow: auto;
+    }
+
+    body.setup-view-active #inputsPanel {
+      display: none;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .panel h2, .section-title {
+      margin: 0;
+      font-size: 1.02rem;
+    }
+
+    .control-group {
+      margin-bottom: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    .control-group:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .control-group h3 {
+      margin: 0 0 8px;
+      font-size: 0.88rem;
+      color: var(--header);
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 4px;
+      align-items: center;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .field-note {
+      color: var(--muted);
+      font-size: 0.7rem;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .value-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    input[type="number"], select, input[type="text"] {
+      width: 100px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+      border: 1px solid #c9d4e5;
+      border-radius: 10px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+    }
+
+    input[type="number"]:focus, select:focus, input[type="text"]:focus, button:focus {
+      outline: 2px solid rgba(41,98,255,0.16);
+      outline-offset: 1px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: #e9eef8; color: var(--text); }
+    .btn-green { background: var(--green); color: white; }
+    .btn-danger { background: #eef2f8; color: var(--red); }
+
+    .scenario-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .scenario-buttons button {
+      background: #eef3ff;
+      color: #27437f;
+      border: 1px solid #d7e2ff;
+      text-align: left;
+      min-height: 56px;
+      padding: 10px;
+      font-size: 0.84rem;
+      line-height: 1.2;
+      box-shadow: none;
+    }
+
+    .scenario-buttons button.active {
+      background: linear-gradient(135deg, rgba(41,98,255,0.14), rgba(41,98,255,0.05));
+      border-color: rgba(41,98,255,0.4);
+      color: #16346f;
+      box-shadow: inset 0 0 0 1px rgba(41,98,255,0.1);
+    }
+
+
+    details.collapsible-group {
+      border: 1px solid #e2eaf5;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fbfdff, #f7faff);
+      overflow: hidden;
+    }
+
+    details.collapsible-group summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--header);
+    }
+
+    details.collapsible-group summary::-webkit-details-marker { display: none; }
+
+    details.collapsible-group summary::after {
+      content: '▸';
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: transform 0.18s ease;
+      margin-left: auto;
+    }
+    details[open].collapsible-group summary::after {
+      transform: rotate(90deg);
+    }
+
+    .summary-meta {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .phase-editor-body {
+      padding: 0 16px 16px;
+      border-top: 1px solid #e6edf7;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 0 10px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .toggle-check input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+    }
+
+    .phase-cards {
+      display: grid;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .phase-card {
+      border-radius: 14px;
+      border: 1px solid #dfe8f5;
+      background: white;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      overflow: hidden;
+    }
+
+    .phase-card.phase-blue { border-left: 5px solid #2962ff; }
+    .phase-card.phase-amber { border-left: 5px solid #d89b18; }
+    .phase-card.phase-green { border-left: 5px solid #1f9d55; }
+    .phase-segment.phase-blue { background: linear-gradient(135deg, #2962ff, #1d4fd8); }
+    .phase-segment.phase-amber { background: linear-gradient(135deg, #d89b18, #bb820e); }
+    .phase-segment.phase-green { background: linear-gradient(135deg, #1f9d55, #157a41); }
+
+    .phase-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 12px 8px;
+    }
+
+    .phase-card-header input[type="text"] {
+      width: 100%;
+      min-width: 0;
+      font-weight: 700;
+    }
+
+    .phase-badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .phase-blue .phase-badge { background: rgba(41,98,255,0.10); color: #234697; }
+    .phase-amber .phase-badge { background: rgba(216,155,24,0.14); color: #8b5b00; }
+    .phase-green .phase-badge { background: rgba(31,157,85,0.12); color: #15613a; }
+
+    .phase-card-body {
+      padding: 0 12px 12px;
+    }
+
+    .phase-range {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .phase-mini-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .phase-start-row {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid #e5edf9;
+      margin-bottom: 10px;
+    }
+
+    .phase-start-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .phase-start-row .range-number {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .phase-start-static {
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f5f8fc;
+      border: 1px solid #e4ebf6;
+      margin-bottom: 10px;
+    }
+
+    .compact-field {
+      margin-bottom: 0;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #fafcff;
+      border: 1px solid #e8eef7;
+    }
+
+    .compact-field .field-top {
+      margin-bottom: 8px;
+    }
+
+    .range-number {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .disabled-group {
+      opacity: 0.52;
+    }
+
+    .disabled-group .field-note {
+      color: #8b95a8;
+    }
+
+    .phase-note-inline {
+      font-size: 0.76rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .growth-metrics-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .setup-summary-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 12px;
+      min-height: 0;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+    }
+
+    .metric-help-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      padding: 0;
+      font-size: 0.72rem;
+      background: #eef3ff;
+      color: #234697;
+      border: 1px solid #d8e2ff;
+      flex: 0 0 auto;
+    }
+
+    .metric-help-btn:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .metric-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .metric-sub {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    .metric-def-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 80;
+    }
+
+    .metric-def-modal-backdrop.open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .metric-def-modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .metric-def-modal h3 {
+      margin: 0 0 16px;
+      font-size: 1.1rem;
+    }
+
+    .metric-def-modal .def-section {
+      margin-bottom: 12px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .metric-def-modal .def-section strong {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--header);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .metric-def-modal .def-close {
+      margin-top: 16px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: #eef3ff;
+      color: var(--accent);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .neutral { color: var(--accent); }
+
+    .helper-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .helper-box {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid #e5edf9;
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .helper-inline-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .helper-inline-grid .helper-box strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--header);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .setup-intro-grid,
+    .setup-grid,
+    .impact-grid,
+    .definition-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .setup-intro-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .setup-page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .setup-main-section {
+      grid-column: 1;
+    }
+
+    .setup-sidebar-column {
+      grid-column: 2;
+      grid-row: 1 / span 5;
+      display: grid;
+      gap: 18px;
+      align-self: stretch;
+      min-height: 100%;
+    }
+
+    .setup-preview-card {
+      position: sticky;
+      top: var(--sticky-offset);
+      max-height: var(--preview-max-height);
+      overflow: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .setup-preview-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .setup-preview-btn {
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid #d7e2f4;
+      background: #f7faff;
+      color: #48607e;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+
+    .setup-preview-btn:hover {
+      border-color: rgba(41,98,255,0.35);
+      color: #234697;
+      transform: translateY(-1px);
+    }
+
+    .setup-preview-btn.active {
+      border-color: rgba(41,98,255,0.38);
+      background: linear-gradient(135deg, rgba(41,98,255,0.14), rgba(41,98,255,0.05));
+      color: #16346f;
+      box-shadow: inset 0 0 0 1px rgba(41,98,255,0.08);
+    }
+
+    .setup-preview-metrics {
+      display: grid;
+      gap: 10px;
+    }
+
+    .setup-preview-metrics .card {
+      padding: 11px 12px;
+      min-height: 0;
+    }
+
+    .setup-preview-metrics .metric-value {
+      font-size: 1.1rem;
+    }
+
+    .setup-context-card {
+      border: 1px solid #dbe5f8;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(41,98,255,0.08), rgba(255,255,255,0.96));
+      padding: 14px;
+    }
+
+    .setup-context-card h4 {
+      margin: 0 0 6px;
+      font-size: 0.98rem;
+      color: var(--header);
+    }
+
+    .setup-context-card p {
+      margin: 0;
+      color: #4b5a71;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .setup-context-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(41,98,255,0.10);
+      color: #234697;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .setup-quick-read {
+      display: grid;
+      gap: 10px;
+    }
+
+    .setup-readout-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fbfdff, #f7faff);
+      padding: 14px;
+    }
+
+    .setup-readout-card h4 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: var(--header);
+    }
+
+    .setup-readout-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      padding-top: 8px;
+      border-top: 1px solid #e8eef8;
+      font-size: 0.84rem;
+    }
+
+    .setup-readout-row:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .setup-readout-row strong {
+      color: var(--header);
+      text-align: right;
+    }
+
+    .setup-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .impact-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .definition-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .setup-card,
+    .impact-card,
+    .definition-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fbfdff, #f7faff);
+      padding: 14px;
+    }
+
+    .setup-card h4,
+    .impact-card h4,
+    .definition-card h4 {
+      margin: 0 0 6px;
+      font-size: 0.98rem;
+      color: var(--header);
+    }
+
+    .setup-card .small,
+    .impact-card .small,
+    .definition-card .small {
+      line-height: 1.45;
+    }
+
+    .setup-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .setup-row {
+      border-top: 1px solid #e6edf7;
+      padding-top: 10px;
+    }
+
+    .setup-row:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .setup-row-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .setup-row-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .setup-row-value {
+      color: var(--header);
+      font-weight: 800;
+      text-align: right;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .setup-row-meta {
+      margin-top: 4px;
+      color: #4b5a71;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .impact-stat-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .impact-stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      padding-top: 8px;
+      border-top: 1px solid #e8eef8;
+      font-size: 0.84rem;
+    }
+
+    .impact-stat:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .impact-stat strong {
+      color: var(--header);
+    }
+
+    .definition-card .formula-block {
+      display: block;
+      margin: 10px 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #eef3ff;
+      color: #234697;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.84rem;
+      line-height: 1.4;
+    }
+
+    .setup-filter-host #filtersWorkbench {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .setup-filter-host .panel-header,
+    .setup-filter-host .control-group:first-of-type,
+    .setup-filter-host #phase-editor-group {
+      grid-column: 1 / -1;
+    }
+
+    .setup-filter-host .control-group {
+      margin-bottom: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .setup-filter-host .control-group.preview-context-active {
+      position: relative;
+      border-radius: 14px;
+      outline: 2px solid rgba(41,98,255,0.2);
+      outline-offset: 3px;
+    }
+
+    .setup-filter-host .control-group.preview-context-active:not(details) {
+      background: linear-gradient(180deg, rgba(41,98,255,0.05), rgba(255,255,255,0.96));
+      padding: 12px;
+    }
+
+    .setup-filter-host details.preview-context-active {
+      border-color: rgba(41,98,255,0.4);
+      box-shadow: 0 0 0 3px rgba(41,98,255,0.08);
+    }
+
+    .setup-filter-host details.preview-context-active > summary {
+      background: linear-gradient(180deg, rgba(41,98,255,0.08), rgba(255,255,255,0));
+      color: #173b80;
+    }
+
+    .setup-filter-host details.collapsible-group summary {
+      padding: 12px 14px;
+    }
+
+    .setup-filter-host .phase-editor-body {
+      padding: 0 14px 14px;
+    }
+
+    .setup-filter-host .phase-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .setup-filter-host .panel-header {
+      margin-bottom: 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .setup-filter-host .panel-header h2 {
+      font-size: 1.02rem;
+    }
+
+    .setup-filter-host .field-note {
+      font-size: 0.74rem;
+    }
+
+    .setup-filter-host .range-number {
+      grid-template-columns: 1fr 84px;
+    }
+
+    .fsr-math-box {
+      margin-top: 12px;
+      padding: 14px;
+      background: #f8fbff;
+      border: 1px solid #e3ebfb;
+      border-radius: 12px;
+    }
+
+    .fsr-math-box h4 {
+      margin: 0 0 10px;
+      font-size: 0.88rem;
+      color: var(--header);
+    }
+
+    .math-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 0;
+      border-top: 1px dashed #dbe5f7;
+      font-size: 0.8rem;
+    }
+
+    .math-row:first-of-type { border-top: none; padding-top: 0; }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-card, .table-card, .section-card {
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .chart-card h3, .table-card h3, .section-card h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 260px;
+    }
+
+    .chart-wrap.tall {
+      height: 300px;
+    }
+
+    .table-meta, .section-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .table-scroll {
+      max-height: 520px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eef2f7;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #f8fbff;
+      z-index: 1;
+      color: #32445c;
+    }
+
+    tbody tr:nth-child(odd) { background: #fbfdff; }
+    tbody tr.cash-positive { background: rgba(31, 157, 85, 0.06); }
+    tbody tr.cash-negative { background: rgba(214, 69, 69, 0.05); }
+
+    .section-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .timeline-bar {
+      display: flex;
+      min-height: 46px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #eef2f7;
+    }
+
+    .phase-segment {
+      position: relative;
+      padding: 8px 10px;
+      color: white;
+      display: flex;
+      align-items: flex-end;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      min-width: 80px;
+    }
+
+    .phase-build { background: linear-gradient(135deg, #d64545, #bf3030); }
+    .phase-scale { background: linear-gradient(135deg, #d89b18, #bb820e); }
+    .phase-breakeven { background: linear-gradient(135deg, #efb73f, #d99917); color: #273248; }
+    .phase-profit { background: linear-gradient(135deg, #1f9d55, #157a41); }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .snapshot-card {
+      padding: 12px;
+    }
+
+    .snapshot-card h4 {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+    }
+
+    .snapshot-stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.8rem;
+      padding: 4px 0;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .snapshot-stat:first-of-type { border-top: none; }
+
+    .scale-table-wrap {
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .scale-row-highlight {
+      background: rgba(41,98,255,0.10) !important;
+      box-shadow: inset 4px 0 0 rgba(41,98,255,0.85);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #eef3ff;
+      color: #264184;
+      border: 1px solid #dae3fb;
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 0.8rem; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 28, 46, 0.58);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(1120px, 100%);
+      max-height: calc(100vh - 40px);
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      background: linear-gradient(135deg, #f8fbff, #ffffff);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .modal-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px 0;
+      flex-wrap: wrap;
+      background: white;
+    }
+
+    .tab-btn {
+      background: #eef2f8;
+      color: var(--text);
+      border: 1px solid #dce5f3;
+      padding: 9px 12px;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .modal-body {
+      padding: 18px 20px 22px;
+      overflow: auto;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .view-switcher {
+      display: inline-flex;
+      gap: 8px;
+      padding: 6px;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 94px;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+    }
+
+    .view-btn {
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: none;
+    }
+
+    .view-btn.active {
+      background: linear-gradient(135deg, var(--accent), #5c85ff);
+      color: #fff;
+    }
+
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    .snapshot-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .snapshot-pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .snapshot-pill {
+      background: #eef2f8;
+      color: var(--muted);
+      border: 1px solid #dce5f3;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: none;
+    }
+
+    .snapshot-pill.active {
+      background: linear-gradient(135deg, var(--accent), #5c85ff);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .phase-summary-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .phase-summary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #dce5f5;
+      background: linear-gradient(180deg, #fbfdff, #f6f9ff);
+      white-space: nowrap;
+    }
+
+    .phase-summary-chip .phase-key {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .phase-summary-chip .phase-text {
+      color: var(--header);
+      font-weight: 700;
+    }
+
+    .phase-summary-arrow {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+
+    .flat-phase-card {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fbfdff, #f6f9ff);
+      border: 1px solid #e2eaf5;
+      margin-top: 4px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .capacity-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .capacity-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+    .analysis-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: linear-gradient(180deg, #fbfdff, #f7faff);
+      margin-bottom: 12px;
+    }
+    .analysis-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .analysis-value { font-size: 1.1rem; font-weight: 800; color: var(--header); }
+    .constraint-pill {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .constraint-pill.good { background: var(--green-soft); color: var(--green); }
+    .constraint-pill.warn { background: var(--amber-soft); color: var(--amber); }
+    .constraint-pill.bad { background: var(--red-soft); color: var(--red); }
+
+    .capacity-stat-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .capacity-stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 0.84rem;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    .capacity-stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .progress-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .progress-row { display: grid; gap: 6px; }
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      background: #e8eef8;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #2962ff, #5c85ff);
+    }
+
+    .progress-fill.warn { background: linear-gradient(90deg, #d89b18, #efb73f); }
+    .progress-fill.bad { background: linear-gradient(90deg, #d64545, #ef6b6b); }
+    .progress-fill.good { background: linear-gradient(90deg, #1f9d55, #2ebf72); }
+
+    .roadmap-table th:first-child,
+    .roadmap-table td:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 1;
+    }
+
+    .fsr-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .fsr-details-grid .section-card { padding: 20px 24px; }
+    .fsr-details-grid .fsr-detail-wide { grid-column: 1 / -1; }
+    .fsr-details-grid .fsr-kpi-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 12px 0 6px;
+    }
+    .fsr-details-grid .fsr-kpi {
+      flex: 1;
+      min-width: 140px;
+      background: #f3f6fc;
+      border-radius: 12px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .fsr-details-grid .fsr-kpi .kpi-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--header);
+    }
+    .fsr-details-grid .fsr-kpi .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-top: 2px;
+    }
+    .fsr-details-grid table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+    .fsr-details-grid th {
+      text-align: left;
+      font-weight: 700;
+      color: var(--header);
+      padding: 8px 10px;
+      border-bottom: 2px solid var(--line);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .fsr-details-grid th:not(:first-child),
+    .fsr-details-grid td:not(:first-child) { text-align: right; }
+    .fsr-details-grid td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #eef2f8;
+      color: var(--text);
+    }
+    .fsr-details-grid tr:last-child td { border-bottom: none; }
+
+    .steady-charts-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .steady-table th:first-child,
+    .steady-table td:first-child {
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .steady-table th:first-child { z-index: 2; }
+    .steady-table .metric-name { font-weight: 700; color: var(--header); }
+    .margin-good { color: var(--green); background: var(--green-soft); }
+    .margin-tight { color: var(--amber); background: var(--amber-soft); }
+    .margin-bad { color: var(--red); background: var(--red-soft); }
+    .steady-table td.margin-good, .steady-table td.margin-tight, .steady-table td.margin-bad {
+      font-weight: 700;
+      border-radius: 10px;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .doc-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fbfdff;
+    }
+
+    .doc-card h3, .doc-card h4 {
+      margin-top: 0;
+    }
+
+    .doc-card p, .doc-card li {
+      color: #334257;
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    .doc-card ul { margin: 10px 0 0 18px; padding: 0; }
+    .doc-card .formula { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #eef3ff; padding: 8px 10px; border-radius: 10px; display: inline-block; }
+
+    .fsr-lanes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .fsr-lane-card { padding: 20px; }
+
+    .lane-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .onb-badge { background: rgba(41,98,255,0.10); color: #234697; }
+    .panel-badge-cls { background: rgba(31,157,85,0.12); color: #15613a; }
+
+    .sidebar-setup-btn { padding: 8px 0 4px; }
+
+    @media (max-width: 1320px) {
+      .layout { grid-template-columns: 1fr; }
+      .panel { order: 2; }
+      .main { order: 1; }
+      .panel { position: static; max-height: none; }
+      .metrics-grid, .capacity-grid, .setup-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .growth-metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .snapshot-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
+      .setup-page-grid, .setup-grid, .impact-grid, .definition-grid, .setup-intro-grid, .setup-filter-host #filtersWorkbench { grid-template-columns: 1fr; }
+      .setup-main-section, .setup-sidebar-column { grid-column: auto; grid-row: auto; }
+      .setup-preview-card { position: static; top: auto; max-height: none; overflow: visible; }
+      .setup-filter-host .phase-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .capacity-layout, .steady-charts-grid, .fsr-details-grid, .fsr-lanes-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 920px) {
+      .charts-grid, .helper-grid, .metrics-grid, .capacity-grid, .guide-grid, .setup-summary-grid, .growth-metrics-grid { grid-template-columns: 1fr; }
+      .scenario-buttons { grid-template-columns: 1fr; }
+      .snapshot-grid { grid-template-columns: 1fr 1fr; }
+      header .title-row { align-items: flex-start; }
+      .modal { max-height: calc(100vh - 20px); }
+      .view-switcher { width: 100%; display: grid; grid-template-columns: 1fr; border-radius: 18px; }
+      .setup-preview-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .setup-filter-host .phase-cards { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .layout { padding: 12px; gap: 14px; }
+      header { padding: 14px 16px; }
+      .header-actions { width: 100%; }
+      .header-actions > * { flex: 1 1 140px; }
+      .snapshot-grid { grid-template-columns: 1fr; }
+      .timeline-bar { flex-direction: column; }
+      .phase-segment { min-width: 100%; min-height: 58px; }
+      .modal-backdrop { padding: 10px; }
+      .modal-header, .modal-body, .modal-tabs { padding-left: 14px; padding-right: 14px; }
+    }
+
+    /* ── Strategy & Docs view ─────────────────────────────────── */
+    .docs-layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 0;
+      min-height: calc(100vh - 140px);
+    }
+
+    .docs-sidebar {
+      background: var(--card);
+      border-right: 1px solid var(--line);
+      padding: 16px 0;
+      overflow-y: auto;
+      max-height: calc(100vh - 140px);
+      position: sticky;
+      top: 112px;
+    }
+
+    .docs-sidebar .doc-category {
+      padding: 8px 20px 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    .docs-sidebar .doc-category:first-child {
+      margin-top: 0;
+    }
+
+    .docs-sidebar .doc-item {
+      display: block;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+      line-height: 1.35;
+    }
+
+    .docs-sidebar .doc-item:hover {
+      background: var(--accent-soft);
+    }
+
+    .docs-sidebar .doc-item.active {
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .docs-content {
+      padding: 32px 48px;
+      overflow-y: auto;
+      max-height: calc(100vh - 140px);
+    }
+
+    .docs-content h1 {
+      font-size: 1.8rem;
+      margin: 0 0 8px;
+      color: var(--header);
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 12px;
+    }
+
+    .docs-content h2 {
+      font-size: 1.3rem;
+      margin: 32px 0 12px;
+      color: var(--header);
+    }
+
+    .docs-content h3 {
+      font-size: 1.05rem;
+      margin: 24px 0 8px;
+      color: var(--text);
+    }
+
+    .docs-content p {
+      line-height: 1.7;
+      margin: 0 0 14px;
+      color: var(--text);
+    }
+
+    .docs-content ul, .docs-content ol {
+      margin: 0 0 14px;
+      padding-left: 24px;
+    }
+
+    .docs-content li {
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+
+    .docs-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .docs-content th {
+      background: var(--header);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .docs-content td {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .docs-content tr:nth-child(even) td {
+      background: #f8f9fb;
+    }
+
+    .docs-content blockquote {
+      border-left: 4px solid var(--accent);
+      margin: 16px 0;
+      padding: 12px 20px;
+      background: var(--accent-soft);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .docs-content code {
+      background: #f0f2f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      font-family: 'SF Mono', Consolas, monospace;
+    }
+
+    .docs-content pre {
+      background: var(--header);
+      color: #e8eaf0;
+      padding: 16px 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 16px 0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .docs-content pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .docs-content hr {
+      border: none;
+      border-top: 2px solid var(--line);
+      margin: 32px 0;
+    }
+
+    .docs-content strong {
+      color: var(--header);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-row">
+      <div>
+        <h1>Elder Care Platform Financial Planning Model</h1>
+        <div class="subhead">Interactive 36-month planning dashboard for pricing, staffing, family growth, FSR capacity, operating cash flow, and capital needs.</div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">&larr; Home</a>
+        <button class="btn-secondary" id="openDefinitionsBtn">Definitions &amp; Guide</button>
+        <button class="btn-secondary" id="resetDefaultsBtn">Reset to Defaults</button>
+        <button class="btn-primary" id="saveScenarioBtn">Save Scenario</button>
+        <select id="savedScenarioSelect">
+          <option value="">Load saved scenario…</option>
+        </select>
+        <button class="btn-green" id="exportCsvBtn">Export CSV</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel" id="inputsPanel">
+      <div id="filtersWorkbench">
+        <div class="panel-header">
+          <h2>Inputs &amp; Scenarios</h2>
+        </div>
+
+        <div id="sidebarSetupShortcut" class="sidebar-setup-btn" style="display:none;">
+          <button class="btn-primary" style="width:100%;font-size:0.82rem;padding:8px 14px;" onclick="setActiveView('setup')">&larr; Full Model Setup</button>
+        </div>
+
+        <details class="control-group collapsible-group" data-preview-context="scenario" data-views="setup,growth,fsr,steady">
+          <summary><span>Pre-Built Scenarios</span></summary>
+          <div style="padding:8px 14px 14px">
+          <div class="scenario-buttons" id="scenarioButtons">
+            <button type="button" data-scenario="optimistic"><strong>Optimistic</strong><br><span class="small">1,000 families/FSR · $299/mo · 100 new/mo</span></button>
+            <button type="button" data-scenario="conservative"><strong>Conservative</strong><br><span class="small">400 families/FSR · $249/mo · 75 new/mo</span></button>
+            <button type="button" data-scenario="premium"><strong>Premium Concierge</strong><br><span class="small">300 families/FSR · $499/mo · 50 new/mo</span></button>
+            <button type="button" data-scenario="healthplan"><strong>Health Plan Scale</strong><br><span class="small">500 families/FSR · $199/mo · 300 new/mo</span></button>
+          </div>
+          <div class="field-note">Pick one to load baseline assumptions, then adjust phases and FSR inputs above.</div>
+          </div>
+        </details>
+
+        <details class="control-group collapsible-group" id="phase-editor-group" data-preview-context="phase" data-views="setup">
+          <summary>
+            <span>Company Phases</span>
+            <span class="summary-meta">3-phase staffing + growth plan</span>
+          </summary>
+          <div class="phase-editor-body">
+            <div class="toggle-row">
+              <label class="toggle-check"><input type="checkbox" id="phaseScalingEnabled"> Enable phase scaling</label>
+              <span class="summary-meta" id="phaseScalingStatus">Flat staffing inputs active</span>
+            </div>
+            <div class="field-note">When enabled, monthly growth, engineering, org management, org management salary, and office/infra costs follow the phase schedule below.</div>
+            <div class="phase-cards" id="phaseCards"></div>
+          </div>
+        </details>
+
+        <details class="control-group collapsible-group" data-preview-context="demand" data-views="setup,fsr">
+          <summary><span>FSR Demand Inputs</span></summary>
+          <div style="padding:12px 16px 16px" id="demand-group">
+          <div class="field-note" style="margin-bottom:10px">Onboarding hours and churn drive FSR headcount calculations. New families/month is set per phase above.</div>
+            <div class="field-note" style="margin-bottom:10px">Growth targets, human time per family, and churn. These demand-side drivers determine how many FSRs you need.</div>
+          </div>
+        </details>
+
+        <details class="control-group collapsible-group" data-preview-context="revenue" data-views="setup,growth,steady">
+          <summary><span>Revenue</span></summary>
+          <div style="padding:12px 16px 16px" id="revenue-group">
+            <div class="field-note" style="margin-bottom:10px">What you charge per family.</div>
+          </div>
+        </details>
+
+        <details class="control-group collapsible-group" data-preview-context="fsr" data-views="setup,fsr,steady">
+          <summary><span>FSR Capacity</span></summary>
+          <div style="padding:12px 16px 16px" id="fsr-group">
+            <div class="field-note" style="margin-bottom:10px">FSR compensation and target panel size — supply-side levers to meet demand.</div>
+            <div class="fsr-math-box" id="fsrMathBox"></div>
+          </div>
+        </details>
+
+        <details class="control-group collapsible-group" data-preview-context="team" data-views="setup">
+          <summary><span>Team &amp; Fixed Costs</span></summary>
+          <div style="padding:12px 16px 16px" id="team-costs-group">
+            <div class="field-note" style="margin-bottom:10px">Engineering, org management, infrastructure. Fixed burn that doesn't scale with families.</div>
+          </div>
+        </details>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="view-switcher">
+        <button class="view-btn active" type="button" data-view="setup">Model Setup</button>
+        <button class="view-btn" type="button" data-view="growth">Growth Model</button>
+        <button class="view-btn" type="button" data-view="fsr">FSR Details</button>
+        <button class="view-btn" type="button" data-view="steady">Steady State</button>
+        <button class="view-btn" type="button" data-view="docs">Strategy &amp; Docs</button>
+      </section>
+
+      <div class="view-panel" id="view-growth">
+        <section class="metrics-grid growth-metrics-grid" id="metricsGrid"></section>
+
+                <section class="charts-grid">
+          <div class="chart-card">
+            <h3>36-Month Cash Flow</h3>
+            <div class="chart-wrap"><canvas id="cashFlowChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Family Growth</h3>
+            <div class="small muted">Active families against the modeled family capacity implied by that month’s FSR pool.</div>
+            <div class="chart-wrap"><canvas id="familyGrowthChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Team Scaling</h3>
+            <div class="chart-wrap"><canvas id="teamScalingChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+              <h3 style="margin:0">Revenue &rarr; Operating Result Waterfall</h3>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <label for="waterfallMonthSelect" style="font-size:0.78rem;color:var(--muted);font-weight:600;">Month:</label>
+                <select id="waterfallMonthSelect" style="font-size:0.82rem;padding:4px 8px;border-radius:8px;border:1px solid #c9d4e5;background:#fff;color:var(--text);font-family:inherit;">
+                  <option value="6">M6</option>
+                  <option value="12" selected>M12</option>
+                  <option value="18">M18</option>
+                  <option value="24">M24</option>
+                  <option value="30">M30</option>
+                  <option value="36">M36</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="waterfallChart"></canvas></div>
+          </div>
+        </section>
+
+        <section class="section-card section-stack">
+          <div>
+            <h3>Operating Cash Flows &amp; Company Phases</h3>
+            <div class="section-meta" id="phaseMeta"></div>
+          </div>
+
+          <div>
+            <div class="small muted" style="margin-bottom:8px;">Company phase timeline</div>
+            <div class="timeline-bar" id="phaseTimeline"></div>
+          </div>
+
+          <div>
+            <div class="small muted" style="margin-bottom:8px;">Operating cash flow snapshots</div>
+            <div class="snapshot-grid" id="snapshotGrid"></div>
+          </div>
+        </section>
+
+        <section class="table-card">
+          <h3>Monthly Breakdown (36 Months)</h3>
+          <div class="table-meta" id="tableMeta"></div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>New Families</th>
+                  <th>Churned</th>
+                  <th>Total Active</th>
+                  <th>Onboarding Lane</th>
+                  <th>Account Lane</th>
+                  <th>Required FSR Pool</th>
+                  <th>Revenue</th>
+                  <th>Fixed Costs</th>
+                  <th>Variable Costs</th>
+                  <th>Net Income</th>
+                  <th>Cumulative Cash</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="view-panel active" id="view-setup">
+        <div class="setup-page-grid">
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Model Definitions &amp; Setup</h3>
+              <div class="small muted">Use this as the primary planning workspace: update scenarios and assumptions here, then read the effects in the cards, impacts, and formulas below.</div>
+            </div>
+            <div class="setup-intro-grid">
+              <div class="analysis-card">
+                <div class="analysis-label">Why this exists</div>
+                <div class="analysis-value">This is the home base for editing and reasoning together.</div>
+                <div class="small muted" style="margin-top:6px;">The setup view now puts the live controls, formulas, and downstream consequences in one place so the model is easier to teach, audit, and tune.</div>
+              </div>
+              <div class="analysis-card">
+                <div class="analysis-label">How to use it</div>
+                <div class="analysis-value">Tune the controls here first, then move to growth, capacity, or scenario views.</div>
+                <div class="small muted" style="margin-top:6px;">This is the same model state used everywhere else in the dashboard, so every change here updates the rest of the application immediately.</div>
+              </div>
+            </div>
+          </section>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Live Controls</h3>
+              <div class="small muted">Edit scenarios, phase plans, and the major operating assumptions directly here.</div>
+            </div>
+            <div class="setup-filter-host" id="setupFiltersHost"></div>
+          </section>
+          <aside class="setup-sidebar-column">
+            <section class="section-card section-stack setup-preview-card">
+              <div>
+                <h3>Preview Pane</h3>
+                <div class="small muted">Key metrics and a current-plan readout that stay visible while you tune the model.</div>
+              </div>
+              <div class="setup-preview-nav" id="setupPreviewNav"></div>
+              <div id="setupPreviewContext"></div>
+              <div class="setup-preview-metrics" id="setupSummaryGrid"></div>
+              <div class="setup-quick-read" id="setupQuickRead"></div>
+            </section>
+          </aside>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Parameter Workbook</h3>
+              <div class="small muted">A cleaner readout of the active assumptions, grouped by the operating logic they control.</div>
+            </div>
+            <div class="setup-grid" id="parameterWorkbook"></div>
+          </section>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Key Driver Impacts</h3>
+              <div class="small muted">The setup view should explain the cascade: change an assumption here, and these are the metrics that move.</div>
+            </div>
+            <div class="impact-grid" id="driverImpactGrid"></div>
+          </section>
+          <section class="section-card section-stack setup-main-section">
+            <div>
+              <h3>Core Formulas</h3>
+              <div class="small muted">High-signal definitions to anchor the model logic before you interpret the outputs.</div>
+            </div>
+            <div class="definition-grid" id="definitionLibraryGrid"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="view-panel" id="view-fsr">
+
+        <!-- FSR Demand Calculator -->
+        <div class="section-card" style="margin-bottom:18px;padding:20px 24px">
+          <h3 style="margin:0 0 14px;font-size:1rem">FSR Demand Calculator</h3>
+          <p style="margin:0 0 16px;color:var(--muted);font-size:0.84rem">Adjust the three core drivers to see how FSR headcount, panel size, and revenue work out. Onboarding is typically 75-85% of total FSR labor during the growth phase.</p>
+
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px">
+            <div class="field">
+              <div class="field-top"><label for="dc-new-families">New families / month</label></div>
+              <input type="range" id="dc-new-families-range" min="10" max="500" step="5" value="100" style="width:100%;accent-color:var(--accent)">
+              <input type="number" id="dc-new-families" min="10" max="500" step="5" value="100" style="width:80px;margin-top:4px">
+            </div>
+            <div class="field">
+              <div class="field-top"><label for="dc-onboard-hrs">Onboarding hrs / family</label></div>
+              <input type="range" id="dc-onboard-hrs-range" min="1" max="12" step="0.5" value="3" style="width:100%;accent-color:var(--accent)">
+              <input type="number" id="dc-onboard-hrs" min="1" max="12" step="0.5" value="3" style="width:80px;margin-top:4px">
+            </div>
+            <div class="field">
+              <div class="field-top"><label for="dc-churn">Monthly churn (%)</label></div>
+              <input type="range" id="dc-churn-range" min="0.5" max="5" step="0.1" value="2.5" style="width:100%;accent-color:var(--accent)">
+              <input type="number" id="dc-churn" min="0.5" max="5" step="0.1" value="2.5" style="width:80px;margin-top:4px">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:20px" id="dc-outputs">
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--accent)" id="dc-fsrs">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Onboarding FSRs</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--text)" id="dc-steady-families">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Panel lives at maturity</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.3rem;font-weight:700;color:var(--green)" id="dc-steady-rev">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Panel MRR at maturity</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--amber)" id="dc-onboard-pct">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">% FSR labor = onboarding</div>
+            </div>
+            <div style="background:#f3f6fc;border-radius:12px;padding:14px;text-align:center">
+              <div style="font-size:1.5rem;font-weight:700;color:var(--text)" id="dc-months-ss">—</div>
+              <div style="font-size:0.76rem;color:var(--muted);margin-top:4px">Mo to approach steady state</div>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table style="width:100%;font-size:0.83rem;border-collapse:collapse">
+              <thead>
+                <tr>
+                  <th style="padding:8px 10px;text-align:left;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">New families/mo</th>
+                  <th style="padding:8px 10px;text-align:right;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">Onboarding FSRs</th>
+                  <th style="padding:8px 10px;text-align:right;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">Panel lives at maturity</th>
+                  <th style="padding:8px 10px;text-align:right;background:#f8fbff;color:var(--muted);font-size:0.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)">Panel MRR at maturity</th>
+                </tr>
+              </thead>
+              <tbody id="dc-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="fsr-details-grid" id="fsrDetailsGrid"></div>
+      </div>
+
+      <div class="view-panel" id="view-steady">
+        <section class="steady-charts-grid">
+          <div class="chart-card">
+            <h3>Revenue vs. Cost at Mature Scale</h3>
+            <div class="chart-wrap"><canvas id="steadyStateChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Net Margin % by Scale</h3>
+            <div class="chart-wrap"><canvas id="steadyStateMarginChart"></canvas></div>
+          </div>
+        </section>
+        <section class="section-card section-stack">
+          <div>
+            <h3>Steady-State Comparison</h3>
+            <div class="small muted">Illustrative mature operating model using replacement demand implied by the active churn assumptions.</div>
+          </div>
+          <div class="table-scroll steady-table-scroll">
+            <table class="steady-table">
+              <thead id="steadyStateHead"></thead>
+              <tbody id="steadyStateBody"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="section-card section-stack">
+          <div>
+            <h3>Scale Analysis</h3>
+            <div class="small muted">Same scale table from the growth model, moved here so the mature-scale view owns benchmark comparisons.</div>
+          </div>
+          <div class="scale-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Scale</th>
+                  <th>Monthly Revenue</th>
+                  <th>FSRs Needed</th>
+                  <th>Monthly Costs</th>
+                  <th>Net Margin</th>
+                  <th>Total Headcount</th>
+                  <th>Approx Position</th>
+                </tr>
+              </thead>
+              <tbody id="scaleTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="view-panel" id="view-docs">
+        <div class="docs-layout">
+          <div class="docs-sidebar" id="docsSidebar"></div>
+          <div class="docs-content" id="docsContentPane"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="definitionsModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="definitionsTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="definitionsTitle">Definitions &amp; Dashboard Guide</h2>
+          <div class="small muted">Metric formulas, operating logic, and how to interpret scale, staffing, and break-even.</div>
+        </div>
+        <button class="btn-secondary" id="closeDefinitionsBtn">Close</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-tab="definitions" type="button">Metric Definitions</button>
+        <button class="tab-btn" data-tab="guide" type="button">Dashboard Guide</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-panel active" id="tab-definitions"></div>
+        <div class="tab-panel" id="tab-guide"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCENARIO_STORAGE_KEY = 'elderCareFinancialModel.savedScenarios';
+    const MONTHLY_AVAILABLE_HOURS = 160;
+    const SHARED_INFRA_PER_FAMILY = 4;
+    const PAYMENT_PROCESSING_RATE = 0.03;
+    const BASE_OPS_HEADCOUNT = 1;
+    const OPS_SALARY = 110000;
+    const scaleTargets = [1000, 5000, 10000, 25000, 50000];
+    const steadyStateTargets = [5000, 10000, 25000, 50000, 100000];
+    const phasePalette = ['phase-blue', 'phase-amber', 'phase-green'];
+    const phasedOverrideKeys = ['engineers', 'orgManagementHeadcount', 'orgManagementSalary', 'officeInfraMonthly'];
+
+    const fieldDefs = [
+      { key: 'engineers', label: 'Number of engineers', group: 'team-costs-group', min: 1, max: 50, step: 1, default: 5, format: 'int' },
+      { key: 'engineerSalary', label: 'Engineer avg salary', group: 'team-costs-group', min: 100000, max: 400000, step: 5000, default: 250000, format: 'currency0' },
+      { key: 'orgManagementHeadcount', label: 'Org management headcount', group: 'team-costs-group', min: 1, max: 50, step: 1, default: 2, format: 'int' },
+      { key: 'orgManagementSalary', label: 'Org management salary', group: 'team-costs-group', min: 60000, max: 300000, step: 5000, default: 135000, format: 'currency0' },
+      { key: 'officeInfraMonthly', label: 'Monthly office/infra cost', group: 'team-costs-group', min: 0, max: 200000, step: 1000, default: 10000, format: 'currency0' },
+      { key: 'aiCloudPerFamily', label: 'AI/cloud cost per family per month', group: 'team-costs-group', min: 0.5, max: 50, step: 0.5, default: 5, format: 'currency2' },
+
+      { key: 'newFamiliesPerMonth', label: 'New families / month (flat, no phases)', group: 'demand-group', min: 5, max: 1000, step: 5, default: 100, format: 'int' },
+      { key: 'onboardingHours', label: 'Onboarding hours per family', group: 'demand-group', min: 0.5, max: 20, step: 0.5, default: 6, format: 'hours' },
+      { key: 'churnRate', label: 'Monthly total churn rate', group: 'demand-group', min: 0.1, max: 8, step: 0.1, default: 2.5, format: 'percent' },
+
+      { key: 'monthlyPrice', label: 'Monthly price per family', group: 'revenue-group', min: 29, max: 1500, step: 5, default: 249, format: 'currency0' },
+      { key: 'onboardingFee', label: 'Onboarding fee (one-time)', group: 'revenue-group', min: 0, max: 5000, step: 25, default: 500, format: 'currency0' },
+      { key: 'acquisitionCost', label: 'Paid acquisition cost per family', group: 'revenue-group', min: 0, max: 5000, step: 25, default: 600, format: 'currency0' },
+
+      { key: 'fsrSalary', label: 'FSR salary', group: 'fsr-group', min: 60000, max: 250000, step: 5000, default: 125000, format: 'currency0' },
+      { key: 'familiesPerFsr', label: 'Target panel size (families / FSR)', group: 'fsr-group', min: 50, max: 3000, step: 25, default: 400, format: 'int' },
+    ];
+
+    const defaultInputs = Object.fromEntries(fieldDefs.map(f => [f.key, f.default]));
+
+    function getDefaultPhases() {
+      return {
+        enabled: false,
+        phases: [
+          { id: 'phase1', name: 'Build & Launch', startMonth: 1, engineers: 5, engineerSalary: 250000, orgManagementHeadcount: 4, orgManagementSalary: 200000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
+          { id: 'phase2', name: 'Early Growth', startMonth: 13, engineers: 6, engineerSalary: 250000, orgManagementHeadcount: 6, orgManagementSalary: 200000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
+          { id: 'phase3', name: 'Scale', startMonth: 25, engineers: 8, engineerSalary: 250000, orgManagementHeadcount: 8, orgManagementSalary: 200000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
+        ]
+      };
+    }
+
+    const scenarioPresets = {
+      optimistic: {
+        familiesPerFsr: 1000,
+        onboardingHours: 3,
+        monthlyPrice: 299,
+        newFamiliesPerMonth: 100,
+        churnRate: 1,
+      },
+      conservative: {
+        familiesPerFsr: 400,
+        onboardingHours: 6,
+        monthlyPrice: 249,
+        newFamiliesPerMonth: 75,
+        churnRate: 2,
+      },
+      premium: {
+        familiesPerFsr: 300,
+        onboardingHours: 8,
+        monthlyPrice: 499,
+        newFamiliesPerMonth: 50,
+        churnRate: 1.5,
+      },
+      healthplan: {
+        familiesPerFsr: 500,
+        onboardingHours: 4,
+        monthlyPrice: 199,
+        newFamiliesPerMonth: 300,
+        churnRate: 1,
+      }
+    };
+
+    const scenarioPhasePresets = {
+      optimistic: {
+        enabled: true,
+        phases: [
+          { name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 100 },
+          { name: 'Early Growth', startMonth: 7, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 180 },
+          { name: 'Scale', startMonth: 19, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 260 },
+        ]
+      },
+      conservative: {
+        enabled: true,
+        phases: [
+          { name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 4, orgManagementSalary: 200000, officeInfraMonthly: 10000, newFamiliesPerMonth: 75 },
+          { name: 'Early Growth', startMonth: 13, engineers: 6, orgManagementHeadcount: 6, orgManagementSalary: 200000, officeInfraMonthly: 25000, newFamiliesPerMonth: 150 },
+          { name: 'Scale', startMonth: 25, engineers: 8, orgManagementHeadcount: 8, orgManagementSalary: 200000, officeInfraMonthly: 40000, newFamiliesPerMonth: 250 },
+        ]
+      },
+      premium: {
+        enabled: true,
+        phases: [
+          { name: 'Build & Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 50 },
+          { name: 'Early Growth', startMonth: 13, engineers: 8, orgManagementHeadcount: 4, orgManagementSalary: 140000, officeInfraMonthly: 25000, newFamiliesPerMonth: 100 },
+          { name: 'Scale', startMonth: 25, engineers: 12, orgManagementHeadcount: 6, orgManagementSalary: 150000, officeInfraMonthly: 40000, newFamiliesPerMonth: 160 },
+        ]
+      },
+      healthplan: {
+        enabled: true,
+        phases: [
+          { name: 'Health Plan Launch', startMonth: 1, engineers: 5, orgManagementHeadcount: 2, orgManagementSalary: 135000, officeInfraMonthly: 10000, newFamiliesPerMonth: 300 },
+          { name: 'Network Expansion', startMonth: 7, engineers: 9, orgManagementHeadcount: 4, orgManagementSalary: 145000, officeInfraMonthly: 30000, newFamiliesPerMonth: 425 },
+          { name: 'Enterprise Scale', startMonth: 15, engineers: 14, orgManagementHeadcount: 7, orgManagementSalary: 155000, officeInfraMonthly: 50000, newFamiliesPerMonth: 575 },
+        ]
+      }
+    };
+
+    const state = { ...defaultInputs };
+    const controls = {};
+    const phaseControls = { starts: {}, fields: {}, names: {} };
+    let phaseState = getDefaultPhases();
+    let monthlyRows = [];
+    let charts = {};
+    let activeScenarioKey = null;
+    let activeView = 'setup';
+    // Strategy &amp; Docs view fetches markdown files; Economics Deep Dive is a separate presentation (economics-deep-dive.html)
+
+    let waterfallMonth = 12;
+    let activePreviewContext = 'demand';
+    let latestModel = null;
+    let previewViewportSyncFrame = null;
+    let previewInteractionLockUntil = 0;
+
+    const money0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const money2 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const intFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+    const oneDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const twoDec = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    const metricDefinitions = {
+      fixedByPhase: {
+        title: 'Fixed costs by phase',
+        formula: '(Engineers × Salary/12) + (Org Mgmt × Salary/12) + Office/Infra per phase',
+        meaning: 'Monthly fixed cost at each company phase. Shows how costs step up as you scale the team.',
+        drivers: 'Engineer count, org management headcount and salary, and office/infrastructure costs configured per phase.',
+        interpretation: 'Compare across phases to see cost cliff events. The jump between phases is what pushes break-even out.'
+      },
+      headcountByPhase: {
+        title: 'Headcount by phase',
+        formula: 'Corporate headcount (engineers + org mgmt + ops) + dynamic FSR headcount at each phase end',
+        meaning: 'Shows the organizational shape at the end of each phase, separating company builders from frontline FSR capacity.',
+        drivers: 'Phase-specific engineering and management hires, ops scaling rules, and family growth driving FSR demand.',
+        interpretation: 'Use this to see when FSR growth overtakes corporate buildout and where the team mix changes materially.'
+      },
+      burnRate: {
+        title: 'Monthly burn rate',
+        formula: 'Fixed payroll + office/infra + base ops',
+        meaning: 'How much fixed monthly spend the company carries before family-linked variable costs.',
+        drivers: 'Engineer count and salary, org management headcount and salary, office/infra, and baseline ops staffing.',
+        interpretation: 'Higher burn raises the break-even family count and increases peak capital required.'
+      },
+      humanTimePerFamily: {
+        title: 'Human time / family / month',
+        formula: 'Outreach rate × average handle time',
+        meaning: 'The core operating metric that compresses or expands FSR demand.',
+        drivers: 'Human outreach rate and average handle time.',
+        interpretation: 'If this climbs, the service model starts behaving more like labor-heavy operations than AI-amplified software.'
+      },
+      onboardingCapacityPerFsr: {
+        title: 'Onboarding capacity / FSR',
+        formula: 'Onboarding hours pool / onboarding hours per family',
+        meaning: 'How many new families one cross-trained FSR can onboard in a month with the reserved onboarding lane.',
+        drivers: 'Reserved onboarding hours and onboarding hours required per family.',
+        interpretation: 'Lower onboarding hours or better tooling raise intake throughput without requiring immediate new FSR hiring.'
+      },
+      effectiveFamiliesPerFsr: {
+        title: 'Binding panel size',
+        formula: 'min(target panel size, workload-limited panel size)',
+        meaning: 'The families-per-FSR the model actually uses — target vs workload, whichever is tighter.',
+        drivers: 'Target panel size, outreach rate, and average handle time.',
+        interpretation: 'If workload-limited capacity is below target, the operating design is too human-heavy for the planned panel size.'
+      },
+      effectiveChurn: {
+        title: 'Effective monthly churn',
+        formula: 'max(total churn input, structural churn floor from lifetime cap)',
+        meaning: 'Retention assumption actually used in the model after accounting for the elder-care journey duration.',
+        drivers: 'Observed churn and the lifetime-cap floor.',
+        interpretation: 'Use this to keep very optimistic churn assumptions from overstating LTV and family retention.'
+      },
+      variableCostPerFamily: {
+        title: 'Variable cost / family',
+        formula: 'FSR cost/family + AI/cloud + shared infra + payment fees',
+        meaning: 'Estimated monthly delivery cost for one active family before fixed overhead.',
+        drivers: 'FSR salary, realistic FSR capacity, AI/cloud, shared infrastructure, and payment processing.',
+        interpretation: 'Lower variable costs expand contribution margin and improve scale economics.'
+      },
+      contributionMarginPerFamily: {
+        title: 'Contribution margin / family',
+        formula: 'Monthly price - variable cost / family',
+        meaning: 'Monthly dollars each active family contributes toward fixed burn and eventual profit.',
+        drivers: 'Pricing, FSR efficiency, AI/cloud cost, shared infra, and payment processing.',
+        interpretation: 'Higher contribution margin lowers break-even scale and reduces funding needs.'
+      },
+      breakEvenFamilies: {
+        title: 'Break-even families',
+        formula: 'Current phase fixed costs / contribution margin per family',
+        meaning: 'Approximate active families needed to cover the fixed monthly cost base for the phase used in the metric.',
+        drivers: 'Phase-specific staffing and office costs, plus contribution margin quality.',
+        interpretation: 'Use this as a directional hurdle rate for the current phase, not a promise of exact month timing.'
+      },
+      breakEvenMonth: {
+        title: 'Months to break-even',
+        formula: 'First month where net income ≥ 0',
+        meaning: 'The first month monthly operations turn profitable under the active growth and cost path.',
+        drivers: 'Growth pace, churn, pricing, FSR capacity, and phase-specific fixed costs.',
+        interpretation: 'Earlier break-even means a faster path to self-funding.'
+      },
+      capitalRequired: {
+        title: 'Capital required',
+        formula: 'Peak negative cumulative cash',
+        meaning: 'Maximum funding gap before the forecast self-funds.',
+        drivers: 'How long losses persist, how deep they are, and where fixed-cost step-ups occur.',
+        interpretation: 'Phase step-ups can materially increase required capital even if the end state looks healthy.'
+      },
+      finalFamilies: {
+        title: '36-month active families',
+        formula: 'Ending active families in month 36 of the forecast',
+        meaning: 'How much installed family base the current path creates by the end of the planning window.',
+        drivers: 'Growth pace, churn, and whether the company can afford to keep scaling through the fixed-cost ramps.',
+        interpretation: 'Useful as a scale outcome, but only meaningful alongside capital required and month-36 profitability.'
+      },
+      ltv: {
+        title: 'LTV / family',
+        formula: 'Contribution margin × min(1 / effective churn, lifetime cap months)',
+        meaning: 'Estimated family value before fixed overhead after capping the elder-care journey duration.',
+        drivers: 'Contribution margin, churn, and lifetime cap.',
+        interpretation: 'This is intentionally conservative: long nominal lifetimes are capped so LTV does not drift into fantasy.'
+      },
+      ltvCac: {
+        title: 'LTV : CAC',
+        formula: 'LTV / CAC',
+        meaning: 'Efficiency score for acquisition using the planning CAC assumption.',
+        drivers: 'Retention, pricing, service efficiency, and acquisition burden.',
+        interpretation: 'A higher ratio generally means healthier unit economics.'
+      },
+    };
+
+    function clonePhases(source) {
+      return {
+        enabled: !!source.enabled,
+        phases: (source.phases || []).map((phase, index) => ({
+          id: phase.id || `phase${index + 1}`,
+          name: phase.name,
+          startMonth: phase.startMonth,
+          engineers: phase.engineers,
+          orgManagementHeadcount: phase.orgManagementHeadcount,
+          orgManagementSalary: phase.orgManagementSalary,
+          officeInfraMonthly: phase.officeInfraMonthly,
+          newFamiliesPerMonth: phase.newFamiliesPerMonth,
+        }))
+      };
+    }
+
+    function clampValue(value, def) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return def.default;
+      return Math.min(def.max, Math.max(def.min, numeric));
+    }
+
+    function parseByStep(raw, step) {
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function formatValue(value, format) {
+      if (format === 'currency0') return money0.format(value);
+      if (format === 'currency2') return money2.format(value);
+      if (format === 'percent') return `${oneDec.format(value)}%`;
+      if (format === 'minutes') return `${intFmt.format(value)} min`;
+      if (format === 'hours') return `${oneDec.format(value)} hrs`;
+      if (format === 'years') return `${oneDec.format(value)} yrs`;
+      return intFmt.format(value);
+    }
+
+    function sanitizePhaseState() {
+      const defaults = getDefaultPhases();
+      const phases = phaseState.phases.map((phase, index) => ({ ...defaults.phases[index], ...phase, id: `phase${index + 1}` }));
+      phases[0].startMonth = 1;
+      phases[1].startMonth = Math.max(2, Math.min(35, Number(phases[1].startMonth) || defaults.phases[1].startMonth));
+      phases[2].startMonth = Math.max(3, Math.min(36, Number(phases[2].startMonth) || defaults.phases[2].startMonth));
+      phases[1].startMonth = Math.min(phases[1].startMonth, phases[2].startMonth - 1);
+      phases[2].startMonth = Math.max(phases[2].startMonth, phases[1].startMonth + 1);
+      phases[2].startMonth = Math.min(phases[2].startMonth, 36);
+      phases[1].startMonth = Math.max(2, Math.min(phases[1].startMonth, 35));
+      phaseState = { enabled: !!phaseState.enabled, phases };
+      return phaseState;
+    }
+
+    function getPhaseRanges(customPhaseState = phaseState) {
+      const cleanState = customPhaseState === phaseState ? sanitizePhaseState() : clonePhases(customPhaseState);
+      const phases = cleanState.phases.map((phase, index) => ({
+        ...phase,
+        id: phase.id || `phase${index + 1}`
+      }));
+      phases[0].startMonth = 1;
+      phases[1].startMonth = Math.max(2, Math.min(35, Number(phases[1].startMonth) || getDefaultPhases().phases[1].startMonth));
+      phases[2].startMonth = Math.max(phases[1].startMonth + 1, Math.min(36, Number(phases[2].startMonth) || getDefaultPhases().phases[2].startMonth));
+      return phases.map((phase, index) => ({
+        ...phase,
+        start: phase.startMonth,
+        end: index < phases.length - 1 ? phases[index + 1].startMonth - 1 : 36,
+        paletteClass: phasePalette[index] || 'phase-blue'
+      }));
+    }
+
+    function getPhaseForMonth(month, customPhaseState = phaseState) {
+      const phases = clonePhases(customPhaseState).phases;
+      phases[0].startMonth = 1;
+      phases[1].startMonth = Math.max(2, Math.min(35, phases[1].startMonth));
+      phases[2].startMonth = Math.max(phases[1].startMonth + 1, Math.min(36, phases[2].startMonth));
+      for (let i = phases.length - 1; i >= 0; i--) {
+        if (month >= phases[i].startMonth) return phases[i];
+      }
+      return phases[0];
+    }
+
+    function calculateScenarioAverageNewFamilies(activePhaseState, fallbackValue) {
+      const ranges = getPhaseRanges(activePhaseState);
+      const weightedFamilies = ranges.reduce((sum, phase) => sum + (phase.newFamiliesPerMonth * (phase.end - phase.start + 1)), 0);
+      return weightedFamilies > 0 ? weightedFamilies / 36 : fallbackValue;
+    }
+
+    function getUrlConfig() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedView = params.get('view');
+      const requestedScenario = params.get('scenario');
+      return {
+        view: ['growth', 'setup', 'fsr', 'steady'].includes(requestedView) ? requestedView : null,
+        scenario: scenarioPresets[requestedScenario] ? requestedScenario : null,
+        expandAll: params.get('expand') === 'all'
+      };
+    }
+
+    function syncUrlState() {
+      const params = new URLSearchParams(window.location.search);
+      params.set('view', activeView);
+      if (activeScenarioKey) params.set('scenario', activeScenarioKey);
+      else params.delete('scenario');
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    }
+
+    function createField(def) {
+      const group = document.getElementById(def.group);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'field';
+      wrapper.dataset.fieldKey = def.key;
+      wrapper.innerHTML = `
+        <div class="field-top">
+          <label for="range-${def.key}">${def.label}</label>
+          <div class="value-wrap">
+            <strong id="display-${def.key}">${formatValue(def.default, def.format)}</strong>
+            <input id="input-${def.key}" type="number" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
+          </div>
+        </div>
+        <input id="range-${def.key}" type="range" min="${def.min}" max="${def.max}" step="${def.step}" value="${def.default}" />
+      `;
+      group.appendChild(wrapper);
+
+      const range = wrapper.querySelector(`#range-${def.key}`);
+      const number = wrapper.querySelector(`#input-${def.key}`);
+      const display = wrapper.querySelector(`#display-${def.key}`);
+
+      function syncCommitted(nextVal) {
+        const value = clampValue(nextVal, def);
+        state[def.key] = value;
+        range.value = value;
+        number.value = value;
+        display.textContent = formatValue(value, def.format);
+        updateDisabledBaseFieldState();
+        updateAll();
+      }
+
+      function syncFromSlider(nextVal) {
+        const value = clampValue(nextVal, def);
+        state[def.key] = value;
+        range.value = value;
+        number.value = value;
+        display.textContent = formatValue(value, def.format);
+        updateDisabledBaseFieldState();
+        updateAll();
+      }
+
+      range.addEventListener('input', e => syncFromSlider(e.target.value));
+      number.addEventListener('input', e => {
+        const raw = e.target.value;
+        if (raw === '' || raw === '-') return; // allow partial input while typing
+        const parsed = parseByStep(raw, def.step);
+        if (parsed === null) return;
+        const clamped = Math.min(def.max, Math.max(def.min, parsed));
+        state[def.key] = clamped;
+        range.value = clamped;
+        display.textContent = formatValue(clamped, def.format);
+        updateDisabledBaseFieldState();
+        updateAll();
+      });
+      number.addEventListener('blur', e => {
+        if (e.target.value === '') {
+          syncCommitted(def.default);
+          return;
+        }
+        syncCommitted(e.target.value);
+      });
+      number.addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.target.blur();
+      });
+
+      controls[def.key] = { range, number, display, def, sync: syncCommitted, wrapper };
+    }
+
+    function createCompactRangeField({ parent, id, label, value, min, max, step, format, onChange }) {
+      const field = document.createElement('div');
+      field.className = 'compact-field';
+      field.innerHTML = `
+        <div class="field-top">
+          <label for="${id}-range">${label}</label>
+          <strong id="${id}-display">${formatValue(value, format)}</strong>
+        </div>
+        <div class="range-number">
+          <input id="${id}-range" type="range" min="${min}" max="${max}" step="${step}" value="${value}" />
+          <input id="${id}-input" type="number" min="${min}" max="${max}" step="${step}" value="${value}" />
+        </div>
+      `;
+      parent.appendChild(field);
+
+      const range = field.querySelector(`#${id}-range`);
+      const number = field.querySelector(`#${id}-input`);
+      const display = field.querySelector(`#${id}-display`);
+      const def = { min, max, step, default: value, format };
+
+      function sync(next, trigger = true) {
+        const parsed = clampValue(next, def);
+        range.value = parsed;
+        number.value = parsed;
+        display.textContent = formatValue(parsed, format);
+        if (trigger) onChange(parsed);
+      }
+
+      range.addEventListener('input', e => sync(e.target.value, true));
+      number.addEventListener('input', e => {
+        if (e.target.value === '') return;
+        sync(e.target.value, true);
+      });
+      number.addEventListener('blur', e => sync(e.target.value || value, true));
+      number.addEventListener('keydown', e => {
+        if (e.key === 'Enter') e.target.blur();
+      });
+
+      return { field, range, number, display, sync };
+    }
+
+    function buildPhaseEditor() {
+      sanitizePhaseState();
+      const container = document.getElementById('phaseCards');
+      container.innerHTML = '';
+      const ranges = getPhaseRanges();
+      ranges.forEach((phase, index) => {
+        const card = document.createElement('div');
+        card.className = `phase-card ${phase.paletteClass}`;
+        card.innerHTML = `
+          <div class="phase-card-header">
+            <input type="text" id="phase-name-${index}" value="${phase.name.replace(/"/g, '&quot;')}" />
+            <span class="phase-badge">P${index + 1}</span>
+          </div>
+          <div class="phase-card-body">
+            <div class="phase-range" id="phase-range-${index}">Months ${phase.start}-${phase.end}</div>
+            ${index === 0 ? '<div class="phase-start-static">Start month fixed at Month 1.</div>' : `<div class="phase-start-row"><div class="phase-start-label"><span>Start month</span><strong id="phase-start-display-${index}">Month ${phase.start}</strong></div><div class="range-number" id="phase-start-controls-${index}"></div></div>`}
+            <div class="phase-mini-grid" id="phase-fields-${index}"></div>
+          </div>
+        `;
+        container.appendChild(card);
+
+        const nameInput = card.querySelector(`#phase-name-${index}`);
+        nameInput.addEventListener('input', e => {
+          phaseState.phases[index].name = e.target.value || getDefaultPhases().phases[index].name;
+          updateAll();
+        });
+        phaseControls.names[index] = nameInput;
+
+        if (index > 0) {
+          const startHost = card.querySelector(`#phase-start-controls-${index}`);
+          const startControl = createCompactRangeField({
+            parent: startHost,
+            id: `phase-start-${index}`,
+            label: '',
+            value: phase.start,
+            min: index === 1 ? 2 : 3,
+            max: index === 1 ? 35 : 36,
+            step: 1,
+            format: 'int',
+            onChange: next => {
+              phaseState.phases[index].startMonth = Math.round(next);
+              sanitizePhaseState();
+              updatePhaseEditorDisplay();
+              updateAll();
+            }
+          });
+          startControl.field.classList.remove('compact-field');
+          startControl.field.style.padding = '0';
+          startControl.field.style.border = 'none';
+          startControl.field.style.background = 'transparent';
+          startControl.field.querySelector('.field-top')?.remove();
+          phaseControls.starts[index] = startControl;
+        }
+
+        const fieldHost = card.querySelector(`#phase-fields-${index}`);
+        const fieldMap = {};
+        [
+          { key: 'engineers', label: 'Engineers', min: 1, max: 50, step: 1, format: 'int' },
+          { key: 'engineerSalary', label: 'Eng salary (fully loaded)', min: 100000, max: 500000, step: 5000, format: 'currency0' },
+          { key: 'orgManagementHeadcount', label: 'Org management', min: 1, max: 50, step: 1, format: 'int' },
+          { key: 'orgManagementSalary', label: 'Org mgmt salary (fully loaded)', min: 60000, max: 500000, step: 5000, format: 'currency0' },
+          { key: 'officeInfraMonthly', label: 'Office / infra / mo', min: 0, max: 200000, step: 1000, format: 'currency0' },
+          { key: 'newFamiliesPerMonth', label: 'New families / mo', min: 5, max: 1000, step: 5, format: 'int' },
+        ].forEach(def => {
+          fieldMap[def.key] = createCompactRangeField({
+            parent: fieldHost,
+            id: `phase-${index}-${def.key}`,
+            label: def.label,
+            value: phase[def.key],
+            min: def.min,
+            max: def.max,
+            step: def.step,
+            format: def.format,
+            onChange: next => {
+              phaseState.phases[index][def.key] = next;
+              updateAll();
+            }
+          });
+        });
+        phaseControls.fields[index] = fieldMap;
+      });
+
+      const phaseToggle = document.getElementById('phaseScalingEnabled');
+      phaseToggle.checked = phaseState.enabled;
+      phaseToggle.addEventListener('change', e => {
+        phaseState.enabled = e.target.checked;
+        updateDisabledBaseFieldState();
+        updateAll();
+      });
+      updatePhaseEditorDisplay();
+    }
+
+    function updatePhaseEditorDisplay() {
+      const ranges = getPhaseRanges();
+      ranges.forEach((phase, index) => {
+        const rangeEl = document.getElementById(`phase-range-${index}`);
+        if (rangeEl) rangeEl.textContent = `Months ${phase.start}-${phase.end}`;
+        if (phaseControls.names[index] && phaseControls.names[index].value !== phase.name) phaseControls.names[index].value = phase.name;
+        if (index > 0 && phaseControls.starts[index]) {
+          phaseControls.starts[index].sync(phase.start, false);
+          const display = document.getElementById(`phase-start-display-${index}`);
+          if (display) display.textContent = `Month ${phase.start}`;
+        }
+        Object.entries(phaseControls.fields[index] || {}).forEach(([key, control]) => {
+          if (control.number !== document.activeElement && control.range !== document.activeElement) control.sync(phase[key], false);
+        });
+      });
+      const status = document.getElementById('phaseScalingStatus');
+      if (status) status.textContent = phaseState.enabled ? 'Phase-specific staffing active' : 'Flat staffing inputs active';
+      const toggle = document.getElementById('phaseScalingEnabled');
+      if (toggle && toggle.checked !== phaseState.enabled) toggle.checked = phaseState.enabled;
+      updateDisabledBaseFieldState();
+    }
+
+    function updateDisabledBaseFieldState() {
+      const disabled = !!phaseState.enabled;
+      phasedOverrideKeys.forEach(key => {
+        const control = controls[key];
+        if (!control) return;
+        control.wrapper.classList.toggle('disabled-group', disabled);
+        control.range.disabled = disabled;
+        control.number.disabled = disabled;
+        let note = control.wrapper.querySelector('.phase-note-inline');
+        if (disabled && !note) {
+          note = document.createElement('div');
+          note.className = 'phase-note-inline';
+          note.textContent = 'Phase scaling is on — this base input is overridden by the active phase card.';
+          control.wrapper.appendChild(note);
+        }
+        if (!disabled && note) note.remove();
+      });
+    }
+
+    function setInputs(values, options = {}) {
+      fieldDefs.forEach(def => {
+        const value = values[def.key] ?? state[def.key] ?? def.default;
+        controls[def.key].sync(value);
+      });
+      if (options.phaseState) {
+        phaseState = clonePhases(options.phaseState);
+        sanitizePhaseState();
+        buildPhaseEditor();
+      }
+      if (options.scenarioKey !== undefined) {
+        activeScenarioKey = options.scenarioKey;
+        syncScenarioButtonState();
+      }
+      updateAll();
+    }
+
+    function currentInputs() {
+      return {
+        ...Object.fromEntries(fieldDefs.map(def => [def.key, state[def.key]])),
+        phaseEditor: clonePhases(phaseState),
+      };
+    }
+
+    function normalizeLoadedScenario(values) {
+      const clean = { ...values };
+      const loadedPhaseState = clean.phaseEditor ? clonePhases(clean.phaseEditor) : getDefaultPhases();
+      delete clean.phaseEditor;
+      return { inputs: clean, phaseState: loadedPhaseState };
+    }
+
+    function calculateModel(inputs) {
+      const months = 36;
+      const rows = [];
+      const activePhaseState = inputs.phaseEditor ? clonePhases(inputs.phaseEditor) : clonePhases(phaseState);
+      const phaseScalingEnabled = !!activePhaseState.enabled;
+      const phaseRanges = phaseScalingEnabled ? getPhaseRanges(activePhaseState) : [{
+        name: 'Flat plan',
+        start: 1,
+        end: 36,
+        engineers: inputs.engineers,
+        orgManagementHeadcount: inputs.orgManagementHeadcount,
+        orgManagementSalary: inputs.orgManagementSalary,
+        officeInfraMonthly: inputs.officeInfraMonthly,
+        newFamiliesPerMonth: inputs.newFamiliesPerMonth,
+        paletteClass: 'phase-blue'
+      }];
+
+      const fsrMonthlySalary = inputs.fsrSalary / 12;
+      const engineerMonthlySalary = inputs.engineerSalary / 12;
+      const opsMonthlySalary = OPS_SALARY / 12;
+      const statedMonthlyChurn = inputs.churnRate / 100;
+      const lifetimeCapMonths = 60; // 5-year structural cap hardcoded
+      const structuralChurnRate = 1 / lifetimeCapMonths;
+      const effectiveMonthlyChurn = Math.max(statedMonthlyChurn, structuralChurnRate);
+      const controllableMonthlyChurn = Math.max(0, effectiveMonthlyChurn - structuralChurnRate);
+      const annualChurnRate = 1 - Math.pow(1 - effectiveMonthlyChurn, 12);
+      const onboardingCapacityPerFsr = MONTHLY_AVAILABLE_HOURS / inputs.onboardingHours;
+      const effectiveFamiliesPerFsr = Math.max(1, inputs.familiesPerFsr);
+
+      let activeFamilies = 0;
+      let cumulativeCash = 0;
+      let breakEvenMonth = null;
+      let peakCapitalRequired = 0;
+      let positiveCashMonth = null;
+
+      for (let month = 1; month <= months; month++) {
+        const currentPhase = phaseScalingEnabled ? getPhaseForMonth(month, activePhaseState) : { ...activePhaseState.phases[0], name: 'Flat plan', startMonth: 1, engineers: inputs.engineers, orgManagementHeadcount: inputs.orgManagementHeadcount, orgManagementSalary: inputs.orgManagementSalary, officeInfraMonthly: inputs.officeInfraMonthly, newFamiliesPerMonth: inputs.newFamiliesPerMonth };
+        const managementMonthlySalary = currentPhase.orgManagementSalary / 12;
+        const startingFamilies = activeFamilies;
+        const churnedFamilies = startingFamilies * effectiveMonthlyChurn;
+        const newFamilies = currentPhase.newFamiliesPerMonth;
+        activeFamilies = Math.max(0, startingFamilies - churnedFamilies + newFamilies);
+
+        const onboardingLaneFsrs = newFamilies / Math.max(0.0001, onboardingCapacityPerFsr);
+        const serviceLaneFsrs = activeFamilies / Math.max(1, inputs.familiesPerFsr);
+        const onboardingFsrs = Math.ceil(onboardingLaneFsrs);
+        const serviceFsrs = Math.ceil(serviceLaneFsrs);
+        const totalFsrs = Math.max(1, onboardingFsrs + serviceFsrs);
+
+        const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(activeFamilies / 2500));
+        const phaseEngineerSalary = (currentPhase.engineerSalary || inputs.engineerSalary) / 12;
+        const fixedCosts = (
+          currentPhase.engineers * phaseEngineerSalary +
+          currentPhase.orgManagementHeadcount * managementMonthlySalary +
+          currentPhase.officeInfraMonthly +
+          opsHeadcount * opsMonthlySalary
+        );
+
+        const fsrCost = totalFsrs * fsrMonthlySalary;
+        const aiCost = activeFamilies * inputs.aiCloudPerFamily;
+        const sharedInfraCost = activeFamilies * SHARED_INFRA_PER_FAMILY;
+        const recurringRevenue = activeFamilies * inputs.monthlyPrice;
+        const onboardingRevenue = newFamilies * inputs.onboardingFee;
+        const paymentProcessing = recurringRevenue * PAYMENT_PROCESSING_RATE;
+        const variableCosts = fsrCost + aiCost + sharedInfraCost + paymentProcessing;
+        const totalRevenue = recurringRevenue + onboardingRevenue;
+        const netIncome = totalRevenue - fixedCosts - variableCosts;
+        cumulativeCash += netIncome;
+        peakCapitalRequired = Math.max(peakCapitalRequired, Math.max(0, -cumulativeCash));
+
+        if (breakEvenMonth === null && netIncome >= 0) breakEvenMonth = month;
+        if (positiveCashMonth === null && cumulativeCash >= 0) positiveCashMonth = month;
+
+        rows.push({
+          month,
+          phaseName: currentPhase.name,
+          phaseStartMonth: currentPhase.startMonth,
+          newFamilies,
+          churnedFamilies,
+          activeFamilies,
+          onboardingLaneFsrs,
+          serviceLaneFsrs,
+          onboardingFsrs,
+          serviceFsrs,
+          totalFsrs,
+          opsHeadcount,
+          engineers: currentPhase.engineers,
+          orgManagementHeadcount: currentPhase.orgManagementHeadcount,
+          orgManagementSalary: currentPhase.orgManagementSalary,
+          officeInfraMonthly: currentPhase.officeInfraMonthly,
+          revenue: totalRevenue,
+          recurringRevenue,
+          onboardingRevenue,
+          fixedCosts,
+          variableCosts,
+          fsrCost,
+          aiCost,
+          sharedInfraCost,
+          paymentProcessing,
+          netIncome,
+          cumulativeCash,
+        });
+      }
+
+      const currentPhaseMetric = phaseScalingEnabled ? getPhaseForMonth(12, activePhaseState) : { name: 'Flat plan', engineers: inputs.engineers, orgManagementHeadcount: inputs.orgManagementHeadcount, orgManagementSalary: inputs.orgManagementSalary, officeInfraMonthly: inputs.officeInfraMonthly };
+      const currentOpsHeadcount = rows[Math.min(11, rows.length - 1)]?.opsHeadcount || BASE_OPS_HEADCOUNT;
+      const breakEvenFixedCosts = (
+        currentPhaseMetric.engineers * engineerMonthlySalary +
+        currentPhaseMetric.orgManagementHeadcount * (currentPhaseMetric.orgManagementSalary / 12) +
+        currentPhaseMetric.officeInfraMonthly +
+        currentOpsHeadcount * opsMonthlySalary
+      );
+      const burnRate = breakEvenFixedCosts;
+      const steadyStateFsrCostPerFamily = fsrMonthlySalary / effectiveFamiliesPerFsr;
+      const paymentProcessingPerFamily = inputs.monthlyPrice * PAYMENT_PROCESSING_RATE;
+      const variableCostPerFamily = steadyStateFsrCostPerFamily + inputs.aiCloudPerFamily + SHARED_INFRA_PER_FAMILY + paymentProcessingPerFamily;
+      const contributionMarginPerFamily = inputs.monthlyPrice - variableCostPerFamily;
+      const breakEvenFamilies = contributionMarginPerFamily > 0 ? burnRate / contributionMarginPerFamily : Infinity;
+      const ltv = contributionMarginPerFamily * Math.min(lifetimeCapMonths, effectiveMonthlyChurn > 0 ? 1 / effectiveMonthlyChurn : lifetimeCapMonths);
+      const onboardingLaborCost = inputs.onboardingHours * (inputs.fsrSalary / 12 / MONTHLY_AVAILABLE_HOURS);
+      const estimatedCAC = inputs.acquisitionCost + onboardingLaborCost;
+      const ltvCac = estimatedCAC > 0 ? ltv / estimatedCAC : Infinity;
+      const finalRow = rows[rows.length - 1];
+      const phaseSnapshots = phaseRanges.map((phase, index) => {
+        const row = rows[phase.end - 1];
+        const fixedCosts = (
+          phase.engineers * engineerMonthlySalary +
+          phase.orgManagementHeadcount * (phase.orgManagementSalary / 12) +
+          phase.officeInfraMonthly +
+          row.opsHeadcount * opsMonthlySalary
+        );
+        return {
+          ...phase,
+          label: `P${index + 1}`,
+          row,
+          fixedCosts,
+          breakEvenFamilies: contributionMarginPerFamily > 0 ? fixedCosts / contributionMarginPerFamily : Infinity,
+          totalHeadcount: row.engineers + row.orgManagementHeadcount + row.opsHeadcount + row.totalFsrs,
+        };
+      });
+      const averageNewFamiliesPerMonth = phaseScalingEnabled
+        ? calculateScenarioAverageNewFamilies(activePhaseState, inputs.newFamiliesPerMonth)
+        : inputs.newFamiliesPerMonth;
+
+      return {
+        rows,
+        phaseConfig: activePhaseState,
+        phaseRanges,
+        phaseSnapshots,
+        assumptions: {
+          onboardingCapacityPerFsr,
+          steadyStateFsrCostPerFamily,
+          paymentProcessingPerFamily,
+          estimatedCAC,
+          onboardingLaborCost,
+          effectiveFamiliesPerFsr,
+          structuralChurnRate,
+          effectiveChurnRate: effectiveMonthlyChurn,
+          controllableChurnRate: controllableMonthlyChurn,
+          annualChurnRate,
+          lifetimeCapMonths,
+        },
+        summary: {
+          burnRate,
+          variableCostPerFamily,
+          contributionMarginPerFamily,
+          breakEvenFamilies,
+          breakEvenMonth,
+          positiveCashMonth,
+          peakCapitalRequired,
+          ltv,
+          ltvCac,
+          finalFamilies: finalRow.activeFamilies,
+          finalCash: finalRow.cumulativeCash,
+          finalNetIncome: finalRow.netIncome,
+          maxFsrs: Math.max(...rows.map(r => r.totalFsrs)),
+          maxOps: Math.max(...rows.map(r => r.opsHeadcount)),
+          breakEvenPhaseName: currentPhaseMetric.name,
+          effectiveChurnRate: effectiveMonthlyChurn,
+          structuralChurnRate,
+          controllableChurnRate: controllableMonthlyChurn,
+          annualChurnRate,
+          lifetimeCapMonths,
+          averageNewFamiliesPerMonth,
+        }
+      };
+    }
+
+    function metricCard(key, label, value, sub, tone='neutral') {
+      return `
+        <div class="card">
+          <div class="metric-top">
+            <div class="metric-label">${label}</div>
+            <button type="button" class="metric-help-btn" data-metric-help="${key}" aria-label="Explain ${label}">?</button>
+          </div>
+          <div class="metric-value ${tone}">${value}</div>
+          <div class="metric-sub">${sub}</div>
+        </div>
+      `;
+    }
+
+    function previewMetricCard(label, value, sub, tone='neutral') {
+      return `
+        <div class="card">
+          <div class="metric-label">${label}</div>
+          <div class="metric-value ${tone}">${value}</div>
+          <div class="metric-sub">${sub}</div>
+        </div>
+      `;
+    }
+
+    function showMetricDefinition(key) {
+      const def = metricDefinitions[key];
+      if (!def) return;
+      let backdrop = document.getElementById('metricDefModal');
+      if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'metricDefModal';
+        backdrop.className = 'metric-def-modal-backdrop';
+        document.body.appendChild(backdrop);
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) backdrop.classList.remove('open');
+        });
+      }
+      backdrop.innerHTML = `<div class="metric-def-modal">
+        <h3>${def.title}</h3>
+        <div class="def-section"><strong>Formula</strong>${def.formula}</div>
+        <div class="def-section"><strong>What it means</strong>${def.meaning}</div>
+        <div class="def-section"><strong>What drives it</strong>${def.drivers}</div>
+        <div class="def-section"><strong>How to interpret it</strong>${def.interpretation}</div>
+        <button class="def-close" onclick="document.getElementById('metricDefModal').classList.remove('open')">Close</button>
+      </div>`;
+      backdrop.classList.add('open');
+    }
+
+    function helperBox(title, body) {
+      return `<div class="helper-box"><strong>${title}</strong><br>${body}</div>`;
+    }
+
+    function getFixedCostForPhase(phase, inputs, opsHeadcount = BASE_OPS_HEADCOUNT) {
+      return (phase.engineers * (inputs.engineerSalary / 12)) + (phase.orgManagementHeadcount * (phase.orgManagementSalary / 12)) + phase.officeInfraMonthly + (opsHeadcount * (OPS_SALARY / 12));
+    }
+
+    function buildPhaseMiniColumns(items, formatter) {
+      return `<div class="phase-summary-inline">${items.map((item, index) => `
+        <span class="phase-summary-chip">
+          <span class="phase-key">${item.label}</span>
+          <span class="phase-text">${formatter(item, index)}</span>
+        </span>${index < items.length - 1 ? '<span class="phase-summary-arrow">→</span>' : ''}
+      `).join('')}</div>`;
+    }
+
+    function buildFixedCostsByPhaseCard(model, inputs) {
+      if (!phaseState.enabled) {
+        const flatPhase = { engineers: inputs.engineers, orgManagementHeadcount: inputs.orgManagementHeadcount, orgManagementSalary: inputs.orgManagementSalary, officeInfraMonthly: inputs.officeInfraMonthly };
+        const row = model.rows[model.rows.length - 1];
+        return `<div class="flat-phase-card"><strong>${money0.format(getFixedCostForPhase(flatPhase, inputs, row.opsHeadcount))}/mo</strong> · includes ops at the selected scale</div>`;
+      }
+      return buildPhaseMiniColumns(model.phaseSnapshots, item => `${money0.format(item.fixedCosts)}/mo`);
+    }
+
+    function buildBreakEvenByPhaseCard(model) {
+      if (!phaseState.enabled) {
+        return `<div class="flat-phase-card"><strong>${Number.isFinite(model.summary.breakEvenFamilies) ? intFmt.format(Math.ceil(model.summary.breakEvenFamilies)) : 'N/A'} families</strong> · flat staffing path</div>`;
+      }
+      return buildPhaseMiniColumns(model.phaseSnapshots, item => Number.isFinite(item.breakEvenFamilies) ? intFmt.format(Math.ceil(item.breakEvenFamilies)) : 'N/A');
+    }
+
+    function buildEffectiveChurnCard(model) {
+      const effective = model.summary.effectiveChurnRate * 100;
+      const structural = model.summary.structuralChurnRate * 100;
+      const controllable = model.summary.controllableChurnRate * 100;
+      return `<div class="flat-phase-card"><strong>${oneDec.format(effective)}%</strong> effective monthly churn · ${oneDec.format(structural)}% structural floor · ${oneDec.format(controllable)}% controllable overlay</div>`;
+    }
+
+    function buildHeadcountByPhaseCard(model) {
+      if (!phaseState.enabled) {
+        const last = model.rows[model.rows.length - 1];
+        const corporate = last.engineers + last.orgManagementHeadcount + last.opsHeadcount;
+        return `<div class="flat-phase-card"><strong>${intFmt.format(corporate + last.totalFsrs)} total</strong> · ${intFmt.format(corporate)} corporate + ${intFmt.format(last.totalFsrs)} FSR</div>`;
+      }
+      const ranges = model.phaseRanges.map((phase, index) => {
+        const row = model.rows[phase.end - 1];
+        const corporate = row.engineers + row.orgManagementHeadcount + row.opsHeadcount;
+        return {
+          ...phase,
+          label: `P${index + 1}`,
+          corporate,
+          fsrs: row.totalFsrs,
+        };
+      });
+      return buildPhaseMiniColumns(ranges, item => `${intFmt.format(item.corporate + item.fsrs)} (${intFmt.format(item.fsrs)} FSR)`);
+    }
+
+    function setupRow(label, value, meta = '') {
+      return `
+        <div class="setup-row">
+          <div class="setup-row-top">
+            <span class="setup-row-label">${label}</span>
+            <strong class="setup-row-value">${value}</strong>
+          </div>
+          ${meta ? `<div class="setup-row-meta">${meta}</div>` : ''}
+        </div>
+      `;
+    }
+
+    function setupCard(title, description, rows) {
+      return `
+        <div class="setup-card">
+          <h4>${title}</h4>
+          <p>${description}</p>
+          <div class="setup-stack">${rows.join('')}</div>
+        </div>
+      `;
+    }
+
+    function impactCard(title, description, stats) {
+      return `
+        <div class="impact-card">
+          <h4>${title}</h4>
+          <p>${description}</p>
+          <div class="impact-stat-list">
+            ${stats.map(stat => `
+              <div class="impact-stat">
+                <span>${stat.label}</span>
+                <strong class="${stat.tone || ''}">${stat.value}</strong>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function definitionCard(title, formula, meaning) {
+      return `
+        <div class="definition-card">
+          <h4>${title}</h4>
+          <div class="formula-block">${formula}</div>
+          <p>${meaning}</p>
+        </div>
+      `;
+    }
+
+    function interpolateFromAnchors(target, anchors) {
+      if (target <= anchors[0][0]) return anchors[0][1];
+      for (let i = 1; i < anchors.length; i++) {
+        const [x1, y1] = anchors[i - 1];
+        const [x2, y2] = anchors[i];
+        if (target <= x2) {
+          const ratio = (target - x1) / (x2 - x1);
+          return y1 + ((y2 - y1) * ratio);
+        }
+      }
+      return anchors[anchors.length - 1][1];
+    }
+
+    function calculateSteadyStateScales(inputs) {
+      const effectiveChurnRate = Math.max(inputs.churnRate / 100, 1 / 60);
+      const effectiveFamiliesPerFsr = Math.max(1, inputs.familiesPerFsr);
+      return steadyStateTargets.map(families => {
+        const monthlyRevenue = families * inputs.monthlyPrice;
+        const annualRevenue = monthlyRevenue * 12;
+        const steadyFsrs = Math.ceil(families / effectiveFamiliesPerFsr);
+        const onboardingFamilies = families * effectiveChurnRate;
+        const onboardingFsrCapacity = MONTHLY_AVAILABLE_HOURS / Math.max(0.1, inputs.onboardingHours);
+        const onboardingFsrs = Math.ceil(onboardingFamilies / onboardingFsrCapacity);
+        const totalFsrs = steadyFsrs + onboardingFsrs;
+        const engineeringTeam = Math.round(interpolateFromAnchors(families, [[5000, 5], [10000, 8], [25000, 12], [50000, 18], [100000, 25]]));
+        const orgManagement = Math.round(interpolateFromAnchors(families, [[5000, 3], [10000, 5], [25000, 8], [50000, 12], [100000, 18]]));
+        const opsHeadcount = Math.max(2, Math.ceil(families / 5000));
+        const payroll = (totalFsrs * (inputs.fsrSalary / 12)) + (engineeringTeam * (inputs.engineerSalary / 12)) + (orgManagement * (inputs.orgManagementSalary / 12)) + (opsHeadcount * (OPS_SALARY / 12));
+        const overheadRate = interpolateFromAnchors(families, [[5000, 0.15], [100000, 0.25]]);
+        const overhead = payroll * overheadRate;
+        const officeCosts = inputs.officeInfraMonthly * Math.max(1, families / 1000);
+        const aiCloudCosts = families * (inputs.aiCloudPerFamily + SHARED_INFRA_PER_FAMILY);
+        const paymentProcessing = monthlyRevenue * PAYMENT_PROCESSING_RATE;
+        const totalCosts = payroll + overhead + officeCosts + aiCloudCosts + paymentProcessing;
+        const netMonthlyProfit = monthlyRevenue - totalCosts;
+        const netMarginPct = monthlyRevenue > 0 ? (netMonthlyProfit / monthlyRevenue) * 100 : 0;
+        return {
+          families,
+          monthlyRevenue,
+          annualRevenue,
+          steadyFsrs,
+          onboardingFsrs,
+          totalFsrs,
+          fsrCost: totalFsrs * (inputs.fsrSalary / 12),
+          engineeringTeam,
+          orgManagement,
+          opsHeadcount,
+          overhead,
+          officeCosts,
+          aiCloudCosts,
+          totalCosts,
+          netMonthlyProfit,
+          netMarginPct,
+          corporateHeadcount: engineeringTeam + orgManagement + opsHeadcount,
+          totalHeadcount: engineeringTeam + orgManagement + opsHeadcount + totalFsrs,
+        };
+      });
+    }
+
+    function renderMetrics(model) {
+      const { summary, assumptions } = model;
+      const metrics = [
+        metricCard('fixedByPhase', 'Fixed costs by phase', buildFixedCostsByPhaseCard(model, state), `Monthly corporate fixed burn (engineers + org mgmt + office). FSR/variable costs are separate. ${phaseState.enabled ? 'Phase scaling active.' : 'Flat costs — enable phases.'}`, 'negative'),
+        metricCard('breakEvenFamilies', 'Break-even families by phase', buildBreakEvenByPhaseCard(model), 'Active families needed to cover the fixed cost base in each phase using current contribution margin.', 'neutral'),
+        metricCard('familiesPerFsr', 'Panel size (families / FSR)', intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr)), 'Target families per FSR — the binding panel size used in the operating model.', 'positive'),
+        metricCard('contributionMarginPerFamily', 'Contribution margin / family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less estimated monthly variable cost per active family.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
+        metricCard('breakEvenMonth', 'Months to break-even', summary.breakEvenMonth ? `${summary.breakEvenMonth} mo` : 'Not in 36 mo', 'First month with positive monthly net income in the forecast.', summary.breakEvenMonth ? 'positive' : 'negative'),
+        metricCard('capitalRequired', 'Capital required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the model self-funds, including phase step-ups.', 'negative'),
+      ];
+      document.getElementById('metricsGrid').innerHTML = metrics.join('');
+
+      renderFsrMath(model);
+      renderPhaseSection(model);
+    }
+
+    function renderModelSetup(model) {
+      const { assumptions, summary, phaseSnapshots, phaseRanges, rows } = model;
+      const finalRow = rows[rows.length - 1];
+      const scenarioLabels = {
+        optimistic: 'Optimistic',
+        conservative: 'Conservative',
+        premium: 'Premium Concierge',
+        healthplan: 'Health Plan Scale',
+      };
+
+      // Fixed Key Metrics sidebar (replaces multi-lens preview pane)
+      const previewNavHost = document.getElementById('setupPreviewNav');
+      if (previewNavHost) {
+        previewNavHost.innerHTML = '<strong style="font-size:0.85rem;color:var(--muted);">Key Metrics</strong>';
+      }
+
+      const ctxHost = document.getElementById('setupPreviewContext');
+      if (ctxHost) ctxHost.innerHTML = '';
+
+      document.getElementById('setupSummaryGrid').innerHTML = [
+        previewMetricCard('36-Mo Active Families', intFmt.format(summary.finalFamilies), 'Installed family base at the end of the 36-month horizon.', 'positive'),
+        previewMetricCard('Break-Even Month', summary.breakEvenMonth ? `M${summary.breakEvenMonth}` : 'Not in 36 mo', 'First month with positive monthly net income.', summary.breakEvenMonth ? 'positive' : 'negative'),
+        previewMetricCard('Capital Required', money0.format(summary.peakCapitalRequired), 'Peak cumulative cash deficit before the plan self-funds.', 'negative'),
+        previewMetricCard('MRR at M36', money0.format(finalRow.recurringRevenue), 'Monthly recurring revenue at the end of the plan.', 'positive'),
+        previewMetricCard('Total FSRs at M36', `${intFmt.format(finalRow.totalFsrs)}`, `${intFmt.format(finalRow.onboardingFsrs)} onboarding + ${intFmt.format(finalRow.serviceFsrs)} service`),
+        previewMetricCard('LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', 'Lifetime value vs. customer acquisition cost.', summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative')),
+        previewMetricCard('Contribution Margin / Family', money2.format(summary.contributionMarginPerFamily), 'Monthly subscription price less variable delivery cost.', summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative'),
+      ].join('');
+
+      document.getElementById('setupQuickRead').innerHTML = `
+        <div class="setup-readout-card">
+          <h4>Current Plan Readout</h4>
+          <div class="setup-readout-row"><span>Scenario</span><strong>${activeScenarioKey ? (scenarioLabels[activeScenarioKey] || activeScenarioKey) : 'Custom plan'}</strong></div>
+          <div class="setup-readout-row"><span>Break-even</span><strong>${summary.breakEvenMonth ? `M${summary.breakEvenMonth}` : 'Not in 36 mo'}</strong></div>
+          <div class="setup-readout-row"><span>Cumulative cash positive</span><strong>${summary.positiveCashMonth ? `M${summary.positiveCashMonth}` : 'Not in 36 mo'}</strong></div>
+          <div class="setup-readout-row"><span>36-mo active families</span><strong>${intFmt.format(summary.finalFamilies)}</strong></div>
+          <div class="setup-readout-row"><span>Peak FSR pool</span><strong>${intFmt.format(summary.maxFsrs)}</strong></div>
+        </div>
+      `;
+
+      const phaseRows = phaseState.enabled
+        ? phaseSnapshots.map(phase => setupRow(
+            `${phase.label} · ${phase.name}`,
+            `M${phase.start}-${phase.end}`,
+            `${intFmt.format(phase.engineers)} engineers · ${intFmt.format(phase.orgManagementHeadcount)} org mgmt · ${money0.format(phase.officeInfraMonthly)}/mo office · ${intFmt.format(phase.newFamiliesPerMonth)} new families/mo · ${money0.format(phase.fixedCosts)} fixed burn`
+          ))
+        : [setupRow(
+            'Flat operating plan',
+            'M1-M36',
+            `${intFmt.format(state.engineers)} engineers · ${intFmt.format(state.orgManagementHeadcount)} org mgmt · ${money0.format(state.officeInfraMonthly)}/mo office · ${intFmt.format(state.newFamiliesPerMonth)} new families/mo`
+          )];
+
+      document.getElementById('parameterWorkbook').innerHTML = [
+        setupCard('Demand & Retention', 'Demand-side assumptions that shape family growth and churn pressure.', [
+          setupRow('Growth plan', phaseState.enabled ? `${intFmt.format(Math.round(summary.averageNewFamiliesPerMonth))} avg new/mo` : `${intFmt.format(state.newFamiliesPerMonth)} new/mo`, phaseState.enabled ? `${phaseRanges.length} active phases with stepped intake targets.` : 'Flat growth target across the full 36-month plan.'),
+          setupRow('Onboarding hours / family', formatValue(state.onboardingHours, 'hours'), `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new families per FSR per month.`),
+          setupRow('Retention logic', `${oneDec.format(state.churnRate)}% stated churn`, `${oneDec.format(summary.structuralChurnRate * 100)}% structural floor from a 5-year lifetime cap. The model uses ${oneDec.format(summary.effectiveChurnRate * 100)}% effective churn.`),
+        ]),
+        setupCard('Revenue & Acquisition', 'Commercial assumptions that determine monetization quality and acquisition efficiency.', [
+          setupRow('Monthly price / family', money0.format(state.monthlyPrice), `${money2.format(summary.contributionMarginPerFamily)} contribution margin per family after modeled variable delivery costs.`),
+          setupRow('Onboarding fee', money0.format(state.onboardingFee), `One-time onboarding fee charged per new family.`),
+          setupRow('Paid acquisition cost', money0.format(state.acquisitionCost), `${money0.format(assumptions.estimatedCAC)} planning CAC after including onboarding labor.`),
+          setupRow('Payment processing', money2.format(assumptions.paymentProcessingPerFamily), `${oneDec.format(PAYMENT_PROCESSING_RATE * 100)}% of recurring subscription revenue per active family.`),
+          setupRow('LTV : CAC', Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', 'Use this as a planning efficiency check, not audited finance guidance.'),
+        ]),
+        setupCard('FSR Capacity Model', 'The service-operations layer translating staffing targets into realistic headcount and unit cost.', [
+          setupRow('FSR salary', money0.format(state.fsrSalary), `${money0.format(state.fsrSalary / 12)} monthly salary assumption in the model.`),
+          setupRow('Target panel size', intFmt.format(state.familiesPerFsr), 'Planned families per FSR before workload checks.'),
+          setupRow('Binding panel size', intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr)), 'Families per FSR the model actually uses (target vs workload, whichever is tighter).'),
+          setupRow('FSR cost / family', money2.format(assumptions.steadyStateFsrCostPerFamily), `${money2.format(summary.variableCostPerFamily)} total variable cost per family once AI, infra, and payment processing are added.`),
+        ]),
+        setupCard('Team & Fixed Cost Base', 'Company-building assumptions that create the fixed burn the family base must eventually absorb.', [
+          setupRow('Engineering team', `${intFmt.format(state.engineers)} engineers @ ${money0.format(state.engineerSalary)}`, phaseState.enabled ? `Phase plan steps this to ${intFmt.format(phaseSnapshots[phaseSnapshots.length - 1].engineers)} engineers by the final phase.` : 'Flat engineering team through the 36-month plan.'),
+          setupRow('Org management', `${intFmt.format(state.orgManagementHeadcount)} leaders @ ${money0.format(state.orgManagementSalary)}`, phaseState.enabled ? `Phase plan ends at ${intFmt.format(phaseSnapshots[phaseSnapshots.length - 1].orgManagementHeadcount)} org-management roles.` : 'Flat org-management structure through the 36-month plan.'),
+          setupRow('Office / infrastructure', money0.format(state.officeInfraMonthly), phaseState.enabled ? buildFixedCostsByPhaseCard(model, state) : 'Base office and infrastructure line item before variable delivery spend.'),
+          setupRow('AI / cloud cost / family', money2.format(state.aiCloudPerFamily), `${money2.format(SHARED_INFRA_PER_FAMILY)} additional shared infrastructure burden per active family.`),
+          setupRow('Current break-even fixed burn', money0.format(summary.burnRate), `${Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A'} active families needed to clear that burn at current unit margin.`),
+        ]),
+        setupCard('Phase Buildout', 'A clearer read on how the operating plan steps up over time, separate from the Growth dashboard.', [
+          setupRow('Phase scaling', phaseState.enabled ? 'Enabled' : 'Disabled', phaseState.enabled ? 'Base staffing inputs are overridden by the phase cards where applicable.' : 'Base staffing and growth inputs apply to every month.'),
+          setupRow('Phase plan', phaseState.enabled ? `${phaseRanges.length} phases configured` : 'Single flat plan', 'Phase scaling determines how staffing and costs step up over time.'),
+          ...phaseRows,
+        ]),
+      ].join('');
+
+      document.getElementById('driverImpactGrid').innerHTML = [
+        impactCard('Onboarding Efficiency', 'This determines how quickly you can bring on new families before panel capacity becomes the bigger issue.', [
+          { label: 'Onboarding hours / family', value: formatValue(state.onboardingHours, 'hours') },
+          { label: 'Onboarding capacity / FSR', value: `${twoDec.format(assumptions.onboardingCapacityPerFsr)} new/mo` },
+          { label: 'M36 onboarding FSRs', value: `${intFmt.format(finalRow.onboardingFsrs)}` },
+          { label: 'Peak capital required', value: money0.format(summary.peakCapitalRequired), tone: 'negative' },
+        ]),
+        impactCard('Panel Capacity', 'Panel size and staffing drive variable labor cost and the shape of the service model.', [
+          { label: 'Binding panel size', value: `${intFmt.format(Math.floor(assumptions.effectiveFamiliesPerFsr))} families/FSR` },
+          { label: 'M36 panel FSRs', value: `${intFmt.format(finalRow.serviceFsrs)}` },
+          { label: 'Variable cost / family', value: money2.format(summary.variableCostPerFamily) },
+        ]),
+        impactCard('Retention Logic', 'Churn affects replacement demand, installed family base, LTV, and how much growth sticks over time.', [
+          { label: 'Stated churn', value: `${oneDec.format(state.churnRate)}% / mo` },
+          { label: 'Structural churn floor', value: `${oneDec.format(summary.structuralChurnRate * 100)}% / mo` },
+          { label: 'Effective churn', value: `${oneDec.format(summary.effectiveChurnRate * 100)}% / mo` },
+          { label: 'LTV / family', value: Number.isFinite(summary.ltv) ? money0.format(summary.ltv) : 'N/A', tone: summary.ltv > 0 ? 'positive' : 'negative' },
+        ]),
+        impactCard('Pricing & Acquisition', 'Commercial leverage shows up first in contribution margin, then in break-even timing and acquisition efficiency.', [
+          { label: 'Monthly price', value: money0.format(state.monthlyPrice) },
+          { label: 'Contribution margin / family', value: money2.format(summary.contributionMarginPerFamily), tone: summary.contributionMarginPerFamily >= 0 ? 'positive' : 'negative' },
+          { label: 'Planning CAC', value: money0.format(assumptions.estimatedCAC) },
+          { label: 'LTV : CAC', value: Number.isFinite(summary.ltvCac) ? `${twoDec.format(summary.ltvCac)}x` : 'N/A', tone: summary.ltvCac >= 3 ? 'positive' : (summary.ltvCac >= 1 ? 'neutral' : 'negative') },
+        ]),
+        impactCard('Phase Buildout', 'Stepped hiring and office costs change how much scale you need before the business starts funding itself.', [
+          { label: 'M36 phase', value: finalRow.phaseName },
+          { label: 'M36 fixed burn', value: money0.format(finalRow.fixedCosts) },
+          { label: 'Break-even families', value: Number.isFinite(summary.breakEvenFamilies) ? intFmt.format(Math.ceil(summary.breakEvenFamilies)) : 'N/A' },
+          { label: 'Break-even month', value: summary.breakEvenMonth ? `M${summary.breakEvenMonth}` : 'Not in 36 mo', tone: summary.breakEvenMonth ? 'positive' : 'negative' },
+        ]),
+      ].join('');
+
+      document.getElementById('definitionLibraryGrid').innerHTML = [
+        definitionCard('Onboarding Capacity / FSR', `${MONTHLY_AVAILABLE_HOURS} hrs / ${oneDec.format(state.onboardingHours)} hrs per family`, 'Monthly intake throughput for one onboarding FSR.'),
+        definitionCard('Binding Panel Size', `${intFmt.format(state.familiesPerFsr)} families/FSR`, 'Families per FSR after checking target vs workload limit.'),
+        definitionCard('Total FSRs', 'Onboarding FSRs + Panel FSRs', 'Additive staffing model: separate pools for onboarding and ongoing panel support.'),
+        definitionCard('Effective Churn', `max(${oneDec.format(state.churnRate)}%, ${oneDec.format(summary.structuralChurnRate * 100)}%)`, 'Retention assumptions are bounded by the 5-year elder-care journey lifetime cap so LTV does not become artificially optimistic.'),
+        definitionCard('Variable Cost / Family', `FSR cost + ${money2.format(state.aiCloudPerFamily)} AI/cloud + ${money2.format(SHARED_INFRA_PER_FAMILY)} shared infra + payment fees`, 'This is the direct monthly service-delivery burden attached to each active family.'),
+        definitionCard('Contribution Margin / Family', `${money0.format(state.monthlyPrice)} - ${money2.format(summary.variableCostPerFamily)}`, 'Contribution margin is what each family leaves behind to absorb fixed burn and eventually create profit.'),
+        definitionCard('Break-even Families', 'current phase fixed costs / contribution margin per family', 'This is the scale hurdle for the current staffing shape, not a promise about exact month timing.'),
+        definitionCard('Planning CAC', `${money0.format(state.acquisitionCost)} acquisition + ${money0.format(assumptions.onboardingLaborCost)} onboarding labor`, 'This keeps acquisition efficiency grounded in both market spend and the service labor needed to activate a family.'),
+      ].join('');
+    }
+
+    function renderFsrMath(model) {
+      const a = model.assumptions;
+      const helpers = [
+        helperBox('FSR onboarding capacity', `${twoDec.format(a.onboardingCapacityPerFsr)} new families per FSR per month using ${MONTHLY_AVAILABLE_HOURS} hours/month.`),
+        helperBox('Binding panel size', `${intFmt.format(Math.floor(a.effectiveFamiliesPerFsr))} families/FSR — target vs workload, whichever is tighter.`),
+        helperBox('Churn floor', `${oneDec.format(a.structuralChurnRate * 100)}% monthly structural churn from the 5-year lifetime cap; model uses ${oneDec.format(a.effectiveChurnRate * 100)}% effective churn.`),
+        helperBox('Variable cost stack', `${money2.format(a.steadyStateFsrCostPerFamily)} FSR + ${money2.format(state.aiCloudPerFamily)} AI/cloud + ${money2.format(SHARED_INFRA_PER_FAMILY)} shared infra + ${money2.format(a.paymentProcessingPerFamily)} payment processing.`),
+      ].join('');
+      document.getElementById('fsrMathBox').innerHTML = `
+        <h4>FSR Math</h4>
+        <div class="math-row"><span>Onboarding</span><strong>${MONTHLY_AVAILABLE_HOURS} hrs / ${oneDec.format(state.onboardingHours)} hrs per family = ${twoDec.format(a.onboardingCapacityPerFsr)} families/FSR/mo</strong></div>
+        <div class="math-row"><span>Panel</span><strong>Target ${intFmt.format(state.familiesPerFsr)} families per FSR (binding panel size)</strong></div>
+        <div class="math-row"><span>Total FSRs</span><strong>Onboarding FSRs + Panel FSRs (additive)</strong></div>
+        <div class="helper-inline-grid">${helpers}</div>
+        <div class="field-note">Total FSR headcount is the sum of dedicated onboarding FSRs and dedicated panel FSRs.</div>
+      `;
+    }
+
+    function renderFsrDetails(model) {
+      const a = model.assumptions;
+      const s = model.summary;
+      const panelSize = Math.floor(a.effectiveFamiliesPerFsr);
+      const onbCap = a.onboardingCapacityPerFsr;
+      const fsrSalary = state.fsrSalary;
+      const monthlyPrice = state.monthlyPrice;
+      const fsrMonthlyCost = fsrSalary / 12;
+      const onboardingFsrsNeeded = Math.ceil(state.newFamiliesPerMonth / Math.max(0.001, onbCap));
+      const onbUtilization = Math.min(100, (state.newFamiliesPerMonth / (onboardingFsrsNeeded * onbCap)) * 100);
+      const latestRow = model.rows[model.rows.length - 1];
+
+      // Binding constraint analysis
+      // Panel capacity at target panel size vs demand-side estimate
+      const PANEL_HOUR_SHARE = 0.5; // 50/50 split per guide
+      const panelHoursBudget = MONTHLY_AVAILABLE_HOURS * PANEL_HOUR_SHARE; // 80 hrs
+      // We don't have explicit outreach/handle-time inputs in the current model — estimate panel demand hours from inverse of panel size
+      const panelDemandHrsPerFamily = panelHoursBudget / Math.max(1, panelSize);
+      const workloadLimitedPanelSize = panelHoursBudget / Math.max(0.001, panelDemandHrsPerFamily);
+      const isTargetBinding = state.familiesPerFsr <= workloadLimitedPanelSize;
+      const constraintLabel = isTargetBinding ? 'Target binds (panel capacity-rich)' : 'Workload binds (panel demand-heavy)';
+      const constraintCls = isTargetBinding ? 'good' : 'warn';
+
+      const panelAnnualRevenue = panelSize * monthlyPrice * 12;
+      const panelAnnualFsrCost = fsrSalary;
+      const fsrCostPctOfRevenue = panelAnnualRevenue > 0 ? (panelAnnualFsrCost / panelAnnualRevenue) * 100 : 0;
+
+      function kpi(value, label) {
+        return `<div class="fsr-kpi"><div class="kpi-value">${value}</div><div class="kpi-label">${label}</div></div>`;
+      }
+
+      function progressBar(pct, cls='') {
+        const capped = Math.min(100, Math.max(0, pct));
+        const color = pct > 90 ? 'bad' : (pct > 70 ? 'warn' : 'good');
+        return `<div class="progress-track"><div class="progress-fill ${cls || color}" style="width:${capped}%"></div></div>`;
+      }
+
+      // Two-lane cards
+      const onboardingLaneCard = `
+        <div class="section-card fsr-lane-card">
+          <div style="margin-bottom:12px;">
+            <span class="lane-badge onb-badge">Onboarding Lane</span>
+          </div>
+          <h3 style="margin:0 0 4px;">Throughput &amp; Capacity</h3>
+          <div class="small muted" style="margin-bottom:16px;">How many new families the onboarding FSR pool can activate per month.</div>
+          <div class="fsr-kpi-row">
+            ${kpi(twoDec.format(onbCap), 'Capacity / FSR / mo')}
+            ${kpi(intFmt.format(onboardingFsrsNeeded), 'FSRs needed now')}
+            ${kpi(intFmt.format(latestRow.onboardingFsrs), 'FSRs @ M36')}
+          </div>
+          <div style="margin-top:14px;">
+            <div class="progress-head" style="margin-bottom:6px;">
+              <span>Lane utilization (now)</span>
+              <span>${oneDec.format(onbUtilization)}%</span>
+            </div>
+            ${progressBar(onbUtilization)}
+          </div>
+          <div class="field-note" style="margin-top:12px;">
+            Formula: <strong>${MONTHLY_AVAILABLE_HOURS} hrs &divide; ${oneDec.format(state.onboardingHours)} hrs/family = ${twoDec.format(onbCap)}</strong> families/FSR/mo.<br>
+            At <strong>${intFmt.format(state.newFamiliesPerMonth)} new families/mo</strong>, this lane needs <strong>${onboardingFsrsNeeded} onboarding FSRs</strong>.
+          </div>
+        </div>`;
+
+      const panelLaneCard = `
+        <div class="section-card fsr-lane-card">
+          <div style="margin-bottom:12px;">
+            <span class="lane-badge panel-badge-cls">Panel Lane</span>
+          </div>
+          <h3 style="margin:0 0 4px;">Binding Constraint Analysis</h3>
+          <div class="small muted" style="margin-bottom:16px;">Which lever actually limits panel size — your target or the underlying workload demand.</div>
+          <div class="fsr-kpi-row">
+            ${kpi(intFmt.format(state.familiesPerFsr), 'Target panel / FSR')}
+            ${kpi(intFmt.format(panelSize), 'Binding panel / FSR')}
+            ${kpi(money2.format(fsrMonthlyCost / Math.max(1, panelSize)), 'FSR cost / family / mo')}
+          </div>
+          <div style="margin-top:14px;">
+            <span class="constraint-pill ${constraintCls}">${constraintLabel}</span>
+            <div class="field-note" style="margin-top:8px;">
+              Target: <strong>${intFmt.format(state.familiesPerFsr)} families/FSR</strong><br>
+              Workload-limited (${panelHoursBudget} hr panel budget): <strong>${intFmt.format(Math.floor(workloadLimitedPanelSize))} families/FSR</strong><br>
+              Model uses the <strong>tighter</strong> of these two as the binding panel size.
+            </div>
+          </div>
+          <div class="field-note" style="margin-top:12px;">
+            FSR cost % of panel revenue (${intFmt.format(panelSize)}-family panel): <strong>${oneDec.format(fsrCostPctOfRevenue)}%</strong><br>
+            M36 panel FSRs: <strong>${intFmt.format(latestRow.serviceFsrs)}</strong>
+          </div>
+        </div>`;
+
+      // Binding constraint summary card
+      const m36Row = model.rows[35];
+      const constraintSummaryCard = `
+        <section class="section-card section-stack" style="padding:20px;">
+          <h3 style="margin:0 0 4px;">Binding Constraint Summary</h3>
+          <div class="small muted" style="margin-bottom:14px;">At the current month 36 operating point, which lane is the larger staffing driver.</div>
+          <div class="fsr-kpi-row">
+            ${kpi(intFmt.format(m36Row.onboardingFsrs), 'M36 Onboarding FSRs')}
+            ${kpi(intFmt.format(m36Row.serviceFsrs), 'M36 Panel FSRs')}
+            ${kpi(intFmt.format(m36Row.totalFsrs), 'M36 Total FSRs')}
+            ${kpi(money0.format(m36Row.fsrCost), 'M36 FSR monthly cost')}
+            ${kpi(money2.format(s.variableCostPerFamily), 'Variable cost / family')}
+            ${kpi(money2.format(s.contributionMarginPerFamily), 'Contribution margin / family')}
+          </div>
+          <div class="field-note" style="margin-top:12px;">
+            The ${m36Row.onboardingFsrs > m36Row.serviceFsrs ? '<strong>Onboarding Lane</strong> is the binding constraint at M36 — growth pace dominates. Lower onboarding hours to reduce this pressure.' : '<strong>Panel Lane</strong> is the binding constraint at M36 — the installed base drives staffing. Increase target panel size or reduce panel demand intensity.'}
+          </div>
+        </section>`;
+
+      // Heuristic reference table from guide
+      const heuristicTableRows = [
+        ['Lighter touch (strong AI)', '5%', '30 min', '0.025', '~3,200', '~160'],
+        ['Moderate', '8%', '40 min', '~0.053', '~1,500', '~120'],
+        ['Heavier touch', '10%', '60 min', '0.10', '~800', '~80'],
+      ].map(([heuristic, outreach, handle, demandHrs, maxPanel, psesPerFsr]) =>
+        `<tr><td>${heuristic}</td><td>${outreach}</td><td>${handle}</td><td>${demandHrs}</td><td>${maxPanel}</td><td>${psesPerFsr}</td></tr>`
+      ).join('');
+
+      const heuristicTable = `
+        <section class="section-card section-stack" style="padding:20px;">
+          <h3 style="margin:0 0 4px;">Panel Size Heuristics</h3>
+          <div class="small muted" style="margin-bottom:14px;">Max paneled families per FSR at an 80-hr panel budget (50/50 split on 160 hrs/mo). Same formula as workload-limited panel size. If your target exceeds the heuristic max, demand is binding.</div>
+          <div class="table-scroll" style="max-height:none;">
+            <table>
+              <thead><tr><th>Heuristic</th><th>Monthly outreach (PSEs/family)</th><th>Handle time / PSE</th><th>Panel demand hrs/family/mo</th><th>Max panel / FSR @ 80 hr budget</th><th>PSEs resolved / FSR / mo</th></tr></thead>
+              <tbody>${heuristicTableRows}</tbody>
+            </table>
+          </div>
+          <div class="field-note" style="margin-top:10px;">
+            <strong>PSEs</strong> = Problem-solving events (human-led interactions). Change the panel hour share or use dedicated panel FSRs (100% monthly hours on panel) and these caps scale proportionally — e.g. 160 hr all on panel at 10% × 1 hr → ~1,600 max per FSR.
+          </div>
+        </section>`;
+
+      document.getElementById('fsrDetailsGrid').innerHTML = `
+        <div class="fsr-lanes-grid">${onboardingLaneCard}${panelLaneCard}</div>
+        ${constraintSummaryCard}
+        ${heuristicTable}
+      `;
+    }
+
+    function destroyChart(name) {
+      if (charts[name]) charts[name].destroy();
+    }
+
+    function baseCurrencyTicks(value) {
+      return money0.format(value);
+    }
+
+    const phaseBoundaryPlugin = {
+      id: 'phaseBoundaryPlugin',
+      beforeDraw(chart, args, options) {
+        const boundaries = options?.boundaries || [];
+        if (!boundaries.length) return;
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || !scales.x) return;
+        ctx.save();
+        boundaries.forEach((boundary, index) => {
+          const x = scales.x.getPixelForValue(boundary.month - 1);
+          if (Number.isFinite(x)) {
+            ctx.fillStyle = index % 2 === 0 ? 'rgba(41,98,255,0.04)' : 'rgba(216,155,24,0.05)';
+            const nextMonth = boundary.nextMonth || 36;
+            const nextX = scales.x.getPixelForValue(Math.min(35, nextMonth - 1));
+            const width = Math.max(2, nextX - x);
+            ctx.fillRect(x, chartArea.top, width, chartArea.bottom - chartArea.top);
+            ctx.strokeStyle = 'rgba(44,66,110,0.18)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x, chartArea.top);
+            ctx.lineTo(x, chartArea.bottom);
+            ctx.stroke();
+          }
+        });
+        ctx.restore();
+      }
+    };
+
+    function buildWaterfallChart(model, monthNum) {
+      // Get the row for the selected month (clamp to available range)
+      const rowIdx = Math.max(0, Math.min(35, Math.round(monthNum) - 1));
+      const row = model.rows[rowIdx];
+      if (!row) return;
+
+      // Waterfall steps: Gross Revenue → minus payment processing → minus onboarding revenue adjustment
+      // → minus FSR costs → minus AI/cloud → minus shared infra → minus fixed costs → Operating Result
+      const grossRevenue = row.revenue; // recurring + onboarding fees
+      const paymentProcessing = row.paymentProcessing;
+      const netRevenue = row.recurringRevenue; // Use recurring as main stream (onboarding fee is additive shown separately)
+      const onboardingRev = row.onboardingRevenue;
+      const fsrCost = row.fsrCost;
+      const aiCost = row.aiCost;
+      const sharedInfra = row.sharedInfraCost;
+      const fixedCosts = row.fixedCosts;
+      const operatingResult = row.netIncome;
+
+      // Build floating bar data for a waterfall
+      // Each bar is [start, end] — floating bars technique
+      const steps = [
+        { label: 'Recurring Revenue', value: row.recurringRevenue, type: 'positive' },
+        { label: 'Onboarding Revenue', value: row.onboardingRevenue, type: 'positive' },
+        { label: 'Payment Processing', value: -paymentProcessing, type: 'negative' },
+        { label: 'FSR Costs', value: -fsrCost, type: 'negative' },
+        { label: 'AI / Cloud', value: -aiCost, type: 'negative' },
+        { label: 'Shared Infra', value: -sharedInfra, type: 'negative' },
+        { label: 'Fixed Costs', value: -fixedCosts, type: 'negative' },
+        { label: 'Operating Result', value: operatingResult, type: 'result' },
+      ];
+
+      // Build floating bar [start, end] pairs
+      let runningTotal = 0;
+      const floatingData = [];
+      const colors = [];
+      const positiveColor = 'rgba(41,98,255,0.85)';
+      const negativeColor = 'rgba(214,69,69,0.80)';
+      const resultGreenColor = 'rgba(31,157,85,0.9)';
+      const resultRedColor = 'rgba(214,69,69,0.9)';
+
+      steps.forEach((step, i) => {
+        if (step.type === 'result') {
+          // Final result bar: from 0 to operatingResult
+          floatingData.push([Math.min(0, operatingResult), Math.max(0, operatingResult)]);
+          colors.push(operatingResult >= 0 ? resultGreenColor : resultRedColor);
+        } else {
+          const start = runningTotal;
+          const end = runningTotal + step.value;
+          floatingData.push([Math.min(start, end), Math.max(start, end)]);
+          colors.push(step.type === 'positive' ? positiveColor : negativeColor);
+          runningTotal = end;
+        }
+      });
+
+      destroyChart('waterfall');
+      charts.waterfall = new Chart(document.getElementById('waterfallChart'), {
+        type: 'bar',
+        data: {
+          labels: steps.map(s => s.label),
+          datasets: [{
+            label: `Month ${rowIdx + 1} Waterfall`,
+            data: floatingData,
+            backgroundColor: colors,
+            borderRadius: 6,
+            borderSkipped: false,
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const step = steps[context.dataIndex];
+                  const val = step.type === 'result' ? step.value : step.value;
+                  return ` ${money0.format(Math.abs(val))} ${step.value < 0 ? '(cost)' : ''}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: { ticks: { callback: baseCurrencyTicks } }
+          }
+        }
+      });
+    }
+
+    function buildCharts(model) {
+      const rows = model.rows;
+      const labels = rows.map(r => `M${r.month}`);
+      const cumulativeColors = rows.map(r => r.cumulativeCash >= 0 ? 'rgba(31,157,85,0.18)' : 'rgba(214,69,69,0.16)');
+      const phaseBoundaries = model.phaseRanges.slice(1).map((phase, index) => ({ month: phase.start, nextMonth: model.phaseRanges[index + 2]?.start || 36 }));
+      const familyCapacitySeries = rows.map(r => Math.floor(r.totalFsrs * model.assumptions.effectiveFamiliesPerFsr));
+
+      destroyChart('cashFlow');
+      charts.cashFlow = new Chart(document.getElementById('cashFlowChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Monthly Revenue',
+              data: rows.map(r => r.revenue),
+              borderColor: '#2962ff',
+              backgroundColor: 'rgba(41,98,255,0.10)',
+              borderWidth: 2,
+              tension: 0.25,
+              fill: false,
+            },
+            {
+              label: 'Monthly Costs',
+              data: rows.map(r => r.fixedCosts + r.variableCosts),
+              borderColor: '#d64545',
+              backgroundColor: 'rgba(214,69,69,0.10)',
+              borderWidth: 2,
+              tension: 0.25,
+              fill: false,
+            },
+            {
+              label: 'Cumulative Cash Position',
+              data: rows.map(r => r.cumulativeCash),
+              borderColor: '#1f9d55',
+              backgroundColor: cumulativeColors,
+              borderWidth: 3,
+              tension: 0.2,
+              fill: true,
+              yAxisID: 'y1',
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            y: { ticks: { callback: baseCurrencyTicks } },
+            y1: {
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              reverse: false,
+              ticks: { callback: baseCurrencyTicks }
+            }
+          },
+          plugins: {
+            legend: { position: 'bottom' },
+            phaseBoundaryPlugin: { boundaries: phaseBoundaries }
+          }
+        },
+        plugins: [phaseBoundaryPlugin]
+      });
+
+      destroyChart('familyGrowth');
+      charts.familyGrowth = new Chart(document.getElementById('familyGrowthChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Panel Lives',
+              data: rows.map(r => r.activeFamilies),
+              borderColor: '#2962ff',
+              backgroundColor: 'rgba(41,98,255,0.12)',
+              fill: true,
+              tension: 0.25,
+              borderWidth: 3,
+              yAxisID: 'y',
+            },
+            {
+              label: 'New Families / Mo',
+              data: rows.map(r => r.newFamilies),
+              borderColor: '#1f9d55',
+              backgroundColor: 'rgba(31,157,85,0.10)',
+              tension: 0.2,
+              borderDash: [5, 5],
+              fill: false,
+              yAxisID: 'y1',
+            },
+            {
+              label: 'Churned / Mo',
+              data: rows.map(r => r.churnedFamilies),
+              borderColor: '#d64545',
+              backgroundColor: 'rgba(214,69,69,0.10)',
+              tension: 0.2,
+              borderDash: [3, 3],
+              fill: false,
+              yAxisID: 'y1',
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            y: { beginAtZero: true, ticks: { callback: v => intFmt.format(v) }, title: { display: true, text: 'Panel Lives' } },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              ticks: { callback: v => intFmt.format(v) },
+              title: { display: true, text: 'Families / Month' }
+            }
+          }
+        }
+      });
+
+      const milestoneMonths = [6, 12, 18, 24, 30, 36];
+      const milestoneRows = milestoneMonths.map(m => rows[m - 1]);
+      destroyChart('teamScaling');
+      charts.teamScaling = new Chart(document.getElementById('teamScalingChart'), {
+        type: 'bar',
+        data: {
+          labels: milestoneMonths.map(m => `M${m}`),
+          datasets: [
+            {
+              label: 'Engineers',
+              data: milestoneRows.map(r => r.engineers),
+              backgroundColor: '#2962ff',
+            },
+            {
+              label: 'FSRs',
+              data: milestoneRows.map(r => r.totalFsrs),
+              backgroundColor: '#1f9d55',
+            },
+            {
+              label: 'Ops',
+              data: milestoneRows.map(r => r.opsHeadcount),
+              backgroundColor: '#f4b740',
+            },
+            {
+              label: 'Org Mgmt',
+              data: milestoneRows.map(r => r.orgManagementHeadcount),
+              backgroundColor: '#6f7ff7',
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+
+      buildWaterfallChart(model, waterfallMonth);
+    }
+
+    function bindMetricHelpButtons() {
+      document.querySelectorAll('[data-metric-help]').forEach(btn => {
+        btn.onclick = () => {
+          showMetricDefinition(btn.dataset.metricHelp);
+        };
+      });
+    }
+
+    function syncStickyOffsets() {
+      const header = document.querySelector('header');
+      const offset = Math.max(96, (header?.offsetHeight || 96) + 16);
+      document.documentElement.style.setProperty('--sticky-offset', `${offset}px`);
+      document.documentElement.style.setProperty('--preview-max-height', `calc(100vh - ${offset + 20}px)`);
+    }
+
+    function syncPreviewContextHighlights() {
+      document.querySelectorAll('#filtersWorkbench [data-preview-context]').forEach(section => {
+        const isActive = section.dataset.previewContext === activePreviewContext;
+        section.classList.toggle('preview-context-active', isActive);
+      });
+    }
+
+    function setPreviewContext(context, options = {}) {
+      if (options.lockMs) previewInteractionLockUntil = Date.now() + options.lockMs;
+      if (!context || context === activePreviewContext) return;
+      activePreviewContext = context;
+      syncPreviewContextHighlights();
+      if (latestModel && activeView === 'setup') renderModelSetup(latestModel);
+    }
+
+    function getPreviewContextSections() {
+      return Array.from(document.querySelectorAll('#filtersWorkbench [data-preview-context]'));
+    }
+
+    function getPreviewContextAnchor(section) {
+      if (!(section instanceof HTMLElement)) return section;
+      if (section.matches('details.collapsible-group')) {
+        return section.querySelector('summary') || section;
+      }
+      return section;
+    }
+
+    function updatePreviewContextFromViewport() {
+      if (activeView !== 'setup') return;
+      if (Date.now() < previewInteractionLockUntil) return;
+      const sections = getPreviewContextSections();
+      if (!sections.length) return;
+
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const anchor = headerHeight + 28;
+      let lastAbove = null;
+      let firstBelow = null;
+
+      for (const section of sections) {
+        const anchorEl = getPreviewContextAnchor(section);
+        const rect = anchorEl.getBoundingClientRect();
+        if (rect.top <= anchor) lastAbove = section;
+        if (!firstBelow && rect.top > anchor) firstBelow = section;
+      }
+
+      setPreviewContext((lastAbove || firstBelow || sections[0]).dataset.previewContext);
+    }
+
+    function schedulePreviewViewportSync() {
+      if (previewViewportSyncFrame != null) return;
+      previewViewportSyncFrame = requestAnimationFrame(() => {
+        previewViewportSyncFrame = null;
+        updatePreviewContextFromViewport();
+      });
+    }
+
+    function scrollToPreviewContext(context) {
+      const section = document.querySelector(`#filtersWorkbench [data-preview-context="${context}"]`);
+      if (!section) return;
+      if (section.matches('details.collapsible-group') && !section.open) section.open = true;
+      setPreviewContext(context, { lockMs: 1200 });
+
+      const anchorEl = getPreviewContextAnchor(section);
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const targetTop = window.scrollY + anchorEl.getBoundingClientRect().top - headerHeight - 18;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+      schedulePreviewViewportSync();
+    }
+
+    function bindPreviewContextTracking() {
+      const handleContextEvent = event => {
+        const host = event.target?.closest?.('#filtersWorkbench');
+        if (!host) return;
+        const contextHost = event.target.closest('[data-preview-context]');
+        if (contextHost?.dataset.previewContext) {
+          setPreviewContext(contextHost.dataset.previewContext, { lockMs: 1400 });
+          schedulePreviewViewportSync();
+        }
+      };
+
+      document.addEventListener('focusin', handleContextEvent);
+      document.addEventListener('pointerdown', handleContextEvent);
+      document.addEventListener('input', handleContextEvent);
+      document.addEventListener('change', handleContextEvent);
+      document.addEventListener('toggle', event => {
+        const contextHost = event.target?.closest?.('[data-preview-context]');
+        if (!contextHost || !contextHost.closest('#filtersWorkbench')) return;
+        setPreviewContext(contextHost.dataset.previewContext);
+        schedulePreviewViewportSync();
+      }, true);
+      window.addEventListener('scroll', schedulePreviewViewportSync, { passive: true });
+      window.addEventListener('resize', () => {
+        syncStickyOffsets();
+        schedulePreviewViewportSync();
+      });
+    }
+
+    function syncControlDock() {
+      const panel = document.getElementById('inputsPanel');
+      const workbench = document.getElementById('filtersWorkbench');
+      const setupHost = document.getElementById('setupFiltersHost');
+      const layout = document.querySelector('.layout');
+      if (!panel || !workbench || !setupHost || !layout) return;
+      const useSetupDock = activeView === 'setup';
+      const isDocsView = activeView === 'docs';
+      document.body.classList.toggle('setup-view-active', useSetupDock);
+      layout.classList.toggle('setup-focused', useSetupDock || isDocsView);
+      if (useSetupDock) {
+        if (workbench.parentElement !== setupHost) setupHost.appendChild(workbench);
+        syncPreviewContextHighlights();
+      } else if (workbench.parentElement !== panel) {
+        panel.appendChild(workbench);
+      }
+    }
+
+    function updateSidebarSections(view) {
+      // Toggle sidebar sections based on active view using data-views attribute
+      document.querySelectorAll('#filtersWorkbench [data-views]').forEach(section => {
+        const views = (section.dataset.views || '').split(',').map(s => s.trim());
+        const show = views.includes(view);
+        section.style.display = show ? '' : 'none';
+      });
+      // Show/hide the "Full Model Setup" shortcut button when not on setup view
+      const shortcut = document.getElementById('sidebarSetupShortcut');
+      if (shortcut) shortcut.style.display = (view !== 'setup') ? '' : 'none';
+    }
+
+    function setActiveView(view, syncUrl = true) {
+      activeView = view;
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === activeView);
+      });
+      document.querySelectorAll('.view-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === `view-${activeView}`);
+      });
+      syncControlDock();
+      updateSidebarSections(activeView);
+      requestAnimationFrame(() => {
+        syncStickyOffsets();
+        Object.values(charts).forEach(chart => {
+          if (chart && typeof chart.resize === 'function') chart.resize();
+        });
+        schedulePreviewViewportSync();
+      });
+      if (view === 'docs') initDocsView();
+      if (syncUrl) syncUrlState();
+    }
+
+
+    // ── Simple Markdown → HTML renderer ─────────────────────────────
+    function mdToHtml(md) {
+      const lines = md.split('\n');
+      let out = '';
+      let inFence = false, fenceLines = [];
+      let inTable = false, tableRows = [];
+
+      function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function inline(s) {
+        s = s.replace(/`([^`]+)`/g, (_, c) => `<code>${esc(c)}</code>`);
+        s = s.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+        s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        return s;
+      }
+      function flushTable() {
+        if (!inTable) return;
+        if (tableRows.length >= 2) {
+          const hdrs = tableRows[0], sep = tableRows[1], data = tableRows.slice(2);
+          const aligns = sep.map(s => { s = s.trim(); return /^:.*:$/.test(s) ? 'center' : s.endsWith(':') ? 'right' : 'left'; });
+          out += '<table><thead><tr>' + hdrs.map((h,i) => `<th style="text-align:${aligns[i]||'left'}">${inline(h.trim())}</th>`).join('') + '</tr></thead><tbody>';
+          data.forEach(r => { out += '<tr>' + r.map((c,i) => `<td style="text-align:${aligns[i]||'left'}">${inline(c.trim())}</td>`).join('') + '</tr>'; });
+          out += '</tbody></table>';
+        }
+        tableRows = []; inTable = false;
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (/^```/.test(line)) {
+          if (!inFence) { flushTable(); inFence = true; fenceLines = []; }
+          else { out += `<pre><code>${esc(fenceLines.join('\n'))}</code></pre>`; inFence = false; }
+          continue;
+        }
+        if (inFence) { fenceLines.push(line); continue; }
+        if (line.startsWith('|')) {
+          const cells = line.split('|').slice(1, -1);
+          if (!inTable) inTable = true;
+          tableRows.push(cells);
+          continue;
+        }
+        flushTable();
+        const hm = line.match(/^(#{1,6})\s+(.*)/);
+        if (hm) { out += `<h${hm[1].length}>${inline(hm[2])}</h${hm[1].length}>`; continue; }
+        if (/^---+$/.test(line.trim())) { out += '<hr>'; continue; }
+        if (/^[-*] /.test(line)) {
+          const items = [line.replace(/^[-*] /,'')];
+          while (i+1 < lines.length && /^[-*] /.test(lines[i+1])) { i++; items.push(lines[i].replace(/^[-*] /,'')); }
+          out += '<ul>' + items.map(it => `<li>${inline(it)}</li>`).join('') + '</ul>';
+          continue;
+        }
+        if (/^\d+\. /.test(line)) {
+          const items = [line.replace(/^\d+\. /,'')];
+          while (i+1 < lines.length && /^\d+\. /.test(lines[i+1])) { i++; items.push(lines[i].replace(/^\d+\. /,'')); }
+          out += '<ol>' + items.map(it => `<li>${inline(it)}</li>`).join('') + '</ol>';
+          continue;
+        }
+        if (/^> /.test(line)) { out += `<blockquote><p>${inline(line.slice(2))}</p></blockquote>`; continue; }
+        if (line.trim()) { out += `<p>${inline(line)}</p>`; }
+      }
+      flushTable();
+      if (inFence) out += `<pre><code>${esc(fenceLines.join('\n'))}</code></pre>`;
+      return out;
+    }
+
+    // ── Docs View Renderer ────────────────────────────────────────────
+    const DOCS_MANIFEST = [
+      { key: 'growth-strategy', category: 'Strategy',        title: 'Three-Year Organic Growth Strategy', file: '12-three-year-organic-growth-strategy.md' },
+      { key: 'fsr-bottleneck',  category: 'Strategy',        title: 'FSR Onboarding Bottleneck Analysis',  file: '11-fsr-onboarding-bottleneck-analysis.md' },
+      { key: 'unit-economics',  category: 'Economics',       title: 'Key Metrics & Unit Economics',        file: '09-key-metrics-and-unit-economics.md' },
+      { key: 'pricing-ramp',    category: 'Economics',       title: 'Pricing & Ramp Analysis',             file: '10-pricing-and-ramp-analysis.md' },
+      { key: 'model-guide',     category: 'Model Reference', title: 'Financial Model Guide',               file: 'FINANCIAL-MODEL-GUIDE.md' },
+    ];
+
+    let docsViewReady = false;
+    let activeDocKey = null;
+
+    function initDocsView() {
+      if (docsViewReady) return;
+      const sidebar = document.getElementById('docsSidebar');
+      let lastCat = null;
+      DOCS_MANIFEST.forEach(doc => {
+        if (doc.category !== lastCat) {
+          lastCat = doc.category;
+          const cat = document.createElement('div');
+          cat.className = 'doc-category';
+          cat.textContent = doc.category;
+          sidebar.appendChild(cat);
+        }
+        const item = document.createElement('div');
+        item.className = 'doc-item';
+        item.dataset.doc = doc.key;
+        item.textContent = doc.title;
+        item.addEventListener('click', () => loadDoc(doc.key));
+        sidebar.appendChild(item);
+      });
+      docsViewReady = true;
+      loadDoc(DOCS_MANIFEST[0].key);
+    }
+
+    async function loadDoc(key) {
+      if (activeDocKey === key) return;
+      activeDocKey = key;
+      document.querySelectorAll('#docsSidebar .doc-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.doc === key);
+      });
+      const doc = DOCS_MANIFEST.find(d => d.key === key);
+      const pane = document.getElementById('docsContentPane');
+      pane.innerHTML = '<p style="color:var(--muted);padding:32px 0">Loading…</p>';
+      try {
+        const resp = await fetch(doc.file);
+        if (!resp.ok) throw new Error('fetch failed');
+        const md = await resp.text();
+        pane.innerHTML = mdToHtml(md);
+        pane.scrollTop = 0;
+      } catch(e) {
+        pane.innerHTML = `<p style="color:var(--muted)">Could not load <code>${doc.file}</code>. Serve this directory over HTTP (e.g. <code>npx serve .</code>) to enable markdown loading.</p>`;
+      }
+    }
+
+    function renderSteadyState(model) {
+      const rows = calculateSteadyStateScales(state);
+      document.getElementById('steadyStateHead').innerHTML = `<tr><th>Metric</th>${rows.map(row => `<th>${intFmt.format(row.families)}</th>`).join('')}</tr>`;
+      const metrics = [
+        ['MRR', row => money0.format(row.monthlyRevenue)],
+        ['ARR', row => money0.format(row.annualRevenue)],
+        ['Panel FSRs', row => intFmt.format(row.steadyFsrs)],
+        ['Onboarding FSRs', row => intFmt.format(row.onboardingFsrs)],
+        ['Total FSR cost', row => money0.format(row.fsrCost)],
+        ['Engineering team', row => intFmt.format(row.engineeringTeam)],
+        ['Org management', row => intFmt.format(row.orgManagement)],
+        ['Corporate headcount', row => intFmt.format(row.corporateHeadcount)],
+        ['Total headcount', row => intFmt.format(row.totalHeadcount)],
+        ['Additional overhead', row => money0.format(row.overhead)],
+        ['Office costs', row => money0.format(row.officeCosts)],
+        ['AI / cloud costs', row => money0.format(row.aiCloudCosts)],
+        ['Total monthly costs', row => money0.format(row.totalCosts)],
+        ['Net monthly profit', row => money0.format(row.netMonthlyProfit)],
+        ['Net margin %', row => `${oneDec.format(row.netMarginPct)}%`, true],
+      ];
+      document.getElementById('steadyStateBody').innerHTML = metrics.map(([label, fn, isMargin]) => `<tr><td class="metric-name">${label}</td>${rows.map(row => {
+        const className = isMargin ? (row.netMarginPct >= 20 ? 'margin-good' : row.netMarginPct >= 5 ? 'margin-tight' : 'margin-bad') : '';
+        return `<td class="${className}">${fn(row)}</td>`;
+      }).join('')}</tr>`).join('');
+
+      destroyChart('steadyState');
+      charts.steadyState = new Chart(document.getElementById('steadyStateChart'), {
+        type: 'bar',
+        data: {
+          labels: rows.map(row => intFmt.format(row.families)),
+          datasets: [
+            { label: 'Revenue', data: rows.map(row => row.monthlyRevenue), backgroundColor: '#2962ff', borderRadius: 10 },
+            { label: 'Costs', data: rows.map(row => row.totalCosts), backgroundColor: '#d64545', borderRadius: 10 }
+          ]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { ticks: { callback: baseCurrencyTicks } } } }
+      });
+
+      destroyChart('steadyStateMargin');
+      charts.steadyStateMargin = new Chart(document.getElementById('steadyStateMarginChart'), {
+        type: 'line',
+        data: {
+          labels: rows.map(row => intFmt.format(row.families)),
+          datasets: [{
+            label: 'Net margin %',
+            data: rows.map(row => row.netMarginPct),
+            borderColor: '#1f9d55',
+            backgroundColor: 'rgba(31,157,85,0.12)',
+            fill: true,
+            tension: 0.25,
+            borderWidth: 3,
+            pointRadius: 3,
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          scales: { y: { ticks: { callback: value => `${oneDec.format(value)}%` } } }
+        }
+      });
+
+      renderScaleTable(model);
+    }
+
+    function renderPhaseSection(model) {
+      const rows = model.rows;
+      const phases = model.phaseRanges;
+      const phaseTimeline = document.getElementById('phaseTimeline');
+      phaseTimeline.innerHTML = phases.map(phase => {
+        const width = ((phase.end - phase.start + 1) / rows.length) * 100;
+        const phaseRows = rows.filter(row => row.month >= phase.start && row.month <= phase.end);
+        const monthBurn = phaseRows.length ? phaseRows.reduce((sum, row) => sum + (row.fixedCosts + row.variableCosts - row.revenue), 0) / phaseRows.length : 0;
+        return `<div class="phase-segment ${phase.paletteClass || 'phase-build'}" style="width:${width}%"><div><strong>${phase.name}</strong><br><span class="small">Mo ${phase.start}-${phase.end} · Team ${intFmt.format(phase.engineers + phase.orgManagementHeadcount)} + ops/FSR · Burn ${money0.format(monthBurn)}</span></div></div>`;
+      }).join('');
+
+      const firstPositiveNet = rows.find(r => r.netIncome >= 0)?.month;
+      const firstPositiveCash = rows.find(r => r.cumulativeCash >= 0)?.month;
+      document.getElementById('phaseMeta').innerHTML = `
+        <div><span class="pill">Net income positive: ${firstPositiveNet ? `Month ${firstPositiveNet}` : 'not within 36 months'}</span></div>
+        <div><span class="pill">Cumulative cash positive: ${firstPositiveCash ? `Month ${firstPositiveCash}` : 'not within 36 months'}</span></div>
+        <div><span class="pill">36-month active families: ${intFmt.format(rows[rows.length - 1].activeFamilies)}</span></div>
+      `;
+
+      const snapshotMonths = [6, 12, 18, 24, 30, 36];
+      document.getElementById('snapshotGrid').innerHTML = snapshotMonths.map(month => {
+        const row = rows[month - 1];
+        return `
+          <div class="snapshot-card">
+            <h4>Month ${month}</h4>
+            <div class="snapshot-stat"><span>Phase</span><strong>${row.phaseName}</strong></div>
+            <div class="snapshot-stat"><span>Revenue</span><strong>${money0.format(row.revenue)}</strong></div>
+            <div class="snapshot-stat"><span>Fixed costs</span><strong>${money0.format(row.fixedCosts)}</strong></div>
+            <div class="snapshot-stat"><span>Variable costs</span><strong>${money0.format(row.variableCosts)}</strong></div>
+            <div class="snapshot-stat"><span>Net income</span><strong class="${row.netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(row.netIncome)}</strong></div>
+            <div class="snapshot-stat"><span>Total families</span><strong>${intFmt.format(row.activeFamilies)}</strong></div>
+            <div class="snapshot-stat"><span>Total FSRs</span><strong>${intFmt.format(row.totalFsrs)}</strong></div>
+          </div>
+        `;
+      }).join('');
+
+      renderScaleTable(model);
+    }
+
+    function renderScaleTable(model) {
+      const nearestCurrent = scaleTargets.reduce((best, target) => {
+        return Math.abs(target - model.summary.finalFamilies) < Math.abs(best - model.summary.finalFamilies) ? target : best;
+      }, scaleTargets[0]);
+
+      const body = document.getElementById('scaleTableBody');
+      body.innerHTML = scaleTargets.map(targetFamilies => {
+        const phaseMonth = Math.max(1, Math.min(36, model.summary.breakEvenMonth || 36));
+        const phase = phaseState.enabled ? getPhaseForMonth(phaseMonth, phaseState) : { name: 'Flat plan', engineers: state.engineers, orgManagementHeadcount: state.orgManagementHeadcount, orgManagementSalary: state.orgManagementSalary, officeInfraMonthly: state.officeInfraMonthly };
+        const recurringRevenue = targetFamilies * state.monthlyPrice;
+        const serviceFsrs = Math.ceil(targetFamilies / model.assumptions.effectiveFamiliesPerFsr);
+        const opsHeadcount = Math.max(BASE_OPS_HEADCOUNT, Math.ceil(targetFamilies / 2500));
+        const fixedCosts = (
+          phase.engineers * (state.engineerSalary / 12) +
+          phase.orgManagementHeadcount * (phase.orgManagementSalary / 12) +
+          phase.officeInfraMonthly +
+          opsHeadcount * (OPS_SALARY / 12)
+        );
+        const fsrCosts = serviceFsrs * (state.fsrSalary / 12);
+        const variableCosts = fsrCosts + (targetFamilies * state.aiCloudPerFamily) + (targetFamilies * SHARED_INFRA_PER_FAMILY) + (recurringRevenue * PAYMENT_PROCESSING_RATE);
+        const totalCosts = fixedCosts + variableCosts;
+        const netIncome = recurringRevenue - totalCosts;
+        const totalHeadcount = phase.engineers + phase.orgManagementHeadcount + opsHeadcount + serviceFsrs;
+        const rowClass = targetFamilies === nearestCurrent ? 'scale-row-highlight' : '';
+        const positionText = targetFamilies === nearestCurrent ? 'Closest to current 36-mo scenario' : targetFamilies < model.summary.finalFamilies ? 'Below current scenario' : 'Above current scenario';
+
+        return `
+          <tr class="${rowClass}">
+            <td>${intFmt.format(targetFamilies)} families</td>
+            <td>${money0.format(recurringRevenue)}</td>
+            <td>${intFmt.format(serviceFsrs)}</td>
+            <td>${money0.format(totalCosts)}</td>
+            <td class="${netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(netIncome)}</td>
+            <td>${intFmt.format(totalHeadcount)}</td>
+            <td>${positionText}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderTable(model) {
+      const tbody = document.getElementById('tableBody');
+      monthlyRows = model.rows;
+      tbody.innerHTML = model.rows.map(row => {
+        const cls = row.cumulativeCash >= 0 ? 'cash-positive' : 'cash-negative';
+        return `
+          <tr class="${cls}">
+            <td>M${row.month}</td>
+            <td>${intFmt.format(row.newFamilies)}</td>
+            <td>${oneDec.format(row.churnedFamilies)}</td>
+            <td>${intFmt.format(row.activeFamilies)}</td>
+            <td>${intFmt.format(row.onboardingFsrs)}</td>
+            <td>${intFmt.format(row.serviceFsrs)}</td>
+            <td>${intFmt.format(row.totalFsrs)}</td>
+            <td>${money0.format(row.revenue)}</td>
+            <td>${money0.format(row.fixedCosts)}</td>
+            <td>${money0.format(row.variableCosts)}</td>
+            <td class="${row.netIncome >= 0 ? 'positive' : 'negative'}">${money0.format(row.netIncome)}</td>
+            <td class="${row.cumulativeCash >= 0 ? 'positive' : 'negative'}">${money0.format(row.cumulativeCash)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const meta = document.getElementById('tableMeta');
+      const positiveMonth = model.summary.positiveCashMonth ? `Cumulative cash turns positive in month ${model.summary.positiveCashMonth}.` : 'Cumulative cash does not turn positive within 36 months.';
+      meta.innerHTML = `
+        <div><strong>36-month ending families:</strong> ${intFmt.format(model.summary.finalFamilies)}</div>
+        <div><strong>Peak FSRs required:</strong> ${intFmt.format(model.summary.maxFsrs)}</div>
+        <div><strong>36-month ending cash:</strong> <span class="${model.summary.finalCash >= 0 ? 'positive' : 'negative'}">${money0.format(model.summary.finalCash)}</span></div>
+        <div>${positiveMonth}</div>
+      `;
+    }
+
+    function exportCsv() {
+      const headers = ['Month','Phase','New Families','Churned Families','Total Active Families','Onboarding Lane FSRs','Account Lane FSRs','Required FSR Pool','Ops Headcount','Revenue','Recurring Revenue','Onboarding Revenue','Fixed Costs','Variable Costs','Net Income','Cumulative Cash'];
+      const lines = [headers.join(',')];
+      monthlyRows.forEach(r => {
+        lines.push([
+          r.month,
+          `"${r.phaseName}"`,
+          r.newFamilies,
+          r.churnedFamilies.toFixed(2),
+          r.activeFamilies.toFixed(2),
+          r.onboardingFsrs,
+          r.serviceFsrs,
+          r.totalFsrs,
+          r.opsHeadcount,
+          r.revenue.toFixed(2),
+          r.recurringRevenue.toFixed(2),
+          r.onboardingRevenue.toFixed(2),
+          r.fixedCosts.toFixed(2),
+          r.variableCosts.toFixed(2),
+          r.netIncome.toFixed(2),
+          r.cumulativeCash.toFixed(2),
+        ].join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'elder-care-financial-model.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function getSavedScenarios() {
+      try {
+        return JSON.parse(localStorage.getItem(SCENARIO_STORAGE_KEY) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function refreshSavedScenarioDropdown() {
+      const select = document.getElementById('savedScenarioSelect');
+      const saved = getSavedScenarios();
+      select.innerHTML = '<option value="">Load saved scenario…</option>' + Object.keys(saved).sort().map(name => `<option value="${name}">${name}</option>`).join('');
+    }
+
+    function saveCurrentScenario() {
+      const name = window.prompt('Name this scenario:');
+      if (!name) return;
+      const saved = getSavedScenarios();
+      saved[name] = currentInputs();
+      localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(saved));
+      refreshSavedScenarioDropdown();
+      document.getElementById('savedScenarioSelect').value = name;
+      activeScenarioKey = null;
+      syncScenarioButtonState();
+    }
+
+    function loadSavedScenario(name) {
+      const saved = getSavedScenarios();
+      if (saved[name]) {
+        activeScenarioKey = null;
+        syncScenarioButtonState();
+        const normalized = normalizeLoadedScenario(saved[name]);
+        setInputs(normalized.inputs, { phaseState: normalized.phaseState });
+      }
+    }
+
+    function syncScenarioButtonState() {
+      document.querySelectorAll('[data-scenario]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scenario === activeScenarioKey);
+      });
+    }
+
+    function buildDefinitionsModal() {
+      const definitionsHtml = `
+        <div class="guide-grid">
+          <div class="doc-card">
+            <h3>Core dashboard metrics</h3>
+            <h4>Monthly burn rate</h4>
+            <p><span class="formula">Fixed payroll + office/infra + base ops</span></p>
+            <p>What it means: the fixed monthly carrying cost before variable family-level delivery costs. This is the hurdle contribution margin must cover.</p>
+            <p>What affects it: engineer count, org management structure, office/infrastructure, and basic operations staffing.</p>
+
+            <h4>Variable cost per family</h4>
+            <p><span class="formula">FSR cost/family + AI/cloud + shared infra + payment processing</span></p>
+            <p>What it means: the direct monthly cost to serve one active family. This is where the services-enabled software thesis either works or breaks.</p>
+            <p>What affects it: FSR salary, effective FSR capacity, AI usage, infra burden, and pricing-dependent payment fees.</p>
+
+            <h4>Contribution margin per family</h4>
+            <p><span class="formula">Monthly price - variable cost per family</span></p>
+            <p>What it means: monthly dollars available from each family to absorb burn and create profit.</p>
+            <p>What affects it: price, FSR efficiency, AI/cloud cost, and payment processing.</p>
+
+            <h4>Break-even families</h4>
+            <p><span class="formula">Burn rate / contribution margin per family</span></p>
+            <p>What it means: approximate active family count needed to cover the monthly fixed cost base.</p>
+            <p>What affects it: both sides of the equation matter — lower burn or higher contribution margin both help.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>Operating and retention metrics</h3>
+            <h4>Months to break-even</h4>
+            <p><span class="formula">First month where net income ≥ 0</span></p>
+            <p>What it means: when monthly operations stop losing money under the current growth path.</p>
+            <p>What affects it: onboarding throughput, growth, churn, pricing, and variable cost discipline.</p>
+
+            <h4>Capital required</h4>
+            <p><span class="formula">Peak negative cumulative cash</span></p>
+            <p>What it means: the maximum funding gap before the model turns self-funding.</p>
+            <p>What affects it: time spent below break-even and how deep monthly losses are early on.</p>
+
+            <h4>LTV / family</h4>
+            <p><span class="formula">Contribution margin × min(1 / effective churn, lifetime cap months)</span></p>
+            <p>What it means: value of a family relationship before fixed overhead, while respecting the elder-care journey's likely maximum duration.</p>
+            <p>What affects it: contribution margin, churn, and the lifetime-cap floor. Small churn changes can swing LTV a lot.</p>
+
+            <h4>LTV : CAC</h4>
+            <p><span class="formula">LTV / CAC</span></p>
+            <p>What it means: an efficiency score for acquisition. The model uses a planning CAC that includes onboarding labor.</p>
+            <p>What affects it: retention, pricing, service efficiency, and acquisition cost.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>FSR capacity definitions</h3>
+            <h4>Onboarding capacity per FSR</h4>
+            <p><span class="formula">${MONTHLY_AVAILABLE_HOURS} hrs / onboarding hours per family</span></p>
+            <p>What it means: how many new families one FSR can onboard per month.</p>
+            <p>Why it matters: this is the first growth bottleneck. If onboarding expands from 3 hours to 6 hours, capacity per FSR is cut in half.</p>
+
+            <h4>Panel demand (human time per family)</h4>
+            <p><span class="formula">Outreach rate × handle time</span></p>
+            <p>What it means: recurring human time per paneled family per month — the operational north star that AI/engineering should drive down.</p>
+            <p>Why it matters: this determines workload-limited panel size and therefore variable labor cost.</p>
+
+            <h4>Binding panel size</h4>
+            <p><span class="formula">min(target panel size, workload-limited panel size)</span></p>
+            <p>What it means: the families-per-FSR the model actually uses — target vs workload, whichever is tighter.</p>
+            <p>If workload-limited capacity is below the target, the operating design is too human-heavy for the planned panel size.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>Relationships between the metrics</h3>
+            <ul>
+              <li>Higher onboarding hours reduce onboarding capacity per FSR.</li>
+              <li>Lower onboarding capacity means more FSR hiring earlier.</li>
+              <li>More FSRs raise variable costs and increase capital needs.</li>
+              <li>Higher outreach rate or longer handle time lowers panel size per FSR.</li>
+              <li>Smaller binding panel size increases variable cost per family.</li>
+              <li>Higher variable cost compresses contribution margin.</li>
+              <li>Lower contribution margin pushes break-even families higher and delays positive cash flow.</li>
+            </ul>
+            <p>This is the core operating chain: <strong>human time → FSR capacity → variable cost → contribution margin → break-even</strong>.</p>
+          </div>
+        </div>
+      `;
+
+      const guideHtml = `
+        <div class="guide-grid">
+          <div class="doc-card">
+            <h3>How to use this dashboard</h3>
+            <ol>
+              <li>Start in Model Setup and pick a starting scenario.</li>
+              <li>Use the live controls there to review and edit assumptions without leaving the main workspace.</li>
+              <li>Adjust staffing, FSR, revenue, churn, and lifetime-cap assumptions.</li>
+              <li>Use the setup impacts and formulas to see why the economics moved before you interpret the charts.</li>
+              <li>Return to Growth Model for the condensed top cards, charts, phase timeline, and monthly forecast.</li>
+              <li>Use the FSR Math box to see why capacity changed and what the churn floor is doing.</li>
+              <li>In Capacity Planner, switch the snapshot month so you are reviewing a real operating point instead of the artificial Month 1 start.</li>
+              <li>Use Scenario Planner to compare the active plan with built-in presets and sensitivity tests.</li>
+              <li>Use the scale analysis table to ask, “What would this business look like at 10K or 50K families under these assumptions?”</li>
+            </ol>
+            <h4>What the scenarios mean</h4>
+            <p><strong>Optimistic</strong> assumes a strong AI-amplified service model with 1,000 families per FSR, relatively low onboarding time, and strong pricing.</p>
+            <p><strong>Conservative</strong> assumes heavier service intensity and slower operational leverage.</p>
+            <p><strong>Premium Concierge</strong> assumes a high-touch model with higher price but lower FSR capacity.</p>
+            <p><strong>Health Plan Scale</strong> assumes lower price but much faster family growth and more operational throughput pressure.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>Key drivers and sensitivity analysis</h3>
+            <h4>1) Onboarding hours</h4>
+            <p>If onboarding rises from 3 hours to 6 hours, onboarding capacity per FSR drops from about 26.7 families/month to 13.3. That means you need roughly twice as many onboarding FSRs for the same growth pace.</p>
+            <h4>2) Outreach rate and handle time</h4>
+            <p>If outreach rate rises or each human interaction gets longer, panel demand hours per family rise. That lowers the workload-limited panel size and pushes variable labor up.</p>
+            <h4>3) Price</h4>
+            <p>Price is the cleanest margin lever, but it only works if value and trust are strong enough to support it.</p>
+            <h4>4) Churn</h4>
+            <p>Churn controls compounding. A seemingly small monthly change can materially move LTV and the funding profile, and the lifetime cap prevents unrealistically low churn assumptions.</p>
+            <h4>5) Org management and engineering load</h4>
+            <p>These are mostly fixed costs early on. They do not scale directly with family count, so they are painful early and much easier to absorb at scale.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>How the metrics relate to each other</h3>
+            <p>The dashboard is built around one core belief from the unit economics memo: <strong>human time per family per month is the most important operating number</strong>.</p>
+            <ul>
+              <li>Onboarding time affects onboarding capacity.</li>
+              <li>Onboarding capacity affects how many FSRs you need to support growth.</li>
+              <li>Panel demand intensity affects the binding panel size — how many families an FSR can carry.</li>
+              <li>Both of those determine FSR spend, which drives variable cost per family.</li>
+              <li>Variable cost determines contribution margin.</li>
+              <li>Contribution margin determines break-even scale and capital required.</li>
+            </ul>
+            <p>So when you change onboarding from 3 hours to 6 hours, you are not just editing one field — you are changing staffing needs, variable costs, and how fast the business can reach self-sustaining economics.</p>
+          </div>
+
+          <div class="doc-card">
+            <h3>What 10K, 25K, and 50K families mean operationally</h3>
+            <p><strong>10K families:</strong> this is a real scaled operator. FSR specialization, QA, compliance rigor, and management layers become mandatory, not optional.</p>
+            <p><strong>25K families:</strong> the business looks more like a category company. Distribution channels, payer relationships, incident management, and operating systems matter as much as product.</p>
+            <p><strong>50K families:</strong> the model can still look attractive if human time remains compressed, but management overhead, reliability, security, and geographic complexity all rise.</p>
+            <p>The scale analysis table translates those abstract milestones into a monthly P&amp;L and staffing footprint using the exact assumptions currently loaded into the model.</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('tab-definitions').innerHTML = definitionsHtml;
+      document.getElementById('tab-guide').innerHTML = guideHtml;
+    }
+
+    function openDefinitionsModal() {
+      const modal = document.getElementById('definitionsModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeDefinitionsModal() {
+      const modal = document.getElementById('definitionsModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function updateAll() {
+      const model = calculateModel(currentInputs());
+      latestModel = model;
+      renderMetrics(model);
+      renderModelSetup(model);
+      renderFsrDetails(model);
+      buildCharts(model);
+      renderSteadyState(model);
+      renderTable(model);
+      bindMetricHelpButtons();
+      schedulePreviewViewportSync();
+      syncUrlState();
+    }
+
+    // ── FSR Demand Calculator ───────────────────────────────────────────
+    function initDemandCalculator() {
+      const ids = ['dc-new-families', 'dc-onboard-hrs', 'dc-churn'];
+      ids.forEach(id => {
+        const num = document.getElementById(id);
+        const range = document.getElementById(id + '-range');
+        if (!num || !range) return;
+        num.addEventListener('input', () => { range.value = num.value; updateDemandCalc(); });
+        range.addEventListener('input', () => { num.value = range.value; updateDemandCalc(); });
+      });
+      updateDemandCalc();
+    }
+
+    function updateDemandCalc() {
+      const newFam = parseFloat(document.getElementById('dc-new-families')?.value || 100);
+      const onbHrs = parseFloat(document.getElementById('dc-onboard-hrs')?.value || 3);
+      const churnPct = parseFloat(document.getElementById('dc-churn')?.value || 2.5);
+      const price = state.monthlyPrice || 149;
+
+      const fsrs = Math.ceil((newFam * onbHrs) / 160);
+      const steadyFam = Math.round(newFam / (churnPct / 100));
+      const steadyRev = steadyFam * price;
+      const onbHrsTotal = newFam * onbHrs;
+      const panelHrsTotal = steadyFam * 0.053;
+      const onbPct = Math.round(onbHrsTotal / (onbHrsTotal + panelHrsTotal) * 100);
+      const monthsSS = Math.round((1 / (churnPct / 100)) * 3);
+
+      const fmt0 = v => new Intl.NumberFormat('en-US', {maximumFractionDigits:0}).format(v);
+      const fmtCurr = v => new Intl.NumberFormat('en-US', {style:'currency',currency:'USD',maximumFractionDigits:0}).format(v);
+
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      set('dc-fsrs', fsrs);
+      set('dc-steady-families', fmt0(steadyFam));
+      set('dc-steady-rev', fmtCurr(steadyRev));
+      set('dc-onboard-pct', onbPct + '%');
+      set('dc-months-ss', monthsSS);
+
+      // table
+      const tbody = document.getElementById('dc-table-body');
+      if (!tbody) return;
+      const targets = [25, 50, 100, 200, 500];
+      tbody.innerHTML = targets.map(t => {
+        const sf = Math.round(t / (churnPct / 100));
+        const fr = Math.ceil((t * onbHrs) / 160);
+        const sr = sf * price;
+        const highlight = Math.abs(t - newFam) < 30 ? 'background:#f0f5ff' : '';
+        return `<tr style="${highlight}">
+          <td style="padding:8px 10px;border-bottom:1px solid var(--line)">${t === newFam ? '<strong>' + t + '</strong>' : t}</td>
+          <td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)">${fr}</td>
+          <td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)">${fmt0(sf)}</td>
+          <td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)">${fmtCurr(sr)}</td>
+        </tr>`;
+      }).join('');
+    }
+    // ── end FSR Demand Calculator ──────────────────────────────────────
+
+    function init() {
+      const urlConfig = getUrlConfig();
+      syncStickyOffsets();
+      fieldDefs.forEach(createField);
+      refreshSavedScenarioDropdown();
+      buildDefinitionsModal();
+      activeScenarioKey = 'conservative';
+      syncScenarioButtonState();
+      buildPhaseEditor();
+      const initialScenarioKey = urlConfig.scenario || 'conservative';
+      setInputs({ ...defaultInputs, ...scenarioPresets[initialScenarioKey] }, { scenarioKey: initialScenarioKey, phaseState: scenarioPhasePresets[initialScenarioKey] });
+      setActiveView(urlConfig.view || 'setup', false);
+      if (urlConfig.expandAll) {
+        document.querySelectorAll('details.collapsible-group').forEach(detail => {
+          detail.open = true;
+        });
+        schedulePreviewViewportSync();
+      }
+
+      document.querySelectorAll('[data-scenario]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.scenario;
+          setInputs({ ...defaultInputs, ...scenarioPresets[key] }, { scenarioKey: key, phaseState: scenarioPhasePresets[key] || getDefaultPhases() });
+        });
+      });
+
+      document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+        activeScenarioKey = null;
+        syncScenarioButtonState();
+        phaseState = getDefaultPhases();
+        buildPhaseEditor();
+        setInputs(defaultInputs, { phaseState });
+      });
+      document.getElementById('saveScenarioBtn').addEventListener('click', saveCurrentScenario);
+      document.getElementById('savedScenarioSelect').addEventListener('change', e => {
+        if (e.target.value) loadSavedScenario(e.target.value);
+      });
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+      document.getElementById('openDefinitionsBtn').addEventListener('click', openDefinitionsModal);
+      document.getElementById('closeDefinitionsBtn').addEventListener('click', closeDefinitionsModal);
+      document.getElementById('definitionsModal').addEventListener('click', e => {
+        if (e.target.id === 'definitionsModal') closeDefinitionsModal();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeDefinitionsModal();
+      });
+
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setActiveView(btn.dataset.view);
+        });
+      });
+
+      const waterfallSelect = document.getElementById('waterfallMonthSelect');
+      if (waterfallSelect) {
+        waterfallSelect.addEventListener('change', e => {
+          waterfallMonth = parseInt(e.target.value, 10) || 12;
+          if (latestModel) buildWaterfallChart(latestModel, waterfallMonth);
+        });
+      }
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(other => other.classList.toggle('active', other === btn));
+          document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
+    }
+    init();
+    initDemandCalculator();
+  </script>
+</body>
+</html>
