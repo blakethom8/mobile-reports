@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian — A Private Care Office for Your Parents</title>
+<meta name="description" content="Meridian pairs a dedicated Care Director with intelligent systems to steward your parents' medical, daily, and financial affairs. Discretion. Coordination. Continuity.">
+<style>
+  /* ============ MERIDIAN — Direction C ============ */
+  :root{
+    --navy:#16273b;
+    --navy-deep:#101d2c;
+    --porcelain:#f6f4ef;
+    --porcelain-warm:#faf8f4;
+    --gold:#c2a878;
+    --gold-ink:#7c6134;     /* champagne gold darkened for text on light grounds (AA) */
+    --gold-soft:#d9c9a8;
+    --slate:#5c6b7a;
+    --sky:#dce7ee;
+    --ink:#1c2a3a;
+    --hairline:rgba(22,39,59,.16);
+    --hairline-gold:rgba(194,168,120,.45);
+    --hairline-light:rgba(246,244,239,.22);
+    --serif:Georgia,'Iowan Old Style','Palatino Linotype','Book Antiqua','Times New Roman',serif;
+    --sans:'Helvetica Neue',Helvetica,'Segoe UI',Arial,sans-serif;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);
+    background:var(--porcelain);
+    color:var(--ink);
+    font-size:17px;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::selection{background:var(--gold);color:var(--navy);}
+  img,svg{max-width:100%;}
+  a{color:inherit;}
+
+  .skip-link{
+    position:absolute;left:-9999px;top:0;background:var(--navy);color:var(--porcelain);
+    padding:.6rem 1.2rem;z-index:200;font-size:.85rem;letter-spacing:.08em;
+  }
+  .skip-link:focus{left:0;}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(1.25rem,5vw,3.5rem);}
+  .wrap-narrow{max-width:820px;margin:0 auto;padding:0 clamp(1.25rem,5vw,3.5rem);}
+
+  /* ---- typographic kit ---- */
+  .kicker{
+    font-family:var(--sans);
+    font-size:.72rem;
+    font-weight:600;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--gold-ink);
+    display:block;
+    margin-bottom:1.4rem;
+  }
+  .on-navy .kicker{color:var(--gold);}
+  h1,h2,h3{font-family:var(--serif);font-weight:400;color:var(--navy);}
+  .on-navy h1,.on-navy h2,.on-navy h3{color:var(--porcelain);}
+  h1{font-size:clamp(2.4rem,5.4vw,4.1rem);line-height:1.12;letter-spacing:-.012em;}
+  h2{font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.2;letter-spacing:-.008em;}
+  h3{font-size:1.28rem;line-height:1.35;}
+  .lede{
+    font-size:clamp(1.06rem,1.6vw,1.22rem);
+    line-height:1.75;
+    color:var(--slate);
+    max-width:44em;
+  }
+  .on-navy .lede{color:var(--sky);}
+  p{max-width:44em;}
+  .rule{border:none;border-top:1px solid var(--hairline);margin:0;}
+  .rule-gold{border:none;border-top:1px solid var(--hairline-gold);margin:0;}
+
+  /* ---- buttons ---- */
+  .btn{
+    display:inline-block;
+    font-family:var(--sans);
+    font-size:.78rem;
+    font-weight:600;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:1rem 2.1rem;
+    border:1px solid var(--navy);
+    color:var(--navy);
+    background:transparent;
+    transition:background .25s ease,color .25s ease,border-color .25s ease;
+    cursor:pointer;
+  }
+  .btn:hover,.btn:focus-visible{background:var(--navy);color:var(--porcelain);}
+  .btn-solid{background:var(--navy);color:var(--porcelain);}
+  .btn-solid:hover,.btn-solid:focus-visible{background:var(--navy-deep);border-color:var(--navy-deep);color:var(--porcelain);}
+  .on-navy .btn{border-color:var(--gold);color:var(--gold);}
+  .on-navy .btn:hover,.on-navy .btn:focus-visible{background:var(--gold);color:var(--navy);}
+  .btn-quiet{
+    display:inline-block;
+    font-size:.78rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--navy);text-decoration:none;
+    border-bottom:1px solid var(--hairline-gold);
+    padding-bottom:.35rem;
+  }
+  .btn-quiet:hover,.btn-quiet:focus-visible{border-bottom-color:var(--navy);}
+  :focus-visible{outline:2px solid var(--gold-ink);outline-offset:3px;}
+  .on-navy :focus-visible{outline-color:var(--gold);}
+
+  /* ---- nav ---- */
+  header.site{
+    background:var(--porcelain);
+    border-bottom:1px solid var(--hairline);
+    position:sticky;top:0;z-index:100;
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem clamp(1.25rem,5vw,3.5rem);
+    max-width:1220px;margin:0 auto;gap:1.5rem;
+  }
+  .brand{display:flex;align-items:center;gap:.85rem;text-decoration:none;}
+  .brand svg{display:block;}
+  .wordmark{
+    font-family:var(--serif);
+    font-size:1.28rem;
+    letter-spacing:.34em;
+    color:var(--navy);
+    text-transform:uppercase;
+    margin-right:-.34em;
+  }
+  .nav-links{display:flex;align-items:center;gap:2rem;list-style:none;}
+  .nav-links a{
+    font-size:.74rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    text-decoration:none;color:var(--slate);
+    padding-bottom:.3rem;border-bottom:1px solid transparent;
+  }
+  .nav-links a:hover,.nav-links a:focus-visible{color:var(--navy);border-bottom-color:var(--gold);}
+  .nav-links a.nav-cta{
+    color:var(--navy);border:1px solid var(--navy);padding:.65rem 1.3rem;
+  }
+  .nav-links a.nav-cta:hover,.nav-links a.nav-cta:focus-visible{background:var(--navy);color:var(--porcelain);}
+  @media (max-width:920px){
+    .nav-links{display:none;}
+    .nav-mobile-cta{display:inline-block !important;}
+  }
+  .nav-mobile-cta{
+    display:none;
+    font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    text-decoration:none;color:var(--navy);border:1px solid var(--navy);padding:.6rem 1.1rem;
+  }
+
+  /* ---- hero ---- */
+  .hero{
+    position:relative;
+    padding:clamp(4.5rem,10vw,8.5rem) 0 clamp(4rem,8vw,7rem);
+    overflow:hidden;
+  }
+  .hero-mark{
+    position:absolute;right:-6%;top:50%;transform:translateY(-50%);
+    width:clamp(320px,42vw,560px);opacity:.55;pointer-events:none;
+  }
+  .hero-inner{position:relative;max-width:720px;}
+  .hero h1{margin-bottom:1.8rem;}
+  .hero .lede{margin-bottom:2.8rem;}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:1.6rem;align-items:center;}
+  .hero-tagline{
+    margin-top:4.5rem;padding-top:1.6rem;border-top:1px solid var(--hairline-gold);
+    font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--slate);
+    max-width:34em;
+  }
+
+  /* ---- credentials band ---- */
+  .cred-band{border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);background:var(--porcelain-warm);}
+  .cred-row{
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem 2.5rem;
+    padding:1.35rem clamp(1.25rem,5vw,3.5rem);max-width:1220px;margin:0 auto;
+  }
+  .cred-row span{
+    font-size:.7rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--slate);
+    display:flex;align-items:center;gap:.6rem;
+  }
+  .cred-row .dot{width:4px;height:4px;background:var(--gold);border-radius:50%;display:inline-block;}
+
+  /* ---- sections ---- */
+  section{padding:clamp(4rem,9vw,7.5rem) 0;}
+  .section-head{max-width:720px;margin-bottom:clamp(2.5rem,5vw,4rem);}
+  .section-head h2{margin-bottom:1.2rem;}
+  .on-navy{background:var(--navy);color:var(--sky);}
+  .on-navy p{color:var(--sky);}
+
+  /* ---- domains ---- */
+  .domains{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--hairline);}
+  .domain{
+    padding:2.6rem 2.2rem 2.6rem 0;
+    border-bottom:1px solid var(--hairline);
+  }
+  .domain + .domain{border-left:1px solid var(--hairline);padding-left:2.2rem;}
+  .domain .num{
+    font-family:var(--serif);font-size:.85rem;letter-spacing:.3em;color:var(--gold-ink);
+    display:block;margin-bottom:1.6rem;
+  }
+  .domain svg{display:block;margin-bottom:1.5rem;}
+  .domain h3{margin-bottom:.9rem;}
+  .domain p{font-size:.95rem;color:var(--slate);line-height:1.75;}
+  .domain ul{list-style:none;margin-top:1.3rem;}
+  .domain li{
+    font-size:.82rem;color:var(--slate);padding:.5rem 0;border-top:1px solid var(--hairline);
+  }
+  @media (max-width:880px){
+    .domains{grid-template-columns:1fr;}
+    .domain{padding:2.2rem 0;}
+    .domain + .domain{border-left:none;padding-left:0;}
+  }
+
+  /* ---- engagement steps ---- */
+  .steps{border-top:1px solid var(--hairline-light);}
+  .step{
+    display:grid;grid-template-columns:130px 1fr 1.15fr;gap:2.5rem;
+    padding:2.8rem 0;border-bottom:1px solid var(--hairline-light);align-items:baseline;
+  }
+  .step .roman{
+    font-family:var(--serif);font-size:1.6rem;color:var(--gold);letter-spacing:.14em;
+  }
+  .step h3{color:var(--porcelain);font-size:1.35rem;}
+  .step p{font-size:.97rem;line-height:1.75;color:var(--sky);}
+  .step .step-note{
+    display:block;margin-top:1rem;font-size:.72rem;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--gold);
+  }
+  @media (max-width:880px){
+    .step{grid-template-columns:1fr;gap:.9rem;padding:2.2rem 0;}
+  }
+
+  /* ---- care director ---- */
+  .director-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2.5rem,6vw,5.5rem);align-items:start;}
+  .director-copy h2{margin-bottom:1.4rem;}
+  .director-copy p{margin-bottom:1.3rem;color:var(--slate);}
+  .director-copy p strong{color:var(--navy);font-weight:600;}
+  .director-card{
+    background:var(--navy);color:var(--sky);
+    padding:2.8rem 2.5rem;position:relative;
+  }
+  .director-card::before{
+    content:"";position:absolute;inset:10px;border:1px solid var(--hairline-light);pointer-events:none;
+  }
+  .director-card .kicker{color:var(--gold);margin-bottom:2rem;}
+  .dc-name{font-family:var(--serif);font-size:1.7rem;color:var(--porcelain);margin-bottom:.3rem;}
+  .dc-title{font-size:.74rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.8rem;}
+  .dc-line{display:flex;justify-content:space-between;gap:1rem;padding:.85rem 0;border-top:1px solid var(--hairline-light);font-size:.86rem;}
+  .dc-line dt{color:var(--slate);}
+  .on-navy .dc-line dt{color:#9fb0c0;}
+  .dc-line dd{color:var(--porcelain);text-align:right;}
+  .dc-quote{
+    margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--hairline-light);
+    font-family:var(--serif);font-style:italic;font-size:1rem;line-height:1.7;color:var(--sky);
+  }
+  @media (max-width:880px){.director-grid{grid-template-columns:1fr;}}
+
+  /* ---- governance ---- */
+  .gov-list{border-top:1px solid var(--hairline);}
+  .gov-item{
+    display:grid;grid-template-columns:280px 1fr;gap:2.5rem;
+    padding:2.1rem 0;border-bottom:1px solid var(--hairline);
+  }
+  .gov-item h3{font-size:1.12rem;}
+  .gov-item h3 .gv-num{color:var(--gold-ink);font-size:.8rem;letter-spacing:.25em;display:block;margin-bottom:.5rem;}
+  .gov-item p{font-size:.95rem;color:var(--slate);line-height:1.75;}
+  @media (max-width:880px){.gov-item{grid-template-columns:1fr;gap:.8rem;}}
+  .gov-close{
+    margin-top:3rem;font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--navy);max-width:38em;
+  }
+
+  /* ---- case study ---- */
+  .case{background:var(--porcelain-warm);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);}
+  .case-label{display:flex;align-items:center;gap:1.2rem;margin-bottom:2.5rem;}
+  .case-label .rule-gold{flex:1;}
+  .case h2{margin-bottom:2.2rem;max-width:16em;}
+  .case-body{columns:2;column-gap:3.5rem;column-rule:1px solid var(--hairline);}
+  .case-body p{
+    font-size:.98rem;line-height:1.85;color:var(--ink);margin-bottom:1.3rem;max-width:none;
+    break-inside:avoid-column;
+  }
+  .case-body p:first-of-type::first-letter{
+    font-family:var(--serif);font-size:3.4em;float:left;line-height:.85;
+    padding-right:.12em;color:var(--navy);
+  }
+  .pullquote{
+    break-inside:avoid;
+    margin:1.8rem 0;padding:1.6rem 0;
+    border-top:1px solid var(--hairline-gold);border-bottom:1px solid var(--hairline-gold);
+    font-family:var(--serif);font-style:italic;font-size:1.28rem;line-height:1.5;color:var(--navy);
+  }
+  .case-sig{
+    margin-top:2.5rem;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--slate);
+  }
+  @media (max-width:880px){.case-body{columns:1;}}
+
+  /* ---- engagement levels ---- */
+  .tiers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:stretch;}
+  .tier{
+    border:1px solid var(--hairline);background:var(--porcelain-warm);
+    padding:2.5rem 2.2rem;display:flex;flex-direction:column;
+  }
+  .tier-featured{
+    background:var(--navy);border-color:var(--navy);color:var(--sky);position:relative;
+  }
+  .tier-featured::before{content:"";position:absolute;inset:9px;border:1px solid var(--hairline-light);pointer-events:none;}
+  .tier .kicker{margin-bottom:1.2rem;}
+  .tier-featured .kicker{color:var(--gold);}
+  .tier h3{font-size:1.55rem;margin-bottom:.4rem;}
+  .tier-featured h3{color:var(--porcelain);}
+  .tier .price{font-family:var(--serif);font-size:1.05rem;color:var(--slate);margin-bottom:1.6rem;}
+  .tier .price em{font-style:normal;font-size:1.6rem;color:var(--navy);}
+  .tier-featured .price{color:#9fb0c0;}
+  .tier-featured .price em{color:var(--gold);}
+  .tier p.tier-desc{font-size:.92rem;color:var(--slate);line-height:1.7;margin-bottom:1.6rem;}
+  .tier-featured p.tier-desc{color:var(--sky);}
+  .tier ul{list-style:none;margin-bottom:2rem;flex:1;position:relative;z-index:1;}
+  .tier li{
+    font-size:.86rem;padding:.65rem 0;border-top:1px solid var(--hairline);color:var(--ink);
+  }
+  .tier-featured li{border-top-color:var(--hairline-light);color:var(--sky);}
+  .tier .btn{align-self:flex-start;position:relative;z-index:1;}
+  .access-note{
+    margin-top:3rem;padding:2.2rem 2.5rem;border:1px solid var(--hairline-gold);
+    display:grid;grid-template-columns:auto 1fr;gap:1.8rem;align-items:start;background:var(--porcelain-warm);
+  }
+  .access-note svg{margin-top:.3rem;}
+  .access-note h3{font-size:1.05rem;margin-bottom:.5rem;}
+  .access-note p{font-size:.92rem;color:var(--slate);line-height:1.75;}
+  @media (max-width:960px){.tiers{grid-template-columns:1fr;}.access-note{grid-template-columns:1fr;}}
+
+  /* ---- mission ---- */
+  .mission{text-align:center;}
+  .mission .kicker{margin-bottom:2rem;}
+  .mission h2{
+    font-size:clamp(1.9rem,4.2vw,3.1rem);max-width:22em;margin:0 auto 2rem;
+  }
+  .mission p{max-width:42em;margin:0 auto;font-size:1.02rem;}
+  .mission .rule-gold{width:72px;margin:2.6rem auto 0;}
+
+  /* ---- FAQ ---- */
+  .faq{max-width:820px;}
+  .faq details{border-bottom:1px solid var(--hairline);}
+  .faq details:first-of-type{border-top:1px solid var(--hairline);}
+  .faq summary{
+    cursor:pointer;list-style:none;
+    padding:1.6rem .2rem;display:flex;justify-content:space-between;align-items:baseline;gap:2rem;
+    font-family:var(--serif);font-size:1.12rem;color:var(--navy);
+  }
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary .mk{font-family:var(--sans);color:var(--gold-ink);font-size:1rem;transition:transform .2s ease;flex-shrink:0;}
+  .faq details[open] summary .mk{transform:rotate(45deg);}
+  .faq .faq-a{padding:0 .2rem 1.8rem;}
+  .faq .faq-a p{font-size:.95rem;color:var(--slate);line-height:1.8;}
+
+  /* ---- consultation ---- */
+  .consult-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,6vw,5.5rem);align-items:start;}
+  .consult-grid h2{margin-bottom:1.4rem;}
+  .consult-grid p{color:var(--sky);margin-bottom:1.2rem;font-size:.98rem;}
+  .consult-note{font-size:.8rem;color:#9fb0c0;border-top:1px solid var(--hairline-light);padding-top:1.4rem;margin-top:2rem;}
+  form.consult label{
+    display:block;font-size:.7rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);margin:1.4rem 0 .5rem;
+  }
+  form.consult input,form.consult select,form.consult textarea{
+    width:100%;background:transparent;border:none;border-bottom:1px solid var(--hairline-light);
+    color:var(--porcelain);font-family:var(--sans);font-size:1rem;padding:.55rem 0;border-radius:0;
+  }
+  form.consult input:focus,form.consult select:focus,form.consult textarea:focus{
+    outline:none;border-bottom-color:var(--gold);
+  }
+  form.consult select{appearance:none;-webkit-appearance:none;}
+  form.consult option{color:var(--navy);}
+  form.consult .btn{margin-top:2.2rem;}
+  @media (max-width:880px){.consult-grid{grid-template-columns:1fr;}}
+
+  /* ---- footer ---- */
+  footer.site{background:var(--navy-deep);color:#9fb0c0;padding:4.5rem 0 3rem;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3.5rem;}
+  .foot-brand .wordmark{color:var(--porcelain);font-size:1.1rem;}
+  .foot-brand p{font-size:.85rem;line-height:1.75;margin-top:1.4rem;max-width:26em;}
+  footer h4{
+    font-size:.68rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:1.3rem;
+  }
+  footer ul{list-style:none;}
+  footer li{margin-bottom:.7rem;}
+  footer li a{font-size:.88rem;text-decoration:none;color:#9fb0c0;}
+  footer li a:hover{color:var(--porcelain);}
+  .foot-legal{
+    border-top:1px solid var(--hairline-light);padding-top:2rem;
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
+    font-size:.74rem;letter-spacing:.04em;
+  }
+  .foot-legal .marks{display:flex;gap:1.8rem;flex-wrap:wrap;}
+  .foot-legal .marks span{letter-spacing:.16em;text-transform:uppercase;font-size:.66rem;font-weight:600;}
+  @media (max-width:880px){.foot-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:560px){.foot-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ================= NAV ================= -->
+<header class="site">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="#top" aria-label="Meridian home">
+      <svg width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="16" stroke="#16273b" stroke-width="1.1"/>
+        <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.1"/>
+        <line x1="8" y1="24" x2="40" y2="24" stroke="#16273b" stroke-width="1.1"/>
+        <line x1="24" y1="4" x2="24" y2="10" stroke="#c2a878" stroke-width="1.1"/>
+      </svg>
+      <span class="wordmark">Meridian</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#stewardship">Stewardship</a></li>
+      <li><a href="#engagement">The Engagement</a></li>
+      <li><a href="#director">Care Directors</a></li>
+      <li><a href="#governance">Governance</a></li>
+      <li><a href="#levels">Engagement Levels</a></li>
+      <li><a href="partners.html">For Partners</a></li>
+      <li><a class="nav-cta" href="#consult">Request a Consultation</a></li>
+    </ul>
+    <a class="nav-mobile-cta" href="#consult">Consultation</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top" aria-label="Introduction">
+  <div class="wrap">
+    <svg class="hero-mark" viewBox="0 0 480 480" fill="none" aria-hidden="true">
+      <circle cx="240" cy="240" r="190" stroke="#dce7ee" stroke-width="1.4"/>
+      <ellipse cx="240" cy="240" rx="120" ry="190" stroke="#dce7ee" stroke-width="1.2"/>
+      <ellipse cx="240" cy="240" rx="55" ry="190" stroke="#e8e2d3" stroke-width="1"/>
+      <line x1="50" y1="240" x2="430" y2="240" stroke="#dce7ee" stroke-width="1.2"/>
+      <ellipse cx="240" cy="240" rx="190" ry="120" stroke="#e8e2d3" stroke-width="1"/>
+      <ellipse cx="240" cy="240" rx="7" ry="190" stroke="#c2a878" stroke-width="1.4"/>
+    </svg>
+    <div class="hero-inner">
+      <span class="kicker">A Private Care Office for Families</span>
+      <h1>The standard of care your&nbsp;family keeps.</h1>
+      <p class="lede">Meridian is a private care office for your parents. A dedicated Care Director, supported by intelligent systems, holds their medical, daily, and financial affairs in careful order — quietly, continuously, and with their dignity at the center of everything. Your family stays informed. Your parents stay in charge of their own lives. Nothing important goes unattended.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="#consult">Request a Private Consultation</a>
+        <a class="btn-quiet" href="#engagement">How an engagement works</a>
+      </div>
+      <p class="hero-tagline">Discretion. Coordination. Continuity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CREDENTIALS BAND ================= -->
+<div class="cred-band" role="presentation">
+  <div class="cred-row">
+    <span><span class="dot"></span>A Named Care Director</span>
+    <span><span class="dot"></span>HIPAA-Aligned Practice</span>
+    <span><span class="dot"></span>Bank-Level Encryption</span>
+    <span><span class="dot"></span>Complete Audit Record</span>
+    <span><span class="dot"></span>Consent Before Access, Always</span>
+  </div>
+</div>
+
+<!-- ================= STEWARDSHIP / DOMAINS ================= -->
+<section id="stewardship" aria-labelledby="stewardship-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">What We Steward</span>
+      <h2 id="stewardship-h">Three domains. One office. The whole picture, held in order.</h2>
+      <p class="lede">Most families manage a parent's later years across a dozen portals, three group texts, and one exhausted sibling. Meridian consolidates the entire estate of care — everything that must be watched, arranged, and remembered — under a single, accountable practice.</p>
+    </div>
+    <div class="domains">
+      <article class="domain">
+        <span class="num">I</span>
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+          <circle cx="22" cy="22" r="17" stroke="#16273b" stroke-width="1.1"/>
+          <path d="M22 14v16M14 22h16" stroke="#c2a878" stroke-width="1.1"/>
+        </svg>
+        <h3>Medical Affairs</h3>
+        <p>Every physician, medication, and discharge summary, reconciled into one coherent record. We monitor changes across patient portals, prepare your family for appointments, and make certain that follow-ups actually follow.</p>
+        <ul>
+          <li>Unified record across providers and portals</li>
+          <li>Medication changes surfaced within the day</li>
+          <li>Appointment preparation and follow-through</li>
+          <li>Care-transition oversight after hospital stays</li>
+        </ul>
+      </article>
+      <article class="domain">
+        <span class="num">II</span>
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+          <path d="M9 22 22 10l13 12" stroke="#16273b" stroke-width="1.1"/>
+          <path d="M13 20v14h18V20" stroke="#16273b" stroke-width="1.1"/>
+          <path d="M19 34v-8h6v8" stroke="#c2a878" stroke-width="1.1"/>
+        </svg>
+        <h3>Household &amp; Daily Life</h3>
+        <p>The home, the drivers, the aides, the small logistics that decide whether a week goes well. We coordinate the people and services your parents rely on, and we notice when a pattern quietly changes.</p>
+        <ul>
+          <li>In-home care and service coordination</li>
+          <li>Transportation, deliveries, home maintenance</li>
+          <li>A vetted directory, kept current</li>
+          <li>Early notice when routines shift</li>
+        </ul>
+      </article>
+      <article class="domain">
+        <span class="num">III</span>
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+          <rect x="9" y="14" width="26" height="20" stroke="#16273b" stroke-width="1.1"/>
+          <path d="M9 20h26" stroke="#16273b" stroke-width="1.1"/>
+          <path d="M15 27h8" stroke="#c2a878" stroke-width="1.1"/>
+          <circle cx="30" cy="27" r="2.4" stroke="#c2a878" stroke-width="1.1"/>
+        </svg>
+        <h3>Financial Affairs</h3>
+        <p>Accounts, bills, insurance, and estate documents, watched with the same discipline a family office applies to a portfolio. Unusual activity is flagged early. Nothing lapses, and nothing surprises.</p>
+        <ul>
+          <li>Account and bill visibility, permissioned by role</li>
+          <li>Anomaly and fraud pattern detection</li>
+          <li>Insurance and benefits administration</li>
+          <li>Estate documents current and locatable</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW AN ENGAGEMENT WORKS ================= -->
+<section class="on-navy" id="engagement" aria-labelledby="engagement-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">The Engagement</span>
+      <h2 id="engagement-h">How a Meridian engagement works</h2>
+      <p class="lede">An engagement begins with a conversation and settles into a rhythm. It is designed to hold for years — through the quiet seasons and the difficult ones — without asking your family to run it.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="roman">I.</span>
+        <h3>A private onboarding</h3>
+        <p>Your Care Director convenes the family — parents first. Together you establish what each person should see, who may decide what, and how your parents want to be consulted. Consent is documented before a single record is touched. Most families complete onboarding within two weeks.<span class="step-note">Parents first, always</span></p>
+      </div>
+      <div class="step">
+        <span class="roman">II.</span>
+        <h3>Connected records</h3>
+        <p>With permissions in place, we connect the estate of care: patient portals, pharmacies, financial institutions, insurers, and care providers. Our systems assemble a single, continuously current picture — the one no portal, binder, or group text has ever managed to hold.<span class="step-note">One picture, kept current</span></p>
+      </div>
+      <div class="step">
+        <span class="roman">III.</span>
+        <h3>Continuous coordination</h3>
+        <p>Day to day, Meridian's intelligent systems do the legwork — monitoring changes, reconciling records, arranging logistics, drafting the correspondence no one has time to write. Your Care Director reviews what matters and handles what machines should not. Your family receives a composed brief, not a feed of alarms.<span class="step-note">Legwork by systems, judgment by people</span></p>
+      </div>
+      <div class="step">
+        <span class="roman">IV.</span>
+        <h3>Quarterly family reviews</h3>
+        <p>Each quarter, your Care Director convenes the family to review the whole estate of care: health, household, finances, and what should be arranged before it is needed. Decisions are recorded. Siblings in three time zones leave with the same understanding.<span class="step-note">The family, on the same page</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CARE DIRECTOR ================= -->
+<section id="director" aria-labelledby="director-h">
+  <div class="wrap">
+    <div class="director-grid">
+      <div class="director-copy">
+        <span class="kicker">Your Care Director</span>
+        <h2 id="director-h">A named specialist. Not a queue, not a chatbot, not a call center.</h2>
+        <p>Every Meridian family is assigned a <strong>Care Director</strong> — a senior specialist who leads your onboarding, learns your family's particulars, and remains your single point of contact for as long as the engagement holds. You will know their name. They will know your parents'.</p>
+        <p>Care Directors are chosen for judgment and discretion as much as expertise. They have coordinated care through hospital discharges at midnight and estate questions no one wanted to raise at dinner. They know when to act, when to ask, and when to simply keep watch.</p>
+        <p>Behind each Care Director stands Meridian's intelligence layer — purpose-built systems that retrieve, reconcile, and monitor across every connected institution. <strong>The systems provide the vigilance; your Care Director provides the judgment.</strong> You are never asked to trust a machine with a decision that belongs to a person.</p>
+        <a class="btn" href="#consult" style="margin-top:1rem;">Meet Your Care Director</a>
+      </div>
+      <aside class="director-card" aria-label="Example Care Director profile">
+        <span class="kicker">In Practice — A Meridian Care Director</span>
+        <p class="dc-name">Eleanor Whitfield</p>
+        <p class="dc-title">Care Director, Family Office Practice</p>
+        <dl>
+          <div class="dc-line"><dt>Background</dt><dd>Geriatric care management, 14 years</dd></div>
+          <div class="dc-line"><dt>Families in her practice</dt><dd>A deliberately small number</dd></div>
+          <div class="dc-line"><dt>Reaches you by</dt><dd>Phone, secure message, in person</dd></div>
+          <div class="dc-line"><dt>Reviews your file</dt><dd>Continuously; formally each quarter</dd></div>
+        </dl>
+        <p class="dc-quote">"My work is to make sure this family is never surprised — and that their mother never feels managed. She feels accompanied."</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUST & GOVERNANCE ================= -->
+<section class="case" id="governance" aria-labelledby="governance-h" style="background:var(--porcelain-warm);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Trust &amp; Governance</span>
+      <h2 id="governance-h">The fine print, kept in plain view.</h2>
+      <p class="lede">Families grant Meridian access to the most sensitive information they hold. We regard the terms of that access as a first-order feature of the service — written plainly, enforced technically, and inspectable at any hour.</p>
+    </div>
+    <div class="gov-list">
+      <div class="gov-item">
+        <h3><span class="gv-num">Article I</span>Consent precedes access</h3>
+        <p>Nothing is connected, viewed, or shared without documented consent — beginning with your parents. Where capacity is a question, we work within the legal instruments your family and its advisors have established, and we help you put them in place if they are missing. Consent can be narrowed or withdrawn at any time, and the change takes effect immediately.</p>
+      </div>
+      <div class="gov-item">
+        <h3><span class="gv-num">Article II</span>Authority is defined, not assumed</h3>
+        <p>Each family member holds an explicit role with explicit permissions. A daughter with power of attorney and a son who should see medical updates but not bank balances are different roles, and the system treats them differently. Sensitive actions require approval from those with the standing to give it.</p>
+      </div>
+      <div class="gov-item">
+        <h3><span class="gv-num">Article III</span>Every action is recorded</h3>
+        <p>Every view, change, and instruction — human or machine — is written to a permanent audit record that authorized family members may inspect at any time. In a family, an unimpeachable record is not bureaucracy. It is how trust survives stress.</p>
+      </div>
+      <div class="gov-item">
+        <h3><span class="gv-num">Article IV</span>Health information, handled to the standard</h3>
+        <p>Meridian's handling of health information is built to HIPAA's requirements: minimum-necessary access, business associate agreements with connected parties, workforce training, and breach protocols we hope never to use and rehearse anyway.</p>
+      </div>
+      <div class="gov-item">
+        <h3><span class="gv-num">Article V</span>Encryption without exception</h3>
+        <p>Data is encrypted in transit and at rest to the standards used by the banks we connect to. Credentials are never stored in plain text, access is least-privilege by default, and our security posture is independently assessed on a recurring schedule.</p>
+      </div>
+    </div>
+    <p class="gov-close">Most firms bury these terms in an appendix. We consider them the product.</p>
+  </div>
+</section>
+
+<!-- ================= FAMILY STORY ================= -->
+<section id="story" aria-labelledby="story-h">
+  <div class="wrap-narrow">
+    <div class="case-label">
+      <span class="kicker" style="margin:0;">From Our Families · A Case Study</span>
+      <hr class="rule-gold">
+    </div>
+    <h2 id="story-h">The Hartwells, and the winter that did not become a crisis.</h2>
+    <div class="case-body">
+      <p>When Margaret Hartwell's husband died, her three children discovered what he had been quietly managing: eleven accounts at four institutions, a cardiologist and a rheumatologist who had never spoken, and a house in Charleston with its own weather of contractors and deliveries. Anne was in Boston, David in Denver, Claire forty minutes away and suddenly, by geography alone, the appointed one.</p>
+      <p>Within a year the family had become what many families become — a group text with a hierarchy no one had agreed to. Claire knew everything and resented it. David knew nothing and resented that. Anne learned of her mother's emergency room visit two days afterward, from a forwarded voicemail.</p>
+      <p>Their mother's estate attorney suggested Meridian. What the Hartwells remember about onboarding is that the first substantive meeting was with Margaret alone. Her Care Director asked what she wanted her children to see, what she preferred to keep private, and how she wished to be asked. "It was the first time in that whole year," Margaret said later, "that someone started with me."</p>
+      <div class="pullquote">"It was the first time in that whole year that someone started with me."</div>
+      <p>The months since have been unremarkable, which is the point. A medication change made in a Tuesday appointment appeared in the family brief that afternoon, with a note from the Care Director about what it meant and what it did not. When the pharmacy's records disagreed with the discharge summary, Meridian caught the discrepancy before the first refill. When an unfamiliar recurring charge surfaced against Margaret's checking account, it was flagged, investigated, and resolved before the second one posted.</p>
+      <p>In January, Margaret fell on the porch stairs — the kind of event that once would have detonated across three time zones. Instead: the emergency contacts worked, the hospital had her current medication list within the hour, and by evening all three children had read the same composed summary and knew who was doing what. She was home in two days. The quarterly review that followed was mostly about the garden.</p>
+      <p>Claire still lives forty minutes away. She is no longer the only one who knows things. "I got to go back to being her daughter," she says. "That was what we were paying for, it turns out."</p>
+    </div>
+    <p class="case-sig">The Hartwell engagement · Names changed at the family's request · Shared with their consent</p>
+  </div>
+</section>
+
+<!-- ================= ENGAGEMENT LEVELS ================= -->
+<section class="case" id="levels" aria-labelledby="levels-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Engagement Levels</span>
+      <h2 id="levels-h">Three levels of engagement. One standard of care.</h2>
+      <p class="lede">Every Meridian family receives the same governance, the same security, and the same regard for a parent's dignity. The levels differ in how much of the work we carry for you.</p>
+    </div>
+    <div class="tiers">
+      <article class="tier tier-featured" aria-label="Managed engagement level">
+        <span class="kicker">The Signature Engagement</span>
+        <h3>Managed</h3>
+        <p class="price"><em>$299</em>&thinsp;/&thinsp;month</p>
+        <p class="tier-desc">The full private care office. Your Care Director leads; your family is briefed. For households with real complexity — or families who want the whole matter carried well.</p>
+        <ul>
+          <li>Dedicated senior Care Director</li>
+          <li>Full coordination across all three domains</li>
+          <li>Proactive monitoring, arrangements, and correspondence</li>
+          <li>Quarterly family reviews, led and documented</li>
+          <li>Priority response, including after hours</li>
+          <li>Care-transition management after hospital stays</li>
+        </ul>
+        <a class="btn" href="#consult">Begin with a Consultation</a>
+      </article>
+      <article class="tier" aria-label="Supported engagement level">
+        <span class="kicker">For Shared Stewardship</span>
+        <h3>Supported</h3>
+        <p class="price"><em>$149</em>&thinsp;/&thinsp;month</p>
+        <p class="tier-desc">The office works alongside you. Meridian carries the monitoring and the legwork; your family retains the lead on decisions and day-to-day arrangements.</p>
+        <ul>
+          <li>Named Care Director relationship</li>
+          <li>Connected records across all three domains</li>
+          <li>Weekly family brief and change alerts</li>
+          <li>Quarterly reviews with your Care Director</li>
+          <li>Escalation support when matters grow complex</li>
+        </ul>
+        <a class="btn" href="#consult">Begin with a Consultation</a>
+      </article>
+      <article class="tier" aria-label="Connected engagement level">
+        <span class="kicker">For the Full Picture</span>
+        <h3>Connected</h3>
+        <p class="price"><em>$79</em>&thinsp;/&thinsp;month</p>
+        <p class="tier-desc">The foundation: one coherent, permissioned picture of your parents' affairs, with the family governance that keeps everyone honest and everyone informed.</p>
+        <ul>
+          <li>Unified records across medical, daily, and financial</li>
+          <li>Roles, permissions, and the full audit record</li>
+          <li>Intelligent summaries and change detection</li>
+          <li>Human onboarding with a Meridian specialist</li>
+          <li>A clear path upward as needs deepen</li>
+        </ul>
+        <a class="btn" href="#consult">Begin with a Consultation</a>
+      </article>
+    </div>
+    <div class="access-note">
+      <svg width="34" height="34" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="16" stroke="#7c6134" stroke-width="1.1"/>
+        <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#7c6134" stroke-width="1.1"/>
+        <line x1="8" y1="24" x2="40" y2="24" stroke="#7c6134" stroke-width="1.1"/>
+      </svg>
+      <div>
+        <h3>A note on access</h3>
+        <p>Meridian exists to help one million families, and a standard of care that only the fortunate can keep is not a standard. Income-scaled pricing and full scholarships are available at every engagement level, through the same private conversation as any other enrollment — no separate program, no separate experience, and no one at Meridian can tell the difference from the inside. If the fee is the obstacle, please say so. The rest of the conversation will be identical.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MISSION ================= -->
+<section class="on-navy mission" id="mission" aria-labelledby="mission-h">
+  <div class="wrap">
+    <span class="kicker">Our Purpose</span>
+    <h2 id="mission-h">One million families, carried through their parents' later years with order, dignity, and grace.</h2>
+    <p>Meridian was founded by families who lived the alternative — the portals, the group texts, the sibling who becomes an unpaid chief of staff, the parent who becomes a project. We are building the institution we needed: private in feel, rigorous in practice, and durable enough to keep its standard for the next thirty years. The families change. The standard does not.</p>
+    <hr class="rule-gold">
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq" aria-labelledby="faq-h">
+  <div class="wrap-narrow">
+    <div class="section-head">
+      <span class="kicker">Questions, Answered Plainly</span>
+      <h2 id="faq-h">What families ask us</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Is Meridian a home-care agency or a medical provider?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>No. Meridian is the coordination layer above them — a private care office. We do not employ aides or practice medicine; we make certain that the physicians, agencies, facilities, and institutions already in your parents' lives operate as one coherent whole, and that your family always holds the full picture. Where a new provider is needed, we help you find and vet one, and we accept no commissions from anyone we recommend.</p></div>
+      </details>
+      <details>
+        <summary>How do my parents remain in control?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>Structurally. The engagement begins with your parents, not around them: their consent governs what is connected and who sees it, and that consent is theirs to narrow or withdraw at any time. Many of our parents are active participants — some are the ones who engaged us. Where cognitive decline is part of the picture, we work within the legal authorities your family has established, and with the same regard we would want shown to our own parents. A parent is never a project at Meridian. This is the firmest commitment we make.</p></div>
+      </details>
+      <details>
+        <summary>Who in the family sees what?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>Exactly what their role permits, and nothing more. Roles and permissions are established at onboarding and adjustable as circumstances change. One sibling may hold financial authority while another sees medical updates only. Every access is written to an audit record the family can inspect — which, in our experience, ends more arguments than it starts.</p></div>
+      </details>
+      <details>
+        <summary>What do the intelligent systems actually do?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>The legwork. They retrieve and reconcile records across patient portals, financial institutions, pharmacies, and insurers; they detect changes and anomalies; they draft summaries, correspondence, and next steps for your Care Director's review. They do not make decisions about your parents' care. Judgment remains with people — your family first, your Care Director in support.</p></div>
+      </details>
+      <details>
+        <summary>Can our attorney, wealth manager, or care manager be involved?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>Yes, and often to great effect. With the family's written consent, Meridian can furnish your advisors with the reporting relevant to their work — an estate attorney kept current on documents, a wealth manager on care expenditures. Many families come to us through these advisors. We pay no referral fees and accept none; the relationship stays clean.</p></div>
+      </details>
+      <details>
+        <summary>What happens in an emergency?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>The preparation happens long before. Current medication lists, conditions, contacts, and directives are maintained and shareable with treating clinicians in moments. When an event occurs, your Care Director manages the coordination — hospital communication, family briefing, discharge planning — so the family can be present as a family. Managed-level engagements include priority after-hours response.</p></div>
+      </details>
+      <details>
+        <summary>How is our information protected?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>Encryption in transit and at rest to bank standards; HIPAA-aligned handling of health information; least-privilege access; recurring independent security assessment; and a complete audit record of every access, human or machine. The full security summary is available in writing before you connect anything, and our team will walk your family — or your advisors — through it.</p></div>
+      </details>
+      <details>
+        <summary>Can we change engagement levels, or conclude the engagement?<span class="mk">+</span></summary>
+        <div class="faq-a"><p>At any time, in either direction, without penalty. Families often begin at Connected and deepen as needs grow. Should you conclude the engagement, your records are exported to you in full and our copies are destroyed on a documented schedule. What Meridian holds, it holds in trust — never as leverage.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONSULTATION ================= -->
+<section class="on-navy" id="consult" aria-labelledby="consult-h">
+  <div class="wrap">
+    <div class="consult-grid">
+      <div>
+        <span class="kicker">Begin with a Conversation</span>
+        <h2 id="consult-h">Request a private consultation</h2>
+        <p>Tell us a little about your family, and a Meridian Care Director — not a sales representative — will call at a time you choose. The conversation is unhurried, confidential, and yours to direct. Many families simply want to understand their options; that is a fine place to begin.</p>
+        <p>If you were referred by an attorney, wealth manager, physician, or your health plan, mention it — we will have prepared accordingly.</p>
+        <p class="consult-note">Consultations are complimentary and carry no obligation. Nothing is connected, and no information is retained, unless your family chooses to proceed.</p>
+      </div>
+      <form class="consult" aria-label="Consultation request form">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email">
+        <label for="f-phone">Telephone</label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+        <label for="f-context">How may we help</label>
+        <select id="f-context" name="context">
+          <option>We are planning ahead, before anything is urgent</option>
+          <option>A recent event has made coordination pressing</option>
+          <option>We were referred by an advisor or physician</option>
+          <option>Our health plan offers Meridian as a benefit</option>
+          <option>I would rather explain by phone</option>
+        </select>
+        <button class="btn" type="submit">Request the Consultation</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top" aria-label="Meridian home">
+          <svg width="34" height="34" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.1"/>
+            <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.1"/>
+            <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.1"/>
+          </svg>
+          <span class="wordmark">Meridian</span>
+        </a>
+        <p>A private care office for your parents. Medical, daily, and financial affairs, stewarded by a dedicated Care Director and the systems behind them — with discretion, coordination, and continuity.</p>
+      </div>
+      <nav aria-label="Footer — the firm">
+        <h4>The Firm</h4>
+        <ul>
+          <li><a href="#stewardship">What we steward</a></li>
+          <li><a href="#engagement">How an engagement works</a></li>
+          <li><a href="#director">Care Directors</a></li>
+          <li><a href="#levels">Engagement levels</a></li>
+          <li><a href="#mission">Our purpose</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Footer — partners">
+        <h4>For Partners</h4>
+        <ul>
+          <li><a href="partners.html#plans">Health plans</a></li>
+          <li><a href="partners.html#advisors">Elder law &amp; estate attorneys</a></li>
+          <li><a href="partners.html#advisors">Wealth managers</a></li>
+          <li><a href="partners.html#advisors">Geriatric care managers</a></li>
+          <li><a href="partners.html#advisors">Concierge medicine</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Footer — governance">
+        <h4>Governance</h4>
+        <ul>
+          <li><a href="#governance">Trust &amp; governance</a></li>
+          <li><a href="#governance">Security summary</a></li>
+          <li><a href="#governance">Privacy practices</a></li>
+          <li><a href="#faq">Questions, answered</a></li>
+          <li><a href="#consult">Contact the office</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="foot-legal">
+      <span>© 2026 Meridian Care Office, Inc. Meridian is a care coordination service, not a medical provider or law firm.</span>
+      <div class="marks">
+        <span>HIPAA-Aligned</span>
+        <span>AES-256 Encryption</span>
+        <span>Full Audit Record</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

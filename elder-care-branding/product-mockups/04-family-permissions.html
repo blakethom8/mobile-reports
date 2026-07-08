@@ -1,0 +1,1006 @@
+<title>Harbor — Family, Roles &amp; Permissions Mockups</title>
+
+<style>
+  :root{
+    --cream:#f7f4ee; --soft-white:#fffdf9; --sage:#8fae9d; --teal:#7ea9b3;
+    --trust:#4e7a86; --sand:#d7c1a6; --ink:#23313a; --slate:#5e6d76;
+    --sage-tint:#eef3ef; --teal-tint:#eaf2f3; --sand-tint:#f4ece0;
+    --line:#e5ded2; --warn:#a65b4b; --ok:#5d8a6f;
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--cream); color:var(--ink);
+    font-family:var(--sans); font-size:17px; line-height:1.6;
+    padding:48px 24px; overflow-x:hidden;
+  }
+  a{color:var(--trust)}
+  :focus-visible{outline:3px solid var(--trust); outline-offset:2px; border-radius:4px}
+  button{font-family:inherit; cursor:pointer}
+
+  /* ---------- Board header ---------- */
+  .board{max-width:1160px; margin:0 auto}
+  .board-header{max-width:860px; margin:0 auto 84px; text-align:center}
+  .wordmark{display:inline-flex; align-items:center; gap:12px; margin-bottom:28px}
+  .wordmark span{font-family:var(--serif); font-size:24px; letter-spacing:.02em}
+  .board-header h1{font-family:var(--serif); font-size:40px; line-height:1.2; font-weight:400; margin-bottom:18px}
+  .board-header .intro{color:var(--slate); font-size:18px; margin-bottom:22px}
+  .board-meta{
+    display:inline-block; font-size:14px; color:var(--slate);
+    border:1px solid var(--line); background:var(--soft-white);
+    border-radius:999px; padding:8px 20px;
+  }
+
+  /* ---------- Frames ---------- */
+  .frame{max-width:1160px; margin:0 auto 72px}
+  .frame-head{max-width:1040px; margin:0 auto 20px}
+  .frame-num{
+    display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--trust);
+    background:var(--teal-tint); border-radius:999px; padding:4px 14px; margin-bottom:10px;
+  }
+  .frame-head h2{font-family:var(--serif); font-size:28px; font-weight:400; margin-bottom:4px}
+  .frame-sub{color:var(--slate); font-size:16px}
+  .screen{
+    background:var(--soft-white); border:1px solid var(--line); border-radius:22px;
+    box-shadow:0 18px 40px rgba(35,49,58,.08); overflow:hidden;
+    max-width:1040px; margin:0 auto;
+  }
+  .annotation{
+    max-width:1040px; margin:18px auto 0; background:var(--sand-tint);
+    border-radius:14px; padding:16px 20px; color:var(--slate); font-size:15px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .annotation svg{flex:0 0 auto; margin-top:3px}
+  .annotation strong{color:var(--ink); font-weight:600}
+
+  /* ---------- App chrome inside screens ---------- */
+  .appbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:16px 28px; border-bottom:1px solid var(--line); background:var(--soft-white);
+  }
+  .appbar .left{display:flex; align-items:center; gap:10px; font-weight:600; font-size:15.5px}
+  .appbar .left em{font-style:normal; color:var(--slate); font-weight:400}
+  .appbar .right{display:flex; align-items:center; gap:8px}
+  .screen-body{padding:32px 28px 36px}
+  .screen h3{font-family:var(--serif); font-size:26px; font-weight:400; margin-bottom:6px}
+  .screen .lede{color:var(--slate); margin-bottom:24px; max-width:64ch}
+
+  /* Trust bar */
+  .trustbar{
+    display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap;
+    background:var(--teal-tint); color:var(--trust);
+    border-radius:999px; padding:8px 18px; font-size:14px; font-weight:600;
+  }
+  .trustbar svg{flex:0 0 auto}
+
+  /* Who-can-see affordance */
+  .who-see{display:inline-flex; align-items:center; gap:8px; color:var(--slate); font-size:14.5px}
+  .who-see svg{flex:0 0 auto}
+
+  /* Avatars */
+  .av{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:44px; height:44px; border-radius:50%;
+    font-weight:700; font-size:17px; color:#fff; flex:0 0 auto;
+  }
+  .av.sm{width:32px; height:32px; font-size:13.5px}
+  .av-m{background:var(--teal)} .av-d{background:var(--sage)}
+  .av-a{background:var(--sand); color:var(--ink)}
+  .av-e{background:var(--trust)} .av-g{background:var(--sage)}
+  .av-stack{display:flex} .av-stack .av{margin-left:-8px; border:2px solid var(--soft-white)}
+  .av-stack .av:first-child{margin-left:0}
+
+  /* Role badges */
+  .badge{
+    display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.04em;
+    border-radius:999px; padding:4px 12px; white-space:nowrap;
+  }
+  .badge-lead{background:var(--trust); color:#fff}
+  .badge-partner{background:var(--sage); color:var(--ink)}
+  .badge-viewer{background:transparent; color:var(--slate); border:1.5px solid var(--slate)}
+  .badge-parent{background:var(--sand); color:var(--ink)}
+  .badge-staff{background:transparent; color:var(--trust); border:1.5px dashed var(--trust)}
+
+  /* Buttons */
+  .btn-primary{
+    background:var(--trust); color:#fff; border:none; border-radius:12px;
+    padding:14px 24px; font-size:16px; font-weight:600; min-height:48px;
+  }
+  .btn-primary:hover{background:#426974}
+  .btn-ghost{
+    background:transparent; color:var(--trust); border:1.5px solid var(--trust);
+    border-radius:12px; padding:14px 24px; font-size:16px; font-weight:600; min-height:48px;
+  }
+  .btn-ghost:hover{background:var(--teal-tint)}
+
+  /* Toggle switches */
+  .switch{display:inline-flex; align-items:center; gap:10px; cursor:pointer}
+  .switch input{position:absolute; opacity:0; width:44px; height:26px; cursor:pointer}
+  .switch .track{
+    width:44px; height:26px; border-radius:999px; background:var(--line);
+    position:relative; transition:background .18s ease; flex:0 0 auto;
+  }
+  .switch .track::after{
+    content:""; position:absolute; top:3px; left:3px; width:20px; height:20px;
+    border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(35,49,58,.3);
+    transition:transform .18s ease;
+  }
+  .switch input:checked + .track{background:var(--sage)}
+  .switch input:checked + .track::after{transform:translateX(18px)}
+  .switch input:focus-visible + .track{outline:3px solid var(--trust); outline-offset:2px}
+  .switch.big .track{width:56px; height:32px}
+  .switch.big .track::after{width:26px; height:26px}
+  .switch.big input:checked + .track::after{transform:translateX(24px)}
+
+  /* ---------- Frame 1: member cards ---------- */
+  .member-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin-bottom:26px}
+  .member-card{
+    border:1px solid var(--line); border-radius:16px; background:var(--soft-white);
+    padding:22px; display:flex; flex-direction:column; gap:10px;
+  }
+  .member-card.parent{background:var(--sand-tint); border-color:#e0d2ba}
+  .member-card.staff{border:1.5px dashed var(--teal); background:var(--teal-tint)}
+  .member-top{display:flex; align-items:center; gap:14px}
+  .member-top .name{font-family:var(--serif); font-size:19px; line-height:1.25}
+  .member-top .loc{font-size:14px; color:var(--slate)}
+  .member-note{font-size:15px; color:var(--slate)}
+  .member-note b{color:var(--ink); font-weight:600}
+  .consent-note{
+    display:flex; gap:8px; align-items:flex-start; font-size:14px; color:var(--ok);
+    font-weight:600; margin-top:2px;
+  }
+  .consent-note svg{flex:0 0 auto; margin-top:3px}
+  .verified{color:var(--ok); font-weight:700; white-space:nowrap}
+  .role-legend{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;
+    background:var(--sage-tint); border-radius:16px; padding:20px 22px; margin-bottom:26px;
+  }
+  .role-legend div{font-size:14.5px; color:var(--slate)}
+  .role-legend .badge{margin-bottom:6px}
+  .frame-actions{display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+  .frame-actions .note{font-size:14.5px; color:var(--slate)}
+
+  /* ---------- Frame 2: matrix ---------- */
+  .table-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:16px}
+  table{border-collapse:collapse; width:100%; min-width:720px; font-size:15.5px}
+  caption{text-align:left; padding:14px 18px; caption-side:bottom; color:var(--slate); font-size:14.5px}
+  th,td{padding:16px 18px; text-align:left; vertical-align:middle; border-bottom:1px solid var(--line)}
+  thead th{background:var(--sage-tint); font-size:14px; letter-spacing:.02em; white-space:nowrap}
+  tbody tr:last-child th, tbody tr:last-child td{border-bottom:none}
+  th[scope="row"]{font-weight:600}
+  .domain-cell{display:flex; align-items:flex-start; gap:12px}
+  .domain-cell svg{flex:0 0 auto; margin-top:2px}
+  .domain-cell .sub{display:block; font-weight:400; font-size:13.5px; color:var(--slate)}
+  .col-person{min-width:130px}
+  .col-head{display:flex; align-items:center; gap:8px}
+  .cell-note{display:block; font-size:12.5px; color:var(--slate); margin-top:6px}
+  .chip-summary{
+    display:inline-block; background:var(--teal-tint); color:var(--trust);
+    border:1px solid var(--teal); border-radius:999px; padding:4px 12px;
+    font-size:13px; font-weight:700; white-space:nowrap;
+  }
+  .matrix-notice{
+    display:flex; gap:10px; align-items:flex-start; background:var(--sand-tint);
+    border-radius:12px; padding:14px 18px; font-size:15px; margin-bottom:20px; color:var(--ink);
+  }
+  .matrix-notice svg{flex:0 0 auto; margin-top:3px}
+  .pending-chip{
+    display:inline-flex; align-items:center; gap:10px; margin-top:16px;
+    border:1.5px dashed var(--sand); background:var(--sand-tint); border-radius:999px;
+    padding:8px 18px; font-size:14.5px; color:var(--ink);
+  }
+  .pending-chip .dot{width:9px; height:9px; border-radius:50%; background:var(--warn); flex:0 0 auto}
+  .matrix-foot{margin-top:16px; display:flex; flex-direction:column; gap:6px}
+
+  /* ---------- Frame 3: stepper ---------- */
+  .stepper{display:flex; gap:8px; border-bottom:1px solid var(--line); padding:0 28px; background:var(--sage-tint); overflow-x:auto}
+  .step-tab{
+    background:none; border:none; border-bottom:3px solid transparent;
+    padding:16px 14px 13px; font-size:15px; font-weight:600; color:var(--slate);
+    display:flex; align-items:center; gap:9px; white-space:nowrap;
+  }
+  .step-tab .num{
+    width:26px; height:26px; border-radius:50%; border:2px solid var(--slate);
+    display:inline-flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto;
+  }
+  .step-tab[aria-selected="true"]{color:var(--trust); border-bottom-color:var(--trust)}
+  .step-tab[aria-selected="true"] .num{border-color:var(--trust); background:var(--trust); color:#fff}
+  .step-panel{display:none; padding:32px 28px 36px}
+  .step-panel.active{display:block}
+  .pay-card{
+    border:1px solid var(--line); border-radius:16px; padding:24px; max-width:640px;
+    background:var(--soft-white);
+  }
+  .pay-card .amount{font-family:var(--serif); font-size:32px; margin:4px 0 2px}
+  .pay-card .payee{font-size:18px; font-weight:600}
+  .pay-card .src{color:var(--slate); font-size:15px}
+  .pay-meta{display:flex; gap:10px; flex-wrap:wrap; margin:14px 0}
+  .chip{
+    display:inline-block; background:var(--sage-tint); color:var(--ink);
+    border-radius:999px; padding:4px 12px; font-size:13.5px; font-weight:600;
+  }
+  .chip.money{background:var(--sand-tint)}
+  .memo{font-size:15px; color:var(--slate); border-left:3px solid var(--line); padding-left:12px; margin:12px 0}
+  .rule-note{
+    display:flex; gap:10px; align-items:flex-start; background:var(--teal-tint);
+    border-radius:12px; padding:12px 16px; font-size:14.5px; color:var(--trust);
+    font-weight:600; margin-top:16px;
+  }
+  .rule-note svg{flex:0 0 auto; margin-top:2px}
+  .requester{display:flex; align-items:center; gap:12px; margin-bottom:18px; font-size:15px; color:var(--slate)}
+  .requester b{color:var(--ink)}
+  .routing-note{
+    background:var(--sand-tint); border-radius:12px; padding:14px 18px;
+    font-size:15px; color:var(--ink); max-width:640px; margin-bottom:22px;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .routing-note svg{flex:0 0 auto; margin-top:3px}
+  .elena-ask{
+    background:var(--sand-tint); border:1px solid #e0d2ba; border-radius:16px;
+    padding:30px 28px; max-width:640px; font-size:21px; line-height:1.55;
+  }
+  .elena-ask .from{display:flex; align-items:center; gap:12px; font-size:16px; color:var(--slate); margin-bottom:16px}
+  .elena-ask p b{font-weight:700}
+  .elena-btns{display:flex; gap:14px; flex-wrap:wrap; margin-top:24px}
+  .elena-btns .btn-primary{font-size:20px; min-height:60px; padding:16px 32px}
+  .elena-btns .btn-ghost{font-size:20px; min-height:60px; padding:16px 32px}
+  .receipt{
+    border:1px solid var(--line); border-radius:16px; max-width:640px; overflow:hidden;
+  }
+  .receipt-head{
+    background:var(--sage-tint); padding:18px 24px; display:flex; align-items:center; gap:12px;
+    font-weight:700; font-size:17px; color:var(--ok);
+  }
+  .receipt-body{padding:8px 24px 20px}
+  .receipt-row{display:flex; justify-content:space-between; gap:16px; padding:13px 0; border-bottom:1px solid var(--line); font-size:15.5px; flex-wrap:wrap}
+  .receipt-row:last-child{border-bottom:none}
+  .receipt-row .k{color:var(--slate)}
+  .receipt-row .v{font-weight:600; text-align:right}
+  .receipt-row .v small{display:block; font-weight:400; color:var(--slate); font-size:13px}
+  .notified{
+    display:flex; align-items:center; gap:14px; background:var(--teal-tint);
+    padding:14px 24px; font-size:14.5px; color:var(--trust); font-weight:600;
+  }
+
+  /* ---------- Frame 4: Elena ---------- */
+  .elena .screen-body{font-size:21px; line-height:1.6; padding:40px 32px 44px}
+  .elena h3{font-size:32px}
+  .elena .lede{font-size:20px; color:var(--slate); margin-bottom:30px}
+  .consent-card{
+    border:1px solid var(--line); border-radius:16px; padding:26px 26px;
+    margin-bottom:18px; background:var(--soft-white);
+    display:flex; justify-content:space-between; gap:22px; align-items:center; flex-wrap:wrap;
+  }
+  .consent-card .what{font-family:var(--serif); font-size:23px; margin-bottom:8px}
+  .consent-card .who-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:18px; color:var(--slate)}
+  .consent-card .controls{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  .stop-btn{
+    background:transparent; color:var(--trust); border:1.5px solid var(--trust);
+    border-radius:12px; padding:16px 28px; font-size:19px; font-weight:600; min-height:56px;
+  }
+  .stop-btn:hover{background:var(--teal-tint)}
+  .switch-label{font-size:16px; font-weight:600; color:var(--slate)}
+  .reassure{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    background:var(--sage-tint); border-radius:16px; padding:24px 26px; margin-top:28px;
+  }
+  .reassure .txt{flex:1 1 260px; font-size:19px}
+  .reassure .txt b{font-weight:700}
+  .read-aloud{
+    display:inline-flex; align-items:center; gap:12px;
+    background:var(--trust); color:#fff; border:none; border-radius:14px;
+    padding:18px 30px; font-size:20px; font-weight:600; min-height:60px;
+  }
+  .read-aloud:hover{background:#426974}
+  .read-aloud[aria-pressed="true"]{background:var(--ok)}
+  .elena-footer{
+    text-align:center; font-family:var(--serif); font-style:italic; font-size:19px;
+    color:var(--slate); margin-top:34px;
+  }
+
+  /* ---------- Frame 5: audit ---------- */
+  .filters{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px}
+  .filter-chip{
+    background:var(--soft-white); border:1.5px solid var(--line); border-radius:999px;
+    padding:8px 20px; font-size:14.5px; font-weight:600; color:var(--slate);
+  }
+  .filter-chip[aria-pressed="true"]{background:var(--trust); border-color:var(--trust); color:#fff}
+  .audit-table td, .audit-table th{padding:14px 18px}
+  .audit-who{display:flex; align-items:center; gap:10px; white-space:nowrap; font-weight:600}
+  .audit-what{min-width:280px}
+  .audit-what small{display:block; color:var(--slate); font-weight:400; font-size:13.5px}
+  .dchip{
+    display:inline-block; border-radius:999px; padding:3px 12px; font-size:12.5px; font-weight:700; white-space:nowrap;
+  }
+  .dchip.medical{background:var(--teal-tint); color:var(--trust)}
+  .dchip.money{background:var(--sand-tint); color:#7a5a2f}
+  .dchip.physical{background:var(--sage-tint); color:var(--ok)}
+  .dchip.consent{background:#f3e7e3; color:var(--warn)}
+  .audit-when{white-space:nowrap; color:var(--slate); font-size:14px}
+  .audit-note{
+    display:flex; gap:10px; align-items:flex-start; margin-top:18px;
+    font-size:15px; color:var(--slate);
+  }
+  .audit-note svg{flex:0 0 auto; margin-top:3px}
+  .audit-note b{color:var(--ink)}
+  tr[hidden]{display:none}
+
+  /* ---------- Footer ---------- */
+  .board-footer{
+    max-width:1040px; margin:90px auto 0; text-align:center;
+    border-top:1px solid var(--line); padding-top:28px;
+    color:var(--slate); font-size:14.5px;
+  }
+
+  @media (max-width:760px){
+    body{padding:32px 14px}
+    .board-header h1{font-size:31px}
+    .screen-body{padding:24px 18px 28px}
+    .appbar{padding:14px 18px}
+    .step-panel{display:block !important; border-bottom:1px solid var(--line)}
+    .step-panel:last-of-type{border-bottom:none}
+    .stepper{display:none}
+    .mobile-step-label{display:block !important}
+    .consent-card{align-items:flex-start}
+  }
+  .mobile-step-label{
+    display:none; font-size:13px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--trust); margin-bottom:14px;
+  }
+</style>
+
+<div class="board">
+
+  <!-- ============ BOARD HEADER ============ -->
+  <header class="board-header">
+    <div class="wordmark">
+      <svg width="40" height="40" viewBox="0 0 40 40" role="img" aria-label="Harbor logo">
+        <circle cx="20" cy="20" r="20" fill="var(--teal-tint)"/>
+        <g stroke="var(--trust)" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <circle cx="20" cy="11.5" r="2.8"/>
+          <line x1="20" y1="14.3" x2="20" y2="29"/>
+          <line x1="14" y1="18" x2="26" y2="18"/>
+          <path d="M11 22c0 5 4 8 9 8s9-3 9-8"/>
+        </g>
+      </svg>
+      <span>Harbor</span>
+    </div>
+    <h1>Family, Roles &amp; Permissions</h1>
+    <p class="intro">The trust centerpiece of Harbor. Everyone sees the same picture; roles decide who can act, not who matters. These five screens show how a family divides responsibility without dividing itself — and how the parent's consent stays at the center of every decision made about her.</p>
+    <p class="board-meta">Product mockups · Direction A (Harbor) · Reyes family demo data · For design review</p>
+  </header>
+
+  <!-- ============ FRAME 1 ============ -->
+  <section class="frame" aria-labelledby="f1-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 1</span>
+      <h2 id="f1-title">Family &amp; roles overview</h2>
+      <p class="frame-sub">One glance answers "who is in this, and what can each of us do?"</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <div class="left">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="20" fill="var(--teal-tint)"/>
+            <g stroke="var(--trust)" stroke-width="2.8" fill="none" stroke-linecap="round">
+              <circle cx="20" cy="11.5" r="2.8"/><line x1="20" y1="14.3" x2="20" y2="29"/>
+              <line x1="14" y1="18" x2="26" y2="18"/><path d="M11 22c0 5 4 8 9 8s9-3 9-8"/>
+            </g>
+          </svg>
+          Reyes Family Workspace <em>· Family &amp; roles</em>
+        </div>
+        <div class="right">
+          <span class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="var(--trust)"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="var(--trust)" stroke-width="1.8" fill="none"/></svg>
+            Bank-level encryption · HIPAA-aligned · Every access is logged
+          </span>
+        </div>
+      </div>
+
+      <div class="screen-body">
+        <h3>Who's in Elena's circle</h3>
+        <p class="lede">Five people, four roles, zero guesswork. Everyone — including Elena — sees this exact page.</p>
+
+        <div class="member-grid">
+          <!-- Elena -->
+          <div class="member-card parent">
+            <div class="member-top">
+              <span class="av av-e" aria-hidden="true">E</span>
+              <div>
+                <div class="name">Elena Reyes</div>
+                <div class="loc">Tucson, AZ · Uses Harbor in Large&nbsp;Print mode</div>
+              </div>
+            </div>
+            <span><span class="badge badge-parent">Parent</span></span>
+            <p class="member-note">This is <b>her</b> circle. Elena is asked before anything sensitive changes — and she can change her mind anytime.</p>
+            <p class="consent-note">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--ok)"/><path d="M4.8 8.2l2.2 2.2 4.2-4.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Elena approved this family workspace on Jul 12, 2026
+            </p>
+          </div>
+
+          <!-- Marisol -->
+          <div class="member-card">
+            <div class="member-top">
+              <span class="av av-m" aria-hidden="true">M</span>
+              <div>
+                <div class="name">Marisol Reyes-Okafor</div>
+                <div class="loc">Chicago, IL</div>
+              </div>
+            </div>
+            <span><span class="badge badge-lead">Care Lead</span></span>
+            <p class="member-note">Can act across all approved areas · Holds financial POA — <span class="verified">verified ✓</span></p>
+          </div>
+
+          <!-- Daniel -->
+          <div class="member-card">
+            <div class="member-top">
+              <span class="av av-d" aria-hidden="true">D</span>
+              <div>
+                <div class="name">Daniel Reyes</div>
+                <div class="loc">Seattle, WA</div>
+              </div>
+            </div>
+            <span><span class="badge badge-partner">Care Partner</span></span>
+            <p class="member-note">Medical &amp; daily care · <b>No financial access</b> — at his own request.</p>
+          </div>
+
+          <!-- Ana -->
+          <div class="member-card">
+            <div class="member-top">
+              <span class="av av-a" aria-hidden="true">A</span>
+              <div>
+                <div class="name">Ana Reyes</div>
+                <div class="loc">Austin, TX</div>
+              </div>
+            </div>
+            <span><span class="badge badge-viewer">Viewer</span></span>
+            <p class="member-note">Sees updates, can comment · Asked for a lighter role this season — that's a choice, not a demotion.</p>
+          </div>
+
+          <!-- Grace -->
+          <div class="member-card staff">
+            <div class="member-top">
+              <span class="av av-g" aria-hidden="true">G</span>
+              <div>
+                <div class="name">Grace Whitfield</div>
+                <div class="loc">Family Support Representative</div>
+              </div>
+            </div>
+            <span><span class="badge badge-staff">Harbor team</span></span>
+            <p class="member-note">Sees only what your family approved. Bound by HIPAA and our staff access policy — every look she takes shows up in your audit trail.</p>
+          </div>
+        </div>
+
+        <div class="role-legend" aria-label="What each role means">
+          <div><span class="badge badge-parent">Parent</span><br>It's her life — she approves what's shared and can revoke anything, anytime.</div>
+          <div><span class="badge badge-lead">Care Lead</span><br>Coordinates and can take action in every area the family and Elena have approved.</div>
+          <div><span class="badge badge-partner">Care Partner</span><br>Acts within specific areas — like medical or daily care — and nothing beyond them.</div>
+          <div><span class="badge badge-viewer">Viewer</span><br>Stays in the loop with updates and comments, without duties or access to act.</div>
+        </div>
+
+        <div class="frame-actions">
+          <button class="btn-ghost" type="button">Change roles</button>
+          <span class="note">Role changes notify everyone, including Elena.</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2" y="2" width="14" height="14" rx="3" fill="none" stroke="var(--slate)" stroke-width="1.6"/><path d="M6 6.5h6M6 9.5h6M6 12.5h3.5" stroke="var(--slate)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p><strong>Design intent:</strong> Explicit, named roles defuse the quiet sibling question "why does she get to decide?" before it becomes resentment. Ana's lighter role is framed as a season, not a status. And the FSR's limited access is <strong>stated, not implied</strong> — trust is visual before it's contractual.</p>
+    </aside>
+  </section>
+
+  <!-- ============ FRAME 2 ============ -->
+  <section class="frame" aria-labelledby="f2-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 2</span>
+      <h2 id="f2-title">What each person can see</h2>
+      <p class="frame-sub">Per-domain visibility, adjusted per person — asymmetry is normal, and the parent gates the sensitive edges.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <div class="left">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="20" fill="var(--teal-tint)"/>
+            <g stroke="var(--trust)" stroke-width="2.8" fill="none" stroke-linecap="round">
+              <circle cx="20" cy="11.5" r="2.8"/><line x1="20" y1="14.3" x2="20" y2="29"/>
+              <line x1="14" y1="18" x2="26" y2="18"/><path d="M11 22c0 5 4 8 9 8s9-3 9-8"/>
+            </g>
+          </svg>
+          Reyes Family Workspace <em>· Visibility</em>
+        </div>
+        <div class="right">
+          <span class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="var(--trust)"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="var(--trust)" stroke-width="1.8" fill="none"/></svg>
+            Bank-level encryption · HIPAA-aligned · Every access is logged
+          </span>
+        </div>
+      </div>
+
+      <div class="screen-body">
+        <h3>What each person can see</h3>
+        <p class="lede">Turn areas on or off per person. Nobody has to see everything to be part of everything.</p>
+
+        <div class="matrix-notice" role="note">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="var(--warn)" stroke-width="1.7"/><path d="M9 5v5" stroke="var(--warn)" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="12.8" r="1" fill="var(--warn)"/></svg>
+          <span>Changes here take effect only after <b>Elena is notified</b> — and financial visibility changes need <b>her okay first</b>.</span>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <caption>
+              <span class="who-see">
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" fill="none" stroke="var(--slate)" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="var(--slate)"/></svg>
+                This whole page is visible to every family member — and to Elena, in Large Print. Nobody's access is a secret from anybody.
+              </span>
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Area</th>
+                <th scope="col" class="col-person"><span class="col-head"><span class="av sm av-m" aria-hidden="true">M</span>Marisol</span></th>
+                <th scope="col" class="col-person"><span class="col-head"><span class="av sm av-d" aria-hidden="true">D</span>Daniel</span></th>
+                <th scope="col" class="col-person"><span class="col-head"><span class="av sm av-a" aria-hidden="true">A</span>Ana</span></th>
+                <th scope="col" class="col-person"><span class="col-head"><span class="av sm av-g" aria-hidden="true">G</span>Grace (FSR)</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <span class="domain-cell">
+                    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 17s-6.5-4-6.5-8.5A3.6 3.6 0 0 1 10 6a3.6 3.6 0 0 1 6.5 2.5C16.5 13 10 17 10 17z" fill="none" stroke="var(--trust)" stroke-width="1.7" stroke-linejoin="round"/><path d="M6.5 10.5h2l1-1.8 1.4 3 1-1.2h1.6" fill="none" stroke="var(--trust)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Medical<span class="sub">Records, medications, visit notes</span></span>
+                  </span>
+                </th>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Marisol can see Medical"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Daniel can see Medical"><span class="track"></span></label></td>
+                <td><span class="chip-summary">Summary only</span><span class="cell-note">Weekly digest, no records</span></td>
+                <td><span class="chip-summary">Summary only</span><span class="cell-note">For check-in call prep</span></td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span class="domain-cell">
+                    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10.5 10 4l7 6.5" fill="none" stroke="var(--ok)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9.5V16h10V9.5" fill="none" stroke="var(--ok)" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 16v-4h3v4" fill="none" stroke="var(--ok)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                    <span>Physical &amp; daily care<span class="sub">Schedules, home services</span></span>
+                  </span>
+                </th>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Marisol can see Physical and daily care"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Daniel can see Physical and daily care"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Ana can see Physical and daily care"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Grace can see Physical and daily care"><span class="track"></span></label></td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span class="domain-cell">
+                    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="5" width="15" height="10.5" rx="2" fill="none" stroke="#7a5a2f" stroke-width="1.7"/><path d="M2.5 8.5h15" stroke="#7a5a2f" stroke-width="1.7"/><path d="M5.5 12.5h4" stroke="#7a5a2f" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <span>Financial<span class="sub">Accounts, bills, spending</span></span>
+                  </span>
+                </th>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Marisol can see Financial"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" aria-label="Daniel can see Financial"><span class="track"></span></label><span class="cell-note">Off at Daniel's request</span></td>
+                <td><label class="switch"><input type="checkbox" role="switch" aria-label="Ana can see Financial"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" aria-label="Grace can see Financial"><span class="track"></span></label><span class="cell-note">Harbor staff never see accounts</span></td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span class="domain-cell">
+                    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h7l3.5 3.5v11.5H5z" fill="none" stroke="var(--slate)" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 2.5V6h3.5" fill="none" stroke="var(--slate)" stroke-width="1.5" stroke-linejoin="round"/><path d="M7.5 10h5M7.5 13h5" stroke="var(--slate)" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <span>Legal &amp; documents<span class="sub">POA, insurance, directives</span></span>
+                  </span>
+                </th>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Marisol can see Legal and documents"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" checked aria-label="Daniel can see Legal and documents"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" aria-label="Ana can see Legal and documents"><span class="track"></span></label></td>
+                <td><label class="switch"><input type="checkbox" role="switch" aria-label="Grace can see Legal and documents"><span class="track"></span></label></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="matrix-foot">
+          <span class="pending-chip">
+            <span class="dot" aria-hidden="true"></span>
+            <span><b>Pending:</b> Ana requests medical full access → waiting on Elena's okay</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2" y="2" width="14" height="14" rx="3" fill="none" stroke="var(--slate)" stroke-width="1.6"/><path d="M6 6.5h6M6 9.5h6M6 12.5h3.5" stroke="var(--slate)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p><strong>Design intent:</strong> Asymmetry is normal and healthy in families — Daniel not seeing finances is a boundary he chose, so the UI labels it as his request, never as a restriction placed on him. "Summary only" is a real third state, not a hack. And the most sensitive change of all — money visibility — routes through Elena, because <strong>we ask because it's her life</strong>.</p>
+    </aside>
+  </section>
+
+  <!-- ============ FRAME 3 ============ -->
+  <section class="frame" aria-labelledby="f3-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 3</span>
+      <h2 id="f3-title">Two people confirm money moves</h2>
+      <p class="frame-sub">Any payment over the family's threshold needs a second yes — and here, the second yes is Elena's.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <div class="left">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="20" fill="var(--teal-tint)"/>
+            <g stroke="var(--trust)" stroke-width="2.8" fill="none" stroke-linecap="round">
+              <circle cx="20" cy="11.5" r="2.8"/><line x1="20" y1="14.3" x2="20" y2="29"/>
+              <line x1="14" y1="18" x2="26" y2="18"/><path d="M11 22c0 5 4 8 9 8s9-3 9-8"/>
+            </g>
+          </svg>
+          Reyes Family Workspace <em>· Payment approval</em>
+        </div>
+        <div class="right">
+          <span class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="var(--trust)"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="var(--trust)" stroke-width="1.8" fill="none"/></svg>
+            Bank-level encryption · HIPAA-aligned · Every access is logged
+          </span>
+        </div>
+      </div>
+
+      <div class="stepper" role="tablist" aria-label="Payment approval steps">
+        <button class="step-tab" role="tab" id="tab-1" aria-selected="true" aria-controls="panel-1" type="button"><span class="num">1</span> Marisol requests</button>
+        <button class="step-tab" role="tab" id="tab-2" aria-selected="false" aria-controls="panel-2" tabindex="-1" type="button"><span class="num">2</span> Elena confirms</button>
+        <button class="step-tab" role="tab" id="tab-3" aria-selected="false" aria-controls="panel-3" tabindex="-1" type="button"><span class="num">3</span> Confirmed &amp; logged</button>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step-panel active" role="tabpanel" id="panel-1" aria-labelledby="tab-1">
+        <span class="mobile-step-label">Step 1 · Marisol requests</span>
+        <div class="requester">
+          <span class="av av-m" aria-hidden="true">M</span>
+          <span><b>Marisol</b> (Care Lead) requests a payment · Today, 2:14 PM CT</span>
+        </div>
+        <div class="pay-card">
+          <div class="payee">Pay Desert Bloom Home Care</div>
+          <div class="amount">$1,240.00</div>
+          <div class="src">From Elena's Wells Fargo checking ••2201</div>
+          <div class="pay-meta">
+            <span class="chip money">Home care · June invoice</span>
+            <span class="chip">Invoice #DB-0614 attached</span>
+          </div>
+          <p class="memo">"June hours for Rosa and the weekend team — matches the visit log, 62 hours at the usual rate."</p>
+          <div class="rule-note">
+            <svg width="17" height="17" viewBox="0 0 17 17" aria-hidden="true"><circle cx="8.5" cy="8.5" r="7.5" fill="none" stroke="var(--trust)" stroke-width="1.6"/><path d="M8.5 4.8v4.2l2.6 1.6" fill="none" stroke="var(--trust)" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span>Family rule: payments over $500 need a second confirmation from someone with financial access.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
+        <span class="mobile-step-label">Step 2 · Elena confirms</span>
+        <div class="routing-note">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="var(--trust)" stroke-width="1.6"/><path d="M9 5.2v4.5" stroke="var(--trust)" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="12.6" r="1" fill="var(--trust)"/></svg>
+          <span>Only Marisol has ongoing financial access, so the second confirmation goes to <b>Elena herself</b> — she okays her own money. Shown below exactly as Elena sees it, in Large Print.</span>
+        </div>
+        <div class="elena-ask">
+          <div class="from">
+            <span class="av av-m" aria-hidden="true">M</span>
+            <span>A request from Marisol · needs your okay</span>
+          </div>
+          <p><b>Marisol wants to pay your home-care team $1,240</b> from your checking account. Okay?</p>
+          <div class="elena-btns">
+            <button class="btn-primary" type="button">Yes, pay it</button>
+            <button class="btn-ghost" type="button">Call me first</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
+        <span class="mobile-step-label">Step 3 · Confirmed &amp; logged</span>
+        <div class="receipt">
+          <div class="receipt-head">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="var(--ok)"/><path d="M6 10.3l2.7 2.7 5.3-5.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Payment confirmed — $1,240.00 to Desert Bloom Home Care
+          </div>
+          <div class="receipt-body">
+            <div class="receipt-row"><span class="k">Requested by</span><span class="v">Marisol (Care Lead)<small>Today, 2:14 PM CT</small></span></div>
+            <div class="receipt-row"><span class="k">Approved by</span><span class="v">Elena<small>Today, 4:02 PM MT · by phone with Grace</small></span></div>
+            <div class="receipt-row"><span class="k">Payment</span><span class="v">Scheduled for Jul 8<small>Wells Fargo checking ••2201</small></span></div>
+            <div class="receipt-row"><span class="k">Record</span><span class="v"><a href="#f5-title">Logged to the family audit trail</a></span></div>
+          </div>
+          <div class="notified">
+            <span class="av-stack" aria-hidden="true">
+              <span class="av sm av-m">M</span><span class="av sm av-d">D</span><span class="av sm av-a">A</span><span class="av sm av-e">E</span>
+            </span>
+            Everyone was notified — Marisol, Daniel, Ana, and Elena.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2" y="2" width="14" height="14" rx="3" fill="none" stroke="var(--slate)" stroke-width="1.6"/><path d="M6 6.5h6M6 9.5h6M6 12.5h3.5" stroke="var(--slate)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p><strong>Design intent:</strong> Two-person integrity on money protects both directions — the parent from exploitation, and the Care Lead from suspicion; Marisol never has to prove her honesty because the system proves it for her. Because Daniel declined financial access, the rule routes the second yes to Elena — which turns consent from a ceremony into an <strong>operational step</strong> in her own money moving.</p>
+    </aside>
+  </section>
+
+  <!-- ============ FRAME 4 ============ -->
+  <section class="frame" aria-labelledby="f4-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 4</span>
+      <h2 id="f4-title">Elena's consent dashboard</h2>
+      <p class="frame-sub">The whole permission system, restated in Elena's own terms — with a blame-free way out of any of it.</p>
+    </div>
+
+    <div class="screen elena">
+      <div class="appbar">
+        <div class="left">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="20" fill="var(--teal-tint)"/>
+            <g stroke="var(--trust)" stroke-width="2.8" fill="none" stroke-linecap="round">
+              <circle cx="20" cy="11.5" r="2.8"/><line x1="20" y1="14.3" x2="20" y2="29"/>
+              <line x1="14" y1="18" x2="26" y2="18"/><path d="M11 22c0 5 4 8 9 8s9-3 9-8"/>
+            </g>
+          </svg>
+          Reyes Family Workspace <em>· Large Print</em>
+        </div>
+        <div class="right">
+          <span class="av av-e" aria-hidden="true">E</span>
+        </div>
+      </div>
+
+      <div class="screen-body">
+        <h3>What my family can see</h3>
+        <p class="lede">You said yes to these. You can change your mind anytime — nobody will be upset.</p>
+
+        <!-- Health -->
+        <div class="consent-card">
+          <div>
+            <div class="what">My health information</div>
+            <div class="who-row">
+              <span class="av sm av-m" aria-hidden="true">M</span>
+              <span class="av sm av-d" aria-hidden="true">D</span>
+              <span>Marisol and Daniel can see it. Ana sees a short summary.</span>
+            </div>
+          </div>
+          <div class="controls">
+            <label class="switch big"><input type="checkbox" role="switch" checked aria-label="Share my health information"><span class="track"></span><span class="switch-label">Sharing on</span></label>
+            <button class="stop-btn" type="button">Change this</button>
+          </div>
+        </div>
+
+        <!-- Money -->
+        <div class="consent-card">
+          <div>
+            <div class="what">My money</div>
+            <div class="who-row">
+              <span class="av sm av-m" aria-hidden="true">M</span>
+              <span>Only Marisol. She asks me before paying anything over $500.</span>
+            </div>
+          </div>
+          <div class="controls">
+            <label class="switch big"><input type="checkbox" role="switch" checked aria-label="Share my money information with Marisol"><span class="track"></span><span class="switch-label">Sharing on</span></label>
+            <button class="stop-btn" type="button">Change this</button>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="consent-card">
+          <div>
+            <div class="what">My daily schedule</div>
+            <div class="who-row">
+              <span class="av-stack" aria-hidden="true">
+                <span class="av sm av-m">M</span><span class="av sm av-d">D</span><span class="av sm av-a">A</span>
+              </span>
+              <span>Everyone in the family.</span>
+            </div>
+          </div>
+          <div class="controls">
+            <label class="switch big"><input type="checkbox" role="switch" checked aria-label="Share my daily schedule with the family"><span class="track"></span><span class="switch-label">Sharing on</span></label>
+            <button class="stop-btn" type="button">Stop sharing</button>
+          </div>
+        </div>
+
+        <!-- Reassurance -->
+        <div class="reassure">
+          <span class="av av-g" aria-hidden="true">G</span>
+          <p class="txt">Want to talk it through? <b>Grace can call you: (866)&nbsp;555-0142</b>. No forms, no hurry.</p>
+          <button class="read-aloud" id="read-aloud" type="button" aria-pressed="false">
+            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 8.5v5h3.5L11 17.5v-13L6.5 8.5H3z" fill="#fff"/><path d="M14 7.5a4.6 4.6 0 0 1 0 7M16.5 5.5a8 8 0 0 1 0 11" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+            Read this page to me
+          </button>
+        </div>
+
+        <p class="elena-footer">"I'm not a project — ask me first." That's the rule this whole page keeps.</p>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2" y="2" width="14" height="14" rx="3" fill="none" stroke="var(--slate)" stroke-width="1.6"/><path d="M6 6.5h6M6 9.5h6M6 12.5h3.5" stroke="var(--slate)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p><strong>Design intent:</strong> Revocation is a first-class, blame-free action — "nobody will be upset" is a promise in the interface, not just the marketing. The read-aloud button, 56px+ controls, and Grace's phone number keep consent <strong>meaningful for a 79-year-old</strong>, not a checkbox she clicked once and forgot.</p>
+    </aside>
+  </section>
+
+  <!-- ============ FRAME 5 ============ -->
+  <section class="frame" aria-labelledby="f5-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 5</span>
+      <h2 id="f5-title">The audit trail</h2>
+      <p class="frame-sub">Every look and every action is recorded — for everyone, symmetrically.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <div class="left">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="20" fill="var(--teal-tint)"/>
+            <g stroke="var(--trust)" stroke-width="2.8" fill="none" stroke-linecap="round">
+              <circle cx="20" cy="11.5" r="2.8"/><line x1="20" y1="14.3" x2="20" y2="29"/>
+              <line x1="14" y1="18" x2="26" y2="18"/><path d="M11 22c0 5 4 8 9 8s9-3 9-8"/>
+            </g>
+          </svg>
+          Reyes Family Workspace <em>· Audit trail</em>
+        </div>
+        <div class="right">
+          <span class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="var(--trust)"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="var(--trust)" stroke-width="1.8" fill="none"/></svg>
+            Bank-level encryption · HIPAA-aligned · Every access is logged
+          </span>
+        </div>
+      </div>
+
+      <div class="screen-body">
+        <h3>Every look and every action is recorded</h3>
+        <p class="lede">Views, changes, money, and consent — one shared record, the same for everyone.</p>
+
+        <div class="filters" role="group" aria-label="Filter audit entries">
+          <button class="filter-chip" data-filter="all" aria-pressed="true" type="button">All</button>
+          <button class="filter-chip" data-filter="viewed" aria-pressed="false" type="button">Viewed</button>
+          <button class="filter-chip" data-filter="changed" aria-pressed="false" type="button">Changed</button>
+          <button class="filter-chip" data-filter="money" aria-pressed="false" type="button">Money</button>
+          <button class="filter-chip" data-filter="consent" aria-pressed="false" type="button">Consent</button>
+        </div>
+
+        <div class="table-scroll">
+          <table class="audit-table">
+            <caption>Most recent first · showing Jun 28 – Jul 5, 2026</caption>
+            <thead>
+              <tr>
+                <th scope="col">Who</th>
+                <th scope="col">What happened</th>
+                <th scope="col">Area</th>
+                <th scope="col">When</th>
+              </tr>
+            </thead>
+            <tbody id="audit-body">
+              <tr data-cat="viewed">
+                <td><span class="audit-who"><span class="av sm av-m" aria-hidden="true">M</span>Marisol</span></td>
+                <td class="audit-what">Viewed June bank statement<small>Wells Fargo checking ••2201</small></td>
+                <td><span class="dchip money">Financial</span></td>
+                <td class="audit-when">Jul 5, 9:12 PM CT</td>
+              </tr>
+              <tr data-cat="viewed">
+                <td><span class="audit-who"><span class="av sm av-g" aria-hidden="true">G</span>Grace (Harbor)</span></td>
+                <td class="audit-what">Viewed medication list before your check-in call<small>Summary view only — as approved</small></td>
+                <td><span class="dchip medical">Medical</span></td>
+                <td class="audit-when">Jul 5, 10:00 AM MT</td>
+              </tr>
+              <tr data-cat="changed">
+                <td><span class="audit-who"><span class="av sm av-d" aria-hidden="true">D</span>Daniel</span></td>
+                <td class="audit-what">Updated Dr. Patel appointment to Jul 22<small>Was Jul 15 · Elena and Marisol notified</small></td>
+                <td><span class="dchip medical">Medical</span></td>
+                <td class="audit-when">Jul 4, 6:47 PM PT</td>
+              </tr>
+              <tr data-cat="money">
+                <td><span class="audit-who"><span class="av sm av-e" aria-hidden="true">E</span>Elena</span></td>
+                <td class="audit-what">Approved payment to Desert Bloom Home Care — $1,240<small>Requested by Marisol · confirmed by phone with Grace</small></td>
+                <td><span class="dchip money">Money</span></td>
+                <td class="audit-when">Jul 3, 4:02 PM MT</td>
+              </tr>
+              <tr data-cat="money">
+                <td><span class="audit-who"><span class="av sm av-m" aria-hidden="true">M</span>Marisol</span></td>
+                <td class="audit-what">Requested payment to Desert Bloom Home Care — $1,240<small>Over the $500 rule → routed to Elena</small></td>
+                <td><span class="dchip money">Money</span></td>
+                <td class="audit-when">Jul 3, 2:14 PM CT</td>
+              </tr>
+              <tr data-cat="viewed">
+                <td><span class="audit-who"><span class="av sm av-a" aria-hidden="true">A</span>Ana</span></td>
+                <td class="audit-what">Viewed weekly summary<small>Health digest + schedule</small></td>
+                <td><span class="dchip physical">Daily care</span></td>
+                <td class="audit-when">Jul 2, 8:05 AM CT</td>
+              </tr>
+              <tr data-cat="consent">
+                <td><span class="audit-who"><span class="av sm av-e" aria-hidden="true">E</span>Elena</span></td>
+                <td class="audit-what">Consent changed: Ana's medical access set to Summary only<small>Approved by Elena · everyone notified</small></td>
+                <td><span class="dchip consent">Consent</span></td>
+                <td class="audit-when">Jun 28, 11:30 AM MT</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="audit-note">
+          <svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" fill="none" stroke="var(--slate)" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="var(--slate)"/></svg>
+          <span><b>Elena can see this list too — in Large Print.</b> Nothing about her happens behind her back.</span>
+        </p>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2" y="2" width="14" height="14" rx="3" fill="none" stroke="var(--slate)" stroke-width="1.6"/><path d="M6 6.5h6M6 9.5h6M6 12.5h3.5" stroke="var(--slate)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p><strong>Design intent:</strong> The audit trail is the anti-resentment machine. Mike-in-Portland never has to audit his sister, because the record already exists and reads in plain language — and Elena never has to wonder who looked at what. Observation is <strong>symmetric</strong>: staff access is logged in the same list, in the same words, as family access.</p>
+    </aside>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="board-footer">
+    Harbor product mockups · Family, roles &amp; permissions · Demo data only — the Reyes family is fictional.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* --- Frame 3: stepper tabs --- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.step-tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var selected = (t === tab);
+      t.setAttribute('aria-selected', selected ? 'true' : 'false');
+      t.tabIndex = selected ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if(panel){
+        panel.classList.toggle('active', selected);
+        if(selected){ panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden',''); }
+      }
+    });
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var next = null;
+      if(e.key === 'ArrowRight'){ next = tabs[(i + 1) % tabs.length]; }
+      if(e.key === 'ArrowLeft'){ next = tabs[(i - 1 + tabs.length) % tabs.length]; }
+      if(next){ e.preventDefault(); next.focus(); selectTab(next); }
+    });
+  });
+
+  /* --- Frame 5: audit filters --- */
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.filter-chip'));
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#audit-body tr'));
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
+      var f = chip.getAttribute('data-filter');
+      rows.forEach(function(row){
+        var show = (f === 'all') || (row.getAttribute('data-cat') === f);
+        if(show){ row.removeAttribute('hidden'); } else { row.setAttribute('hidden',''); }
+      });
+    });
+  });
+
+  /* --- Frame 4: read-aloud toggle (mock) --- */
+  var ra = document.getElementById('read-aloud');
+  if(ra){
+    ra.addEventListener('click', function(){
+      var on = ra.getAttribute('aria-pressed') === 'true';
+      ra.setAttribute('aria-pressed', on ? 'false' : 'true');
+      ra.lastChild.textContent = on ? ' Read this page to me' : ' Reading aloud… tap to stop';
+    });
+  }
+
+  /* --- Toggles: reflect state for assistive tech (checkbox handles the flip) --- */
+  Array.prototype.slice.call(document.querySelectorAll('.switch input')).forEach(function(sw){
+    sw.addEventListener('change', function(){
+      sw.setAttribute('aria-checked', sw.checked ? 'true' : 'false');
+      var label = sw.closest('.switch').querySelector('.switch-label');
+      if(label){ label.textContent = sw.checked ? 'Sharing on' : 'Sharing off'; }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian — Advertising Suite (Direction C)</title>
+<meta name="description" content="Creative review: display, print, LinkedIn, and email executions for Brand Direction C — Meridian.">
+<style>
+  :root{
+    --navy:#16273b;
+    --navy-deep:#101d2c;
+    --porcelain:#f6f4ef;
+    --porcelain-warm:#faf8f4;
+    --gold:#c2a878;
+    --gold-ink:#7c6134;
+    --gold-soft:#d9c9a8;
+    --slate:#5c6b7a;
+    --sky:#dce7ee;
+    --ink:#1c2a3a;
+    --hairline:rgba(22,39,59,.16);
+    --hairline-gold:rgba(194,168,120,.45);
+    --hairline-light:rgba(246,244,239,.22);
+    --serif:Georgia,'Iowan Old Style','Palatino Linotype','Book Antiqua','Times New Roman',serif;
+    --sans:'Helvetica Neue',Helvetica,'Segoe UI',Arial,sans-serif;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:var(--sans);background:var(--porcelain);color:var(--ink);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(1.25rem,5vw,3.5rem);}
+  .kicker{font-size:.72rem;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-ink);display:block;margin-bottom:1.2rem;}
+  h1,h2{font-family:var(--serif);font-weight:400;color:var(--navy);}
+  h1{font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.15;}
+  h2{font-size:clamp(1.5rem,2.8vw,2rem);line-height:1.25;margin-bottom:.8rem;}
+  .lede{font-size:1.08rem;color:var(--slate);max-width:46em;line-height:1.75;}
+
+  header.review{border-bottom:1px solid var(--hairline);padding:3.5rem 0 3rem;background:var(--porcelain-warm);}
+  header.review .brandline{display:flex;align-items:center;gap:.8rem;margin-bottom:2.2rem;}
+  header.review .wordmark{font-family:var(--serif);font-size:1.1rem;letter-spacing:.34em;text-transform:uppercase;color:var(--navy);}
+  header.review h1{max-width:20em;margin-bottom:1.2rem;}
+  header.review nav{margin-top:2.2rem;display:flex;flex-wrap:wrap;gap:1.6rem;}
+  header.review nav a{font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:var(--slate);border-bottom:1px solid var(--hairline-gold);padding-bottom:.3rem;}
+  header.review nav a:hover{color:var(--navy);border-bottom-color:var(--navy);}
+
+  section.plates{padding:clamp(3rem,7vw,5.5rem) 0;border-bottom:1px solid var(--hairline);}
+  .sec-head{max-width:740px;margin-bottom:3rem;}
+  .sec-head p{color:var(--slate);font-size:.98rem;}
+
+  .plate{margin-bottom:4.5rem;}
+  .plate:last-child{margin-bottom:0;}
+  .plate-stage{
+    background:linear-gradient(180deg,#eceae3,#e6e3da);
+    border:1px solid var(--hairline);
+    padding:clamp(1.5rem,4vw,3rem);
+    overflow-x:auto;
+  }
+  .plate-stage .stage-inner{display:flex;justify-content:center;align-items:flex-start;gap:2.5rem;min-width:min-content;}
+  .plate-caption{
+    display:grid;grid-template-columns:220px 1fr;gap:2rem;
+    padding:1.4rem .2rem 0;
+  }
+  .plate-caption .pc-id{font-family:var(--serif);color:var(--navy);font-size:1.02rem;line-height:1.5;}
+  .plate-caption .pc-id span{display:block;font-family:var(--sans);font-size:.66rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-ink);margin-bottom:.35rem;}
+  .plate-caption .pc-note{font-size:.88rem;color:var(--slate);line-height:1.7;max-width:52em;}
+  .plate-caption .pc-note strong{color:var(--navy);font-weight:600;}
+  @media (max-width:760px){.plate-caption{grid-template-columns:1fr;gap:.8rem;}}
+
+  /* =============== AD UNITS =============== */
+  .ad{flex-shrink:0;box-shadow:0 10px 30px rgba(16,29,44,.18);position:relative;}
+
+  /* ---- 300x250 ---- */
+  .ad-mrec{
+    width:300px;height:250px;background:var(--navy);color:var(--porcelain);
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:22px 24px 20px;
+  }
+  .ad-mrec .m-top{display:flex;align-items:center;gap:9px;}
+  .ad-mrec .m-word{font-family:var(--serif);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--porcelain);}
+  .ad-mrec h3{font-family:var(--serif);font-weight:400;font-size:21px;line-height:1.32;color:var(--porcelain);margin:0;}
+  .ad-mrec .m-rule{border:none;border-top:1px solid rgba(194,168,120,.55);width:44px;margin:0;}
+  .ad-mrec .m-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;}
+  .ad-mrec .m-sub{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);line-height:1.6;}
+  .ad-mrec .m-cta{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--porcelain);border:1px solid var(--gold);padding:8px 12px;text-decoration:none;white-space:nowrap;}
+
+  /* ---- 728x90 ---- */
+  .ad-leader{
+    width:728px;height:90px;background:var(--navy);color:var(--porcelain);
+    display:flex;align-items:center;gap:26px;padding:0 28px;
+  }
+  .ad-leader .l-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .ad-leader .l-word{font-family:var(--serif);font-size:12px;letter-spacing:.3em;text-transform:uppercase;}
+  .ad-leader .l-div{width:1px;height:44px;background:rgba(194,168,120,.5);flex-shrink:0;}
+  .ad-leader h3{font-family:var(--serif);font-weight:400;font-size:19px;line-height:1.3;color:var(--porcelain);margin:0;flex:1;}
+  .ad-leader .l-cta{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--porcelain);border:1px solid var(--gold);padding:9px 16px;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+
+  /* ---- 160x600 ---- */
+  .ad-sky{
+    width:160px;height:600px;background:var(--navy);color:var(--porcelain);
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    padding:30px 20px 24px;
+  }
+  .ad-sky .s-word{font-family:var(--serif);font-size:11px;letter-spacing:.3em;text-transform:uppercase;margin:14px 0 0;}
+  .ad-sky .s-rule{border:none;border-top:1px solid rgba(194,168,120,.55);width:36px;margin:22px 0;}
+  .ad-sky h3{font-family:var(--serif);font-weight:400;font-size:19px;line-height:1.45;color:var(--porcelain);margin:0;}
+  .ad-sky .s-body{font-size:10.5px;line-height:1.7;color:var(--sky);margin-top:18px;}
+  .ad-sky .s-cta{margin-top:auto;font-size:8.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--porcelain);border:1px solid var(--gold);padding:9px 12px;text-decoration:none;}
+
+  /* ---- print full page ---- */
+  .ad-print-full{
+    width:600px;height:776px;background:var(--porcelain);
+    padding:64px 68px 48px;display:flex;flex-direction:column;
+  }
+  .ad-print-full .p-kick{font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-ink);text-align:center;margin-bottom:34px;}
+  .ad-print-full h3{font-family:var(--serif);font-weight:400;font-size:33px;line-height:1.28;color:var(--navy);text-align:center;margin:0 0 30px;}
+  .ad-print-full .p-rule{border:none;border-top:1px solid var(--hairline-gold);width:52px;margin:0 auto 30px;}
+  .ad-print-full .p-body{columns:2;column-gap:30px;column-rule:1px solid var(--hairline);flex:1;}
+  .ad-print-full .p-body p{font-size:11.5px;line-height:1.8;color:var(--ink);margin-bottom:11px;}
+  .ad-print-full .p-body p:first-child::first-letter{font-family:var(--serif);font-size:2.9em;float:left;line-height:.85;padding-right:.1em;color:var(--navy);}
+  .ad-print-full .p-foot{border-top:1px solid var(--hairline);padding-top:18px;margin-top:26px;display:flex;justify-content:space-between;align-items:center;}
+  .ad-print-full .p-brand{display:flex;align-items:center;gap:8px;}
+  .ad-print-full .p-word{font-family:var(--serif);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--navy);}
+  .ad-print-full .p-tag{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);}
+
+  /* ---- print half page ---- */
+  .ad-print-half{
+    width:600px;height:370px;background:var(--navy);color:var(--porcelain);
+    padding:44px 52px;display:flex;gap:40px;align-items:stretch;
+  }
+  .ad-print-half .h-left{flex:1.25;display:flex;flex-direction:column;}
+  .ad-print-half h3{font-family:var(--serif);font-weight:400;font-size:29px;line-height:1.3;color:var(--porcelain);margin:0 0 18px;}
+  .ad-print-half .h-body{font-size:11px;line-height:1.75;color:var(--sky);}
+  .ad-print-half .h-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:18px;}
+  .ad-print-half .h-word{font-family:var(--serif);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--porcelain);}
+  .ad-print-half .h-tag{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-left:auto;}
+  .ad-print-half .h-right{width:1px;background:rgba(194,168,120,.4);}
+  .ad-print-half .h-quotecol{flex:.85;display:flex;flex-direction:column;justify-content:center;}
+  .ad-print-half .h-quote{font-family:var(--serif);font-style:italic;font-size:14.5px;line-height:1.6;color:var(--gold-soft);}
+  .ad-print-half .h-attr{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--sky);margin-top:14px;}
+
+  /* ---- linkedin ---- */
+  .ad-li{
+    width:552px;background:#fff;border:1px solid #d9d9d9;border-radius:8px;
+    font-family:var(--sans);color:#1c1c1c;overflow:hidden;
+  }
+  .ad-li .li-head{display:flex;gap:10px;padding:14px 16px 10px;}
+  .ad-li .li-avatar{width:48px;height:48px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px;}
+  .ad-li .li-who{font-size:13px;line-height:1.45;}
+  .ad-li .li-who strong{display:block;font-size:14px;}
+  .ad-li .li-who span{color:#666;font-size:12px;display:block;}
+  .ad-li .li-copy{padding:0 16px 12px;font-size:13.5px;line-height:1.55;}
+  .ad-li .li-copy p{margin-bottom:9px;}
+  .ad-li .li-card{border-top:1px solid #e5e5e5;}
+  .ad-li .li-card-visual{
+    background:var(--navy);height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  }
+  .ad-li .li-card-visual .v-line{font-family:var(--serif);font-size:20px;color:var(--porcelain);text-align:center;max-width:24em;line-height:1.4;padding:0 30px;}
+  .ad-li .li-card-visual .v-tag{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);}
+  .ad-li .li-card-meta{padding:10px 16px;background:#f3f2ef;}
+  .ad-li .li-card-meta strong{font-size:13.5px;display:block;}
+  .ad-li .li-card-meta span{font-size:11.5px;color:#666;}
+  .ad-li .li-actions{display:flex;justify-content:space-around;padding:6px 16px 10px;border-top:1px solid #e5e5e5;}
+  .ad-li .li-actions span{font-size:12px;color:#555;font-weight:600;padding:8px 10px;}
+  @media (max-width:640px){.ad-li{width:100%;min-width:320px;}}
+
+  /* ---- emails ---- */
+  .ad-email{
+    width:600px;background:#ffffff;font-family:var(--sans);color:var(--ink);
+  }
+  .ad-email .e-chrome{
+    background:#eceae3;border-bottom:1px solid var(--hairline);padding:12px 22px;font-size:11.5px;color:var(--slate);line-height:1.7;
+  }
+  .ad-email .e-chrome strong{color:var(--ink);}
+  .ad-email .e-band{background:var(--navy);padding:26px 40px;display:flex;align-items:center;gap:10px;}
+  .ad-email .e-word{font-family:var(--serif);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--porcelain);}
+  .ad-email .e-body{padding:38px 40px 30px;}
+  .ad-email .e-body .e-kick{font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-ink);margin-bottom:16px;}
+  .ad-email h3{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.35;color:var(--navy);margin:0 0 18px;}
+  .ad-email .e-body p{font-size:13.5px;line-height:1.8;margin-bottom:13px;}
+  .ad-email .e-body .e-sig{margin-top:22px;font-size:13.5px;line-height:1.7;}
+  .ad-email .e-body .e-sig .sig-name{font-family:var(--serif);font-size:16px;color:var(--navy);}
+  .ad-email .e-body .e-sig .sig-role{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-ink);}
+  .ad-email .e-cta{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--navy);border:1px solid var(--navy);padding:12px 22px;text-decoration:none;margin:8px 0 6px;}
+  .ad-email .e-detail{border:1px solid var(--hairline-gold);padding:16px 20px;margin:18px 0;font-size:12.5px;line-height:1.75;}
+  .ad-email .e-detail strong{color:var(--navy);}
+  .ad-email .e-foot{border-top:1px solid var(--hairline);padding:18px 40px 24px;font-size:10px;color:var(--slate);line-height:1.7;background:var(--porcelain-warm);}
+  @media (max-width:640px){.ad-email,.ad-print-full,.ad-print-half{width:100%;min-width:320px;height:auto;}}
+
+  footer.review{padding:2.5rem 0 3rem;font-size:.78rem;color:var(--slate);}
+</style>
+</head>
+<body>
+
+<header class="review">
+  <div class="wrap">
+    <div class="brandline">
+      <svg width="34" height="34" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="16" stroke="#16273b" stroke-width="1.1"/>
+        <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.1"/>
+        <line x1="8" y1="24" x2="40" y2="24" stroke="#16273b" stroke-width="1.1"/>
+      </svg>
+      <span class="wordmark">Meridian</span>
+    </div>
+    <span class="kicker">Direction C · Advertising Suite · For Internal Review</span>
+    <h1>Advertising that behaves like the service: composed, unhurried, certain.</h1>
+    <p class="lede">Nine executions across display, print, LinkedIn, and email. The suite obeys one rule — Meridian never raises its voice. Every unit could run beside a private bank's advertising without looking like a guest, and beside a health plan's member materials without looking like a risk. No exclamation marks appear anywhere in this suite; none ever will.</p>
+    <nav aria-label="Plate index">
+      <a href="#display">Display</a>
+      <a href="#print">Print</a>
+      <a href="#social">LinkedIn</a>
+      <a href="#email">Email</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= DISPLAY ================= -->
+<section class="plates" id="display">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">I · Display</span>
+      <h2>Banners at true size</h2>
+      <p>Display is the brand's hardest test: quiet luxury inside the internet's loudest format. The answer is subtraction — navy field, hairline gold, one serif line, a bordered whisper of a CTA. The units are designed to be the calmest object on any page they appear on, which in this category is the differentiation.</p>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-mrec" role="img" aria-label="300 by 250 banner: The standard of care your family keeps.">
+          <div class="m-top">
+            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.3"/>
+              <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+              <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.3"/>
+            </svg>
+            <span class="m-word">Meridian</span>
+          </div>
+          <h3>The standard of care your family keeps.</h3>
+          <hr class="m-rule">
+          <div class="m-bottom">
+            <span class="m-sub">A private care office<br>for your parents</span>
+            <a class="m-cta" href="#">Request a Consultation</a>
+          </div>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 01</span>Display · 300&times;250 · "The Standard"</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the flagship tagline in the flagship placement. Runs against affluent 45&ndash;64 audiences on financial and news properties. "Keeps" is doing the work — a standard is something a family maintains, not something it buys, which lets the reader claim the aspiration as their own before the CTA asks anything of them.</p>
+      </div>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-leader" role="img" aria-label="728 by 90 banner: Your parents' affairs, kept in careful order.">
+          <div class="l-brand">
+            <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.3"/>
+              <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+              <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.3"/>
+            </svg>
+            <span class="l-word">Meridian</span>
+          </div>
+          <div class="l-div"></div>
+          <h3>Medical. Household. Financial. Your parents' affairs, kept in careful order.</h3>
+          <a class="l-cta" href="#">A Private Consultation</a>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 02</span>Display · 728&times;90 · "Careful Order"</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the leaderboard states the full scope of stewardship in three words before the reader can look away — the cross-domain claim is Meridian's most defensible differentiator against single-lane incumbents. Placement: WSJ, Barron's, Kiplinger, and health-system content environments.</p>
+      </div>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-sky" role="img" aria-label="160 by 600 banner: Discretion. Coordination. Continuity.">
+          <svg width="42" height="42" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.2"/>
+            <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.2"/>
+            <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.2"/>
+          </svg>
+          <span class="s-word">Meridian</span>
+          <hr class="s-rule">
+          <h3>Discretion.<br>Coordination.<br>Continuity.</h3>
+          <p class="s-body">A dedicated Care Director. Intelligent systems behind them. Your parents' medical, daily, and financial affairs — held in order, with their dignity at the center.</p>
+          <a class="s-cta" href="#">Request a<br>Consultation</a>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 03</span>Display · 160&times;600 · "Three Words"</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the skyscraper's vertical proportions suit the brand's typographic manner — a column of restraint running the length of the page. The triad tagline functions as architecture; the body copy carries the one obligatory dignity sentence, because in this category the parent's dignity is a purchase criterion, not a nicety.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRINT ================= -->
+<section class="plates" id="print">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">II · Print</span>
+      <h2>Long copy for readers who still read</h2>
+      <p>Print reaches Meridian's two channels where they are already comfortable: wealth-management publications for the affluent family, and health-plan member publications for the co-branded benefit. Both executions honor the oldest rule of luxury advertising — the confident brand explains itself fully, once, and does not repeat itself.</p>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-print-full" role="img" aria-label="Full-page magazine advertisement: He spent fifty years keeping his affairs in order.">
+          <div class="p-kick">A Private Care Office for Your Parents</div>
+          <h3>He spent fifty years keeping his affairs in order. That order is now yours to keep.</h3>
+          <hr class="p-rule">
+          <div class="p-body">
+            <p>There is a morning most families remember. The one where a discharge summary, a bank statement, and a question about the house all arrive in the same week, and it becomes quietly clear that someone must now hold the whole picture of a parent's life — and that the someone is you.</p>
+            <p>Most families improvise from there: portals and passwords, a group text with a hierarchy nobody agreed to, one sibling carrying too much while the others learn things late. The affairs of a careful lifetime deserve better than improvisation.</p>
+            <p>Meridian is a private care office for your parents. A dedicated Care Director — a named senior specialist, not a call center — stewards their medical, household, and financial affairs, supported by intelligent systems that watch every connected record so no change goes unnoticed and no follow-up goes unkept.</p>
+            <p>Your family sees the same composed picture, each member exactly what their role permits. Your parents' consent governs all of it; every access is written to a permanent audit record. Each quarter, the family convenes with its Care Director and leaves with the same understanding — the whole estate of care, reviewed like the serious matter it is.</p>
+            <p>It is, we admit, an old idea: the family office, applied to the one asset class that matters most. We simply believe it should not be rare. Engagements from $79 a month; income-scaled pricing available, and no one will ever know the difference.</p>
+          </div>
+          <div class="p-foot">
+            <div class="p-brand">
+              <svg width="24" height="24" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                <circle cx="24" cy="24" r="16" stroke="#16273b" stroke-width="1.3"/>
+                <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+                <line x1="8" y1="24" x2="40" y2="24" stroke="#16273b" stroke-width="1.3"/>
+              </svg>
+              <span class="p-word">Meridian</span>
+            </div>
+            <span class="p-tag">Discretion · Coordination · Continuity &nbsp;&nbsp;meridiancare.example</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 04</span>Print · Full Page · "Fifty Years" · Wealth publications</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the inheritance-of-stewardship frame speaks to the adult child in a wealth publication without a whisper of decline imagery — the father is characterized by his competence, never his frailty. The final paragraph places the $79 entry point and the income-scaled note inside the luxury register rather than against it: generosity presented as a house conviction, which is precisely how the one-million-families mission must surface in this direction. Runs in Barron's, WSJ Magazine, Worth, and private-bank client publications.</p>
+      </div>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-print-half" role="img" aria-label="Half-page magazine advertisement: The group text is not a care plan.">
+          <div class="h-left">
+            <h3>The group text is not a care plan.</h3>
+            <p class="h-body">When siblings live in three cities and a parent's care lives in eleven portals, somebody becomes the family's unpaid chief of staff. Meridian is the alternative: a dedicated Care Director and intelligent systems holding the whole picture — medical, household, financial — so every member of the family knows the same things at the same time, and your parent remains the author of her own affairs. Ask your plan about the Meridian benefit, or engage us directly.</p>
+            <div class="h-foot">
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.3"/>
+                <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+                <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.3"/>
+              </svg>
+              <span class="h-word">Meridian</span>
+              <span class="h-tag">meridiancare.example</span>
+            </div>
+          </div>
+          <div class="h-right"></div>
+          <div class="h-quotecol">
+            <p class="h-quote">"I got to go back to being her daughter. That was what we were paying for, it turns out."</p>
+            <p class="h-attr">A Meridian family, Charleston</p>
+          </div>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 05</span>Print · Half Page · "Group Text" · Health-plan member publications</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the half page runs where a Medicare Advantage plan's members — and, critically, their adult children — will see it. The headline names the enemy (chaotic improvisation) rather than a competitor, the copy hands the plan a co-branded on-ramp ("ask your plan about the Meridian benefit"), and the testimonial column carries the emotional payoff the format has no room to build: the daughter restored to daughterhood.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LINKEDIN ================= -->
+<section class="plates" id="social">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">III · LinkedIn</span>
+      <h2>One sponsored post, for one reader</h2>
+      <p>The B2B audience is small and specific: Medicare Advantage and duals-plan executives who own utilization, member experience, or supplemental benefits. The post speaks their language — cohorts, transitions, PEPM — in Meridian's voice, which on this feed reads as seniority.</p>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-li" role="img" aria-label="LinkedIn sponsored post from Meridian targeting health plan executives">
+          <div class="li-head">
+            <div class="li-avatar">
+              <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.3"/>
+                <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+                <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.3"/>
+              </svg>
+            </div>
+            <div class="li-who">
+              <strong>Meridian</strong>
+              <span>A private care office for families · Health plan partnerships</span>
+              <span>Promoted</span>
+            </div>
+          </div>
+          <div class="li-copy">
+            <p>Your most expensive members already have a care coordination team. It is a family — three adult children in three time zones, working from a group text.</p>
+            <p>Most avoidable readmissions are not clinical failures. They are operational ones: the medication change nobody reconciled, the follow-up nobody kept, the discharge plan that landed in a household with no one accountable for executing it.</p>
+            <p>Meridian gives that household a Care Director and the systems behind one — consented, audited, HIPAA-aligned, and delivered as a benefit your members' families remember at renewal. Targeted cohorts. PEPM structure. Measurement plans agreed before launch, because we would rather earn the expansion.</p>
+          </div>
+          <div class="li-card">
+            <div class="li-card-visual">
+              <span class="v-line">The discharge plan is only as good as the household that receives it.</span>
+              <span class="v-tag">Meridian for Health Plans</span>
+            </div>
+            <div class="li-card-meta">
+              <strong>Caregiver coordination as utilization infrastructure — the Meridian brief for MA leaders</strong>
+              <span>meridiancare.example/partners</span>
+            </div>
+          </div>
+          <div class="li-actions" aria-hidden="true">
+            <span>Like</span><span>Comment</span><span>Repost</span><span>Send</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 06</span>LinkedIn · Sponsored Post · "The Household"</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> opens with a reframe the reader has never seen on this feed ("your members already have a coordination team — it is failing"), then converts the emotional category into their operational vocabulary within two sentences. "We would rather earn the expansion" signals pilot-friendliness — the posture research says plans require — while sounding like confidence rather than concession. Targets VP+ titles at MA plans, D-SNPs, and risk-bearing provider groups; drives to the partners page brief.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EMAIL ================= -->
+<section class="plates" id="email">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">IV · Email</span>
+      <h2>Correspondence, not campaigns</h2>
+      <p>Meridian email is written as letters from a person with a name, set at a single 600-pixel column. The two templates below are the highest-stakes messages the brand will ever send: the first impression after an advisor referral, and the first morning of a new engagement.</p>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-email" role="img" aria-label="Advisor referral introduction email">
+          <div class="e-chrome">
+            <strong>From:</strong> Eleanor Whitfield, Meridian &lt;e.whitfield@meridiancare.example&gt;<br>
+            <strong>To:</strong> Anne Hartwell<br>
+            <strong>Subject:</strong> An introduction from Katherine Voss — at your convenience
+          </div>
+          <div class="e-band">
+            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.3"/>
+              <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+              <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.3"/>
+            </svg>
+            <span class="e-word">Meridian</span>
+          </div>
+          <div class="e-body">
+            <div class="e-kick">A Referred Introduction</div>
+            <h3>Katherine Voss asked us to take particular care with your family. We intend to.</h3>
+            <p>Dear Ms. Hartwell,</p>
+            <p>Your attorney, Katherine Voss, suggested that Meridian might be of use to your family as you coordinate your mother's affairs. She has shared nothing beyond your name and her recommendation — anything further will come from you, if and when you choose.</p>
+            <p>By way of introduction: Meridian is a private care office. I am a Care Director here, and if your family engages us, I would be your single point of contact — for your mother's medical, household, and financial coordination, supported by systems that keep watch so that your family does not have to.</p>
+            <div class="e-detail">Two things you may wish to know at the outset: <strong>your mother's consent will govern everything we do,</strong> and Meridian neither pays nor receives referral fees — Ms. Voss recommended us for her own reasons, which is the only kind of recommendation worth having.</div>
+            <p>If a conversation would be welcome, I hold time for referred families this week and next. Thirty minutes, by phone, entirely at your direction. If the timing is wrong, there is no obligation — and no follow-up campaign. You would simply be welcome later.</p>
+            <a class="e-cta" href="#">Choose a Time That Suits You</a>
+            <div class="e-sig">
+              <span class="sig-name">Eleanor Whitfield</span><br>
+              <span class="sig-role">Care Director · Meridian</span>
+            </div>
+          </div>
+          <div class="e-foot">Meridian Care Office, Inc. · You are receiving this single introduction at the suggestion of Katherine Voss, Voss &amp; Merrill LLP. We will not write again unless you ask us to. · Privacy practices · Unsubscribe</div>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 07</span>Email · 600px · Advisor-Referral Introduction</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the advisor's name leads the subject line because their trust is the asset being transferred. The email discloses exactly what was shared (nothing), states the no-referral-fee policy unprompted, and promises no follow-up sequence — three costly signals of discretion that no volume marketer would send, which is how the recipient knows what kind of firm this is. Single send; the restraint is the conversion strategy.</p>
+      </div>
+    </div>
+
+    <div class="plate">
+      <div class="plate-stage"><div class="stage-inner">
+        <div class="ad ad-email" role="img" aria-label="Private welcome email to a new Meridian family">
+          <div class="e-chrome">
+            <strong>From:</strong> Eleanor Whitfield, Meridian &lt;e.whitfield@meridiancare.example&gt;<br>
+            <strong>To:</strong> The Hartwell Family<br>
+            <strong>Subject:</strong> Your family's office is open
+          </div>
+          <div class="e-band">
+            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <circle cx="24" cy="24" r="16" stroke="#f6f4ef" stroke-width="1.3"/>
+              <ellipse cx="24" cy="24" rx="7" ry="16" stroke="#c2a878" stroke-width="1.3"/>
+              <line x1="8" y1="24" x2="40" y2="24" stroke="#f6f4ef" stroke-width="1.3"/>
+            </svg>
+            <span class="e-word">Meridian</span>
+          </div>
+          <div class="e-body">
+            <div class="e-kick">A Private Welcome</div>
+            <h3>Welcome. From this morning on, your family is not managing this alone.</h3>
+            <p>Dear Anne, David, and Claire — and Mrs. Hartwell, most of all,</p>
+            <p>It was a privilege to complete your onboarding yesterday. Your family's office is now open, and I want to set down, in writing, what you can expect from it.</p>
+            <div class="e-detail"><strong>What is now in place:</strong> your roles and permissions, exactly as agreed at Mrs. Hartwell's direction; connections to the medical, household, and financial records she approved; and the audit record, which any of you may inspect at any time. Nothing was connected that was not consented to, and nothing will be.</div>
+            <p>Beginning Monday, you will receive your family brief — composed, brief, and only as often as there is something worth saying. When something needs attention sooner, I will call the right person directly; that is what a Care Director is for. Our first quarterly review is held for the week of October 12th, and Mrs. Hartwell has first choice of the date.</p>
+            <p>One more thing, because it bears saying plainly: my work is arranged around your mother's dignity. She is the client at the center of this engagement, and in every matter where her preference can govern, it will.</p>
+            <a class="e-cta" href="#">Enter Your Family Office</a>
+            <div class="e-sig">
+              <span class="sig-name">Eleanor Whitfield</span><br>
+              <span class="sig-role">Care Director · Meridian</span><br>
+              <span style="font-size:12px;color:var(--slate);">Reach me directly, any weekday: (843) 555-0141 · Urgent matters, any hour: your family line</span>
+            </div>
+          </div>
+          <div class="e-foot">Meridian Care Office, Inc. · This message contains no medical or financial details; those live inside your secured family office, never in email. · Privacy practices · Notification preferences</div>
+        </div>
+      </div></div>
+      <div class="plate-caption">
+        <div class="pc-id"><span>Plate 08</span>Email · 600px · Private Welcome to a New Family</div>
+        <p class="pc-note"><strong>Strategic intent:</strong> the welcome email is retention's first act — Dana's insight that check-ins are the retention product, rendered in prose. It addresses the parent by name and "most of all," restates the consent architecture as a completed fact, sets the cadence promise ("only as often as there is something worth saying"), and models the security posture by declining to put PHI in email. The direct phone line in the signature is the entire Care Director proposition in one line of type.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="review">
+  <div class="wrap">
+    <span>Direction C · Meridian · Advertising suite for internal review. Names, publications, and contact details are illustrative. Companion files: index.html (marketing site), partners.html (channel page), BRAND-NOTES.md (voice &amp; rationale).</span>
+  </div>
+</footer>
+
+</body>
+</html>

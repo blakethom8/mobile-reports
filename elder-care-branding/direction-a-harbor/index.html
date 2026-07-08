@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harbor — Everything about Mom's care, in one calm place</title>
+<meta name="description" content="Harbor brings your parent's medical, financial, and daily care into one shared family view — an assistant that does the legwork, and real people who help you carry it.">
+<style>
+  /* ============ Harbor Design System ============ */
+  :root{
+    --cream:#f7f4ee;
+    --soft-white:#fffdf9;
+    --soft-blue:#edf4f8;
+    --sage:#8fae9d;
+    --sage-tint:#e3ece7;
+    --teal:#7ea9b3;
+    --teal-tint:#e0edef;
+    --deep:#4e7a86;
+    --deep-dark:#3c626d;
+    --sand:#d7c1a6;
+    --sand-tint:#f0e7d9;
+    --ink:#23313a;
+    --muted:#5e6d76;
+    --line:#e5dfd3;
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --radius:20px;
+    --radius-lg:28px;
+    --shadow-soft:0 2px 8px rgba(35,49,58,.05),0 12px 32px rgba(35,49,58,.07);
+    --shadow-lift:0 4px 12px rgba(35,49,58,.06),0 20px 48px rgba(35,49,58,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.65;
+    font-size:17px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:var(--serif);font-weight:normal;letter-spacing:-.01em;}
+  img,svg{max-width:100%;}
+  a{color:var(--deep);}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+  section{padding:96px 0;}
+  .eyebrow{
+    display:inline-block;font-family:var(--sans);font-size:13px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--deep);
+    background:var(--teal-tint);padding:7px 16px;border-radius:999px;margin-bottom:22px;
+  }
+  .section-head{max-width:640px;margin:0 auto 56px;text-align:center;}
+  .section-head h2{font-size:clamp(30px,4vw,42px);line-height:1.2;margin-bottom:16px;}
+  .section-head p{color:var(--muted);font-size:18px;}
+  .btn{
+    display:inline-block;font-family:var(--sans);font-size:16px;font-weight:600;
+    padding:15px 30px;border-radius:999px;text-decoration:none;transition:all .2s ease;
+    border:1.5px solid transparent;cursor:pointer;
+  }
+  .btn-primary{background:var(--deep);color:var(--soft-white);}
+  .btn-primary:hover{background:var(--deep-dark);transform:translateY(-1px);}
+  .btn-secondary{background:transparent;color:var(--deep);border-color:var(--deep);}
+  .btn-secondary:hover{background:var(--teal-tint);}
+  .btn-quiet{background:var(--soft-white);color:var(--ink);border-color:var(--line);}
+  .btn-quiet:hover{border-color:var(--teal);}
+
+  /* ============ Nav ============ */
+  nav{
+    position:sticky;top:0;z-index:100;
+    background:rgba(255,253,249,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);}
+  .logo-word{font-family:var(--serif);font-size:25px;letter-spacing:.005em;}
+  .nav-links{display:flex;align-items:center;gap:32px;list-style:none;}
+  .nav-links a{font-size:15.5px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--deep);}
+  .nav-cta{font-size:15px !important;padding:11px 22px;}
+
+  /* ============ Hero ============ */
+  .hero{padding:88px 0 100px;overflow:hidden;position:relative;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;}
+  .hero h1{font-size:clamp(38px,4.8vw,56px);line-height:1.14;margin-bottom:24px;}
+  .hero h1 em{font-style:italic;color:var(--deep);}
+  .hero-sub{font-size:19px;color:var(--muted);max-width:490px;margin-bottom:34px;}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:34px;}
+  .hero-trust{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--muted);}
+  .hero-trust .dot{width:4px;height:4px;border-radius:50%;background:var(--sand);flex:none;}
+
+  /* Family view illustration */
+  .fam-scene{position:relative;min-height:520px;}
+  .blob{position:absolute;border-radius:50%;filter:blur(0px);z-index:0;}
+  .blob-1{width:420px;height:420px;background:radial-gradient(circle at 35% 35%, var(--teal-tint), transparent 70%);top:-20px;right:-60px;}
+  .blob-2{width:340px;height:340px;background:radial-gradient(circle at 60% 60%, var(--sand-tint), transparent 70%);bottom:-30px;left:-40px;}
+  .fam-card{
+    position:relative;z-index:2;background:var(--soft-white);border:1px solid var(--line);
+    border-radius:var(--radius-lg);box-shadow:var(--shadow-lift);padding:28px;max-width:400px;
+    margin-left:auto;
+  }
+  .fam-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .fam-card-head h3{font-size:21px;}
+  .fam-badge{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--deep);background:var(--teal-tint);padding:4px 11px;border-radius:999px;}
+  .fam-card-sub{font-size:13.5px;color:var(--muted);margin-bottom:18px;}
+  .fam-item{display:flex;gap:13px;padding:13px 0;border-top:1px solid #f0ebe1;}
+  .fam-item:first-of-type{border-top:none;}
+  .fam-dot{flex:none;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .fam-item strong{display:block;font-size:14.5px;font-weight:600;line-height:1.4;}
+  .fam-item span{font-size:13px;color:var(--muted);line-height:1.5;display:block;}
+  .fam-sibs{
+    position:absolute;z-index:3;left:-8px;bottom:52px;background:var(--soft-white);
+    border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-soft);
+    padding:16px 20px;display:flex;align-items:center;gap:14px;max-width:305px;
+  }
+  .avatars{display:flex;}
+  .avatar{
+    width:38px;height:38px;border-radius:50%;border:2.5px solid var(--soft-white);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+    color:var(--soft-white);margin-left:-9px;flex:none;
+  }
+  .avatar:first-child{margin-left:0;}
+  .fam-sibs p{font-size:13px;color:var(--muted);line-height:1.45;}
+  .fam-sibs p b{color:var(--ink);font-weight:600;}
+  .fam-chip{
+    position:absolute;z-index:3;right:6px;top:-16px;background:var(--soft-white);
+    border:1px solid var(--line);border-radius:999px;box-shadow:var(--shadow-soft);
+    padding:9px 17px;display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;
+  }
+  .fam-chip svg{flex:none;}
+
+  /* ============ Problem ============ */
+  .problem{background:var(--soft-white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .p-card{
+    background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:34px 30px;transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .p-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-soft);}
+  .icon-tile{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+  .p-card h3{font-size:22px;margin-bottom:10px;}
+  .p-card p{font-size:15.5px;color:var(--muted);}
+  .problem-close{text-align:center;margin-top:48px;font-family:var(--serif);font-size:21px;color:var(--deep);font-style:italic;}
+
+  /* ============ How it works ============ */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;position:relative;}
+  .steps::before{
+    content:"";position:absolute;top:33px;left:11%;right:11%;height:2px;
+    background:linear-gradient(90deg,var(--sage-tint),var(--teal),var(--sage-tint));opacity:.55;
+  }
+  .step{position:relative;text-align:center;padding:0 8px;}
+  .step-num{
+    width:66px;height:66px;border-radius:50%;background:var(--soft-white);
+    border:2px solid var(--teal);color:var(--deep);font-family:var(--serif);font-size:26px;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;z-index:1;
+    box-shadow:0 0 0 8px var(--cream);
+  }
+  .step h3{font-size:20px;margin-bottom:9px;}
+  .step p{font-size:14.5px;color:var(--muted);}
+  .how-note{
+    margin:56px auto 0;max-width:660px;background:var(--sage-tint);border-radius:var(--radius);
+    padding:22px 30px;display:flex;gap:16px;align-items:flex-start;
+  }
+  .how-note svg{flex:none;margin-top:3px;}
+  .how-note p{font-size:15px;color:var(--ink);}
+
+  /* ============ Pillars ============ */
+  .pillars{background:var(--soft-white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .pillar{
+    background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-lg);padding:36px 32px;
+  }
+  .pillar h3{font-size:23px;margin:18px 0 10px;}
+  .pillar>p{font-size:15.5px;color:var(--muted);margin-bottom:18px;}
+  .pillar ul{list-style:none;}
+  .pillar li{
+    font-size:14.5px;color:var(--ink);padding:9px 0 9px 26px;position:relative;
+    border-top:1px solid #eee8dc;
+  }
+  .pillar li::before{content:"";position:absolute;left:2px;top:16px;width:8px;height:8px;border-radius:50%;background:var(--sage);}
+
+  /* ============ Trust ============ */
+  .trust{background:var(--soft-blue);}
+  .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .t-card{background:var(--soft-white);border:1px solid #dde8ee;border-radius:var(--radius);padding:28px 26px;}
+  .t-card h3{font-size:18.5px;font-family:var(--sans);font-weight:600;margin:14px 0 7px;}
+  .t-card p{font-size:14.5px;color:var(--muted);}
+  .trust-parent{
+    margin-top:44px;background:var(--soft-white);border:1px solid #dde8ee;border-radius:var(--radius-lg);
+    padding:36px 42px;display:flex;gap:26px;align-items:center;
+  }
+  .trust-parent blockquote{font-family:var(--serif);font-size:22px;line-height:1.45;font-style:italic;color:var(--ink);}
+  .trust-parent cite{display:block;font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-top:10px;}
+
+  /* ============ FSR ============ */
+  .fsr-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center;}
+  .fsr-portrait{
+    position:relative;background:linear-gradient(160deg,var(--teal-tint),var(--sand-tint));
+    border-radius:var(--radius-lg);padding:44px;display:flex;justify-content:center;box-shadow:var(--shadow-soft);
+  }
+  .fsr-copy h2{font-size:clamp(28px,3.6vw,38px);line-height:1.2;margin-bottom:18px;}
+  .fsr-copy>p{color:var(--muted);margin-bottom:16px;font-size:16.5px;}
+  .fsr-quote{
+    margin-top:26px;border-left:3px solid var(--sand);padding:6px 0 6px 22px;
+  }
+  .fsr-quote p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.5;color:var(--ink);}
+  .fsr-quote cite{display:block;font-style:normal;font-size:14px;color:var(--muted);margin-top:8px;}
+  .fsr-facts{display:flex;gap:28px;margin-top:30px;flex-wrap:wrap;}
+  .fsr-fact strong{display:block;font-family:var(--serif);font-size:26px;color:var(--deep);}
+  .fsr-fact span{font-size:13.5px;color:var(--muted);}
+
+  /* ============ Story ============ */
+  .story{background:var(--soft-white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .story-card{
+    max-width:860px;margin:0 auto;background:var(--cream);border:1px solid var(--line);
+    border-radius:var(--radius-lg);padding:56px 60px;position:relative;box-shadow:var(--shadow-soft);
+  }
+  .story-cities{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:40px;flex-wrap:wrap;}
+  .city{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 12px;min-width:118px;}
+  .city .avatar{margin:0;width:46px;height:46px;font-size:15px;border-color:var(--cream);}
+  .city b{font-size:14.5px;}
+  .city span{font-size:12.5px;color:var(--muted);}
+  .city-line{height:2px;flex:1;min-width:34px;background:repeating-linear-gradient(90deg,var(--teal) 0 6px,transparent 6px 12px);opacity:.6;margin-bottom:34px;}
+  .story-quote{font-family:var(--serif);font-size:clamp(21px,2.6vw,26px);line-height:1.5;text-align:center;color:var(--ink);}
+  .story-quote::before{content:"“";display:block;font-size:64px;line-height:.4;color:var(--sand);margin-bottom:18px;}
+  .story-attrib{text-align:center;margin-top:28px;font-size:15px;color:var(--muted);}
+  .story-attrib b{color:var(--ink);}
+  .story-detail{
+    max-width:860px;margin:26px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .sd-item{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;font-size:14px;color:var(--muted);}
+  .sd-item b{display:block;color:var(--ink);font-size:14.5px;margin-bottom:4px;}
+
+  /* ============ Pricing ============ */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch;}
+  .tier{
+    background:var(--soft-white);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:38px 34px;display:flex;flex-direction:column;position:relative;
+  }
+  .tier.featured{border:2px solid var(--deep);box-shadow:var(--shadow-lift);}
+  .tier-flag{
+    position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    background:var(--deep);color:var(--soft-white);font-size:12px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;padding:6px 18px;border-radius:999px;white-space:nowrap;
+  }
+  .tier h3{font-size:24px;margin-bottom:6px;}
+  .tier-for{font-size:14px;color:var(--muted);min-height:44px;margin-bottom:18px;}
+  .tier-price{font-family:var(--serif);font-size:44px;color:var(--ink);line-height:1;}
+  .tier-price span{font-family:var(--sans);font-size:15px;color:var(--muted);}
+  .tier ul{list-style:none;margin:26px 0 30px;flex:1;}
+  .tier li{font-size:14.5px;padding:8px 0 8px 28px;position:relative;color:var(--ink);}
+  .tier li.dim{color:var(--muted);}
+  .tier li svg{position:absolute;left:0;top:11px;}
+  .tier .btn{text-align:center;}
+  .scholarship{
+    margin-top:36px;background:var(--sand-tint);border:1px solid #e8d9c2;border-radius:var(--radius-lg);
+    padding:30px 38px;display:flex;gap:20px;align-items:flex-start;
+  }
+  .scholarship svg{flex:none;margin-top:4px;}
+  .scholarship h3{font-size:20px;margin-bottom:6px;}
+  .scholarship p{font-size:15px;color:var(--muted);}
+
+  /* ============ Mission ============ */
+  .mission{
+    background:linear-gradient(150deg,var(--deep-dark) 0%,var(--deep) 60%,#5b8794 100%);
+    color:var(--soft-white);text-align:center;position:relative;overflow:hidden;
+  }
+  .mission::after{
+    content:"";position:absolute;bottom:-140px;left:50%;transform:translateX(-50%);
+    width:900px;height:280px;border-radius:50%;background:rgba(255,253,249,.06);
+  }
+  .mission .eyebrow{background:rgba(255,253,249,.14);color:var(--soft-white);}
+  .mission h2{font-size:clamp(30px,4.4vw,46px);line-height:1.25;max-width:760px;margin:0 auto 22px;position:relative;z-index:1;}
+  .mission p{max-width:600px;margin:0 auto 36px;font-size:17.5px;color:#e6efef;position:relative;z-index:1;}
+  .mission .btn-primary{background:var(--soft-white);color:var(--deep-dark);}
+  .mission .btn-primary:hover{background:var(--cream);}
+
+  /* ============ FAQ ============ */
+  .faq-list{max-width:760px;margin:0 auto;}
+  details{
+    background:var(--soft-white);border:1px solid var(--line);border-radius:var(--radius);
+    margin-bottom:14px;overflow:hidden;
+  }
+  summary{
+    cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
+    gap:20px;padding:22px 28px;font-family:var(--serif);font-size:19px;color:var(--ink);
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary .plus{
+    flex:none;width:30px;height:30px;border-radius:50%;background:var(--teal-tint);color:var(--deep);
+    display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:18px;
+    font-weight:500;transition:transform .25s ease;
+  }
+  details[open] .plus{transform:rotate(45deg);}
+  details p{padding:0 28px 24px;font-size:15.5px;color:var(--muted);max-width:660px;}
+  details p + p{padding-top:0;margin-top:-10px;}
+
+  /* ============ Final CTA ============ */
+  .final{padding:80px 0;text-align:center;}
+  .final h2{font-size:clamp(28px,3.8vw,40px);margin-bottom:16px;}
+  .final p{color:var(--muted);max-width:520px;margin:0 auto 32px;font-size:17px;}
+
+  /* ============ Footer ============ */
+  footer{background:var(--ink);color:#c8d2d8;padding:72px 0 40px;font-size:14.5px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px;margin-bottom:52px;}
+  .foot-brand .logo-word{color:var(--soft-white);}
+  .foot-brand p{margin-top:16px;max-width:280px;color:#9fb0b8;font-size:14px;}
+  footer h4{font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8fa4ad;margin-bottom:16px;}
+  footer ul{list-style:none;}
+  footer li{margin-bottom:10px;}
+  footer a{color:#c8d2d8;text-decoration:none;}
+  footer a:hover{color:var(--soft-white);}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;}
+  .badge{
+    display:flex;align-items:center;gap:9px;background:rgba(255,253,249,.07);
+    border:1px solid rgba(255,253,249,.14);border-radius:12px;padding:10px 16px;
+    font-size:13px;color:#dbe4e8;
+  }
+  .badge svg{flex:none;}
+  .fineprint{border-top:1px solid rgba(255,253,249,.12);padding-top:28px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:13px;color:#8fa4ad;}
+
+  /* ============ Responsive ============ */
+  @media (max-width:980px){
+    .hero-grid,.fsr-grid{grid-template-columns:1fr;gap:56px;}
+    .fam-scene{min-height:0;max-width:480px;margin:0 auto;}
+    .fam-card{margin:0 auto;}
+    .steps{grid-template-columns:repeat(2,1fr);gap:40px 22px;}
+    .steps::before{display:none;}
+    .card-grid,.trust-grid,.price-grid,.story-detail{grid-template-columns:1fr 1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .tier.featured{grid-column:span 2;}
+  }
+  @media (max-width:680px){
+    section{padding:64px 0;}
+    .nav-links li:not(.nav-cta-li){display:none;}
+    .card-grid,.trust-grid,.price-grid,.steps,.story-detail{grid-template-columns:1fr;}
+    .tier.featured{grid-column:auto;}
+    .story-card{padding:38px 26px;}
+    .city-line{display:none;}
+    .story-cities{gap:18px;}
+    .trust-parent{flex-direction:column;align-items:flex-start;padding:30px 28px;}
+    .foot-grid{grid-template-columns:1fr;gap:32px;}
+    .hero{padding:56px 0 72px;}
+    .fam-sibs{position:static;margin-top:16px;max-width:none;}
+    .fam-chip{top:-14px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav aria-label="Main">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top" aria-label="Harbor home">
+      <!-- Harbor mark: lighthouse over water -->
+      <svg width="40" height="40" viewBox="0 0 48 48" role="img" aria-label="Harbor lighthouse mark">
+        <circle cx="24" cy="24" r="24" fill="#4e7a86"/>
+        <!-- light beams -->
+        <path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6" opacity=".85"/>
+        <path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6" opacity=".85"/>
+        <!-- lantern -->
+        <rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/>
+        <!-- tower -->
+        <path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/>
+        <rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/>
+        <!-- tower stripe -->
+        <path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/>
+        <!-- water -->
+        <path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9-0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d" opacity=".95"/>
+      </svg>
+      <span class="logo-word">Harbor</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#care">What we cover</a></li>
+      <li><a href="#trust">Trust &amp; privacy</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">Questions</a></li>
+      <li class="nav-cta-li"><a href="#talk" class="btn btn-primary nav-cta">Talk to a person</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">For families caring for aging parents</span>
+      <h1>Everything about Mom's care, in one <em>calm</em> place.</h1>
+      <p class="hero-sub">Harbor brings your parent's medical, financial, and daily care into one shared family view — with an assistant that does the legwork and real people who help you carry it.</p>
+      <div class="hero-ctas">
+        <a href="#how" class="btn btn-primary">See how Harbor works</a>
+        <a href="#talk" class="btn btn-secondary">Talk to a real person</a>
+      </div>
+      <div class="hero-trust">
+        <span>HIPAA compliant</span><span class="dot" aria-hidden="true"></span>
+        <span>Bank-level encryption</span><span class="dot" aria-hidden="true"></span>
+        <span>A named specialist for every family</span>
+      </div>
+    </div>
+
+    <!-- Abstract family-view composition -->
+    <div class="fam-scene" aria-label="Illustration of a shared family care view">
+      <div class="blob blob-1" aria-hidden="true"></div>
+      <div class="blob blob-2" aria-hidden="true"></div>
+
+      <div class="fam-card">
+        <div class="fam-chip">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#8fae9d"/><path d="M4.6 8.3l2.2 2.2 4.4-4.6" stroke="#fffdf9" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Quarterly check-in booked
+        </div>
+        <div class="fam-card-head">
+          <h3>Ruth's week</h3>
+          <span class="fam-badge">All steady</span>
+        </div>
+        <p class="fam-card-sub">Shared with Sarah, Mike &amp; Jenny · Updated this morning</p>
+
+        <div class="fam-item">
+          <div class="fam-dot" style="background:#e3ece7;">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="7" y="3" width="4" height="12" rx="2" fill="#4e7a86"/><rect x="3" y="7" width="12" height="4" rx="2" fill="#4e7a86"/></svg>
+          </div>
+          <div>
+            <strong>Cardiology follow-up scheduled</strong>
+            <span>Dr. Patel · Tuesday, 10:15 am · ride arranged</span>
+          </div>
+        </div>
+        <div class="fam-item">
+          <div class="fam-dot" style="background:#e0edef;">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="6.5" fill="none" stroke="#4e7a86" stroke-width="2"/><path d="M9 5.8V9l2.3 1.6" stroke="#4e7a86" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <strong>Medication refill confirmed</strong>
+            <span>Pharmacy pickup handled — nothing needed from you</span>
+          </div>
+        </div>
+        <div class="fam-item">
+          <div class="fam-dot" style="background:#f0e7d9;">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 8l6-4.5L15 8v6.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <strong>Duplicate utility charge resolved</strong>
+            <span>Spotted by Harbor, confirmed with Ruth, refunded</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fam-sibs">
+        <div class="avatars" aria-hidden="true">
+          <div class="avatar" style="background:#4e7a86;">S</div>
+          <div class="avatar" style="background:#8fae9d;">M</div>
+          <div class="avatar" style="background:#c2a374;">J</div>
+        </div>
+        <p><b>Three siblings, three cities.</b> Everyone sees the same picture.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ PROBLEM ============ -->
+<section class="problem" aria-labelledby="problem-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">You're not imagining it</span>
+      <h2 id="problem-h">Caring for a parent has quietly become a second job.</h2>
+      <p>Usually one sibling carries it. The others want to help, but nobody has the full picture. It isn't anyone's fault. The systems were never built for families.</p>
+    </div>
+    <div class="card-grid">
+      <article class="p-card">
+        <div class="icon-tile" style="background:#e0edef;">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 22s-8-4.8-8-10.5C5 8 7.6 6 10.2 6c1.5 0 2.3.6 2.8 1.3C13.5 6.6 14.3 6 15.8 6 18.4 6 21 8 21 11.5 21 17.2 13 22 13 22z" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>The medical maze</h3>
+        <p>Twelve patient portals. Four doctors who don't talk to each other. A discharge summary nobody explained. You've become the messenger between systems that should already be connected.</p>
+      </article>
+      <article class="p-card">
+        <div class="icon-tile" style="background:#f0e7d9;">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="3.5" y="7" width="19" height="13" rx="2.5" fill="none" stroke="#4e7a86" stroke-width="2"/><path d="M3.5 11h19" stroke="#4e7a86" stroke-width="2"/><path d="M7 16h5" stroke="#4e7a86" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>The financial fog</h3>
+        <p>Bills in three places, a subscription no one remembers starting, an insurance letter that reads like a riddle. You worry about what you can't see — and about asking to see it.</p>
+      </article>
+      <article class="p-card">
+        <div class="icon-tile" style="background:#e3ece7;">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 21v-2a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v2" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="8" r="3.5" fill="none" stroke="#4e7a86" stroke-width="2"/><path d="M17.5 13.5a4 4 0 0 1 4.5 4V21" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>The daily juggle</h3>
+        <p>Rides to appointments. Groceries and home repairs. Who's calling Mom this week? The group text keeps everyone talking — and no one aligned.</p>
+      </article>
+    </div>
+    <p class="problem-close">If any of this feels familiar, you're in the right place. And you're not alone.</p>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">How Harbor works</span>
+      <h2 id="how-h">A steady rhythm, from day one.</h2>
+      <p>Harbor isn't an app you're left alone with. It starts with a person, runs on quiet, capable technology, and keeps your whole family on the same page.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" aria-hidden="true">1</div>
+        <h3>Start with a person</h3>
+        <p>Your Family Success Representative gets to know your parent, your family, and what matters most — before anything is connected.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">2</div>
+        <h3>Connect what matters</h3>
+        <p>With your parent's consent, we link health portals, accounts, and providers — securely, one at a time, at your family's pace.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">3</div>
+        <h3>Harbor does the legwork</h3>
+        <p>Your assistant gathers updates across every system, summarizes what matters, flags what's changed, and tees up next steps.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">4</div>
+        <h3>Your family stays aligned</h3>
+        <p>Everyone sees the same picture, with the roles and permissions your family chooses. Fewer surprises. Far fewer group texts.</p>
+      </div>
+    </div>
+    <div class="how-note">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="#8fae9d"/><path d="M11 6.5v.2M11 10v5.5" stroke="#fffdf9" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <p><strong>A promise about the word "assistant."</strong> Harbor's technology does research, retrieval, and reminders — the legwork. It never makes decisions for your family, and a real person is always reachable when something needs judgment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PILLARS ============ -->
+<section class="pillars" id="care" aria-labelledby="care-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The whole picture</span>
+      <h2 id="care-h">Three kinds of care. One shared view.</h2>
+      <p>Most tools solve one slice of eldercare. Real life doesn't come in slices — so Harbor covers all three domains, together.</p>
+    </div>
+    <div class="card-grid">
+      <article class="pillar">
+        <div class="icon-tile" style="background:#e0edef;">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 22s-8-4.8-8-10.5C5 8 7.6 6 10.2 6c1.5 0 2.3.6 2.8 1.3C13.5 6.6 14.3 6 15.8 6 18.4 6 21 8 21 11.5 21 17.2 13 22 13 22z" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 13h2.4l1.2-2.4 1.6 4 1.2-1.6h2.6" fill="none" stroke="#4e7a86" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Medical care</h3>
+        <p>One clear view of health, with less time spent chasing it.</p>
+        <ul>
+          <li>Appointments, medications, and care plans in one timeline</li>
+          <li>Plain-language summaries after every visit and discharge</li>
+          <li>Provider messages and follow-ups tracked to completion</li>
+          <li>Changes flagged early — like a missed follow-up after a hospital stay</li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <div class="icon-tile" style="background:#e3ece7;">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 12.5L13 5l9 7.5" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 11.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-8.5" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/><path d="M10.5 21v-5h5v5" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Physical &amp; daily care</h3>
+        <p>The everyday logistics that keep home feeling like home.</p>
+        <ul>
+          <li>Rides, groceries, home help, and repairs — coordinated, not scattered</li>
+          <li>Shared tasks so helping is easy, even from another city</li>
+          <li>Care providers and facility updates in one directory</li>
+          <li>A record of what's been done, so nothing falls through</li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <div class="icon-tile" style="background:#f0e7d9;">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 3.5l8.5 3.5v3c0 6-3.6 10.4-8.5 12.5C8.1 20.4 4.5 16 4.5 10v-3z" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 12.8l2.4 2.4 4.6-4.9" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Financial care</h3>
+        <p>Gentle visibility, so small problems stay small.</p>
+        <ul>
+          <li>Bills, accounts, and insurance in one respectful view</li>
+          <li>Unusual charges and missed payments flagged early</li>
+          <li>Important documents — POA, insurance, directives — kept findable</li>
+          <li>Visibility your parent controls, down to each account</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST ============ -->
+<section class="trust" id="trust" aria-labelledby="trust-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Trust &amp; privacy</span>
+      <h2 id="trust-h">Trust isn't a feature here. It's the foundation.</h2>
+      <p>You're considering sharing the most sensitive information in your family's life. That deserves more than a checkbox — it deserves architecture, habits, and people you can name.</p>
+    </div>
+    <div class="trust-grid">
+      <article class="t-card">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M15 3.5l10 4v4c0 6.8-4.2 11.8-10 14-5.8-2.2-10-7.2-10-14v-4z" fill="#e0edef" stroke="#4e7a86" stroke-width="1.8" stroke-linejoin="round"/><path d="M11 15l2.8 2.8 5.2-5.6" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>HIPAA compliant</h3>
+        <p>Health information is handled to the standard hospitals are held to — because it's the same information.</p>
+      </article>
+      <article class="t-card">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="6" y="13" width="18" height="12" rx="3" fill="#e0edef" stroke="#4e7a86" stroke-width="1.8"/><path d="M10 13V9.5a5 5 0 0 1 10 0V13" fill="none" stroke="#4e7a86" stroke-width="1.8"/><circle cx="15" cy="19" r="2" fill="#4e7a86"/></svg>
+        <h3>Bank-level encryption</h3>
+        <p>256-bit encryption in transit and at rest, with credentials your family never has to share over text again.</p>
+      </article>
+      <article class="t-card">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="11" r="4.5" fill="#e0edef" stroke="#4e7a86" stroke-width="1.8"/><path d="M6.5 25v-1.5a6.5 6.5 0 0 1 6.5-6.5h4a6.5 6.5 0 0 1 6.5 6.5V25" fill="none" stroke="#4e7a86" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <h3>A specialist you can name</h3>
+        <p>Every family gets one dedicated Family Success Representative — the same person, visit after visit, year after year.</p>
+      </article>
+      <article class="t-card">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="5" y="6" width="20" height="19" rx="3" fill="#e0edef" stroke="#4e7a86" stroke-width="1.8"/><path d="M5 12h20M11 3.5V8M19 3.5V8" stroke="#4e7a86" stroke-width="1.8" stroke-linecap="round"/><circle cx="15" cy="18.5" r="2.4" fill="#4e7a86"/></svg>
+        <h3>Quarterly check-ins</h3>
+        <p>Your specialist reviews everything with you four times a year — permissions, connections, and how the plan is holding up.</p>
+      </article>
+      <article class="t-card">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M8 4.5h10l5 5V23a2.5 2.5 0 0 1-2.5 2.5h-12A2.5 2.5 0 0 1 6 23V7a2.5 2.5 0 0 1 2-2.45z" fill="#e0edef" stroke="#4e7a86" stroke-width="1.8" stroke-linejoin="round"/><path d="M10.5 14h9M10.5 18h9M10.5 10h4" stroke="#4e7a86" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <h3>A full audit trail</h3>
+        <p>Every view, change, and action is logged and visible to your family. Nothing happens in the dark — for anyone.</p>
+      </article>
+      <article class="t-card">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M15 4.5c3 2.6 6.4 3.5 9 3.5-1 9-4.3 13.9-9 17.5C10.3 21.9 7 17 6 8c2.6 0 6-1 9-3.5z" fill="#e0edef" stroke="#4e7a86" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 11v5M15 19.2v.2" stroke="#4e7a86" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3>Consent, always first</h3>
+        <p>Your parent decides what's shared and with whom. Every connection starts with their yes — and can end with their no.</p>
+      </article>
+    </div>
+    <div class="trust-parent">
+      <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true" style="flex:none;"><circle cx="28" cy="28" r="28" fill="#d7c1a6" opacity=".45"/><circle cx="28" cy="22" r="8" fill="none" stroke="#4e7a86" stroke-width="2.4"/><path d="M13 45a15 15 0 0 1 30 0" fill="none" stroke="#4e7a86" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <div>
+        <blockquote>"I'm not a project. Harbor asked me first — what I wanted my kids to see, and what stays mine. That's why I said yes."</blockquote>
+        <cite>Ruth, 81 · Phoenix — using Harbor with her three children</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FSR ============ -->
+<section id="talk" aria-labelledby="fsr-h">
+  <div class="wrap fsr-grid">
+    <div class="fsr-portrait" aria-label="Illustration of a Family Success Representative">
+      <svg width="280" height="320" viewBox="0 0 280 320" role="img" aria-label="Warm illustrated portrait of Dana, a Family Success Representative">
+        <!-- backdrop arch -->
+        <path d="M40 320V150a100 100 0 0 1 200 0v170z" fill="#fffdf9"/>
+        <!-- shoulders -->
+        <path d="M62 320c4-52 36-74 78-74s74 22 78 74z" fill="#4e7a86"/>
+        <!-- collar -->
+        <path d="M122 250l18 22 18-22z" fill="#f7f4ee"/>
+        <!-- neck -->
+        <rect x="126" y="212" width="28" height="42" rx="13" fill="#e8c39e"/>
+        <!-- face -->
+        <ellipse cx="140" cy="172" rx="52" ry="58" fill="#f0cda8"/>
+        <!-- hair -->
+        <path d="M88 172c-4-52 24-84 52-84s56 32 52 84c0 0 6-10 6-28 0-40-24-70-58-70s-58 30-58 70c0 18 6 28 6 28z" fill="#5b4636"/>
+        <path d="M88 172c0-26 10-38 20-46 2 12 34 20 64 14 8 8 12 18 12 32" fill="none"/>
+        <!-- ears -->
+        <circle cx="87" cy="176" r="9" fill="#e8c39e"/>
+        <circle cx="193" cy="176" r="9" fill="#e8c39e"/>
+        <!-- eyes -->
+        <path d="M112 172q8 7 16 0M152 172q8 7 16 0" stroke="#3d3128" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+        <!-- brows -->
+        <path d="M110 158q10-6 20-2M150 156q10-4 20 2" stroke="#5b4636" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- smile -->
+        <path d="M122 198q18 14 36 0" stroke="#b0684e" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+        <!-- blush -->
+        <circle cx="107" cy="188" r="7" fill="#e8a98a" opacity=".5"/>
+        <circle cx="173" cy="188" r="7" fill="#e8a98a" opacity=".5"/>
+        <!-- earring -->
+        <circle cx="87" cy="186" r="3" fill="#d7c1a6"/>
+        <circle cx="193" cy="186" r="3" fill="#d7c1a6"/>
+        <!-- lighthouse pin -->
+        <circle cx="180" cy="282" r="11" fill="#fffdf9"/>
+        <path d="M177.5 277.5h5l1 9h-7z" fill="#4e7a86"/>
+        <rect x="178" y="275.5" width="4" height="2.4" rx="1" fill="#d7c1a6"/>
+      </svg>
+    </div>
+    <div class="fsr-copy">
+      <span class="eyebrow">Humans, when it matters</span>
+      <h2 id="fsr-h">Meet your Family Success Representative.</h2>
+      <p>Software can gather information. It takes a person to understand a family. From your first call, one dedicated specialist walks with you — through setup, through the hard weeks, through the quiet ones.</p>
+      <p>They help your parent decide what to share. They notice when something needs a human call instead of a notification. And they check in every quarter, whether things are hectic or calm.</p>
+      <div class="fsr-quote">
+        <p>"Families don't need another dashboard at 11pm after a hard phone call. They need someone who already knows their story. That's my job — the technology just makes sure I never miss anything."</p>
+        <cite>Dana Okafor · Family Success Representative, Harbor</cite>
+      </div>
+      <div class="fsr-facts">
+        <div class="fsr-fact"><strong>1</strong><span>dedicated specialist per family</span></div>
+        <div class="fsr-fact"><strong>4×</strong><span>scheduled check-ins each year</span></div>
+        <div class="fsr-fact"><strong>Same day</strong><span>response when something's urgent</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STORY ============ -->
+<section class="story" aria-labelledby="story-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">One family's story</span>
+      <h2 id="story-h">Three cities. One mom. A family that talks again.</h2>
+    </div>
+    <div class="story-card">
+      <div class="story-cities" aria-label="Sarah in Chicago, Mike in Portland, and Ruth in Phoenix">
+        <div class="city"><div class="avatar" style="background:#4e7a86;">S</div><b>Sarah</b><span>Chicago</span></div>
+        <div class="city-line" aria-hidden="true"></div>
+        <div class="city"><div class="avatar" style="background:#8fae9d;">M</div><b>Mike</b><span>Portland</span></div>
+        <div class="city-line" aria-hidden="true"></div>
+        <div class="city"><div class="avatar" style="background:#c2a374;">R</div><b>Ruth</b><span>Phoenix</span></div>
+      </div>
+      <blockquote class="story-quote">I was the sibling doing everything, and I was starting to resent the ones who weren't. Now my brother sees what I see — Mom's appointments, her bills, what's handled and what's not. Last month he caught something I'd missed. We're a team again. And Mom? She jokes that Harbor is the only one of us who never forgets her birthday.</blockquote>
+      <p class="story-attrib"><b>Sarah T.</b>, Chicago — coordinating care for her mother Ruth in Phoenix, with her brother Mike in Portland</p>
+    </div>
+    <div class="story-detail">
+      <div class="sd-item"><b>Before Harbor</b>10+ hours a week chasing portals, bills, and updates — almost all of it Sarah's.</div>
+      <div class="sd-item"><b>After three months</b>Under two hours a week, shared across three siblings — with Ruth in the loop, by her choice.</div>
+      <div class="sd-item"><b>What mattered most</b>"Not the time. The trust. Nobody wonders what's happening anymore — we all just know."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing" aria-labelledby="pricing-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Pricing</span>
+      <h2 id="pricing-h">Plain pricing, for a plain reason.</h2>
+      <p>One monthly price per family — every sibling included, no per-seat math. Start where you are. Change anytime as your parent's needs change.</p>
+    </div>
+    <div class="price-grid">
+      <article class="tier">
+        <h3>Connected</h3>
+        <p class="tier-for">For families getting organized early, before there's a crisis to react to.</p>
+        <p class="tier-price">$79<span> / month per family</span></p>
+        <ul>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Shared family view across medical, daily, and financial care</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Assistant summaries, reminders, and change alerts</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Guided onboarding with a Family Success Representative</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Roles, permissions &amp; audit trail for the whole family</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Secure document vault for care-critical records</li>
+        </ul>
+        <a href="#talk" class="btn btn-quiet">Start with Connected</a>
+      </article>
+
+      <article class="tier featured">
+        <span class="tier-flag">Most families start here</span>
+        <h3>Supported</h3>
+        <p class="tier-for">For families in the thick of it — appointments, bills, and decisions arriving weekly.</p>
+        <p class="tier-price">$149<span> / month per family</span></p>
+        <ul>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Connected</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Full account &amp; portal connections, with monitoring</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Assistant handles routine calls, forms &amp; follow-ups</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Quarterly check-ins with your named specialist</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Priority support during hospitalizations &amp; transitions</li>
+        </ul>
+        <a href="#talk" class="btn btn-primary">Start with Supported</a>
+      </article>
+
+      <article class="tier">
+        <h3>Managed</h3>
+        <p class="tier-for">For complex situations — multiple conditions, facilities, or estates in motion.</p>
+        <p class="tier-price">$299<span> / month per family</span></p>
+        <ul>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Supported</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Monthly check-ins, plus on-call specialist access</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Care-transition support (hospital, rehab, assisted living)</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Coordination with attorneys, advisors &amp; facilities</li>
+          <li><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="#e3ece7"/><path d="M5 8.7l2.3 2.3 4.7-5" stroke="#4e7a86" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Support for two parents or blended households</li>
+        </ul>
+        <a href="#talk" class="btn btn-quiet">Talk to us about Managed</a>
+      </article>
+    </div>
+    <div class="scholarship">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="14" fill="#d7c1a6" opacity=".5"/><path d="M15 7.5s-5.5 3.6-5.5 8a5.5 5.5 0 0 0 11 0c0-4.4-5.5-8-5.5-8z" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/></svg>
+      <div>
+        <h3>Care shouldn't depend on a paycheck.</h3>
+        <p>Every plan is available with income-scaled pricing, and our scholarship program covers families who need it most. If cost is the thing standing between your family and steadier care, please talk to us — we will find a way. No paperwork marathon, no proof-of-hardship theater.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MISSION ============ -->
+<section class="mission" aria-labelledby="mission-h">
+  <div class="wrap">
+    <span class="eyebrow">Why we exist</span>
+    <h2 id="mission-h" class="serif">Our mission is to help one million families through long-term longevity care.</h2>
+    <p>Not for a season. For the decades ahead. We're building Harbor to last as long as families need it — patiently, independently, and with your parent's dignity at the center of every decision.</p>
+    <a href="#talk" class="btn btn-primary">Bring your family into Harbor</a>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Questions families ask</span>
+      <h2 id="faq-h">The things you're wondering. Answered plainly.</h2>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>Does my parent have to agree to this?<span class="plus" aria-hidden="true">+</span></summary>
+        <p>Yes — and we'd have it no other way. Every connection to your parent's health or financial information starts with their explicit consent, gathered by a real person, in plain language. Your parent chooses what's shared, with whom, and can change their mind at any time. If your parent has a legal decision-maker (like a power of attorney), we work within that framework and document it carefully.</p>
+      </details>
+      <details>
+        <summary>Who in my family can see what?<span class="plus" aria-hidden="true">+</span></summary>
+        <p>That's up to your family. Harbor uses roles and permissions built for real family dynamics: one sibling might see everything, another might see health updates but not bank balances. Your parent — and your family — set those boundaries during onboarding, and every access is recorded in an audit trail everyone can review. Nobody, including us, operates out of sight.</p>
+      </details>
+      <details>
+        <summary>How is our information kept private and secure?<span class="plus" aria-hidden="true">+</span></summary>
+        <p>Harbor is HIPAA compliant and protects your data with 256-bit encryption, the same standard your bank uses. We never sell data — not to advertisers, not to insurers, not to anyone. Our business is your subscription, full stop. Connections to banks and health portals use secure, read-only channels wherever possible, and you can disconnect any account instantly.</p>
+      </details>
+      <details>
+        <summary>What does the assistant actually do — and what doesn't it do?<span class="plus" aria-hidden="true">+</span></summary>
+        <p>It does the legwork: logging into portals so you don't have to, summarizing visits and statements in plain language, tracking follow-ups, flagging changes like a new medication or an unusual charge. It does not make medical or financial decisions, and it doesn't act on anything significant without your family's say-so. When something needs judgment, it goes to your family — and to your Family Success Representative if you want a human in the loop.</p>
+      </details>
+      <details>
+        <summary>Is there a real person we can talk to?<span class="plus" aria-hidden="true">+</span></summary>
+        <p>Always. Every family is matched with a dedicated Family Success Representative — one person, by name, who handles your onboarding, checks in every quarter, and picks up when things get hard. They're employees, not a call center, and they stay with your family over time.</p>
+      </details>
+      <details>
+        <summary>What if we start and it isn't right for us?<span class="plus" aria-hidden="true">+</span></summary>
+        <p>Then you leave — gently and completely. There are no contracts and no cancellation fees. If you go, we help you export your family's records and we delete your data on your timeline. We'd rather earn your trust every month than lock you into anything.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final" aria-labelledby="final-h">
+  <div class="wrap">
+    <h2 id="final-h">Whenever your family is ready, we're here.</h2>
+    <p>Start with a conversation — a real one, with a person who's helped hundreds of families through exactly this.</p>
+    <a href="#talk" class="btn btn-primary">Talk to a real person</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="#top" aria-label="Harbor home">
+          <svg width="36" height="36" viewBox="0 0 48 48" role="img" aria-label="Harbor lighthouse mark">
+            <circle cx="24" cy="24" r="24" fill="#4e7a86"/>
+            <path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6" opacity=".85"/>
+            <path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6" opacity=".85"/>
+            <rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/>
+            <path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/>
+            <rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/>
+            <path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/>
+            <path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9-0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d" opacity=".95"/>
+          </svg>
+          <span class="logo-word">Harbor</span>
+        </a>
+        <p>A safe harbor for your family's hardest season — and every season after.</p>
+      </div>
+      <div>
+        <h4>Harbor</h4>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#care">What we cover</a></li>
+          <li><a href="#pricing">Pricing &amp; scholarships</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">Our mission</a></li>
+          <li><a href="#">Family Success team</a></li>
+          <li><a href="#">For health plans &amp; advisors</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Trust</h4>
+        <ul>
+          <li><a href="#trust">Security &amp; privacy</a></li>
+          <li><a href="#">Consent &amp; permissions</a></li>
+          <li><a href="#">Terms of service</a></li>
+          <li><a href="#">Privacy policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="badges" aria-label="Compliance and security">
+      <span class="badge">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 1.5l6.5 2.6v2.7c0 4.4-2.7 7.6-6.5 9-3.8-1.4-6.5-4.6-6.5-9V4.1z" fill="none" stroke="#8fae9d" stroke-width="1.5" stroke-linejoin="round"/><path d="M6.2 9l2 2 3.6-3.9" fill="none" stroke="#8fae9d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        HIPAA Compliant
+      </span>
+      <span class="badge">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="3" y="8" width="12" height="8" rx="2" fill="none" stroke="#8fae9d" stroke-width="1.5"/><path d="M6 8V5.8a3 3 0 0 1 6 0V8" fill="none" stroke="#8fae9d" stroke-width="1.5"/></svg>
+        256-bit AES Encryption
+      </span>
+      <span class="badge">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="none" stroke="#8fae9d" stroke-width="1.5"/><path d="M5.8 9.2l2.1 2.1 4.3-4.6" fill="none" stroke="#8fae9d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        SOC 2 Type II
+      </span>
+      <span class="badge">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4.5h7l3 3V14a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 3 14V6a1.5 1.5 0 0 1 1-1.5z" fill="none" stroke="#8fae9d" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 9h6M6 12h6" stroke="#8fae9d" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Full Audit Trails
+      </span>
+    </div>
+    <div class="fineprint">
+      <span>© 2026 Harbor Care, Inc. All rights reserved.</span>
+      <span>Harbor is care coordination, not medical, legal, or financial advice. In an emergency, call 911.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

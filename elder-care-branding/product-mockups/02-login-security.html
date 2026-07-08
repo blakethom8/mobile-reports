@@ -1,0 +1,819 @@
+<title>Harbor — Login &amp; Security Mockups</title>
+<style>
+  :root{
+    --cream:#f7f4ee; --soft-white:#fffdf9; --sage:#8fae9d; --teal:#7ea9b3;
+    --trust:#4e7a86; --sand:#d7c1a6; --ink:#23313a; --slate:#5e6d76;
+    --sage-tint:#eef3ef; --teal-tint:#eaf2f3; --sand-tint:#f4ece0;
+    --line:#e5ded2; --warn:#a65b4b; --ok:#5d8a6f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    font-size:17px; line-height:1.6; padding:48px 24px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:Georgia,'Times New Roman',serif; font-weight:400;}
+  .board{max-width:1180px; margin:0 auto;}
+
+  /* ---------- Board header ---------- */
+  .board-head{margin-bottom:64px;}
+  .wordmark{display:flex; align-items:center; gap:12px; margin-bottom:26px;}
+  .wordmark .name{font-family:Georgia,'Times New Roman',serif; font-size:24px; letter-spacing:.01em;}
+  .board-head h1{font-size:40px; margin:0 0 14px; line-height:1.2;}
+  .board-head .intro{max-width:720px; color:var(--slate); margin:0 0 14px; font-size:18px;}
+  .board-meta{color:var(--slate); font-size:14px; letter-spacing:.04em; text-transform:uppercase;}
+  .board-meta span{white-space:nowrap;}
+
+  /* ---------- Frames ---------- */
+  .frame{margin:0 0 72px;}
+  .frame-row{display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap; margin-bottom:72px;}
+  .frame-row .frame{flex:1 1 440px; margin-bottom:0; min-width:0;}
+  .frame-head{margin-bottom:18px;}
+  .frame-num{
+    display:inline-block; font-size:12px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--trust); background:var(--teal-tint);
+    border:1px solid var(--line); border-radius:999px; padding:4px 12px; margin-bottom:10px;
+  }
+  .frame-head h2{font-size:26px; margin:0 0 4px;}
+  .frame-sub{margin:0; color:var(--slate); font-size:16px;}
+
+  .screen{
+    background:var(--soft-white); border:1px solid var(--line); border-radius:22px;
+    box-shadow:0 18px 40px rgba(35,49,58,.08); overflow:hidden;
+  }
+  .screen.auth{max-width:520px;}
+  .screen.phone{max-width:430px;}
+  .screen.wide{max-width:760px;}
+
+  .app-top{
+    display:flex; align-items:center; gap:10px; padding:18px 28px;
+    border-bottom:1px solid var(--line); background:var(--soft-white);
+  }
+  .app-top .app-name{font-family:Georgia,serif; font-size:18px; color:var(--ink);}
+  .screen-body{padding:34px 36px 30px;}
+  .screen.phone .screen-body{padding:30px 26px 0;}
+
+  .annotation{
+    display:flex; gap:12px; align-items:flex-start; margin-top:18px;
+    background:var(--sand-tint); border-radius:14px; padding:16px 18px;
+    color:var(--slate); font-size:15px; line-height:1.55; max-width:760px;
+  }
+  .annotation svg{flex:none; margin-top:3px;}
+  .annotation p{margin:0;}
+
+  /* ---------- Mock UI atoms ---------- */
+  .field{margin-bottom:20px;}
+  .field label{display:block; font-weight:600; font-size:16px; margin-bottom:7px; color:var(--ink);}
+  .input, .code-box{
+    width:100%; border:1.5px solid var(--line); border-radius:12px; background:#fff;
+    font-size:18px; color:var(--ink); padding:0 16px; min-height:52px;
+    font-family:inherit;
+  }
+  .input:focus, .code-box:focus{
+    border-color:var(--trust); outline:3px solid rgba(78,122,134,.35); outline-offset:1px;
+  }
+  .input-wrap{position:relative;}
+  .input-wrap .input{padding-right:56px;}
+  .eye-btn{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border:none; background:transparent; border-radius:10px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--slate);
+  }
+  .eye-btn:hover{background:var(--teal-tint); color:var(--trust);}
+  .eye-btn:focus-visible{outline:3px solid rgba(78,122,134,.35);}
+
+  .btn-primary{
+    display:block; width:100%; background:var(--trust); color:#fff; border:none;
+    border-radius:12px; padding:14px 24px; font-size:18px; font-weight:600;
+    min-height:48px; cursor:pointer; font-family:inherit; text-align:center;
+  }
+  .btn-primary:hover{background:#436b76;}
+  .btn-primary:focus-visible{outline:3px solid rgba(78,122,134,.35); outline-offset:2px;}
+  .btn-ghost{
+    display:inline-block; background:transparent; color:var(--trust);
+    border:1.5px solid var(--trust); border-radius:12px; padding:12px 24px;
+    font-size:17px; font-weight:600; min-height:48px; cursor:pointer; font-family:inherit;
+  }
+  .btn-ghost:hover{background:var(--teal-tint);}
+  .btn-ghost:focus-visible{outline:3px solid rgba(78,122,134,.35); outline-offset:2px;}
+  .btn-warnish{
+    display:inline-block; background:#faf3ef; color:var(--warn); border:1.5px solid var(--warn);
+    border-radius:12px; padding:12px 24px; font-size:17px; font-weight:600; min-height:48px;
+    cursor:pointer; font-family:inherit;
+  }
+  .btn-warnish:hover{background:#f5e7e0;}
+  .btn-warnish:focus-visible{outline:3px solid rgba(166,91,75,.4); outline-offset:2px;}
+
+  .check-row{display:flex; gap:12px; align-items:flex-start; margin:4px 0 24px;}
+  .check-row input[type=checkbox]{
+    width:22px; height:22px; margin-top:3px; accent-color:var(--trust); flex:none; cursor:pointer;
+  }
+  .check-row .check-label{font-size:16px; font-weight:600;}
+  .check-row .check-sub{font-size:14.5px; color:var(--slate); font-weight:400; margin-top:1px;}
+
+  .link{color:var(--trust); font-weight:600; text-decoration:underline; text-underline-offset:3px;}
+  .link:focus-visible{outline:3px solid rgba(78,122,134,.35); outline-offset:2px; border-radius:4px;}
+  .aux-links{display:flex; flex-direction:column; gap:10px; margin:22px 0 6px; font-size:16px;}
+
+  .trust-foot{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    border-top:1px solid var(--line); background:var(--teal-tint);
+    padding:13px 20px; font-size:14.5px; color:var(--trust); font-weight:600;
+  }
+  .trust-bar{
+    display:inline-flex; align-items:center; gap:8px; background:var(--teal-tint);
+    border:1px solid var(--line); border-radius:999px; padding:7px 16px;
+    font-size:14px; color:var(--trust); font-weight:600;
+  }
+
+  .welcome{font-size:30px; margin:6px 0 6px;}
+  .screen-sub{color:var(--slate); font-size:16px; margin:0 0 26px;}
+
+  /* ---------- Avatars ---------- */
+  .avatar{border-radius:50%; flex:none;}
+
+  /* ---------- Frame 2: method cards + code ---------- */
+  .method-cards{display:flex; flex-direction:column; gap:12px; margin:0 0 24px;}
+  .method-card{
+    display:flex; align-items:center; gap:14px; width:100%; text-align:left;
+    border:1.5px solid var(--line); background:#fff; border-radius:14px;
+    padding:16px 18px; cursor:pointer; font-family:inherit; font-size:17px; color:var(--ink);
+  }
+  .method-card .m-title{font-weight:600;}
+  .method-card .m-sub{display:block; font-size:14.5px; color:var(--slate); margin-top:1px;}
+  .method-card[aria-pressed="true"]{
+    border-color:var(--trust); background:var(--teal-tint);
+    box-shadow:0 0 0 1px var(--trust) inset;
+  }
+  .method-card:focus-visible{outline:3px solid rgba(78,122,134,.35); outline-offset:2px;}
+  .radio-dot{
+    width:22px; height:22px; border-radius:50%; border:2px solid var(--line);
+    flex:none; display:flex; align-items:center; justify-content:center; background:#fff;
+  }
+  .method-card[aria-pressed="true"] .radio-dot{border-color:var(--trust);}
+  .method-card[aria-pressed="true"] .radio-dot::after{
+    content:""; width:11px; height:11px; border-radius:50%; background:var(--trust);
+  }
+  .code-row{display:flex; gap:10px; margin:6px 0 14px;}
+  .code-box{
+    flex:1; min-width:0; text-align:center; padding:0; min-height:60px;
+    font-size:26px; font-family:Georgia,serif;
+  }
+  .help-line{
+    display:flex; gap:10px; align-items:flex-start; background:var(--sage-tint);
+    border-radius:12px; padding:13px 15px; font-size:15px; color:var(--ink); margin-top:20px;
+  }
+  .help-line svg{flex:none; margin-top:3px;}
+
+  /* ---------- Frame 3: sent card ---------- */
+  .sent-card{
+    margin-top:24px; border:1.5px dashed var(--sage); background:var(--sage-tint);
+    border-radius:16px; padding:22px 24px; display:flex; gap:16px; align-items:flex-start;
+  }
+  .sent-card .sent-title{font-weight:700; margin:0 0 4px; font-size:16px;}
+  .sent-card p{margin:0 0 14px; font-size:16px;}
+  .substate-tag{
+    display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ok); background:#fff; border:1px solid var(--sage);
+    border-radius:999px; padding:2px 10px; margin-bottom:10px;
+  }
+
+  /* ---------- Frame 4: Elena phone ---------- */
+  .phone .greet{font-size:30px; margin:14px 0 4px; line-height:1.25;}
+  .phone .plain{font-size:21px; line-height:1.5; margin:10px 0 24px;}
+  .btn-huge{
+    display:block; width:100%; min-height:64px; font-size:22px; font-weight:700;
+    background:var(--trust); color:#fff; border:none; border-radius:16px;
+    padding:16px 20px; cursor:pointer; font-family:inherit;
+  }
+  .btn-huge:hover{background:#436b76;}
+  .btn-huge:focus-visible{outline:4px solid rgba(78,122,134,.4); outline-offset:2px;}
+  .or-rule{display:flex; align-items:center; gap:14px; margin:26px 0 14px; color:var(--slate); font-size:16px;}
+  .or-rule::before,.or-rule::after{content:""; flex:1; height:1px; background:var(--line);}
+  .pin-label{font-size:19px; font-weight:600; text-align:center; margin:0 0 14px;}
+  .pin-dots{display:flex; justify-content:center; gap:18px; margin-bottom:8px;}
+  .pin-dot{
+    width:22px; height:22px; border-radius:50%; border:2.5px solid var(--slate); background:transparent;
+  }
+  .pin-dot.filled{background:var(--trust); border-color:var(--trust);}
+  .pin-status{text-align:center; font-size:16px; min-height:26px; color:var(--ok); font-weight:600; margin:4px 0 8px;}
+  .pin-pad{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:6px 0 24px;}
+  .pin-key{
+    min-height:64px; font-size:26px; font-family:Georgia,serif; color:var(--ink);
+    background:#fff; border:1.5px solid var(--line); border-radius:14px; cursor:pointer;
+  }
+  .pin-key:hover{background:var(--teal-tint); border-color:var(--teal);}
+  .pin-key:active{background:var(--teal-tint);}
+  .pin-key:focus-visible{outline:4px solid rgba(78,122,134,.4);}
+  .pin-key.blank{border:none; background:transparent; cursor:default;}
+  .pin-key.del{font-family:inherit; font-size:20px; color:var(--slate);}
+  .phone-help{
+    display:flex; gap:12px; align-items:flex-start; background:var(--sand-tint);
+    border-top:1px solid var(--line); padding:18px 24px; margin:0 -26px;
+    font-size:17px; line-height:1.5;
+  }
+  .phone-help svg{flex:none; margin-top:4px;}
+
+  /* ---------- Frame 6: new device ---------- */
+  .notice-head{display:flex; align-items:flex-start; gap:14px; margin-bottom:22px;}
+  .notice-head h3{font-size:24px; margin:0 0 4px; line-height:1.3;}
+  .notice-head p{margin:0; color:var(--slate); font-size:15.5px;}
+  .device-card{
+    display:flex; gap:16px; align-items:center; border:1.5px solid var(--line);
+    background:#fff; border-radius:16px; padding:20px 22px; margin-bottom:22px; flex-wrap:wrap;
+  }
+  .device-card .who{font-weight:700; font-size:18px;}
+  .device-card .meta{color:var(--slate); font-size:15.5px; margin-top:2px;}
+  .action-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:8px;}
+  .action-row form{margin:0;}
+  .confirmed-tag{
+    display:inline-flex; align-items:center; gap:7px; font-size:14px; color:var(--ok);
+    font-weight:600; margin-top:10px;
+  }
+  .family-note{
+    background:var(--sage-tint); border-radius:12px; padding:14px 16px;
+    font-size:15.5px; margin:18px 0 18px;
+  }
+  details.why{
+    border:1px solid var(--line); border-radius:12px; background:#fff; padding:0;
+  }
+  details.why summary{
+    cursor:pointer; padding:14px 18px; font-weight:600; color:var(--trust);
+    font-size:16px; list-style:none; display:flex; align-items:center; gap:10px;
+  }
+  details.why summary::-webkit-details-marker{display:none;}
+  details.why summary .chev{transition:transform .15s ease;}
+  details.why[open] summary .chev{transform:rotate(90deg);}
+  details.why summary:focus-visible{outline:3px solid rgba(78,122,134,.35); border-radius:12px;}
+  details.why .why-body{padding:0 18px 16px; color:var(--slate); font-size:15.5px;}
+
+  /* ---------- Footer ---------- */
+  .board-foot{
+    margin-top:80px; border-top:1px solid var(--line); padding-top:26px;
+    color:var(--slate); font-size:14.5px; text-align:center; letter-spacing:.02em;
+  }
+
+  @media (max-width:760px){
+    body{padding:32px 14px;}
+    .frame-row{display:block;}
+    .frame-row .frame{margin-bottom:64px;}
+    .board-head h1{font-size:32px;}
+    .screen-body{padding:26px 22px 24px;}
+    .code-row{gap:7px;}
+    .code-box{font-size:22px; min-height:54px;}
+    .action-row{flex-direction:column;}
+    .action-row .btn-ghost,.action-row .btn-warnish{width:100%; text-align:center;}
+  }
+</style>
+
+<div class="board">
+
+  <!-- ================= Board header ================= -->
+  <header class="board-head">
+    <div class="wordmark">
+      <svg width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Harbor mark">
+        <circle cx="22" cy="22" r="21" fill="#eaf2f3" stroke="#e5ded2"/>
+        <g stroke="#4e7a86" stroke-width="2.6" stroke-linecap="round" fill="none">
+          <circle cx="22" cy="12.5" r="3.4"/>
+          <line x1="22" y1="15.9" x2="22" y2="31"/>
+          <line x1="16" y1="20" x2="28" y2="20"/>
+          <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+          <path d="M12.5 26.5l-2.6 2.4M12.5 26.5l3.4 1.4"/>
+          <path d="M31.5 26.5l2.6 2.4M31.5 26.5l-3.4 1.4"/>
+        </g>
+      </svg>
+      <span class="name">Harbor</span>
+    </div>
+    <h1>Login &amp; Security</h1>
+    <p class="intro">How families and parents enter Harbor — and how the platform earns trust at the door. Every screen here assumes a tired person signing in at an odd hour, and treats security as something we explain, never something we inflict.</p>
+    <p class="board-meta"><span>Product mockups</span> · <span>Direction A (Harbor)</span> · <span>Reyes family demo data</span> · <span>For design review</span></p>
+  </header>
+
+  <!-- ================= Row: Frame 1 + Frame 3 ================= -->
+  <div class="frame-row">
+
+    <!-- ========== Frame 1: Standard login ========== -->
+    <section class="frame" aria-labelledby="f1-title">
+      <div class="frame-head">
+        <span class="frame-num">Frame 1</span>
+        <h2 id="f1-title">Standard login</h2>
+        <p class="frame-sub">The everyday front door for Marisol, Daniel, and Ana.</p>
+      </div>
+
+      <div class="screen auth">
+        <div class="app-top">
+          <svg width="28" height="28" viewBox="0 0 44 44" role="img" aria-label="Harbor">
+            <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+            <g stroke="#4e7a86" stroke-width="3" stroke-linecap="round" fill="none">
+              <circle cx="22" cy="12.5" r="3.4"/><line x1="22" y1="15.9" x2="22" y2="31"/>
+              <line x1="16" y1="20" x2="28" y2="20"/>
+              <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+            </g>
+          </svg>
+          <span class="app-name">Harbor</span>
+        </div>
+        <div class="screen-body">
+          <h3 class="welcome serif">Welcome back.</h3>
+          <p class="screen-sub">You're not doing this alone.</p>
+
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input class="input" id="login-email" type="email" value="marisol.reyes@gmail.com" autocomplete="email">
+          </div>
+
+          <div class="field">
+            <label for="login-pass">Password</label>
+            <div class="input-wrap">
+              <input class="input" id="login-pass" type="password" value="correcthorse" autocomplete="current-password">
+              <button class="eye-btn" id="eyeBtn" type="button" aria-label="Show password" aria-pressed="false">
+                <svg id="eyeOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg id="eyeShut" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
+                  <path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><line x1="4" y1="20" x2="20" y2="4"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="remember" checked>
+            <label for="remember">
+              <span class="check-label">Remember this device for 30 days</span>
+              <div class="check-sub">Only choose this on a computer or phone that's yours.</div>
+            </label>
+          </div>
+
+          <button class="btn-primary" type="button">Sign in</button>
+
+          <div class="aux-links">
+            <a class="link" href="#magic">Email me a sign-in link instead</a>
+            <a class="link" href="#forgot">Forgot your password?</a>
+          </div>
+        </div>
+        <div class="trust-foot">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          Protected with bank-level encryption
+        </div>
+      </div>
+
+      <aside class="annotation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+        </svg>
+        <p>Large inputs, one column, no distractions — most sign-ins happen at 11pm after a hospital call. "Remember this device" is explained in plain language rather than just offered, so the choice is informed, not accidental. The two escape hatches (magic link, reset) are visible before anything goes wrong.</p>
+      </aside>
+    </section>
+
+    <!-- ========== Frame 3: Magic link ========== -->
+    <section class="frame" id="magic" aria-labelledby="f3-title">
+      <div class="frame-head">
+        <span class="frame-num">Frame 3</span>
+        <h2 id="f3-title">Magic link</h2>
+        <p class="frame-sub">Passwordless entry, with the sent state shown below.</p>
+      </div>
+
+      <div class="screen auth">
+        <div class="app-top">
+          <svg width="28" height="28" viewBox="0 0 44 44" role="img" aria-label="Harbor">
+            <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+            <g stroke="#4e7a86" stroke-width="3" stroke-linecap="round" fill="none">
+              <circle cx="22" cy="12.5" r="3.4"/><line x1="22" y1="15.9" x2="22" y2="31"/>
+              <line x1="16" y1="20" x2="28" y2="20"/>
+              <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+            </g>
+          </svg>
+          <span class="app-name">Harbor</span>
+        </div>
+        <div class="screen-body">
+          <h3 class="welcome serif">We'll email you a link.</h3>
+          <p class="screen-sub">No password needed — just tap the link and you're in.</p>
+
+          <div class="field">
+            <label for="magic-email">Email</label>
+            <input class="input" id="magic-email" type="email" value="marisol.reyes@gmail.com" autocomplete="email">
+          </div>
+
+          <button class="btn-primary" type="button">Email my sign-in link</button>
+
+          <div class="sent-card" role="status">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5d8a6f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2.5 6.5 12 13.5l9.5-7"/>
+            </svg>
+            <div>
+              <span class="substate-tag">Sub-state · Sent</span>
+              <p class="sent-title">Check your email.</p>
+              <p>We sent a sign-in link to <strong>m•••@gmail.com</strong>. It works for 15 minutes.</p>
+              <button class="btn-ghost" type="button">Send it again</button>
+            </div>
+          </div>
+        </div>
+        <div class="trust-foot">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          Protected with bank-level encryption
+        </div>
+      </div>
+
+      <aside class="annotation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+        </svg>
+        <p>Caregivers already juggle a parent's patient portal, pharmacy, bank, and insurance logins — Harbor refuses to be one more password to hold. The sent state masks the address (m•••@gmail.com), names the 15-minute window, and offers "Send it again" before anyone has to wonder.</p>
+      </aside>
+    </section>
+  </div>
+
+  <!-- ================= Row: Frame 2 + Frame 5 ================= -->
+  <div class="frame-row">
+
+    <!-- ========== Frame 2: Two-step verification ========== -->
+    <section class="frame" aria-labelledby="f2-title">
+      <div class="frame-head">
+        <span class="frame-num">Frame 2</span>
+        <h2 id="f2-title">Two-step verification</h2>
+        <p class="frame-sub">A double-check on new sign-ins, with a human way out.</p>
+      </div>
+
+      <div class="screen auth">
+        <div class="app-top">
+          <svg width="28" height="28" viewBox="0 0 44 44" role="img" aria-label="Harbor">
+            <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+            <g stroke="#4e7a86" stroke-width="3" stroke-linecap="round" fill="none">
+              <circle cx="22" cy="12.5" r="3.4"/><line x1="22" y1="15.9" x2="22" y2="31"/>
+              <line x1="16" y1="20" x2="28" y2="20"/>
+              <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+            </g>
+          </svg>
+          <span class="app-name">Harbor</span>
+        </div>
+        <div class="screen-body">
+          <h3 class="welcome serif">Let's make sure it's you.</h3>
+          <p class="screen-sub">Because Harbor holds sensitive family information, we double-check new sign-ins.</p>
+
+          <div class="method-cards" role="group" aria-label="Choose how to get your code">
+            <button class="method-card" id="methodSms" type="button" aria-pressed="true">
+              <span class="radio-dot" aria-hidden="true"></span>
+              <span>
+                <span class="m-title">Text a code to (312) 555-01••</span>
+                <span class="m-sub">Usually arrives within a few seconds.</span>
+              </span>
+            </button>
+            <button class="method-card" id="methodApp" type="button" aria-pressed="false">
+              <span class="radio-dot" aria-hidden="true"></span>
+              <span>
+                <span class="m-title">Use your authenticator app</span>
+                <span class="m-sub">Open the app and read the 6-digit code.</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="field">
+            <label id="codeLabel" for="code1">Enter the 6-digit code we texted you</label>
+            <div class="code-row" role="group" aria-labelledby="codeLabel">
+              <input class="code-box" id="code1" inputmode="numeric" maxlength="1" value="4" aria-label="Digit 1 of 6">
+              <input class="code-box" inputmode="numeric" maxlength="1" value="8" aria-label="Digit 2 of 6">
+              <input class="code-box" inputmode="numeric" maxlength="1" value="2" aria-label="Digit 3 of 6">
+              <input class="code-box" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+              <input class="code-box" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+              <input class="code-box" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+            </div>
+          </div>
+
+          <p style="font-size:15.5px; margin:0 0 4px;">
+            <a class="link" href="#resend">Resend code</a>
+            <span style="color:var(--slate);"> — you can ask again in 30 seconds.</span>
+          </p>
+
+          <div class="help-line">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4e7a86" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.25a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2z"/>
+            </svg>
+            <span>Having trouble? Call us — a real person can help: <strong>(866)&nbsp;555-0142</strong></span>
+          </div>
+        </div>
+        <div class="trust-foot">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          Protected with bank-level encryption
+        </div>
+      </div>
+
+      <aside class="annotation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+        </svg>
+        <p>2FA lockouts are a top abandonment moment for this demographic, so the fallback is a phone number that reaches a person — not a help article. The heading explains <em>why</em> we're double-checking; unexplained friction reads as suspicion. Code boxes are large, high-contrast, and auto-advance.</p>
+      </aside>
+    </section>
+
+    <!-- ========== Frame 5: Forgot password ========== -->
+    <section class="frame" id="forgot" aria-labelledby="f5-title">
+      <div class="frame-head">
+        <span class="frame-num">Frame 5</span>
+        <h2 id="f5-title">Forgot password</h2>
+        <p class="frame-sub">Recovery without a hint of blame.</p>
+      </div>
+
+      <div class="screen auth">
+        <div class="app-top">
+          <svg width="28" height="28" viewBox="0 0 44 44" role="img" aria-label="Harbor">
+            <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+            <g stroke="#4e7a86" stroke-width="3" stroke-linecap="round" fill="none">
+              <circle cx="22" cy="12.5" r="3.4"/><line x1="22" y1="15.9" x2="22" y2="31"/>
+              <line x1="16" y1="20" x2="28" y2="20"/>
+              <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+            </g>
+          </svg>
+          <span class="app-name">Harbor</span>
+        </div>
+        <div class="screen-body">
+          <h3 class="welcome serif">Let's get you back in.</h3>
+          <p class="screen-sub">It happens to everyone — especially in a stressful season.</p>
+
+          <div class="field">
+            <label for="forgot-email">Email</label>
+            <input class="input" id="forgot-email" type="email" placeholder="you@example.com" autocomplete="email">
+          </div>
+
+          <button class="btn-primary" type="button">Send reset link</button>
+
+          <p style="font-size:15.5px; color:var(--slate); margin:18px 0 0;">
+            The link works for 1 hour. If you don't see it, check spam — or call us and a person will help: <strong style="color:var(--ink);">(866)&nbsp;555-0142</strong>.
+          </p>
+
+          <div class="aux-links">
+            <a class="link" href="#magic">Prefer no password at all? Email me a sign-in link instead</a>
+          </div>
+        </div>
+        <div class="trust-foot">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          Protected with bank-level encryption
+        </div>
+      </div>
+
+      <aside class="annotation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+        </svg>
+        <p>Emotionally literate recovery: the subline acknowledges the season the user is in, and "invalid credentials" is banned vocabulary across the product. Every dead end offers two live exits — a timed reset link and a human on the phone — plus a nudge toward the passwordless path so this screen is needed less over time.</p>
+      </aside>
+    </section>
+  </div>
+
+  <!-- ========== Frame 4: Elena's sign-in ========== -->
+  <section class="frame" aria-labelledby="f4-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 4</span>
+      <h2 id="f4-title">Elena's sign-in</h2>
+      <p class="frame-sub">The parent variant — large type, no passwords, help from a named person.</p>
+    </div>
+
+    <div class="screen phone">
+      <div class="app-top">
+        <svg width="28" height="28" viewBox="0 0 44 44" role="img" aria-label="Harbor">
+          <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+          <g stroke="#4e7a86" stroke-width="3" stroke-linecap="round" fill="none">
+            <circle cx="22" cy="12.5" r="3.4"/><line x1="22" y1="15.9" x2="22" y2="31"/>
+            <line x1="16" y1="20" x2="28" y2="20"/>
+            <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+          </g>
+        </svg>
+        <span class="app-name">Harbor</span>
+      </div>
+      <div class="screen-body">
+        <svg class="avatar" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Elena Reyes">
+          <circle cx="32" cy="32" r="32" fill="#4e7a86"/>
+          <text x="32" y="43" text-anchor="middle" font-family="Georgia,serif" font-size="30" fill="#fffdf9">E</text>
+        </svg>
+        <h3 class="greet serif">Good morning, Elena.</h3>
+        <p class="plain">Tap the big button and we'll send a code to your phone ending in <strong>0148</strong>.</p>
+
+        <button class="btn-huge" type="button">Send me my code</button>
+
+        <div class="or-rule" aria-hidden="true">or</div>
+
+        <p class="pin-label">Or type your Harbor PIN</p>
+        <div class="pin-dots" id="pinDots" role="img" aria-label="PIN entry, 0 of 4 digits typed">
+          <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+        </div>
+        <p class="pin-status" id="pinStatus" role="status" aria-live="polite"></p>
+
+        <div class="pin-pad" id="pinPad">
+          <button class="pin-key" type="button" data-digit="1">1</button>
+          <button class="pin-key" type="button" data-digit="2">2</button>
+          <button class="pin-key" type="button" data-digit="3">3</button>
+          <button class="pin-key" type="button" data-digit="4">4</button>
+          <button class="pin-key" type="button" data-digit="5">5</button>
+          <button class="pin-key" type="button" data-digit="6">6</button>
+          <button class="pin-key" type="button" data-digit="7">7</button>
+          <button class="pin-key" type="button" data-digit="8">8</button>
+          <button class="pin-key" type="button" data-digit="9">9</button>
+          <span class="pin-key blank" aria-hidden="true"></span>
+          <button class="pin-key" type="button" data-digit="0">0</button>
+          <button class="pin-key del" id="pinDel" type="button" aria-label="Delete last digit">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 5H8l-5 7 5 7h13a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 21 5z"/><line x1="12" y1="9.5" x2="17" y2="14.5"/><line x1="17" y1="9.5" x2="12" y2="14.5"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="phone-help">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4e7a86" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.25a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2z"/>
+          </svg>
+          <span>Need help? <strong>Call your daughter Marisol</strong><br><span style="color:var(--slate); font-size:15.5px;">or Harbor: (866) 555-0142</span></span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+      </svg>
+      <p>No passwords for the parent — ever. The default is one huge button and a code to a phone she already holds; the 4-digit PIN is optional and set up together with family or with Grace, never alone. Help routes to a named person ("your daughter Marisol"), not a support queue. Dignity means Elena is never made to feel locked out of her own life.</p>
+    </aside>
+  </section>
+
+  <!-- ========== Frame 6: New device notice ========== -->
+  <section class="frame" aria-labelledby="f6-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 6</span>
+      <h2 id="f6-title">New device notice</h2>
+      <p class="frame-sub">What the whole family sees when a new device joins the workspace.</p>
+    </div>
+
+    <div class="screen wide">
+      <div class="app-top">
+        <svg width="28" height="28" viewBox="0 0 44 44" role="img" aria-label="Harbor">
+          <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+          <g stroke="#4e7a86" stroke-width="3" stroke-linecap="round" fill="none">
+            <circle cx="22" cy="12.5" r="3.4"/><line x1="22" y1="15.9" x2="22" y2="31"/>
+            <line x1="16" y1="20" x2="28" y2="20"/>
+            <path d="M12.5 26.5c0 5.5 4.2 8.5 9.5 8.5s9.5-3 9.5-8.5"/>
+          </g>
+        </svg>
+        <span class="app-name">Harbor</span>
+        <span class="trust-bar" style="margin-left:auto;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          Security notice
+        </span>
+      </div>
+      <div class="screen-body">
+        <div class="notice-head">
+          <svg width="40" height="40" viewBox="0 0 40 40" role="img" aria-label="Shield icon" style="flex:none; margin-top:2px;">
+            <circle cx="20" cy="20" r="20" fill="#eaf2f3"/>
+            <path d="M20 9l8 3v7c0 5.2-3.4 9-8 11-4.6-2-8-5.8-8-11v-7l8-3z" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16.5 20l2.5 2.5 5-5" fill="none" stroke="#4e7a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <h3 class="serif">A new device signed in to the Reyes family workspace</h3>
+            <p>We tell everyone, every time. No silent access — that's the deal.</p>
+          </div>
+        </div>
+
+        <div class="device-card">
+          <svg class="avatar" width="52" height="52" viewBox="0 0 52 52" role="img" aria-label="Daniel Reyes">
+            <circle cx="26" cy="26" r="26" fill="#8fae9d"/>
+            <text x="26" y="35" text-anchor="middle" font-family="Georgia,serif" font-size="24" fill="#fffdf9">D</text>
+          </svg>
+          <div>
+            <div class="who">Daniel Reyes</div>
+            <div class="meta">Seattle, WA · Chrome on Windows · Today 9:12 AM PT</div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn-ghost" type="button">That was me</button>
+          <button class="btn-warnish" type="button">I don't recognize this — secure the account</button>
+        </div>
+        <p class="confirmed-tag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          Daniel confirmed "That was me" at 9:14 AM PT.
+        </p>
+
+        <div class="family-note">
+          Everyone in the family workspace was notified. Elena was notified in her large-print format.
+        </div>
+
+        <details class="why">
+          <summary>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"/>
+            </svg>
+            Why we do this
+          </summary>
+          <div class="why-body">
+            <p style="margin:0;">Transparency beats silent security. In a family, unusual access isn't just a security event — it's a trust event. When everyone can see who signed in, where, and when, suspicion has nowhere to grow, and no one can quietly act in Elena's name without the family knowing.</p>
+          </div>
+        </details>
+      </div>
+      <div class="trust-foot">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+        Bank-level encryption · HIPAA-aligned · You decide who sees what
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+      </svg>
+      <p>The family IS the security perimeter. Notifying everyone — including Elena, in her large-print format — converts private suspicion into shared awareness, and it directly protects Elena from financial exploitation, a real elder-abuse vector. The "secure the account" action is warm-warn, not alarm red: decisive without inducing panic.</p>
+    </aside>
+  </section>
+
+  <footer class="board-foot">
+    Harbor product mockups · Login &amp; security · Demo data only — the Reyes family is fictional.
+  </footer>
+</div>
+
+<script>
+  // Frame 1 — show/hide password
+  (function () {
+    var btn = document.getElementById('eyeBtn');
+    var input = document.getElementById('login-pass');
+    var open = document.getElementById('eyeOpen');
+    var shut = document.getElementById('eyeShut');
+    btn.addEventListener('click', function () {
+      var showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      open.style.display = showing ? '' : 'none';
+      shut.style.display = showing ? 'none' : '';
+      btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      btn.setAttribute('aria-pressed', String(!showing));
+    });
+  })();
+
+  // Frame 2 — SMS vs authenticator method toggle
+  (function () {
+    var sms = document.getElementById('methodSms');
+    var app = document.getElementById('methodApp');
+    var label = document.getElementById('codeLabel');
+    function pick(chosen, other, text) {
+      chosen.setAttribute('aria-pressed', 'true');
+      other.setAttribute('aria-pressed', 'false');
+      label.textContent = text;
+    }
+    sms.addEventListener('click', function () {
+      pick(sms, app, 'Enter the 6-digit code we texted you');
+    });
+    app.addEventListener('click', function () {
+      pick(app, sms, 'Enter the 6-digit code from your authenticator app');
+    });
+  })();
+
+  // Frame 2 — code boxes auto-advance
+  (function () {
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('.code-box'));
+    boxes.forEach(function (box, i) {
+      box.addEventListener('input', function () {
+        box.value = box.value.replace(/\D/g, '').slice(0, 1);
+        if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+      });
+      box.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
+      });
+    });
+  })();
+
+  // Frame 4 — PIN pad demo
+  (function () {
+    var pin = '';
+    var dots = document.querySelectorAll('#pinDots .pin-dot');
+    var dotsWrap = document.getElementById('pinDots');
+    var status = document.getElementById('pinStatus');
+    function render() {
+      dots.forEach(function (d, i) {
+        d.classList.toggle('filled', i < pin.length);
+      });
+      dotsWrap.setAttribute('aria-label', 'PIN entry, ' + pin.length + ' of 4 digits typed');
+      status.textContent = pin.length === 4 ? "That's it — signing you in…" : '';
+    }
+    document.getElementById('pinPad').addEventListener('click', function (e) {
+      var key = e.target.closest('button');
+      if (!key) return;
+      if (key.id === 'pinDel') {
+        pin = pin.slice(0, -1);
+      } else if (key.dataset.digit !== undefined && pin.length < 4) {
+        pin += key.dataset.digit;
+      }
+      render();
+    });
+  })();
+</script>
+
+</body>
+</html>

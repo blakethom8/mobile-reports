@@ -1,0 +1,1056 @@
+<title>Harbor — Sign-up &amp; Onboarding Mockups</title>
+
+<style>
+:root{
+  --cream:#f7f4ee; --soft-white:#fffdf9; --sage:#8fae9d; --teal:#7ea9b3;
+  --trust:#4e7a86; --sand:#d7c1a6; --ink:#23313a; --slate:#5e6d76;
+  --sage-tint:#eef3ef; --teal-tint:#eaf2f3; --sand-tint:#f4ece0;
+  --line:#e5ded2; --warn:#a65b4b; --ok:#5d8a6f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  font-size:17px; line-height:1.6; padding:48px 24px;
+}
+.board{max-width:1120px;margin:0 auto}
+h1,h2,h3,.serif{font-family:Georgia,'Times New Roman',serif;font-weight:400}
+
+/* ---------- Board header ---------- */
+.board-head{margin-bottom:64px}
+.wordmark{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.wordmark .name{font-family:Georgia,'Times New Roman',serif;font-size:24px;letter-spacing:.01em}
+.page-title{font-size:40px;line-height:1.2;margin-bottom:14px}
+.board-intro{color:var(--slate);max-width:740px;margin-bottom:18px}
+.board-meta{
+  font-size:14px;color:var(--slate);letter-spacing:.03em;
+  border-top:1px solid var(--line);padding-top:14px;max-width:740px;
+}
+
+/* ---------- Frames ---------- */
+.frame{margin-top:72px}
+.frame-head{margin-bottom:22px;max-width:1040px}
+.frame-num{
+  display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--trust);background:var(--teal-tint);
+  border:1px solid rgba(78,122,134,.22);border-radius:999px;padding:4px 12px;margin-bottom:10px;
+}
+.frame-head h2{font-size:27px;line-height:1.25}
+.frame-sub{color:var(--slate);font-size:16px;margin-top:4px}
+
+.screen{
+  background:var(--soft-white);border:1px solid var(--line);border-radius:22px;
+  box-shadow:0 18px 40px rgba(35,49,58,.08);overflow:hidden;max-width:1040px;
+}
+
+.annotation{
+  display:flex;gap:12px;align-items:flex-start;background:var(--sand-tint);
+  border:1px solid var(--line);border-radius:14px;color:var(--slate);
+  font-size:15px;line-height:1.55;padding:16px 20px;margin-top:18px;max-width:1040px;
+}
+.annotation svg{flex:none;margin-top:3px}
+
+/* ---------- App chrome inside screens ---------- */
+.appbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:15px 30px;border-bottom:1px solid var(--line);background:var(--soft-white);
+}
+.appbar .mark{display:flex;align-items:center;gap:9px;font-family:Georgia,serif;font-size:18px}
+.appbar .ctx{font-size:14px;color:var(--slate)}
+
+/* ---------- Progress steps ---------- */
+.progress{
+  display:flex;align-items:flex-start;gap:0;padding:22px 30px 18px;
+  border-bottom:1px solid var(--line);background:var(--soft-white);
+  overflow-x:auto;
+}
+.step{flex:1;min-width:112px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+.step:not(:last-child)::after{
+  content:"";position:absolute;top:14px;left:calc(50% + 20px);right:calc(-50% + 20px);
+  height:2px;background:var(--line);border-radius:2px;
+}
+.step.done:not(:last-child)::after{background:var(--sage)}
+.step .dot{
+  width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--line);background:var(--soft-white);color:var(--slate);
+  font-size:13.5px;font-weight:700;position:relative;z-index:1;
+}
+.step.done .dot{background:var(--sage);border-color:var(--sage);color:#fff}
+.step.current .dot{background:var(--trust);border-color:var(--trust);color:#fff}
+.step .lbl{font-size:12.5px;color:var(--slate);margin-top:8px;line-height:1.3;max-width:110px}
+.step.current .lbl{color:var(--trust);font-weight:700}
+.step.done .lbl{color:var(--ok)}
+
+/* ---------- Screen body: form + sidebar ---------- */
+.screen-body{display:grid;grid-template-columns:62fr 38fr;gap:38px;padding:34px 36px 38px}
+.screen-body.single{grid-template-columns:1fr}
+.form-col h3{font-size:25px;line-height:1.3;margin-bottom:6px}
+.lede{color:var(--slate);font-size:16.5px;margin-bottom:24px;max-width:52ch}
+
+/* Sidebar */
+.why{
+  background:var(--teal-tint);border:1px solid rgba(126,169,179,.35);border-radius:16px;
+  padding:22px 22px 20px;font-size:15px;align-self:start;
+}
+.why .why-head{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15.5px;margin-bottom:12px;color:var(--ink)}
+.why ul{list-style:none;display:grid;gap:11px;margin-bottom:16px}
+.why li{display:flex;gap:9px;align-items:flex-start;color:var(--ink);line-height:1.5}
+.why li svg{flex:none;margin-top:4px}
+.why .never{border-top:1px solid rgba(126,169,179,.4);padding-top:13px;margin-top:2px}
+.why .never strong{display:block;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--trust);margin-bottom:7px}
+.why .phone{
+  border-top:1px solid rgba(126,169,179,.4);margin-top:15px;padding-top:13px;
+  font-size:14.5px;color:var(--slate);
+}
+.why .phone b{color:var(--ink)}
+.quotecard{
+  background:var(--soft-white);border:1px solid rgba(126,169,179,.4);border-radius:12px;
+  padding:15px 16px;margin-bottom:15px;
+}
+.quotecard .q{font-family:Georgia,serif;font-size:18.5px;line-height:1.45;color:var(--ink)}
+.quotecard .attr{font-size:13.5px;color:var(--slate);margin-top:7px}
+
+/* ---------- Trust bar ---------- */
+.trustbar{
+  display:inline-flex;align-items:center;gap:9px;background:var(--sage-tint);
+  border:1px solid rgba(143,174,157,.45);border-radius:999px;
+  padding:8px 16px;font-size:13.5px;color:var(--ink);margin-top:26px;
+}
+.trustbar svg{flex:none}
+
+/* ---------- Form controls ---------- */
+.field{margin-bottom:20px}
+.field label{display:block;font-weight:600;font-size:15px;margin-bottom:7px}
+.field .opt{font-weight:400;color:var(--slate);font-size:14px}
+.field input[type=text],.field input[type=email],.field input[type=password],
+.field input[type=tel],.field select,.field textarea{
+  width:100%;font:inherit;font-size:17px;color:var(--ink);
+  padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:var(--soft-white);
+}
+.field textarea{resize:vertical;min-height:96px;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus,
+.chip:focus-visible,button:focus-visible,a:focus-visible,.day:focus-visible,
+input[type=checkbox]:focus-visible,input[type=radio]:focus-visible{
+  border-color:var(--trust);outline:3px solid rgba(78,122,134,.35);outline-offset:1px;
+}
+.hint{font-size:14px;color:var(--slate);margin-top:6px;line-height:1.45}
+.two-up{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.strength{display:flex;gap:5px;margin-top:9px}
+.strength i{height:5px;flex:1;border-radius:3px;background:var(--line)}
+.strength i.on{background:var(--ok)}
+
+/* ---------- Buttons ---------- */
+button{font:inherit;cursor:pointer}
+.btn-primary{
+  background:var(--trust);color:#fff;border:none;border-radius:12px;
+  padding:14px 24px;font-weight:600;font-size:17px;min-height:48px;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+}
+.btn-primary:hover{background:#446b76}
+.btn-ghost{
+  background:transparent;color:var(--trust);border:1.5px solid var(--trust);
+  border-radius:12px;padding:12px 22px;font-weight:600;font-size:16px;min-height:48px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-ghost:hover{background:var(--teal-tint)}
+.btn-neutral{
+  background:var(--soft-white);color:var(--ink);border:1.5px solid var(--line);
+  border-radius:12px;padding:12px 20px;font-weight:600;font-size:15.5px;min-height:48px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;flex:1;
+}
+.btn-neutral:hover{border-color:var(--slate)}
+.btn-block{width:100%}
+.legal{font-size:13px;color:var(--slate);margin-top:12px;line-height:1.5}
+.legal a{color:var(--trust)}
+.divider{display:flex;align-items:center;gap:14px;color:var(--slate);font-size:13.5px;margin:22px 0 16px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.alt-auth{display:flex;gap:12px}
+
+/* ---------- Chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{
+  background:var(--soft-white);border:1.5px solid var(--line);border-radius:999px;
+  padding:10px 18px;font-size:15.5px;color:var(--ink);
+}
+.chip[aria-pressed="true"]{
+  background:var(--teal-tint);border-color:var(--trust);color:var(--trust);font-weight:700;
+}
+
+/* ---------- Checkbox list ---------- */
+.checklist{display:grid;gap:10px}
+.check-row{
+  display:flex;gap:12px;align-items:flex-start;background:var(--soft-white);
+  border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;font-size:16px;
+}
+.check-row:has(input:checked){border-color:var(--trust);background:var(--teal-tint)}
+.check-row input{width:21px;height:21px;accent-color:var(--trust);margin-top:3px;flex:none}
+.check-row .sub{display:block;font-size:13.5px;color:var(--slate);line-height:1.4}
+
+/* ---------- Role badges ---------- */
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.badge.lead{background:var(--trust);color:#fff}
+.badge.partner{background:var(--sage);color:#fff}
+.badge.viewer{background:transparent;color:var(--slate);border:1.5px solid var(--slate)}
+.badge.parent{background:var(--sand);color:var(--ink)}
+
+/* ---------- Avatars ---------- */
+.avatar{border-radius:50%;flex:none}
+
+/* ---------- Invite rows ---------- */
+.invite-row{
+  display:grid;grid-template-columns:44px 1fr 170px;gap:14px;align-items:center;
+  border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  background:var(--soft-white);
+}
+.invite-row .who b{display:block;font-size:16px;line-height:1.3}
+.invite-row .who input{
+  width:100%;font:inherit;font-size:15px;color:var(--ink);border:1.5px solid var(--line);
+  border-radius:10px;padding:8px 11px;margin-top:6px;background:var(--soft-white);
+}
+.invite-row select{
+  width:100%;font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);
+  border-radius:10px;background:var(--soft-white);color:var(--ink);
+}
+.invite-row .youtag{font-size:13.5px;color:var(--slate)}
+.role-card{
+  border:1px solid var(--line);border-radius:16px;background:var(--sage-tint);
+  padding:18px 20px;margin:22px 0;
+}
+.role-card h4{font-size:15px;font-weight:700;margin-bottom:12px}
+.role-card dl{display:grid;gap:10px;font-size:14.5px}
+.role-card .role-line{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.role-card .role-line span.desc{color:var(--slate)}
+.role-note{font-size:14.5px;color:var(--trust);font-weight:600;margin-top:14px;display:flex;gap:8px;align-items:flex-start}
+
+/* ---------- Radio cards (consent) ---------- */
+.radio-cards{display:grid;gap:14px}
+.radio-card{
+  display:flex;gap:15px;align-items:flex-start;border:1.5px solid var(--line);
+  border-radius:16px;padding:18px 19px;background:var(--soft-white);cursor:pointer;position:relative;
+}
+.radio-card input{width:22px;height:22px;accent-color:var(--trust);margin-top:3px;flex:none}
+.radio-card:has(input:checked),.radio-card.selected{
+  border-color:var(--trust);background:var(--teal-tint);
+  box-shadow:0 0 0 1px var(--trust);
+}
+.radio-card b{display:block;font-size:17px;margin-bottom:3px}
+.radio-card p{font-size:15px;color:var(--slate);line-height:1.5}
+.letter-inset{
+  font-family:Georgia,'Times New Roman',serif;background:var(--cream);
+  border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-top:13px;
+  font-size:15px;line-height:1.6;color:var(--ink);box-shadow:0 2px 8px rgba(35,49,58,.06);
+}
+.letter-inset .sig{margin-top:8px;font-style:italic}
+.poa{
+  border:1.5px dashed var(--line);border-radius:14px;padding:16px 18px;margin-top:18px;
+  font-size:15px;background:var(--soft-white);
+}
+.poa b{display:block;margin-bottom:4px}
+.poa a{color:var(--trust);font-weight:600}
+.poa .note{color:var(--slate);font-size:14px;margin-top:7px;line-height:1.5}
+.asked{
+  border:1px solid var(--line);border-radius:16px;background:var(--sand-tint);
+  padding:18px 20px;margin-top:22px;
+}
+.asked h4{font-size:15px;font-weight:700;margin-bottom:11px}
+.asked ul{list-style:none;display:grid;gap:9px;font-size:15px}
+.asked li{display:flex;gap:10px;align-items:flex-start}
+.asked li svg{flex:none;margin-top:4px}
+
+/* ---------- Frame 5: fork ---------- */
+.fork{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.fork > .panel{padding:32px 32px 36px}
+.fork > .panel + .panel{border-left:1px solid var(--line)}
+.panel .tier-tag{
+  display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  border-radius:999px;padding:4px 12px;margin-bottom:14px;
+}
+.tier-tag.supported{background:var(--teal-tint);color:var(--trust);border:1px solid rgba(78,122,134,.25)}
+.tier-tag.connected{background:var(--sand-tint);color:var(--ink);border:1px solid var(--line)}
+.panel h3{font-size:23px;line-height:1.3;margin-bottom:14px}
+.grace-card{
+  display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:16px;
+  background:var(--sage-tint);padding:15px 17px;margin-bottom:20px;
+}
+.grace-card b{display:block;font-size:16.5px}
+.grace-card span{font-size:14px;color:var(--slate);line-height:1.45;display:block}
+.cal{border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;background:var(--soft-white)}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.cal-head b{font-size:15.5px}
+.cal-head .nav{display:flex;gap:6px}
+.cal-head .nav button{
+  width:34px;height:34px;border-radius:9px;border:1.5px solid var(--line);
+  background:var(--soft-white);color:var(--slate);font-size:15px;display:flex;align-items:center;justify-content:center;
+}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.cal-grid .dow{font-size:12px;font-weight:700;color:var(--slate);letter-spacing:.04em;padding:4px 0}
+.day{
+  border:1.5px solid transparent;background:transparent;border-radius:10px;
+  padding:9px 0;font-size:15px;color:var(--ink);width:100%;
+}
+.day:not(:disabled):hover{background:var(--teal-tint)}
+.day:disabled{color:#b7ad9d;cursor:default}
+.day.sel{background:var(--trust);color:#fff;font-weight:700}
+.timechips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}
+.selected-line{
+  font-size:15px;font-weight:700;color:var(--trust);background:var(--teal-tint);
+  border:1px solid rgba(78,122,134,.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;
+}
+.duration{font-size:14.5px;color:var(--slate);display:flex;gap:8px;align-items:center;margin-bottom:18px}
+.setup-list{display:grid;gap:11px;margin-bottom:18px}
+.setup-item{
+  display:flex;gap:13px;align-items:flex-start;border:1.5px solid var(--line);border-radius:13px;
+  padding:14px 15px;background:var(--soft-white);
+}
+.setup-item .n{
+  width:28px;height:28px;border-radius:50%;background:var(--sand-tint);border:1px solid var(--line);
+  color:var(--ink);font-size:13.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;
+}
+.setup-item b{display:block;font-size:15.5px}
+.setup-item span{font-size:13.5px;color:var(--slate);line-height:1.45}
+.upgrade-note{
+  display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--slate);
+  background:var(--sage-tint);border:1px solid rgba(143,174,157,.4);border-radius:12px;
+  padding:12px 15px;margin-bottom:18px;line-height:1.5;
+}
+.why-strip{
+  display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;border-top:1px solid var(--line);
+  padding:16px 32px;font-size:14px;color:var(--slate);background:var(--teal-tint);
+}
+.why-strip svg{flex:none}
+.why-strip b{color:var(--ink)}
+
+/* ---------- Visibility note ---------- */
+.who-sees{display:inline-flex;gap:8px;align-items:center;font-size:14px;color:var(--slate);margin-top:14px}
+.who-sees svg{flex:none}
+
+/* ---------- Footer ---------- */
+.board-foot{
+  margin-top:88px;border-top:1px solid var(--line);padding-top:20px;
+  font-size:13.5px;color:var(--slate);letter-spacing:.02em;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:760px){
+  body{padding:32px 16px}
+  .page-title{font-size:31px}
+  .screen-body{grid-template-columns:1fr;gap:28px;padding:24px 20px 30px}
+  .two-up{grid-template-columns:1fr}
+  .alt-auth{flex-direction:column}
+  .invite-row{grid-template-columns:44px 1fr}
+  .invite-row .role-cell{grid-column:2}
+  .fork{grid-template-columns:1fr}
+  .fork > .panel + .panel{border-left:none;border-top:1px solid var(--line)}
+  .appbar{padding:13px 18px}
+  .progress{padding:18px 14px 14px}
+  .why-strip{padding:14px 20px}
+}
+</style>
+
+<div class="board">
+
+  <!-- ============ BOARD HEADER ============ -->
+  <header class="board-head">
+    <div class="wordmark">
+      <svg width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Harbor mark">
+        <circle cx="22" cy="22" r="21" fill="#eaf2f3"/>
+        <g stroke="#4e7a86" stroke-width="2.4" fill="none" stroke-linecap="round">
+          <circle cx="22" cy="12.5" r="3.2"/>
+          <line x1="22" y1="15.7" x2="22" y2="32"/>
+          <line x1="16.5" y1="20" x2="27.5" y2="20"/>
+          <path d="M12 25.5c0 6 4.5 8.8 10 8.8s10-2.8 10-8.8"/>
+          <path d="M12 25.5l2.6 2.4M32 25.5l-2.6 2.4"/>
+        </g>
+      </svg>
+      <span class="name">Harbor</span>
+    </div>
+    <h1 class="page-title">Sign-up &amp; Onboarding</h1>
+    <p class="board-intro">
+      Five sequential frames showing the full account-creation flow, from Marisol's first click to the
+      family's first scheduled call. Every step carries the same promise: nothing about Elena moves
+      anywhere until Elena has been asked. The flow is designed to lower a stressed adult child's heart
+      rate, not raise it.
+    </p>
+    <p class="board-meta">Product mockups · Direction A (Harbor) · Reyes family demo data · For design review</p>
+  </header>
+
+  <!-- ==================================================== -->
+  <!-- FRAME 1 — Create your account                        -->
+  <!-- ==================================================== -->
+  <section class="frame" aria-labelledby="f1-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 1</span>
+      <h2 id="f1-title">Create your account</h2>
+      <p class="frame-sub">Marisol signs up — minimum friction, maximum reassurance, no card required.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <span class="mark">
+          <svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#eaf2f3"/><g stroke="#4e7a86" stroke-width="2.6" fill="none" stroke-linecap="round"><circle cx="22" cy="12.5" r="3.2"/><line x1="22" y1="15.7" x2="22" y2="32"/><line x1="16.5" y1="20" x2="27.5" y2="20"/><path d="M12 25.5c0 6 4.5 8.8 10 8.8s10-2.8 10-8.8"/></g></svg>
+          Harbor
+        </span>
+        <span class="ctx">Getting set up · takes about 10 minutes</span>
+      </div>
+
+      <div class="progress" aria-label="Onboarding progress, step 1 of 5">
+        <div class="step current"><span class="dot">1</span><span class="lbl">Account</span></div>
+        <div class="step"><span class="dot">2</span><span class="lbl">About your parent</span></div>
+        <div class="step"><span class="dot">3</span><span class="lbl">Your family</span></div>
+        <div class="step"><span class="dot">4</span><span class="lbl">Asking Mom</span></div>
+        <div class="step"><span class="dot">5</span><span class="lbl">Getting started</span></div>
+      </div>
+
+      <div class="screen-body">
+        <div class="form-col">
+          <h3>Welcome. Let's make you a place to breathe.</h3>
+          <p class="lede">Everything about Mom's care, in one calm place. Start with the basics — you can't break anything here.</p>
+
+          <div class="two-up">
+            <div class="field">
+              <label for="f1-first">First name</label>
+              <input type="text" id="f1-first" value="Marisol">
+            </div>
+            <div class="field">
+              <label for="f1-last">Last name</label>
+              <input type="text" id="f1-last" value="Reyes-Okafor">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f1-email">Email</label>
+            <input type="email" id="f1-email" value="marisol.reyes@gmail.com">
+          </div>
+
+          <div class="field">
+            <label for="f1-pass">Password</label>
+            <input type="password" id="f1-pass" value="lakemichiganinjuly">
+            <div class="strength" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+            <p class="hint">A sentence you'll remember works best — something like <em>lake michigan in july</em>. No symbols required.</p>
+          </div>
+
+          <div class="field">
+            <label for="f1-phone">Mobile phone <span class="opt">— optional, for account security only</span></label>
+            <input type="tel" id="f1-phone" placeholder="(312) 555-0000">
+            <p class="hint">If you add it, we'll only use it to help you sign in safely. Never for marketing.</p>
+          </div>
+
+          <button type="button" class="btn-primary btn-block">Create my account</button>
+          <p class="legal">By continuing you agree to Harbor's <a href="#">Terms</a> and <a href="#">Privacy Promise</a>. We never sell your family's information — to anyone, ever.</p>
+
+          <div class="divider">or continue with</div>
+          <div class="alt-auth">
+            <button type="button" class="btn-neutral">
+              <svg width="19" height="19" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.4" fill="none" stroke="#5e6d76" stroke-width="1.7"/><path d="M14.2 10H10v0" stroke="#5e6d76" stroke-width="1.7" fill="none"/><path d="M10 10h4.2c0 2.7-1.8 4.4-4.2 4.4A4.4 4.4 0 1 1 13 6.7" fill="none" stroke="#5e6d76" stroke-width="1.7" stroke-linecap="round"/></svg>
+              Continue with Google
+            </button>
+            <button type="button" class="btn-neutral">
+              <svg width="18" height="20" viewBox="0 0 18 20" aria-hidden="true"><path d="M12.7 10.6c0-2.2 1.8-3.2 1.9-3.3-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.4.8-.7 0-1.8-.8-2.9-.8C3.6 5.6 2.2 6.5 1.4 7.9c-1.5 2.7-.4 6.6 1.1 8.8.7 1 1.6 2.2 2.7 2.2 1.1 0 1.5-.7 2.9-.7s1.7.7 2.9.7c1.2 0 2-1.1 2.7-2.1.9-1.2 1.2-2.4 1.2-2.5-.1 0-2.2-.9-2.2-3.7zM10.5 3.4c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.8-.9 2.8 1 .1 2-.5 2.6-1.3z" fill="#5e6d76"/></svg>
+              Continue with Apple
+            </button>
+          </div>
+
+          <div class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Bank-level encryption · HIPAA-aligned · You decide who sees what
+          </div>
+        </div>
+
+        <aside class="why" aria-label="Why we ask">
+          <div class="why-head">
+            <svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Why we ask
+          </div>
+          <ul>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span><b>Your phone number</b> is only used to keep your account safe — a code when you sign in from a new device. That's it.</span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>No credit card yet. You'll choose a plan later, after you've seen how Harbor works.</span>
+            </li>
+          </ul>
+          <div class="never">
+            <strong>What we never do</strong>
+            <ul>
+              <li>
+                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="#a65b4b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                <span>Sell or share your family's data.</span>
+              </li>
+              <li>
+                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="#a65b4b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                <span>Contact your parent without their consent — or yours.</span>
+              </li>
+            </ul>
+          </div>
+          <p class="phone">Questions? Grace and our team are here — <b>(866)&nbsp;555-0142</b></p>
+        </aside>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="#5e6d76" stroke-width="1.5"/><path d="M9 8v5M9 5.2v.2" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <p>Marisol arrives here at 11pm after a hard phone call. The password hint replaces symbol rules with a human suggestion, and the phone field explains itself before she can wonder. The "what we never do" list answers the two fears every caregiver told us they had — being sold to, and Harbor going behind Mom's back.</p>
+    </aside>
+  </section>
+
+  <!-- ==================================================== -->
+  <!-- FRAME 2 — Tell us about your parent                  -->
+  <!-- ==================================================== -->
+  <section class="frame" aria-labelledby="f2-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 2</span>
+      <h2 id="f2-title">Tell us about your parent</h2>
+      <p class="frame-sub">Dignity-forward basics — a person, not a patient. No clinical dropdowns.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <span class="mark">
+          <svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#eaf2f3"/><g stroke="#4e7a86" stroke-width="2.6" fill="none" stroke-linecap="round"><circle cx="22" cy="12.5" r="3.2"/><line x1="22" y1="15.7" x2="22" y2="32"/><line x1="16.5" y1="20" x2="27.5" y2="20"/><path d="M12 25.5c0 6 4.5 8.8 10 8.8s10-2.8 10-8.8"/></g></svg>
+          Harbor
+        </span>
+        <span class="ctx">Marisol Reyes-Okafor · setting up</span>
+      </div>
+
+      <div class="progress" aria-label="Onboarding progress, step 2 of 5">
+        <div class="step done"><span class="dot" aria-label="completed"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Account</span></div>
+        <div class="step current"><span class="dot">2</span><span class="lbl">About your parent</span></div>
+        <div class="step"><span class="dot">3</span><span class="lbl">Your family</span></div>
+        <div class="step"><span class="dot">4</span><span class="lbl">Asking Mom</span></div>
+        <div class="step"><span class="dot">5</span><span class="lbl">Getting started</span></div>
+      </div>
+
+      <div class="screen-body">
+        <div class="form-col">
+          <h3>Tell us a little about your mom or dad</h3>
+          <p class="lede">Just the basics for now. They'll always be part of this — nothing is shared without their okay.</p>
+
+          <div class="field">
+            <label for="f2-name">Their name</label>
+            <input type="text" id="f2-name" value="Elena Reyes">
+          </div>
+
+          <div class="two-up">
+            <div class="field">
+              <label for="f2-birth">Birth year</label>
+              <input type="text" id="f2-birth" value="1947" inputmode="numeric">
+              <p class="hint">Elena is 79.</p>
+            </div>
+            <div class="field">
+              <label for="f2-city">City</label>
+              <input type="text" id="f2-city" value="Tucson, AZ">
+            </div>
+          </div>
+
+          <div class="field">
+            <label id="f2-call-lbl">What should we call her?</label>
+            <div class="chips" role="group" aria-labelledby="f2-call-lbl" data-mode="single">
+              <button type="button" class="chip" aria-pressed="true">Mom</button>
+              <button type="button" class="chip" aria-pressed="false">Elena</button>
+              <button type="button" class="chip" aria-pressed="false">Something else…</button>
+            </div>
+            <p class="hint">We'll use this everywhere in Harbor — "Mom's week," not "Patient E. Reyes."</p>
+          </div>
+
+          <div class="field">
+            <label id="f2-living-lbl">Where does she live right now?</label>
+            <div class="chips" role="group" aria-labelledby="f2-living-lbl" data-mode="single">
+              <button type="button" class="chip" aria-pressed="true">Own home</button>
+              <button type="button" class="chip" aria-pressed="false">With family</button>
+              <button type="button" class="chip" aria-pressed="false">Assisted living</button>
+              <button type="button" class="chip" aria-pressed="false">Other</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label id="f2-mind-lbl">What's on your mind right now? <span class="opt">— pick anything that fits</span></label>
+            <div class="checklist" role="group" aria-labelledby="f2-mind-lbl">
+              <label class="check-row"><input type="checkbox" checked> <span>Keeping track of medications</span></label>
+              <label class="check-row"><input type="checkbox"> <span>Doctor visits &amp; records</span></label>
+              <label class="check-row"><input type="checkbox"> <span>Bills &amp; finances</span></label>
+              <label class="check-row"><input type="checkbox"> <span>Day-to-day help at home</span></label>
+              <label class="check-row"><input type="checkbox" checked> <span>We just want one shared picture</span></label>
+            </div>
+          </div>
+
+          <button type="button" class="btn-primary">Continue</button>
+
+          <p class="who-sees">
+            <svg width="17" height="17" viewBox="0 0 18 18" aria-hidden="true"><path d="M1.5 9S4.3 4 9 4s7.5 5 7.5 5-2.8 5-7.5 5S1.5 9 1.5 9z" fill="none" stroke="#5e6d76" stroke-width="1.5"/><circle cx="9" cy="9" r="2.2" fill="none" stroke="#5e6d76" stroke-width="1.5"/></svg>
+            Who can see this: only you, for now. Nothing is visible to anyone else yet.
+          </p>
+
+          <div class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Bank-level encryption · HIPAA-aligned · You decide who sees what
+          </div>
+        </div>
+
+        <aside class="why" aria-label="Why we ask">
+          <div class="why-head">
+            <svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Why we ask
+          </div>
+          <ul>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span><b>"What should we call her?"</b> because she's a person, not a patient. Harbor speaks about her the way your family does.</span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>We don't ask about diagnoses here. If health details matter later, Elena decides what's shared — and with whom.</span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Nothing on this page is visible to anyone until the family workspace is set up <b>and Elena has been asked</b>.</span>
+            </li>
+          </ul>
+          <p class="phone">Questions? Grace and our team are here — <b>(866)&nbsp;555-0142</b></p>
+        </aside>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="#5e6d76" stroke-width="1.5"/><path d="M9 8v5M9 5.2v.2" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <p>This is where care apps usually reach for diagnosis dropdowns — we deliberately don't. "What should we call her?" is the frame's dignity anchor: it changes every string in the product from clinical to familial. The worry checklist is written in the words families actually use, not care-industry taxonomy.</p>
+    </aside>
+  </section>
+
+  <!-- ==================================================== -->
+  <!-- FRAME 3 — Invite your family                         -->
+  <!-- ==================================================== -->
+  <section class="frame" aria-labelledby="f3-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 3</span>
+      <h2 id="f3-title">Invite your family</h2>
+      <p class="frame-sub">Roles defuse sibling tension before it starts — everyone sees the same picture.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <span class="mark">
+          <svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#eaf2f3"/><g stroke="#4e7a86" stroke-width="2.6" fill="none" stroke-linecap="round"><circle cx="22" cy="12.5" r="3.2"/><line x1="22" y1="15.7" x2="22" y2="32"/><line x1="16.5" y1="20" x2="27.5" y2="20"/><path d="M12 25.5c0 6 4.5 8.8 10 8.8s10-2.8 10-8.8"/></g></svg>
+          Harbor
+        </span>
+        <span class="ctx">Setting up Mom's circle</span>
+      </div>
+
+      <div class="progress" aria-label="Onboarding progress, step 3 of 5">
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Account</span></div>
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">About your parent</span></div>
+        <div class="step current"><span class="dot">3</span><span class="lbl">Your family</span></div>
+        <div class="step"><span class="dot">4</span><span class="lbl">Asking Mom</span></div>
+        <div class="step"><span class="dot">5</span><span class="lbl">Getting started</span></div>
+      </div>
+
+      <div class="screen-body">
+        <div class="form-col">
+          <h3>Who's in this with you?</h3>
+          <p class="lede">You're not doing this alone. Invite your brothers and sisters — everyone sees the same picture of Mom's care.</p>
+
+          <div class="invite-row">
+            <svg class="avatar" width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Marisol"><circle cx="22" cy="22" r="22" fill="#7ea9b3"/><text x="22" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#fffdf9">M</text></svg>
+            <div class="who">
+              <b>Marisol Reyes-Okafor <span class="youtag">· you · Chicago</span></b>
+              <span class="youtag">marisol.reyes@gmail.com</span>
+            </div>
+            <div class="role-cell"><span class="badge lead">Care Lead</span></div>
+          </div>
+
+          <div class="invite-row">
+            <svg class="avatar" width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Daniel"><circle cx="22" cy="22" r="22" fill="#8fae9d"/><text x="22" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#fffdf9">D</text></svg>
+            <div class="who">
+              <b>Daniel Reyes <span class="youtag">· Seattle</span></b>
+              <input type="email" value="daniel.reyes.sea@gmail.com" aria-label="Daniel's email">
+            </div>
+            <div class="role-cell">
+              <select aria-label="Daniel's role">
+                <option>Care Lead</option>
+                <option selected>Care Partner</option>
+                <option>Viewer</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="invite-row">
+            <svg class="avatar" width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Ana"><circle cx="22" cy="22" r="22" fill="#d7c1a6"/><text x="22" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#23313a">A</text></svg>
+            <div class="who">
+              <b>Ana Reyes <span class="youtag">· Austin</span></b>
+              <input type="email" value="ana.reyes.atx@gmail.com" aria-label="Ana's email">
+            </div>
+            <div class="role-cell">
+              <select aria-label="Ana's role">
+                <option>Care Lead</option>
+                <option selected>Care Partner</option>
+                <option>Viewer</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 2v10M2 7h10" stroke="#4e7a86" stroke-width="2" stroke-linecap="round"/></svg>
+            Add another
+          </button>
+
+          <div class="role-card">
+            <h4>What the roles mean</h4>
+            <dl>
+              <div class="role-line"><span class="badge lead">Care Lead</span><span class="desc">Can do everything — settings, plans, billing. Usually one person.</span></div>
+              <div class="role-line"><span class="badge partner">Care Partner</span><span class="desc">Can add updates, take on tasks, and see everything the family shares.</span></div>
+              <div class="role-line"><span class="badge viewer">Viewer</span><span class="desc">Can see the shared picture, but changes nothing. Good for far-away relatives.</span></div>
+              <div class="role-line"><span class="badge parent">Parent</span><span class="desc">Elena's own view — always the simplest, and always hers.</span></div>
+            </dl>
+            <p class="role-note">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="#4e7a86" stroke-width="1.5"/><path d="M8 7.2v4M8 4.6v.2" stroke="#4e7a86" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Everyone sees the same picture. Roles decide who can act, not who matters.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="f3-msg">Add a personal note <span class="opt">— optional, goes in each invitation</span></label>
+            <textarea id="f3-msg">Hi you two — I set up a place for us to stay on the same page about Mom. No pressure, just one calm spot instead of three group chats. — Mari</textarea>
+          </div>
+
+          <button type="button" class="btn-primary">Send invitations</button>
+          <p class="legal">Invitations don't cost anything, and nobody is charged yet. Your family joins free while you set things up.</p>
+        </div>
+
+        <aside class="why" aria-label="Why we ask">
+          <div class="why-head">
+            <svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Why we ask
+          </div>
+          <ul>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span><b>Clear roles reduce sibling tension.</b> When everyone knows who does what, "why didn't anyone tell me?" mostly stops happening.</span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>You can change any role anytime — it takes two taps, and nobody gets a scolding email about it.</span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>No one is charged yet. Later, siblings can split the cost — many families share it three ways.</span>
+            </li>
+          </ul>
+          <p class="phone">Questions? Grace and our team are here — <b>(866)&nbsp;555-0142</b></p>
+        </aside>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="#5e6d76" stroke-width="1.5"/><path d="M9 8v5M9 5.2v.2" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <p>The role explainer sits inside the flow, not behind a help link, because role anxiety is the #1 reason sibling invitations stall. "Roles decide who can act, not who matters" is written to be forwarded — it's the sentence Marisol will paste when Daniel asks why he isn't the lead. The prefilled note models a warm, low-pressure tone.</p>
+    </aside>
+  </section>
+
+  <!-- ==================================================== -->
+  <!-- FRAME 4 — Asking Mom first                           -->
+  <!-- ==================================================== -->
+  <section class="frame" aria-labelledby="f4-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 4</span>
+      <h2 id="f4-title">Asking Mom first</h2>
+      <p class="frame-sub">The consent step — the moral centerpiece of the flow. Nothing opens until Elena says yes.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <span class="mark">
+          <svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#eaf2f3"/><g stroke="#4e7a86" stroke-width="2.6" fill="none" stroke-linecap="round"><circle cx="22" cy="12.5" r="3.2"/><line x1="22" y1="15.7" x2="22" y2="32"/><line x1="16.5" y1="20" x2="27.5" y2="20"/><path d="M12 25.5c0 6 4.5 8.8 10 8.8s10-2.8 10-8.8"/></g></svg>
+          Harbor
+        </span>
+        <span class="ctx">Elena's consent · nothing is shared yet</span>
+      </div>
+
+      <div class="progress" aria-label="Onboarding progress, step 4 of 5">
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Account</span></div>
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">About your parent</span></div>
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Your family</span></div>
+        <div class="step current"><span class="dot">4</span><span class="lbl">Asking Mom</span></div>
+        <div class="step"><span class="dot">5</span><span class="lbl">Getting started</span></div>
+      </div>
+
+      <div class="screen-body">
+        <div class="form-col">
+          <h3>Before anything is shared: we ask Elena.</h3>
+          <p class="lede">Harbor never opens a window into someone's life without their okay. Choose how Elena would like to be asked.</p>
+
+          <div class="radio-cards" role="radiogroup" aria-label="How should Elena be asked">
+            <label class="radio-card">
+              <input type="radio" name="consent">
+              <span>
+                <b>She'll use Harbor herself</b>
+                <p>We send a simple, large-type invitation to her email or phone. She gets her own easy sign-in — big buttons, no jargon, nothing to install.</p>
+              </span>
+            </label>
+
+            <label class="radio-card">
+              <input type="radio" name="consent" checked>
+              <span>
+                <b>A printed letter</b>
+                <p>We mail a warm, plain-language letter she can hold and read on paper — with a reply card and a phone number, no screens required.</p>
+                <span class="letter-inset serif">
+                  Dear Mrs. Reyes,<br>
+                  Your daughter Marisol would like to share some of the everyday details of your care — appointments, medications, that sort of thing — with your family, using a service called Harbor. <b>Nothing happens unless you say yes</b>, and you can say yes to some things and no to others…
+                  <span class="sig">— with the reply card and a stamped envelope enclosed</span>
+                </span>
+              </span>
+            </label>
+
+            <label class="radio-card">
+              <input type="radio" name="consent">
+              <span>
+                <b>A phone call</b>
+                <p>Grace or a Harbor team member calls Elena at a time she chooses, walks her through what's being asked in plain words, and records her consent.</p>
+              </span>
+            </label>
+          </div>
+
+          <div class="poa">
+            <b>Elena can't take part in this decision right now?</b>
+            <a href="#">I have power of attorney / guardianship — verify documents instead</a>
+            <p class="note">Harbor verifies POA and guardianship documents with a human review, usually within two business days. We'll still keep Elena's view open to her if her situation changes.</p>
+          </div>
+
+          <div class="asked">
+            <h4>What Elena will be asked</h4>
+            <ul>
+              <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg><span><b>Who</b> wants to share with her: Marisol, Daniel, and Ana.</span></li>
+              <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg><span><b>What kinds</b> of information: appointments, medications, and — only if she chooses — bills and health records.</span></li>
+              <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg><span>That she can <b>say no to any part</b> — yes to appointments, no to finances is common, and fine.</span></li>
+              <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg><span>That she can <b>change her mind anytime</b>, and Harbor will honor it the same day.</span></li>
+            </ul>
+          </div>
+
+          <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
+            <button type="button" class="btn-primary">Send the ask to Elena</button>
+            <button type="button" class="btn-ghost">Save &amp; decide later</button>
+          </div>
+
+          <div class="trustbar">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Bank-level encryption · HIPAA-aligned · You decide who sees what
+          </div>
+        </div>
+
+        <aside class="why" aria-label="Why we ask Elena first">
+          <div class="why-head">
+            <svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+            Why we ask her first
+          </div>
+          <div class="quotecard">
+            <p class="q">"I'm not a project — ask me first."</p>
+            <p class="attr">What parents told us, again and again, in our research interviews.</p>
+          </div>
+          <ul>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Consent isn't a checkbox. It's <b>re-confirmed</b> at natural moments and <b>revocable</b> anytime — Elena stays in charge of her own story.</span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#5d8a6f" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Families tell us this step made the first phone call with Mom <b>easier</b>, not harder. It's a gift, not a hurdle.</span>
+            </li>
+          </ul>
+          <p class="phone">Questions? Grace and our team are here — <b>(866)&nbsp;555-0142</b></p>
+        </aside>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="#5e6d76" stroke-width="1.5"/><path d="M9 8v5M9 5.2v.2" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <p>This frame is Harbor's ethics made visible. Three equally-weighted ways to ask meet Elena where she is — screen, paper, or voice — and the letter preview lets Marisol feel the tone before anything is mailed. The POA path is present but never a shortcut: dashed border, human review, and a promise that Elena's own door stays open. "What Elena will be asked" removes the last unknown that makes adult children hesitate.</p>
+    </aside>
+  </section>
+
+  <!-- ==================================================== -->
+  <!-- FRAME 5 — Getting started                            -->
+  <!-- ==================================================== -->
+  <section class="frame" aria-labelledby="f5-title">
+    <div class="frame-head">
+      <span class="frame-num">Frame 5</span>
+      <h2 id="f5-title">Getting started</h2>
+      <p class="frame-sub">The fork: schedule a human onboarding call, or start on your own — both are first-class paths.</p>
+    </div>
+
+    <div class="screen">
+      <div class="appbar">
+        <span class="mark">
+          <svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#eaf2f3"/><g stroke="#4e7a86" stroke-width="2.6" fill="none" stroke-linecap="round"><circle cx="22" cy="12.5" r="3.2"/><line x1="22" y1="15.7" x2="22" y2="32"/><line x1="16.5" y1="20" x2="27.5" y2="20"/><path d="M12 25.5c0 6 4.5 8.8 10 8.8s10-2.8 10-8.8"/></g></svg>
+          Harbor
+        </span>
+        <span class="ctx">Almost there — invitation to Elena is on its way</span>
+      </div>
+
+      <div class="progress" aria-label="Onboarding progress, step 5 of 5">
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Account</span></div>
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">About your parent</span></div>
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Your family</span></div>
+        <div class="step done"><span class="dot"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="lbl">Asking Mom</span></div>
+        <div class="step current"><span class="dot">5</span><span class="lbl">Getting started</span></div>
+      </div>
+
+      <div class="fork">
+        <!-- LEFT: human onboarding -->
+        <div class="panel">
+          <span class="tier-tag supported">Supported &amp; Managed plans</span>
+          <h3>Schedule your onboarding call with Grace</h3>
+
+          <div class="grace-card">
+            <svg class="avatar" width="52" height="52" viewBox="0 0 52 52" role="img" aria-label="Grace Whitfield"><circle cx="26" cy="26" r="26" fill="#8fae9d"/><text x="26" y="33" text-anchor="middle" font-family="Georgia,serif" font-size="22" fill="#fffdf9">G</text></svg>
+            <div>
+              <b>Grace Whitfield</b>
+              <span>Your Family Success Representative — a real person, same person every time. Grace has walked 200+ families through their first month.</span>
+            </div>
+          </div>
+
+          <div class="cal" aria-label="Choose a day in July 2026">
+            <div class="cal-head">
+              <b>July 2026</b>
+              <div class="nav">
+                <button type="button" aria-label="Previous two weeks">‹</button>
+                <button type="button" aria-label="Next two weeks">›</button>
+              </div>
+            </div>
+            <div class="cal-grid" id="cal-days">
+              <span class="dow">Su</span><span class="dow">Mo</span><span class="dow">Tu</span><span class="dow">We</span><span class="dow">Th</span><span class="dow">Fr</span><span class="dow">Sa</span>
+              <button class="day" disabled>5</button>
+              <button class="day" disabled aria-label="July 6, unavailable">6</button>
+              <button class="day" data-label="Tue Jul 7">7</button>
+              <button class="day" data-label="Wed Jul 8">8</button>
+              <button class="day" data-label="Thu Jul 9">9</button>
+              <button class="day" data-label="Fri Jul 10">10</button>
+              <button class="day" disabled>11</button>
+              <button class="day" disabled>12</button>
+              <button class="day" data-label="Mon Jul 13">13</button>
+              <button class="day sel" data-label="Tue Jul 14" aria-pressed="true">14</button>
+              <button class="day" data-label="Wed Jul 15">15</button>
+              <button class="day" data-label="Thu Jul 16">16</button>
+              <button class="day" data-label="Fri Jul 17">17</button>
+              <button class="day" disabled>18</button>
+            </div>
+          </div>
+
+          <div class="timechips" id="cal-times" role="group" aria-label="Choose a time">
+            <button type="button" class="chip" aria-pressed="false">9:30 AM MT</button>
+            <button type="button" class="chip" aria-pressed="false">11:00 AM MT</button>
+            <button type="button" class="chip" aria-pressed="true">1:00 PM MT</button>
+            <button type="button" class="chip" aria-pressed="false">3:30 PM MT</button>
+          </div>
+
+          <p class="selected-line" id="selected-slot" aria-live="polite">Selected: Tue Jul 14, 1:00 PM MT</p>
+
+          <p class="duration">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="#5e6d76" stroke-width="1.5"/><path d="M8 4.6V8l2.4 1.6" fill="none" stroke="#5e6d76" stroke-width="1.5" stroke-linecap="round"/></svg>
+            45–60 minutes · the whole family is welcome on the call
+          </p>
+
+          <button type="button" class="btn-primary btn-block">Confirm this time with Grace</button>
+        </div>
+
+        <!-- RIGHT: self-serve -->
+        <div class="panel">
+          <span class="tier-tag connected">Connected plan · $79/mo</span>
+          <h3>Prefer to start on your own?</h3>
+          <p class="lede" style="margin-bottom:18px">The guided setup takes about 20 minutes, and the Harbor assistant walks you through each step.</p>
+
+          <div class="setup-list">
+            <div class="setup-item">
+              <span class="n">1</span>
+              <div><b>Connect Mom's pharmacy</b><span>Medications and refills appear automatically — no typing bottle labels.</span></div>
+            </div>
+            <div class="setup-item">
+              <span class="n">2</span>
+              <div><b>Add her doctors</b><span>Appointments and follow-ups, all in one calendar the family shares.</span></div>
+            </div>
+            <div class="setup-item">
+              <span class="n">3</span>
+              <div><b>Connect a bank <span style="font-weight:400;color:var(--slate)">— optional</span></b><span>Gentle alerts for unusual charges. Elena chooses whether this is on at all.</span></div>
+            </div>
+            <div class="setup-item">
+              <span class="n">4</span>
+              <div><b>Invite reminders</b><span>Nudge Daniel and Ana if they haven't joined in a few days — kindly, once.</span></div>
+            </div>
+          </div>
+
+          <div class="upgrade-note">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style="margin-top:3px"><circle cx="8" cy="8" r="7" fill="none" stroke="#5d8a6f" stroke-width="1.5"/><path d="M8 7v4M8 4.4v.2" stroke="#5d8a6f" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>You can add human support anytime — Grace's team is a plan change away, and scholarships and income-scaled pricing are always available.</span>
+          </div>
+
+          <button type="button" class="btn-ghost btn-block">Start self-serve setup</button>
+        </div>
+      </div>
+
+      <div class="why-strip">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.8" fill="none" stroke="#4e7a86" stroke-width="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" fill="none" stroke="#4e7a86" stroke-width="1.6"/></svg>
+        <span><b>Both paths are complete.</b> Neither is a trial of the other — choose what fits your family and your budget.</span>
+        <span>Questions? Grace and our team are here — <b>(866)&nbsp;555-0142</b></span>
+      </div>
+    </div>
+
+    <aside class="annotation">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="#5e6d76" stroke-width="1.5"/><path d="M9 8v5M9 5.2v.2" stroke="#5e6d76" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <p>The fork respects both budgets and temperaments. The human option is presented as care, not upsell — Grace has a name, a face, and a track record, and the self-serve path is a full path, not a demoted one. The upgrade note points down as well as up: scholarships sit in the same sentence as plan changes.</p>
+    </aside>
+  </section>
+
+  <footer class="board-foot">
+    Harbor product mockups · Sign-up &amp; onboarding flow · Demo data only — the Reyes family is fictional.
+  </footer>
+</div>
+
+<script>
+(function(){
+  // Single-select chip groups (Frame 2 + Frame 5 time slots)
+  document.querySelectorAll('[data-mode="single"], #cal-times').forEach(function(group){
+    var chips = group.querySelectorAll('.chip');
+    chips.forEach(function(chip){
+      chip.addEventListener('click', function(){
+        chips.forEach(function(c){ c.setAttribute('aria-pressed','false'); });
+        chip.setAttribute('aria-pressed','true');
+        if (group.id === 'cal-times') updateSlot();
+      });
+    });
+  });
+
+  // Calendar day selection (Frame 5)
+  var days = document.querySelectorAll('#cal-days .day:not([disabled])');
+  days.forEach(function(day){
+    day.addEventListener('click', function(){
+      days.forEach(function(d){ d.classList.remove('sel'); d.removeAttribute('aria-pressed'); });
+      day.classList.add('sel');
+      day.setAttribute('aria-pressed','true');
+      updateSlot();
+    });
+  });
+
+  function updateSlot(){
+    var line = document.getElementById('selected-slot');
+    if (!line) return;
+    var d = document.querySelector('#cal-days .day.sel');
+    var t = document.querySelector('#cal-times .chip[aria-pressed="true"]');
+    if (d && t) line.textContent = 'Selected: ' + d.getAttribute('data-label') + ', ' + t.textContent;
+  }
+
+  // Radio cards (Frame 4) — reinforce selection for browsers without :has()
+  document.querySelectorAll('.radio-card input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', function(){
+      document.querySelectorAll('.radio-card').forEach(function(card){
+        card.classList.toggle('selected', card.querySelector('input').checked);
+      });
+    });
+  });
+  document.querySelectorAll('.radio-card').forEach(function(card){
+    card.classList.toggle('selected', card.querySelector('input').checked);
+  });
+})();
+</script>
+
+</body>
+</html>

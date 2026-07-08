@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harbor — Advertising Suite (Direction A Review)</title>
+<meta name="description" content="Direction A 'Harbor' advertising suite for review: display banners, social ads, email templates, and out-of-home.">
+<style>
+  /* ===== Review chrome (annotation layer, deliberately quiet & studio-neutral) ===== */
+  :root{
+    --cream:#f7f4ee; --soft-white:#fffdf9; --soft-blue:#edf4f8;
+    --sage:#8fae9d; --sage-tint:#e3ece7; --teal:#7ea9b3; --teal-tint:#e0edef;
+    --deep:#4e7a86; --deep-dark:#3c626d; --sand:#d7c1a6; --sand-tint:#f0e7d9;
+    --ink:#23313a; --muted:#5e6d76;
+    --paper:#eceae3; --chrome-ink:#43505a; --chrome-line:#d6d2c6;
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:var(--sans);background:var(--paper);color:var(--chrome-ink);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;}
+  .review-wrap{max-width:1060px;margin:0 auto;padding:56px 28px 96px;}
+
+  .review-header{border-bottom:2px solid var(--ink);padding-bottom:28px;margin-bottom:56px;}
+  .review-header .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--deep);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+  .review-header h1{font-family:var(--serif);font-size:clamp(30px,4vw,42px);color:var(--ink);font-weight:normal;line-height:1.15;margin-bottom:12px;}
+  .review-header p{max-width:640px;color:var(--muted);}
+  .review-meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:20px;font-family:var(--mono);font-size:12px;color:var(--muted);}
+  .review-meta b{color:var(--ink);font-weight:600;}
+
+  .review-section{margin-bottom:80px;}
+  .review-section > h2{
+    font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink);display:flex;align-items:center;gap:14px;margin-bottom:8px;
+  }
+  .review-section > h2::after{content:"";flex:1;height:1px;background:var(--chrome-line);}
+  .review-section > .sect-intro{font-size:14.5px;color:var(--muted);max-width:620px;margin-bottom:36px;}
+
+  .unit{margin-bottom:56px;}
+  .unit-tag{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;
+    letter-spacing:.08em;color:var(--soft-white);background:var(--ink);border-radius:6px 6px 0 0;
+    padding:6px 14px;
+  }
+  .unit-tag .sz{color:var(--sand);}
+  .unit-stage{
+    background:
+      linear-gradient(45deg,#e4e1d8 25%,transparent 25%,transparent 75%,#e4e1d8 75%),
+      linear-gradient(45deg,#e4e1d8 25%,transparent 25%,transparent 75%,#e4e1d8 75%);
+    background-color:#efede6;background-size:22px 22px;background-position:0 0,11px 11px;
+    border:1px solid var(--chrome-line);border-radius:0 10px 10px 10px;
+    padding:44px;overflow-x:auto;
+  }
+  .unit-caption{
+    margin-top:14px;padding:16px 20px;background:var(--soft-white);border:1px solid var(--chrome-line);
+    border-left:4px solid var(--teal);border-radius:8px;font-size:14px;color:var(--chrome-ink);max-width:760px;
+  }
+  .unit-caption b{color:var(--ink);}
+  .unit-caption .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--deep);display:block;margin-bottom:5px;}
+
+  /* ===== Shared Harbor ad atoms ===== */
+  .h-btn{
+    display:inline-block;background:var(--deep);color:var(--soft-white);font-weight:600;
+    border-radius:999px;text-decoration:none;text-align:center;font-family:var(--sans);
+  }
+  .h-logo-row{display:flex;align-items:center;gap:8px;}
+  .h-word{font-family:var(--serif);color:var(--ink);}
+
+  /* ===== Display banners (fixed true sizes) ===== */
+  .ban{box-shadow:0 8px 28px rgba(35,49,58,.14);border-radius:14px;overflow:hidden;flex:none;font-family:var(--sans);}
+  .ban, .ban *{line-height:1.35;}
+
+  .ban-mrec{width:300px;height:250px;background:linear-gradient(165deg,var(--soft-white) 0%,var(--cream) 70%);position:relative;padding:22px;display:flex;flex-direction:column;}
+  .ban-mrec .wave{position:absolute;left:0;right:0;bottom:0;height:54px;}
+  .ban-mrec h3{font-family:var(--serif);font-weight:normal;color:var(--ink);font-size:21px;line-height:1.25;margin:12px 0 6px;}
+  .ban-mrec p{font-size:12.5px;color:var(--muted);}
+  .ban-mrec .h-btn{font-size:13px;padding:9px 18px;margin-top:auto;align-self:flex-start;position:relative;z-index:1;margin-bottom:6px;}
+
+  .ban-lead{width:728px;height:90px;background:linear-gradient(90deg,var(--soft-white) 0%,var(--cream) 100%);display:flex;align-items:center;gap:20px;padding:0 24px;position:relative;}
+  .ban-lead h3{font-family:var(--serif);font-weight:normal;color:var(--ink);font-size:19.5px;line-height:1.2;}
+  .ban-lead p{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .ban-lead .h-btn{font-size:13px;padding:10px 20px;margin-left:auto;white-space:nowrap;}
+  .ban-lead .lead-wave{position:absolute;left:0;top:0;bottom:0;width:7px;background:linear-gradient(180deg,var(--teal),var(--sage));}
+
+  .ban-sky{width:160px;height:600px;background:linear-gradient(180deg,var(--soft-white) 0%,var(--cream) 55%,var(--teal-tint) 100%);display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 16px;position:relative;}
+  .ban-sky h3{font-family:var(--serif);font-weight:normal;color:var(--ink);font-size:19px;line-height:1.3;margin:14px 0 8px;}
+  .ban-sky .sky-item{margin-top:16px;}
+  .ban-sky .sky-item .ic{width:38px;height:38px;border-radius:12px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;}
+  .ban-sky .sky-item p{font-size:11.5px;color:var(--muted);line-height:1.4;}
+  .ban-sky .sky-item b{display:block;font-size:12.5px;color:var(--ink);}
+  .ban-sky .h-btn{font-size:13px;padding:10px 18px;margin-top:auto;position:relative;z-index:1;margin-bottom:10px;}
+  .ban-sky .wave{position:absolute;left:0;right:0;bottom:0;height:46px;}
+
+  /* ===== Social feed cards ===== */
+  .social-row{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;}
+  .feed-card{
+    width:400px;max-width:100%;background:#fff;border-radius:16px;overflow:hidden;flex:none;
+    box-shadow:0 8px 28px rgba(35,49,58,.14);font-family:var(--sans);
+  }
+  .feed-top{display:flex;align-items:center;gap:11px;padding:13px 16px;}
+  .feed-top .name{font-size:14px;font-weight:600;color:#1c2b33;}
+  .feed-top .sub{font-size:12px;color:#65727a;}
+  .feed-top .dots{margin-left:auto;color:#8a959c;font-weight:700;letter-spacing:2px;}
+  .feed-body{padding:0 16px 13px;font-size:14.5px;color:#1c2b33;line-height:1.5;}
+  .feed-visual{height:230px;position:relative;overflow:hidden;}
+  .feed-visual .headline{
+    position:absolute;left:24px;right:24px;bottom:22px;font-family:var(--serif);
+    font-size:22px;line-height:1.25;color:var(--ink);
+  }
+  .feed-cta{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#f4f2ec;padding:13px 16px;}
+  .feed-cta .dom{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#65727a;}
+  .feed-cta .ttl{font-size:14.5px;font-weight:600;color:#1c2b33;}
+  .feed-cta .h-btn{font-size:13px;padding:9px 18px;white-space:nowrap;}
+
+  /* ===== Email frames ===== */
+  .email-frame{width:600px;max-width:100%;flex:none;box-shadow:0 8px 28px rgba(35,49,58,.14);border-radius:14px;overflow:hidden;background:#fff;}
+  .email-chrome{background:#e9e6dd;padding:12px 18px;border-bottom:1px solid #dbd7cb;font-family:var(--mono);font-size:12px;color:#5c6660;}
+  .email-chrome b{color:var(--ink);font-weight:600;}
+  .email-chrome .subj{display:block;font-family:var(--sans);font-size:14px;color:var(--ink);font-weight:600;margin-top:3px;}
+  .email-body{background:var(--cream);padding:36px 0;}
+  .email-inner{max-width:480px;margin:0 auto;background:var(--soft-white);border-radius:18px;border:1px solid #ece6d8;overflow:hidden;}
+  .email-inner .e-head{padding:28px 34px 0;display:flex;align-items:center;gap:9px;}
+  .email-inner .e-content{padding:20px 34px 30px;font-size:15px;color:var(--ink);line-height:1.7;}
+  .email-inner .e-content p{margin-bottom:15px;}
+  .email-inner .e-content .muted{color:var(--muted);font-size:13.5px;}
+  .email-inner h2{font-family:var(--serif);font-weight:normal;font-size:24px;line-height:1.3;color:var(--ink);margin-bottom:14px;}
+  .e-steps{margin:6px 0 18px;}
+  .e-step{display:flex;gap:13px;padding:11px 0;border-top:1px solid #f0ebe0;font-size:14px;}
+  .e-step .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--teal-tint);color:var(--deep);font-family:var(--serif);display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;}
+  .e-step b{display:block;color:var(--ink);}
+  .e-step span{color:var(--muted);font-size:13px;line-height:1.5;}
+  .e-card{background:var(--sage-tint);border-radius:14px;padding:16px 18px;display:flex;gap:13px;align-items:center;margin:4px 0 18px;}
+  .e-card .e-ava{flex:none;width:44px;height:44px;border-radius:50%;background:var(--deep);color:var(--soft-white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;}
+  .e-card b{display:block;font-size:14px;color:var(--ink);}
+  .e-card span{font-size:12.5px;color:var(--muted);line-height:1.45;display:block;}
+  .email-inner .h-btn{font-size:14.5px;padding:12px 26px;}
+  .e-foot{max-width:480px;margin:18px auto 0;text-align:center;font-size:11.5px;color:#8b968f;line-height:1.6;padding:0 20px;}
+  .e-foot a{color:#7b8a84;}
+
+  /* ===== Billboard ===== */
+  .billboard{
+    width:100%;aspect-ratio:14/5;background:linear-gradient(170deg,var(--soft-white) 0%,var(--cream) 60%,var(--teal-tint) 100%);
+    border-radius:12px;box-shadow:0 12px 36px rgba(35,49,58,.16);position:relative;overflow:hidden;
+    display:flex;align-items:center;padding:0 7%;
+  }
+  .billboard .bb-copy h3{font-family:var(--serif);font-weight:normal;color:var(--ink);font-size:clamp(24px,4.6vw,52px);line-height:1.15;max-width:14em;}
+  .billboard .bb-brand{display:flex;align-items:center;gap:12px;margin-top:clamp(12px,2.4vw,26px);}
+  .billboard .bb-brand .h-word{font-size:clamp(17px,2.1vw,25px);}
+  .billboard .bb-brand .url{font-size:clamp(11px,1.4vw,16px);color:var(--muted);margin-left:6px;padding-left:16px;border-left:1.5px solid var(--sand);}
+  .billboard .bb-wave{position:absolute;left:0;right:0;bottom:0;height:22%;}
+  .billboard .bb-light{position:absolute;right:6%;top:50%;transform:translateY(-56%);opacity:.97;width:clamp(90px,16vw,200px);}
+
+  @media (max-width:700px){
+    .unit-stage{padding:24px;}
+    .feed-card{width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="review-wrap">
+
+  <!-- ===== Header ===== -->
+  <header class="review-header">
+    <div class="kicker">
+      <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+      Direction A · Harbor · Creative Review
+    </div>
+    <h1>Advertising Suite — "The calm hand on the shoulder"</h1>
+    <p>Every unit below is built to one rule: meet a stressed adult child at a hard moment without exploiting it. No countdowns, no fear, no "AI" in a headline. Recognition first, reassurance second, one gentle next step.</p>
+    <div class="review-meta">
+      <span><b>Units:</b> 3 display · 3 social · 2 email · 1 OOH</span>
+      <span><b>Voice:</b> reassuring, plain-spoken, short sentences</span>
+      <span><b>Status:</b> for internal review</span>
+    </div>
+  </header>
+
+  <!-- ===================================================== -->
+  <!-- ===== SECTION A · DISPLAY ===== -->
+  <!-- ===================================================== -->
+  <section class="review-section">
+    <h2>A · Display banners — true sizes</h2>
+    <p class="sect-intro">Retargeting and contextual placements (caregiving content, health publishers, local news). Display carries the brand promise, not a pitch — these are often seen at low attention, so one serif line does the work.</p>
+
+    <!-- A1 300x250 -->
+    <div class="unit">
+      <span class="unit-tag">A1 · DISPLAY <span class="sz">300×250 MEDIUM RECTANGLE</span></span>
+      <div class="unit-stage">
+        <div class="ban ban-mrec">
+          <div class="h-logo-row">
+            <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+            <span class="h-word" style="font-size:17px;">Harbor</span>
+          </div>
+          <h3>Everything about Mom's care, in one calm place.</h3>
+          <p>Medical, financial &amp; daily care — shared with the whole family.</p>
+          <a class="h-btn" href="#">See how it works</a>
+          <svg class="wave" viewBox="0 0 300 54" preserveAspectRatio="none" aria-hidden="true"><path d="M0 28c30-14 60-14 90 0s60 14 90 0 60-14 90 0 30 10 30 10v16H0z" fill="#e0edef"/><path d="M0 40c30-12 60-12 90 0s60 12 90 0 60-12 90 0l30 8v6H0z" fill="#8fae9d" opacity=".5"/></svg>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> retargeting site visitors + contextual on caregiving/health content. <b>Register:</b> the brand promise verbatim — repetition builds the "one calm place" association. The wave motif and serif keep it feeling editorial, not ad-like, in cluttered sidebars.
+      </div>
+    </div>
+
+    <!-- A2 728x90 -->
+    <div class="unit">
+      <span class="unit-tag">A2 · DISPLAY <span class="sz">728×90 LEADERBOARD</span></span>
+      <div class="unit-stage">
+        <div class="ban ban-lead">
+          <div class="lead-wave" aria-hidden="true"></div>
+          <div class="h-logo-row">
+            <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+            <span class="h-word" style="font-size:19px;">Harbor</span>
+          </div>
+          <div>
+            <h3>Aging parents. Siblings in three time zones. One shared picture.</h3>
+            <p>An assistant that does the legwork — and a real person who knows your family.</p>
+          </div>
+          <a class="h-btn" href="#">Meet Harbor</a>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> broad awareness on news and local publishers, where distributed siblings actually read. <b>Register:</b> names the sibling-geography problem in seven words — the reader self-identifies before the brand even registers. Human+assistant pairing appears even at 90px tall; we never let "AI" travel alone.
+      </div>
+    </div>
+
+    <!-- A3 160x600 -->
+    <div class="unit">
+      <span class="unit-tag">A3 · DISPLAY <span class="sz">160×600 WIDE SKYSCRAPER</span></span>
+      <div class="unit-stage">
+        <div class="ban ban-sky">
+          <svg width="42" height="42" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+          <h3>Care for the people who care.</h3>
+          <div class="sky-item">
+            <div class="ic" style="background:#e0edef;"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15.5S3.5 12 3.5 8.2C3.5 5.8 5.3 4.5 7 4.5c1 0 1.6.4 2 .9.4-.5 1-.9 2-.9 1.7 0 3.5 1.3 3.5 3.7C14.5 12 9 15.5 9 15.5z" fill="none" stroke="#4e7a86" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            <p><b>Medical</b>appointments, meds &amp; visit summaries</p>
+          </div>
+          <div class="sky-item">
+            <div class="ic" style="background:#e3ece7;"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 8l6-4.5L15 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" fill="none" stroke="#4e7a86" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            <p><b>Daily life</b>rides, home help &amp; shared tasks</p>
+          </div>
+          <div class="sky-item">
+            <div class="ic" style="background:#f0e7d9;"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2.5l6 2.5v2c0 4.2-2.5 7.3-6 8.5C5.5 14.3 3 11.2 3 7v-2z" fill="none" stroke="#4e7a86" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            <p><b>Financial</b>bills &amp; accounts, gently watched</p>
+          </div>
+          <a class="h-btn" href="#">See Harbor</a>
+          <svg class="wave" viewBox="0 0 160 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 24c20-10 40-10 60 0s40 10 60 0 40-8 40-8v30H0z" fill="#8fae9d" opacity=".45"/></svg>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> health-content placements (symptom lookups, "caring for a parent after a stroke" articles). <b>Register:</b> the tall format earns a mini-story: tagline up top, the three care domains as proof of completeness, one soft CTA. Reads as a table of contents for the brand.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- ===== SECTION B · SOCIAL ===== -->
+  <!-- ===================================================== -->
+  <section class="review-section">
+    <h2>B · Social feed — trigger-event creative</h2>
+    <p class="sect-intro">Paid social intercepts people mid-scroll during the exact life moments when eldercare becomes real. Each card leads with recognition — the reader's own week, described accurately and kindly — before Harbor says a word about itself.</p>
+
+    <!-- B1 hospitalization -->
+    <div class="unit">
+      <span class="unit-tag">B1 · SOCIAL <span class="sz">TRIGGER: PARENT'S HOSPITALIZATION</span></span>
+      <div class="unit-stage">
+        <div class="social-row">
+          <div class="feed-card">
+            <div class="feed-top">
+              <svg width="38" height="38" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+              <div><div class="name">Harbor</div><div class="sub">Sponsored</div></div>
+              <div class="dots" aria-hidden="true">···</div>
+            </div>
+            <div class="feed-body">The week after a hospital stay is a blur — discharge papers, new medications, follow-ups nobody explained. Harbor keeps track of all of it, so you can spend the visit being her daughter, not her case manager.</div>
+            <div class="feed-visual" style="background:linear-gradient(160deg,#edf4f8,#f7f4ee 65%);">
+              <svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;" aria-hidden="true">
+                <circle cx="330" cy="40" r="90" fill="#e0edef"/>
+                <circle cx="60" cy="215" r="70" fill="#f0e7d9" opacity=".8"/>
+                <!-- path from hospital to home -->
+                <path d="M60 150 C 140 90, 260 90, 345 145" fill="none" stroke="#7ea9b3" stroke-width="3" stroke-dasharray="1 10" stroke-linecap="round"/>
+                <!-- hospital -->
+                <rect x="38" y="118" width="46" height="40" rx="6" fill="#fffdf9" stroke="#7ea9b3" stroke-width="2"/>
+                <path d="M61 128v14M54 135h14" stroke="#4e7a86" stroke-width="3" stroke-linecap="round"/>
+                <!-- home -->
+                <path d="M320 132l26-20 26 20v26a4 4 0 0 1-4 4h-44a4 4 0 0 1-4-4z" fill="#fffdf9" stroke="#8fae9d" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M340 162v-14h12v14" fill="none" stroke="#8fae9d" stroke-width="2"/>
+                <!-- checkmark chips along path -->
+                <g><rect x="118" y="86" width="88" height="24" rx="12" fill="#fffdf9" stroke="#e3ece7"/><circle cx="132" cy="98" r="7" fill="#8fae9d"/><path d="M129 98l2.4 2.4 4-4.4" stroke="#fffdf9" stroke-width="1.6" fill="none" stroke-linecap="round"/><text x="146" y="102" font-family="Inter,system-ui,sans-serif" font-size="11" fill="#23313a">Meds sorted</text></g>
+                <g><rect x="222" y="98" width="110" height="24" rx="12" fill="#fffdf9" stroke="#e3ece7"/><circle cx="236" cy="110" r="7" fill="#8fae9d"/><path d="M233 110l2.4 2.4 4-4.4" stroke="#fffdf9" stroke-width="1.6" fill="none" stroke-linecap="round"/><text x="250" y="114" font-family="Inter,system-ui,sans-serif" font-size="11" fill="#23313a">Follow-up booked</text></g>
+              </svg>
+              <div class="headline">After the hospital, a steadier week.</div>
+            </div>
+            <div class="feed-cta">
+              <div><div class="dom">harbor.care</div><div class="ttl">Discharge to home, handled with you</div></div>
+              <a class="h-btn" href="#">Learn more</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> adult children 40–60, interest + life-event signals around hospitalization and recovery content. <b>Trigger:</b> the post-discharge blur — highest-intent moment in the category. <b>Emotional register:</b> relief, not alarm. We name the chaos accurately ("nobody explained") and offer to carry it; the line "being her daughter, not her case manager" restores the relationship, never dramatizes the parent.
+      </div>
+    </div>
+
+    <!-- B2 dementia diagnosis -->
+    <div class="unit">
+      <span class="unit-tag">B2 · SOCIAL <span class="sz">TRIGGER: NEW DEMENTIA DIAGNOSIS</span></span>
+      <div class="unit-stage">
+        <div class="social-row">
+          <div class="feed-card">
+            <div class="feed-top">
+              <svg width="38" height="38" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+              <div><div class="name">Harbor</div><div class="sub">Sponsored</div></div>
+              <div class="dots" aria-hidden="true">···</div>
+            </div>
+            <div class="feed-body">A diagnosis changes the road ahead. It doesn't change who your dad is. Harbor helps your family plan the next years gently — together, at his pace, with his voice in the room.</div>
+            <div class="feed-visual" style="background:linear-gradient(160deg,#f0e7d9,#f7f4ee 70%);">
+              <svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;" aria-hidden="true">
+                <circle cx="70" cy="45" r="80" fill="#f0e7d9"/>
+                <circle cx="345" cy="200" r="85" fill="#e3ece7"/>
+                <!-- winding road, steady and lit -->
+                <path d="M-10 200 C 90 185, 120 120, 205 118 S 330 80, 420 60" fill="none" stroke="#d7c1a6" stroke-width="26" stroke-linecap="round" opacity=".65"/>
+                <path d="M-10 200 C 90 185, 120 120, 205 118 S 330 80, 420 60" fill="none" stroke="#fffdf9" stroke-width="3" stroke-dasharray="14 12"/>
+                <!-- two figures walking together -->
+                <g transform="translate(178,84)">
+                  <circle cx="10" cy="8" r="8" fill="#4e7a86"/><path d="M10 16c-7 0-11 5-11 12h22c0-7-4-12-11-12z" fill="#4e7a86"/>
+                  <circle cx="32" cy="10" r="7" fill="#8fae9d"/><path d="M32 17c-6 0-10 4.5-10 11h20c0-6.5-4-11-10-11z" fill="#8fae9d"/>
+                </g>
+                <!-- small lighthouse ahead -->
+                <g transform="translate(352,26)">
+                  <path d="M6.5 8h9l2 20H4.5z" fill="#fffdf9" stroke="#7ea9b3" stroke-width="1.6"/>
+                  <rect x="7.5" y="3" width="7" height="5.4" rx="1.4" fill="#d7c1a6"/>
+                  <path d="M7 -1L-6 -5.5v3.4L7 1.5zM15 -1l13-4.5v3.4L15 1.5z" fill="#d7c1a6" opacity=".7"/>
+                </g>
+              </svg>
+              <div class="headline">Plan the road ahead. Keep him at the center.</div>
+            </div>
+            <div class="feed-cta">
+              <div><div class="dom">harbor.care</div><div class="ttl">Gentle planning for memory-care families</div></div>
+              <a class="h-btn" href="#">See how</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> families researching dementia and memory care (search + lookalike). <b>Trigger:</b> the weeks after diagnosis, when families are frightened and over-served by grim content. <b>Emotional register:</b> dignity-first — the second sentence exists to protect the parent's personhood. The illustration shows two figures walking the road together; the parent is a companion, never a burden or a patient icon.
+      </div>
+    </div>
+
+    <!-- B3 sibling breakdown -->
+    <div class="unit">
+      <span class="unit-tag">B3 · SOCIAL <span class="sz">TRIGGER: SIBLING COORDINATION BREAKDOWN</span></span>
+      <div class="unit-stage">
+        <div class="social-row">
+          <div class="feed-card">
+            <div class="feed-top">
+              <svg width="38" height="38" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+              <div><div class="name">Harbor</div><div class="sub">Sponsored</div></div>
+              <div class="dots" aria-hidden="true">···</div>
+            </div>
+            <div class="feed-body">You handle the appointments. Your brother asks why nobody told him. Nobody's wrong — the group text is just a terrible system for something this important. Harbor gives your family one shared picture of Mom's care, so trust doesn't depend on memory.</div>
+            <div class="feed-visual" style="background:linear-gradient(160deg,#e3ece7,#f7f4ee 70%);">
+              <svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;" aria-hidden="true">
+                <circle cx="340" cy="35" r="80" fill="#e0edef"/>
+                <!-- scattered chat bubbles fading -->
+                <g opacity=".5">
+                  <rect x="22" y="26" width="92" height="22" rx="11" fill="#fffdf9" stroke="#d9d2c2"/>
+                  <rect x="48" y="56" width="70" height="20" rx="10" fill="#fffdf9" stroke="#d9d2c2"/>
+                  <rect x="18" y="84" width="58" height="18" rx="9" fill="#fffdf9" stroke="#d9d2c2"/>
+                  <text x="36" y="41" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="#8a959c">wait, which doctor??</text>
+                  <text x="60" y="69" font-family="Inter,system-ui,sans-serif" font-size="10" fill="#8a959c">who's calling?</text>
+                  <text x="30" y="96" font-family="Inter,system-ui,sans-serif" font-size="9.5" fill="#8a959c">…anyone?</text>
+                </g>
+                <!-- arrow into one calm card -->
+                <path d="M128 96 C 160 120, 175 130, 200 138" fill="none" stroke="#8fae9d" stroke-width="2.4" stroke-dasharray="2 8" stroke-linecap="round"/>
+                <!-- calm shared card -->
+                <g>
+                  <rect x="196" y="112" width="176" height="96" rx="16" fill="#fffdf9" stroke="#e3ece7" stroke-width="2"/>
+                  <text x="214" y="140" font-family="Georgia,serif" font-size="15" fill="#23313a">Mom's week</text>
+                  <circle cx="330" cy="135" r="5" fill="#8fae9d"/><circle cx="344" cy="135" r="5" fill="#4e7a86"/><circle cx="358" cy="135" r="5" fill="#c2a374"/>
+                  <rect x="214" y="152" width="140" height="8" rx="4" fill="#e0edef"/>
+                  <rect x="214" y="168" width="112" height="8" rx="4" fill="#e3ece7"/>
+                  <rect x="214" y="184" width="126" height="8" rx="4" fill="#f0e7d9"/>
+                </g>
+              </svg>
+              <div class="headline" style="bottom:auto;top:20px;left:auto;right:24px;max-width:180px;font-size:20px;">Better than the group text.</div>
+            </div>
+            <div class="feed-cta">
+              <div><div class="dom">harbor.care</div><div class="ttl">One shared picture for the whole family</div></div>
+              <a class="h-btn" href="#">Meet Harbor</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> primary coordinators (Sarah) — skews female 45–60, distributed-family signals. <b>Trigger:</b> the resentment spiral inside the sibling group text. <b>Emotional register:</b> absolution. "Nobody's wrong — the group text is just a terrible system" blames the tool, not the family, which lowers defensiveness for both the exhausted coordinator and the out-of-the-loop sibling who gets this ad forwarded to them.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- ===== SECTION C · EMAIL ===== -->
+  <!-- ===================================================== -->
+  <section class="review-section">
+    <h2>C · Email — lifecycle templates (600px)</h2>
+    <p class="sect-intro">Email is where Harbor's human layer becomes literal: mail comes from a named Family Success Representative, not "The Harbor Team." One idea per email, one action, always an easy exit.</p>
+
+    <!-- C1 welcome -->
+    <div class="unit">
+      <span class="unit-tag">C1 · EMAIL <span class="sz">WELCOME · SENT DAY 0 AFTER SIGNUP</span></span>
+      <div class="unit-stage">
+        <div class="email-frame">
+          <div class="email-chrome">
+            From: <b>Dana at Harbor</b> &lt;dana@harbor.care&gt;
+            <span class="subj">Welcome, Sarah — here's what happens next (no rush)</span>
+          </div>
+          <div class="email-body">
+            <div class="email-inner">
+              <div class="e-head">
+                <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+                <span class="h-word" style="font-size:19px;">Harbor</span>
+              </div>
+              <div class="e-content">
+                <h2>Hi Sarah — I'm Dana. I'll be with your family from here.</h2>
+                <p>Welcome to Harbor. Taking this step for your mom is a big deal, and I want you to know exactly what happens next — and what doesn't happen without your family's say-so.</p>
+                <div class="e-steps">
+                  <div class="e-step"><div class="n">1</div><div><b>We talk — this week, at your convenience</b><span>A 30-minute call. You tell me about your mom, your siblings, and what's been hardest. I mostly listen.</span></div></div>
+                  <div class="e-step"><div class="n">2</div><div><b>Your mom decides what's shared</b><span>I'll walk her through it in plain language. What she wants private stays private. That's her call, always.</span></div></div>
+                  <div class="e-step"><div class="n">3</div><div><b>We connect things, one at a time</b><span>Health portals and accounts, at your family's pace. Nothing is required on day one.</span></div></div>
+                </div>
+                <div class="e-card">
+                  <div class="e-ava" aria-hidden="true">D</div>
+                  <div>
+                    <b>Dana Okafor · Your Family Success Representative</b>
+                    <span>One person, by name, for as long as your family is with us. Reply to this email anytime — it comes straight to me.</span>
+                  </div>
+                </div>
+                <p style="text-align:center;margin:22px 0 6px;"><a class="h-btn" href="#">Pick a time that suits you</a></p>
+                <p class="muted" style="text-align:center;">Or just reply — "mornings are better" works fine.</p>
+              </div>
+            </div>
+            <div class="e-foot">
+              Harbor Care, Inc. · You're receiving this because you created a Harbor account.<br>
+              <a href="#">Email preferences</a> · <a href="#">Unsubscribe</a> · HIPAA compliant · Bank-level encryption
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> new signups, minutes after account creation. <b>Register:</b> immediate humanization — a named person, "no rush" in the subject line, and consent explained before features. The three steps preempt the two biggest anxieties (am I on my own? does Mom lose control?) in the first scroll.
+      </div>
+    </div>
+
+    <!-- C2 nurture -->
+    <div class="unit">
+      <span class="unit-tag">C2 · EMAIL <span class="sz">NURTURE · TRIGGER-EVENT (POST-HOSPITALIZATION GUIDE DOWNLOAD)</span></span>
+      <div class="unit-stage">
+        <div class="email-frame">
+          <div class="email-chrome">
+            From: <b>Dana at Harbor</b> &lt;dana@harbor.care&gt;
+            <span class="subj">For the next few weeks — a short checklist that might help</span>
+          </div>
+          <div class="email-body">
+            <div class="email-inner">
+              <div class="e-head">
+                <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+                <span class="h-word" style="font-size:19px;">Harbor</span>
+              </div>
+              <div class="e-content">
+                <h2>Coming home from the hospital is its own project. Here's a head start.</h2>
+                <p>You downloaded our discharge guide last week — I hope things are settling. The first month home is usually the messiest part: new medications, follow-up appointments, and paperwork that arrives out of order.</p>
+                <p>Families we work with say three things matter most right now:</p>
+                <div class="e-steps">
+                  <div class="e-step"><div class="n">✓</div><div><b>One medication list everyone can see</b><span>Reconciled against what was prescribed at discharge — this is where most errors happen.</span></div></div>
+                  <div class="e-step"><div class="n">✓</div><div><b>Follow-ups booked within 7 days</b><span>They're the single best predictor of staying out of the hospital.</span></div></div>
+                  <div class="e-step"><div class="n">✓</div><div><b>One sibling not carrying all of it</b><span>Even one shared view lowers the temperature for everyone.</span></div></div>
+                </div>
+                <p>If it would help to have Harbor do this legwork with you, I'm happy to talk — no pressure, and no obligation to sign up on the call.</p>
+                <p style="text-align:center;margin:22px 0 6px;"><a class="h-btn" href="#">Talk it through with a person</a></p>
+                <p class="muted" style="text-align:center;">Not the right time? That's completely okay. The checklist is yours either way.</p>
+              </div>
+            </div>
+            <div class="e-foot">
+              Harbor Care, Inc. · You're receiving this because you requested our hospital-to-home guide.<br>
+              <a href="#">Fewer emails</a> · <a href="#">Unsubscribe</a> · We never sell or share your information.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> leads who downloaded the discharge guide (highest-intent trigger event). <b>Register:</b> useful first, sellable second — the email delivers real guidance even if they never convert, which is the trust deposit this brand runs on. Note the explicit pressure-release lines ("no rush," "that's completely okay"): in this category, permission to say no is what earns the eventual yes.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- ===== SECTION D · OOH ===== -->
+  <!-- ===================================================== -->
+  <section class="review-section">
+    <h2>D · Out-of-home — billboard concept</h2>
+    <p class="sect-intro">Placement concept: airport corridors and commuter rail in sibling-corridor metros (Chicago, Denver, Phoenix) — the physical spaces where distributed families pass each other on the way to visit Mom.</p>
+
+    <div class="unit">
+      <span class="unit-tag">D1 · OOH <span class="sz">14:5 BULLETIN · AIRPORT / COMMUTER CORRIDORS</span></span>
+      <div class="unit-stage" style="padding:44px 28px;">
+        <div class="billboard">
+          <div class="bb-copy">
+            <h3>You flew in for the weekend.<br>We never left.</h3>
+            <div class="bb-brand">
+              <svg width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#4e7a86"/><path d="M20 13.5 10 9.5v2.8l10 2.9z" fill="#d7c1a6"/><path d="M28 13.5l10-4v2.8l-10 2.9z" fill="#d7c1a6"/><rect x="21" y="10.5" width="6" height="5" rx="1.4" fill="#d7c1a6"/><path d="M20.6 18h6.8l1.4 15h-9.6z" fill="#fffdf9"/><rect x="19.4" y="16" width="9.2" height="2.6" rx="1.3" fill="#fffdf9"/><path d="M20.15 23.5h7.7l.28 3h-8.26z" fill="#7ea9b3"/><path d="M6 35c3-1.8 6-1.8 9 0s6 1.8 9 0 6-1.8 9 0 6 1.8 9 0v4.5c-3 1.8-6 1.8-9 0s-6-1.8-9 0-6 1.8-9 0-6-1.8-9 0z" fill="#8fae9d"/></svg>
+              <span class="h-word">Harbor</span>
+              <span class="url">Care for the people who care · harbor.care</span>
+            </div>
+          </div>
+          <svg class="bb-light" viewBox="0 0 200 240" aria-hidden="true">
+            <!-- beams -->
+            <path d="M86 46 8 22v14l78 15z" fill="#d7c1a6" opacity=".55"/>
+            <path d="M114 46l78-24v14l-78 15z" fill="#d7c1a6" opacity=".55"/>
+            <!-- lantern -->
+            <rect x="88" y="30" width="24" height="20" rx="5" fill="#d7c1a6"/>
+            <!-- roof -->
+            <path d="M84 30l16-14 16 14z" fill="#4e7a86"/>
+            <!-- tower -->
+            <path d="M84 58h32l9 122H75z" fill="#fffdf9" stroke="#e0dbcd" stroke-width="1.5"/>
+            <rect x="79" y="50" width="42" height="10" rx="5" fill="#fffdf9" stroke="#e0dbcd" stroke-width="1.5"/>
+            <path d="M81.7 88h36.6l1.6 22H80.1z" fill="#7ea9b3"/>
+            <path d="M78.6 132h42.8l1.6 22H77z" fill="#7ea9b3" opacity=".65"/>
+            <!-- water -->
+            <path d="M0 190c25-13 50-13 75 0s50 13 75 0 50-13 50-13v63H0z" fill="#8fae9d" opacity=".5"/>
+            <path d="M0 208c25-12 50-12 75 0s50 12 75 0 50-12 50-12v44H0z" fill="#7ea9b3" opacity=".5"/>
+          </svg>
+          <svg class="bb-wave" viewBox="0 0 1400 100" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 40c100-26 200-26 300 0s200 26 300 0 200-26 300 0 200 26 300 0 200-26 200-26v86H0z" fill="#8fae9d" opacity=".28"/>
+          </svg>
+        </div>
+      </div>
+      <div class="unit-caption">
+        <span class="lbl">Strategic intent</span>
+        <b>Audience:</b> the visiting sibling, caught in transit — guilt and love in the same suitcase. <b>Register:</b> seven words that honor the visit instead of shaming it: your weekend matters, and Harbor holds the other 51. The lighthouse stands watch on the right — constancy made visual. No CTA beyond the URL; out-of-home plants the feeling, search harvests it later.
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--chrome-line);padding-top:24px;font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <span>Harbor · Direction A · Advertising suite v1</span>
+    <span>Companion files: index.html (marketing site) · BRAND-NOTES.md (voice &amp; rationale)</span>
+  </footer>
+</div>
+</body>
+</html>

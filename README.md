@@ -5,6 +5,15 @@ Link to specific reports from project READMEs as needed.
 
 ---
 
+## Elder Care Platform
+
+- [[elder-care-branding/index|Brand & Product Exploration Hub (Jul 8)]] ⭐
+- [[elder-care/index|Business Hub — Financial Model & Strategy (Apr 9)]]
+- [[2026-04-07_elder-care-vision-document|Vision Document (Apr 7)]]
+- [[2026-04-07_elder-care-marketing-site|Marketing Site Wireframe (Apr 7)]]
+- [[2026-04-07_elder-care-platform-wireframe|Platform Wireframe (Apr 7)]]
+- [[2026-04-08_elder-care-financial-model|Financial Model (Apr 8)]]
+
 ## House Build (Orinda)
 
 - [[38-OAKWOOD-FULL-REPORT-2026-03-05|38 Oakwood Full Report (Mar 5)]]
