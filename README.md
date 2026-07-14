@@ -7,6 +7,7 @@ Link to specific reports from project READMEs as needed.
 
 ## Elder Care Platform
 
+- [[elder-care-essays/index|The Hard Questions — Strategy Essays (Jul 9)]] ⭐
 - [[elder-care-branding/index|Brand & Product Exploration Hub (Jul 8)]] ⭐
 - [[elder-care/index|Business Hub — Financial Model & Strategy (Apr 9)]]
 - [[2026-04-07_elder-care-vision-document|Vision Document (Apr 7)]]

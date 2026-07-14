@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hard Questions — An internal argument in three parts</title>
+<meta name="description" content="Three linked memos on whether the eldercare platform should exist, what software can do, and the door of buying an existing care business.">
+<style>
+  :root{
+    --bg:#f4f4f1; --surface:#fbfbf9; --ink:#1b1b18; --muted:#67675f; --faint:#8f8f86;
+    --hair:#dad9d1; --accent:#a01f1f;
+    --measure:44rem;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"URW Palladio L",Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#17171a; --surface:#1e1e21; --ink:#ecebe4; --muted:#a3a299; --faint:#7c7b73; --hair:#32322d; --accent:#e06a6a; }
+  }
+  :root[data-theme="dark"]{ --bg:#17171a; --surface:#1e1e21; --ink:#ecebe4; --muted:#a3a299; --faint:#7c7b73; --hair:#32322d; --accent:#e06a6a; }
+  :root[data-theme="light"]{ --bg:#f4f4f1; --surface:#fbfbf9; --ink:#1b1b18; --muted:#67675f; --faint:#8f8f86; --hair:#dad9d1; --accent:#a01f1f; }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:1.15rem; line-height:1.7; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  .masthead{max-width:var(--measure); margin:0 auto; padding:2rem 1.4rem 0; display:flex; justify-content:space-between; align-items:center; gap:1rem;}
+  .series{font-family:var(--sans); font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--muted);}
+  .toggle{font-family:var(--sans); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); background:none; border:1px solid var(--hair); border-radius:99px; padding:.35rem .7rem; cursor:pointer;}
+  .toggle:hover{color:var(--ink); border-color:var(--muted);}
+  .toggle:focus-visible, a:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+
+  header.hub{max-width:var(--measure); margin:0 auto; padding:3rem 1.4rem 1rem;}
+  .redline{width:46px; height:4px; background:var(--accent); margin-bottom:1.6rem;}
+  h1{font-family:var(--serif); font-weight:600; font-size:3.1rem; line-height:1.04; letter-spacing:-.02em; margin:0; text-wrap:balance;}
+  .deck{font-family:var(--serif); font-style:italic; font-size:1.4rem; line-height:1.45; color:var(--muted); margin:1.2rem 0 0; max-width:36rem;}
+  .intro{max-width:var(--measure); margin:0 auto; padding:1.4rem 1.4rem 0;}
+  .intro p{margin:1.2rem 0; max-width:38rem;}
+  .intro strong{font-weight:600;}
+
+  .list{max-width:var(--measure); margin:1.6rem auto 0; padding:0 1.4rem;}
+  .entry{display:grid; grid-template-columns:3.2rem 1fr; gap:1.1rem; align-items:start; padding:1.6rem 0; border-top:1px solid var(--hair); text-decoration:none; color:var(--ink);}
+  .entry:last-child{border-bottom:1px solid var(--hair);}
+  .entry:hover .et{color:var(--accent);}
+  .rn{font-family:var(--serif); font-size:2.4rem; line-height:1; color:var(--accent); font-weight:600;}
+  .et{font-family:var(--serif); font-size:1.7rem; font-weight:600; letter-spacing:-.01em; margin:.1rem 0 .3rem; line-height:1.12;}
+  .ed{font-family:var(--sans); font-size:.95rem; color:var(--muted); line-height:1.5;}
+  .go{font-family:var(--sans); font-size:.76rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-top:.6rem;}
+
+  footer.note{max-width:var(--measure); margin:2.4rem auto 0; padding:1.5rem 1.4rem 4rem; font-family:var(--sans); font-size:.8rem; line-height:1.6; color:var(--faint); border-top:1px solid var(--hair);}
+  @media (max-width:640px){ h1{font-size:2.3rem;} .deck{font-size:1.18rem;} .entry{grid-template-columns:2.4rem 1fr; gap:.9rem;} .rn{font-size:1.9rem;} .et{font-size:1.4rem;} }
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div class="series">An internal argument · Eldercare platform · July 2026</div>
+  <button class="toggle" id="themeToggle" aria-label="Toggle light or dark theme">Theme</button>
+</div>
+
+<header class="hub">
+  <div class="redline"></div>
+  <h1>The Hard Questions</h1>
+  <p class="deck">Three linked memos, written against our own plan — because the moment the materials look finished is the moment to argue with them.</p>
+</header>
+
+<div class="intro">
+  <p>Spencer — we have a stack of optimistic material now: three brand worlds, product mockups, a financial model. This is the other stack. Three short essays that form a single argument, meant to be read in order and disagreed with out loud.</p>
+  <p>The arc is simple. <strong>One:</strong> the strongest case for why this fails. <strong>Two:</strong> what software can and cannot actually do in this market. <strong>Three:</strong> a different door — buying an existing care business — and the person who already proved it works. Call me when you've read all three.</p>
+</div>
+
+<nav class="list">
+  <a class="entry" href="01-the-case-against-ourselves.html">
+    <div class="rn">I</div>
+    <div>
+      <div class="et">The Case Against Ourselves</div>
+      <div class="ed">Before we fall in love with the pitch, the strongest version of why the whole thing fails — the category graveyard, the churn arithmetic that quietly kills the north star, and the two tensions that are actually the venture.</div>
+      <div class="go">Read part I →</div>
+    </div>
+  </a>
+  <a class="entry" href="02-software-is-not-the-product.html">
+    <div class="rn">II</div>
+    <div>
+      <div class="et">Software Is Not the Product</div>
+      <div class="ed">"Is software enough?" is the wrong question. The right one — what job is the software doing, and who holds the trust while it does it — turns software from product into leverage, and points at the company we'd actually be building.</div>
+      <div class="go">Read part II →</div>
+    </div>
+  </a>
+  <a class="entry" href="03-buy-the-trust.html">
+    <div class="rn">III</div>
+    <div>
+      <div class="et">Buy the Trust</div>
+      <div class="ed">If software needs trust and labor to lever, maybe we buy them instead of building them. The self-funded search — and Arosa, the company a searcher built from one $3.6M agency bought almost entirely on debt.</div>
+      <div class="go">Read part III →</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="note">
+  Internal working memos. The bear case is written deliberately as the strongest argument against our own plan; the Arosa material draws on public reporting and Harvard Business School case studies, with unconfirmed figures flagged as such. Nothing here is a public claim about the company or about anyone named.
+</footer>
+
+<script>
+  (function(){
+    var root=document.documentElement, KEY="hq-theme";
+    try{ var saved=localStorage.getItem(KEY); if(saved) root.setAttribute("data-theme",saved); }catch(e){}
+    var btn=document.getElementById("themeToggle");
+    btn && btn.addEventListener("click", function(){
+      var cur=root.getAttribute("data-theme");
+      if(!cur){ cur = matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light"; }
+      var next = cur==="dark" ? "light":"dark";
+      root.setAttribute("data-theme", next);
+      try{ localStorage.setItem(KEY,next); }catch(e){}
+    });
+  })();
+</script>
+</body>
+</html>

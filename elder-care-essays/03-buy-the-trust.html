@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buy the Trust — The Hard Questions III</title>
+<meta name="description" content="There's another door into eldercare. Someone already walked through it — and now teaches it at Harvard.">
+<style>
+  :root{
+    --bg:#f4f4f1; --surface:#fbfbf9; --ink:#1b1b18; --muted:#67675f; --faint:#8f8f86;
+    --hair:#dad9d1; --accent:#a01f1f; --accent-2:#7d1717;
+    --measure:40rem;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"URW Palladio L",Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#17171a; --surface:#1e1e21; --ink:#ecebe4; --muted:#a3a299; --faint:#7c7b73; --hair:#32322d; --accent:#e06a6a; --accent-2:#ec8686; }
+  }
+  :root[data-theme="dark"]{ --bg:#17171a; --surface:#1e1e21; --ink:#ecebe4; --muted:#a3a299; --faint:#7c7b73; --hair:#32322d; --accent:#e06a6a; --accent-2:#ec8686; }
+  :root[data-theme="light"]{ --bg:#f4f4f1; --surface:#fbfbf9; --ink:#1b1b18; --muted:#67675f; --faint:#8f8f86; --hair:#dad9d1; --accent:#a01f1f; --accent-2:#7d1717; }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:1.19rem; line-height:1.72; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  .progress{position:fixed; top:0; left:0; height:3px; width:0; background:var(--accent); z-index:60;}
+  .masthead{max-width:var(--measure); margin:0 auto; padding:2rem 1.4rem 0; display:flex; justify-content:space-between; align-items:center; gap:1rem;}
+  .series{font-family:var(--sans); font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--muted);}
+  .series b{color:var(--accent); font-weight:700;}
+  .toggle{font-family:var(--sans); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); background:none; border:1px solid var(--hair); border-radius:99px; padding:.35rem .7rem; cursor:pointer;}
+  .toggle:hover{color:var(--ink); border-color:var(--muted);}
+  .toggle:focus-visible, a:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  header.essay{max-width:var(--measure); margin:0 auto; padding:2.6rem 1.4rem 1.2rem;}
+  .numeral{font-family:var(--serif); font-size:4.2rem; line-height:.9; color:var(--accent); font-weight:600; letter-spacing:-.02em;}
+  .kicker{font-family:var(--sans); font-size:.76rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin:1.1rem 0 .5rem;}
+  h1{font-family:var(--serif); font-weight:600; font-size:2.75rem; line-height:1.08; letter-spacing:-.015em; margin:.2rem 0 0; text-wrap:balance;}
+  .deck{font-family:var(--serif); font-style:italic; font-size:1.4rem; line-height:1.45; color:var(--muted); margin:1.1rem 0 0; max-width:34rem;}
+  .byline{font-family:var(--sans); font-size:.78rem; letter-spacing:.04em; color:var(--faint); margin-top:1.5rem; padding-top:1.1rem; border-top:1px solid var(--hair);}
+  article{max-width:var(--measure); margin:0 auto; padding:1.4rem 1.4rem 2rem;}
+  article p{margin:1.35rem 0;}
+  article > p:first-of-type::first-letter{ float:left; font-family:var(--serif); font-weight:600; font-size:4.1rem; line-height:.72; padding:.35rem .55rem 0 0; color:var(--accent); }
+  h2{font-family:var(--sans); font-size:.82rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:2.8rem 0 .2rem;}
+  h2 + p{margin-top:.6rem;}
+  strong{font-weight:600;}
+  a{color:var(--ink); text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:2px; text-decoration-thickness:1px;}
+  a:hover{color:var(--accent);}
+  blockquote{ margin:2.2rem 0; padding:.2rem 0 .2rem 1.4rem; border-left:3px solid var(--accent); font-family:var(--serif); font-size:1.72rem; line-height:1.3; font-weight:600; letter-spacing:-.01em; color:var(--ink); }
+  blockquote.sub{font-size:1.36rem; font-weight:400; font-style:italic; color:var(--muted);}
+  .rule{width:100%; height:1px; background:var(--hair); border:0; margin:2.6rem 0;}
+  .figure{background:var(--surface); border:1px solid var(--hair); border-radius:8px; padding:1.2rem 1.3rem; margin:2rem 0; font-family:var(--sans); font-size:.98rem; line-height:1.55;}
+  .figure .lab{font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:.6rem;}
+  table.mini{width:100%; border-collapse:collapse; font-family:var(--sans); font-size:.94rem; margin:.2rem 0 0;}
+  table.mini td{padding:.45rem .5rem; border-bottom:1px solid var(--hair); vertical-align:top;}
+  table.mini td:first-child{color:var(--accent); font-weight:600; white-space:nowrap; width:34%;}
+  .readnext{max-width:var(--measure); margin:0 auto; padding:1rem 1.4rem 4rem;}
+  .readnext .lab{font-family:var(--sans); font-size:.74rem; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); margin-bottom:.9rem;}
+  .cards{display:grid; gap:.8rem;}
+  .card{display:block; background:var(--surface); border:1px solid var(--hair); border-radius:10px; padding:1.1rem 1.2rem; text-decoration:none; color:var(--ink);}
+  .card:hover{border-color:var(--accent);}
+  .card .n{font-family:var(--serif); color:var(--accent); font-size:1.1rem; font-weight:600;}
+  .card .t{font-family:var(--serif); font-size:1.28rem; font-weight:600; margin:.2rem 0 .15rem; letter-spacing:-.01em;}
+  .card .d{font-family:var(--sans); font-size:.86rem; color:var(--muted); line-height:1.45;}
+  footer.note{max-width:var(--measure); margin:0 auto; padding:1.5rem 1.4rem 4rem; font-family:var(--sans); font-size:.8rem; line-height:1.6; color:var(--faint); border-top:1px solid var(--hair);}
+  footer.note a{color:var(--muted);}
+  @media (max-width:640px){ body{font-size:1.12rem;} h1{font-size:2.15rem;} .numeral{font-size:3.4rem;} .deck{font-size:1.2rem;} blockquote{font-size:1.4rem;} }
+  @media (prefers-reduced-motion:reduce){ *{scroll-behavior:auto !important;} .progress{transition:none;} }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<div class="masthead">
+  <div class="series">The Hard Questions · <b>Part III of III</b></div>
+  <button class="toggle" id="themeToggle" aria-label="Toggle light or dark theme">Theme</button>
+</div>
+
+<header class="essay">
+  <div class="numeral">III</div>
+  <div class="kicker">An internal argument · Eldercare platform</div>
+  <h1>Buy the Trust</h1>
+  <p class="deck">If software needs trust and labor to lever, maybe we don't build them from nothing. Maybe we buy them. Someone already ran this exact playbook — and now teaches it at Harvard.</p>
+  <div class="byline">A working memo for Spencer — on entrepreneurship through acquisition, and a company called Arosa.</div>
+</header>
+
+<article>
+<p>The first two memos leave us in an awkward place. The need is real, but visibility alone can't capture it. Software is not the product; it's leverage — and leverage only works bolted onto trust and labor that a business already owns. The whole problem, restated, is that the two things we most need are the two things a startup can't manufacture cheaply: a family's trust, and a workforce that has earned it. So here is the move that has been sitting in front of us the entire time. What if we don't build those. What if we buy them.</p>
+
+<p>The technical name is entrepreneurship through acquisition — a self-funded search. You raise a modest amount, you buy a small, healthy, human-enabled care business that already has paying families and credentialed staff, you keep everyone, and <em>then</em> you build the software on top of a business that already works. It's the opposite order from everything we've done so far, and it may be the right one.</p>
+
+<h2>What it solves, line by line</h2>
+<p>Walk it back against the bear case. Nearly every fear in the first memo dissolves on the day of a good acquisition.</p>
+
+<div class="figure">
+  <div class="lab">The bear case, against an acquisition</div>
+  <table class="mini">
+    <tr><td>Willingness to pay</td><td>Solved. The client roster <em>is</em> the proof — families already paying for exactly this.</td></tr>
+    <tr><td>Trust cold-start</td><td>Solved. Trust transfers with the relationship; you inherit the POA files and portal access instead of begging strangers for them.</td></tr>
+    <tr><td>Referral channel</td><td>Solved. You buy years of relationships with elder-law attorneys, wealth managers, and discharge planners.</td></tr>
+    <tr><td>The human workforce</td><td>Solved. Care managers are your trusted staff on day one — a payroll you can observe, not a spreadsheet assumption.</td></tr>
+    <tr><td>"What does it look like?"</td><td>Answered. Sixty days inside a live caseload teaches what the twenty-five weekly hours actually contain — and which parts software can eat.</td></tr>
+  </table>
+</div>
+
+<p>That last one is the quiet prize. Every product decision we've made so far has been imagined. An acquisition replaces imagination with a caseload.</p>
+
+<h2>The proof is a man named Ari Medoff</h2>
+<p>This is not theory. In 2011, straight out of a joint degree at Harvard Business School and the Kennedy School, Ari Medoff ran a self-funded search. The story he tells is that he emailed on the order of twenty thousand companies across the eastern United States — not even healthcare-specific at first — looking for one small business to buy and run. Within a few months he found it: Home Nursing of North Carolina, a home-care agency in Greensboro.</p>
+
+<p>The deal is the part I want you to sit with, because it is almost a template for us:</p>
+
+<div class="figure">
+  <div class="lab">The founding deal — Home Nursing of North Carolina, 2011</div>
+  <table class="mini">
+    <tr><td>Purchase price</td><td>~$3.6 million</td></tr>
+    <tr><td>Financed with debt</td><td>~94% — a bank loan, a seller note, and a loan from individual investors</td></tr>
+    <tr><td>His own capital</td><td>~6%</td></tr>
+  </table>
+</div>
+
+<blockquote>He took control of a real business, with real families and real caregivers, for six cents on the dollar of his own money. That is the door.</blockquote>
+
+<p>What happened next is the buy-and-build arc compressed into a decade. That first agency became Arosa. In 2018, Bain Capital's impact arm merged Arosa with a Los Angeles company, LivHOME — which had been founded in 1999 on the exact premise we keep circling, care management and home care under one roof — to form a national platform, with the impact investor HCAP Partners alongside. Then came the roll-up: eight or so acquisitions, sub-brands unified under the single name Arosa in 2021, a footprint that grew from four states to thirty-eight offices across thirteen. In May 2025 HCAP exited after a normal fund cycle; Medoff is still the CEO. The man who bought one small agency with borrowed money now teaches search funds at HBS, and his first acquisition is itself a Harvard case study.</p>
+
+<h2>The model he built is the one we've been describing</h2>
+<p>Arosa's engine is the integrated care team: a credentialed care manager — gerontology, social work, nursing — sitting on top of an in-home caregiver workforce. The care manager runs the assessment, writes the plan, makes the home visits, and oversees the caregivers who deliver the hours. Coordination is the high-trust relationship at the top of the funnel; home care is the volume revenue underneath it. That is, almost exactly, our three-bucket vision rendered in payroll instead of slideware.</p>
+
+<h2>What Arosa proves — and, crucially, what it does not</h2>
+<p>Be precise here, because the distinction is our whole opportunity. Arosa proves the <strong>buy-and-build services platform</strong> works: you can start as a searcher and end as a national company that attracts Bain. What Arosa does <em>not</em> prove is that <strong>software changes the unit economics</strong>. Its scale was built the hard way — eight acquisitions, private-equity capital, and a lot of caregiver labor with all the thin margins and workforce churn that implies. There is no evidence anyone made a care manager three times more productive with a product.</p>
+
+<blockquote class="sub">Arosa did the acquisition. It did not do the software leverage. That gap — services with genuine software leverage — is precisely the ground no one has taken.</blockquote>
+
+<h2>The risks, told straight</h2>
+<p>I won't sell this the way the deck sold the app. Buying a care business has its own bear case, and it's sharp. <strong>You are buying relationships that can walk out the door.</strong> Families hired <em>Susan</em>, not Susan's LLC; if the owner leaves at close, you paid a multiple for goodwill that can evaporate — which is why the whole game is in the earnout, the seller note, and a long transition. <strong>These are small, messy businesses</strong> — solo to a dozen staff, informal books, the owner as the sales engine; you're buying a job before you're buying a company. <strong>The margins come with it</strong> — a services business has services margins until the tooling actually moves them, and if our software <em>doesn't</em> lift the caseload, we own a nice small business, not a platform. And <strong>the culture can reject the transplant</strong>: care managers are mission-driven clinicians who have watched software people promise efficiency before. If they read us as the buyers who want to replace them with a robot, we lose the very asset we paid for. The pitch has to be — and has to genuinely be — the software takes the paperwork so you can take more families.</p>
+
+<h2>The structure that fits who we are</h2>
+<p>One sharp caution, because the words matter. A <em>traditional</em> search fund raises investor capital and typically leaves the searcher with twenty or thirty percent of the company — which would violate the founder-control, Epic-model conviction that started this whole thing. That is not our version. Ours is the <strong>self-funded search</strong>: our own capital, plus an SBA loan, plus a seller note. Medoff's ninety-four-percent-debt deal is the shape. Keep that distinction crisp with anyone we talk to, because "search fund" will make people assume we're giving the company away, and we are not.</p>
+
+<h2>Where this leaves us</h2>
+<p>I don't think this replaces the vision. I think it <em>sequences</em> it. The mission still eventually needs a payer-scale channel to reach a million families — but "we own a real care business, our software tripled its capacity, and here is the data" is a far stronger place to have that conversation from than "we have an app and a dream." It de-risks the trust cold-start, it hands our software something real to lever, and it teaches us the domain from the inside before we spend a dollar on consumer marketing.</p>
+
+<p>It also, honestly, commits us to being a services company with a software engine — the corollary from the second memo, now made concrete. That is the thing to decide, together, before anything else: is that the company we actually want to build? If yes, the discipline lives entirely in two places — the target profile and the retention terms — and the door is genuinely open. Medoff, of all people, is reachable; he teaches this move to strangers for a living.</p>
+
+<p>Three memos, one arc. The need is real but visibility can't capture it. Software isn't the product — it's leverage that needs trust and labor underneath it. And the cheapest way to get trust and labor is to buy a business that already has both, then build the thing no one has built: the care company where software is the reason it scales.</p>
+</article>
+
+<div class="readnext">
+  <div class="lab">Start the series over</div>
+  <div class="cards">
+    <a class="card" href="01-the-case-against-ourselves.html">
+      <div class="n">I</div>
+      <div class="t">The Case Against Ourselves</div>
+      <div class="d">The strongest version of why the whole thing fails — written on purpose.</div>
+    </a>
+    <a class="card" href="02-software-is-not-the-product.html">
+      <div class="n">II</div>
+      <div class="t">Software Is Not the Product</div>
+      <div class="d">Why "just software" is the wrong question, and what code can actually do here.</div>
+    </a>
+  </div>
+</div>
+
+<footer class="note">
+  Internal working memo, July 2026. Part III of three. Facts on Arosa and Ari Medoff are drawn from public reporting and Harvard Business School materials; some figures (notably any revenue estimate, and the identity of Arosa's owner after the May 2025 exit) are unconfirmed in public sources and are treated as such. This is an internal analysis, not a claim about, or endorsement by, any company or person named.
+</footer>
+
+<script>
+  (function(){
+    var root=document.documentElement, KEY="hq-theme";
+    try{ var saved=localStorage.getItem(KEY); if(saved) root.setAttribute("data-theme",saved); }catch(e){}
+    var btn=document.getElementById("themeToggle");
+    btn && btn.addEventListener("click", function(){
+      var cur=root.getAttribute("data-theme");
+      if(!cur){ cur = matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light"; }
+      var next = cur==="dark" ? "light":"dark";
+      root.setAttribute("data-theme", next);
+      try{ localStorage.setItem(KEY,next); }catch(e){}
+    });
+    var bar=document.getElementById("progress");
+    function onScroll(){
+      var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+      var p = max>0 ? (h.scrollTop||document.body.scrollTop)/max : 0;
+      bar.style.width=(p*100).toFixed(1)+"%";
+    }
+    addEventListener("scroll", onScroll, {passive:true}); onScroll();
+  })();
+</script>
+</body>
+</html>
